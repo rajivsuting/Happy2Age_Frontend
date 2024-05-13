@@ -1,0 +1,31 @@
+import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+// import AddCohorts from "../Pages/AddCohorts";
+// import AddActivity from "../Pages/AddActivity";
+// import ActivityList from "../Pages/ActivityList";
+// import ParticipantsList from "../Pages/ParticipantsList";
+// import CohortsList from "../Pages/CohortsList";
+import Dashboard from "../layouts/dashboard";
+import Auth from "../layouts/auth";
+// import AddParticipants from "../Pages/AddPartcipants";
+
+const AllRoutes = () => {
+  return (
+    <Routes>
+      {/* <Route path="/" element={<AddParticipants />} />
+      <Route path="/add-cohort" element={<AddCohorts />} />
+      <Route path="/add-activity" element={<AddActivity />} />
+      <Route path="/activity-list" element={<ActivityList />} />
+      <Route path="/participant-list" element={<ParticipantsList />} />
+      <Route path="/cohort-list" element={<CohortsList />} /> */}
+
+      {/* template---------------------- */}
+
+      <Route path="/dashboard/*" element={<Dashboard />} />
+      <Route path="/auth/*" element={<Auth />} />
+      <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
+    </Routes>
+  );
+};
+
+export default AllRoutes;
