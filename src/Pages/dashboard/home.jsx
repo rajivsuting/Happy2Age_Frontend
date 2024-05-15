@@ -13,7 +13,11 @@ import {
   Tooltip,
   Progress,
 } from "@material-tailwind/react";
-import { EllipsisVerticalIcon, ArrowUpIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import {
+  EllipsisVerticalIcon,
+  ArrowUpIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline";
 import { StatisticsCard } from "../../widgets/cards";
 import { StatisticsChart } from "../../widgets/charts";
 import {
@@ -65,41 +69,40 @@ export function Home() {
         ))} */}
 
         <StatisticsCard
-            title={"Total participants"}
-            icon={React.createElement(UserCircleIcon, {
-              className: "w-6 h-6 text-white",
-            })}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className={"text-gray"}>{partcipantsList?.length}</strong>
-              </Typography>
-            }
-          />
+          title={"Total participants"}
+          icon={React.createElement(UserCircleIcon, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className={"text-gray"}>{partcipantsList?.length}</strong>
+            </Typography>
+          }
+        />
 
-<StatisticsCard
-            title={"Total cohorts"}
-            icon={React.createElement(MdGroups, {
-              className: "w-6 h-6 text-white",
-            })}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className={"text-gray"}>{cohortsList?.length}</strong>
-              </Typography>
-            }
-          />
+        <StatisticsCard
+          title={"Total cohorts"}
+          icon={React.createElement(MdGroups, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className={"text-gray"}>{cohortsList?.length}</strong>
+            </Typography>
+          }
+        />
 
-<StatisticsCard
-            title={"Total activities"}
-            icon={React.createElement(MdOutlineSportsKabaddi, {
-              className: "w-6 h-6 text-white",
-            })}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className={"text-gray"}>{activityList?.length}</strong>
-              </Typography>
-            }
-          />
-          
+        <StatisticsCard
+          title={"Total activities"}
+          icon={React.createElement(MdOutlineSportsKabaddi, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className={"text-gray"}>{activityList?.length}</strong>
+            </Typography>
+          }
+        />
       </div>
       <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
         {statisticsChartsData.map((props) => (
@@ -228,7 +231,7 @@ export function Home() {
                       </td>
                       <td className={className}>
                         <div className="flex gap-1">
-                        {participants.map(({ name }, key) => (
+                          {participants.map(({ name }, key) => (
                             <Typography
                               variant="small"
                               color="blue-gray"
@@ -238,7 +241,7 @@ export function Home() {
                                 ? name.slice(0, 5) + "..."
                                 : name || "-"}
                             </Typography>
-                        ))}
+                          ))}
                         </div>
                       </td>
 

@@ -127,7 +127,11 @@ export const AddCohort = () => {
           <List>
             {participants.map((participant, index) => (
               <ListItem className="w-[40%] flex justify-between items-center" key={index}>
-                {participant}
+                {allPartcipants.map((el)=>{
+ if (el._id == participant){
+  return el.name
+ }
+                })}
                 <AiFillDelete onClick={() => handleRemoveParticipant(participant)}/>
               </ListItem>
             ))}

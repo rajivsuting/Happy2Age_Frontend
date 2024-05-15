@@ -7,36 +7,42 @@ import {
 } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 
-
 export function SignUp() {
   return (
-    <section className="m-8 flex">
-            <div className="w-2/5 h-full hidden lg:block">
+    <section className="m-8 flex mt-28">
+      <div className="w-2/5 h-full hidden lg:block">
         <img
-          src="/img/pattern.png"
+          src="https://happy2age.com/wp-content/uploads/2024/03/IMG-20240307-WA0003.jpg"
           className="h-full w-full object-cover rounded-3xl"
         />
+        {/* <img
+          src="https://happy2age.com/wp-content/uploads/2024/03/Group-Photo-YMCA.jpg"
+          className="h-full mt-5 w-full object-cover rounded-3xl"
+        /> */}
       </div>
       <div className="w-full lg:w-3/5 flex flex-col items-center justify-center">
         <div className="text-center">
-          <Typography variant="h2" className="font-bold mb-4">Join Us Today</Typography>
-          <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to register.</Typography>
+          <Typography variant="h2" className="font-bold mb-4">
+            Create your admin account
+          </Typography>
+          <Typography
+            variant="paragraph"
+            color="blue-gray"
+            className="text-md font-normal"
+          >
+            Enter your details to register.
+          </Typography>
         </div>
         <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2">
-          <div className="mb-1 flex flex-col gap-6">
-            <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
-              Your email
-            </Typography>
-            <Input
-              size="lg"
-              placeholder="name@mail.com"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-            />
+          <div className="flex justify-between items-center m-auto mb-5 gap-10">
+            <Input label="First Name" name="name" />
+            <Input label="Last Name" name="email" />
           </div>
-          <Checkbox
+          <Input label="Email" name="email" />
+          <div className="mt-5" >
+            <Input label="Password" name="email" />
+          </div>
+          {/* <Checkbox
             label={
               <Typography
                 variant="small"
@@ -53,12 +59,12 @@ export function SignUp() {
               </Typography>
             }
             containerProps={{ className: "-ml-2.5" }}
-          />
+          /> */}
           <Button className="mt-6" fullWidth>
             Register Now
           </Button>
 
-          <div className="space-y-4 mt-8">
+          {/* <div className="space-y-4 mt-8">
             <Button size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clipPath="url(#clip0_1156_824)">
@@ -79,13 +85,17 @@ export function SignUp() {
               <img src="/img/twitter-logo.svg" height={24} width={24} alt="" />
               <span>Sign in With Twitter</span>
             </Button>
-          </div>
-          <Typography variant="paragraph" className="text-center text-blue-gray-500 font-medium mt-4">
+          </div> */}
+          <Typography
+            variant="paragraph"
+            className="text-center text-blue-gray-500 font-medium mt-4"
+          >
             Already have an account?
-            <Link to="/auth/sign-in" className="text-gray-900 ml-1">Sign in</Link>
+            <Link to="/auth/sign-in" className="text-gray-900 ml-1">
+              Sign in
+            </Link>
           </Typography>
         </form>
-
       </div>
     </section>
   );

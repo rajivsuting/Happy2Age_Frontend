@@ -71,7 +71,7 @@ export function DashboardNavbar() {
             {page}
           </Typography>
         </div>
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <div className="mr-auto md:mr-4 md:w-56">
             <Input label="Search" />
           </div>
@@ -185,7 +185,7 @@ export function DashboardNavbar() {
           >
             <Cog6ToothIcon className="h-5 w-5 text-blue-gray-500" />
           </IconButton>
-        </div>
+        </div> */}
       </div>
     </Navbar>
   );

@@ -69,15 +69,15 @@ export function Configurator() {
         openConfigurator ? "translate-x-0" : "translate-x-96"
       }`}
     >
-      <div className="flex items-start justify-between px-6 pt-8 pb-6">
-        <div>
+      <div className="flex items-end justify-end px-6 pt-8 pb-6">
+        {/* <div>
           <Typography variant="h5" color="blue-gray">
             Dashboard Configurator
           </Typography>
           <Typography className="font-normal text-blue-gray-600">
             See our dashboard options.
           </Typography>
-        </div>
+        </div> */}
         <IconButton
           variant="text"
           color="blue-gray"
@@ -86,7 +86,7 @@ export function Configurator() {
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5" />
         </IconButton>
       </div>
-      <div className="py-4 px-6">
+      {/* <div className="py-4 px-6">
         <div className="mb-12">
           <Typography variant="h6" color="blue-gray">
             Sidenav Colors
@@ -227,7 +227,7 @@ export function Configurator() {
             </Button>
           </div>
         </div>
-      </div>
+      </div> */}
     </aside>
   );
 }

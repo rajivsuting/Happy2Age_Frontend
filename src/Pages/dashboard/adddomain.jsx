@@ -14,7 +14,9 @@ import { AiFillDelete } from "react-icons/ai";
 
 const initialState = {
   name: "",
-  subtopics: [{ topicName: "", marks: 0, observation: "" }],
+  category: "",
+  subTopics: [{ content: "", score: 0 }],
+  observation: "",
 };
 
 export const Adddomain = () => {
@@ -28,28 +30,43 @@ export const Adddomain = () => {
   const addSubtopic = () => {
     setdomainData({
       ...domainData,
-      subtopics: [
-        ...domainData.subtopics,
-        { topicName: "", marks: 0, observation: "" },
-      ],
+      subTopics: [...domainData.subTopics, { content: "", score: 0 }],
     });
   };
 
   const removeSubtopic = (index) => {
-    const updatedSubtopic = [...domainData.subtopics];
+    const updatedSubtopic = [...domainData.subTopics];
     updatedSubtopic.splice(index, 1);
-    setdomainData({ ...domainData, subtopics: updatedSubtopic });
+    setdomainData({ ...domainData, subTopics: updatedSubtopic });
   };
 
   const handleSubtopicChange = (index, event) => {
-    const updatedSubtopic = [...domainData.subtopics];
+    const updatedSubtopic = [...domainData.subTopics];
     updatedSubtopic[index][event.target.name] = event.target.value;
-    setdomainData({ ...domainData, subtopics: updatedSubtopic });
+    setdomainData({ ...domainData, subTopics: updatedSubtopic });
+  };
+
+  const handleChangeCategory = (name, value) => {
+    setdomainData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
     console.log(domainData)
+    axios.post(`${serverUrl}/domain/create`,domainData)
+    .then((res)=>{
+      if (res.status==201){
+        alert("Domain added suucessfully")
+      } else {
+        alert("Something went wrong")
+      }
+    }).catch((err)=>{
+      console.log(err)
+      alert(err.response.data.error)
+    })
   };
 
   return (
@@ -64,50 +81,53 @@ export const Adddomain = () => {
           <hr className="w-[85%] border" />
         </div>
         <div className="w-[90%] m-auto mt-5">
-          <div>
+          <div className="flex justify-between items-center m-auto gap-10">
             <Input
               label="Name of Cohort"
               name="name"
               value={domainData.name}
-                onChange={handleChangeInput}
-                required
+              onChange={handleChangeInput}
+              required
             />
+            <Select
+              label="Category"
+              name="category"
+              value={domainData.category}
+              onChange={(value)=>handleChangeCategory("category",value)}
+              required
+            >
+              <Option value="General">General</Option>
+              <Option value="Special Need">Special Need</Option>
+            </Select>
           </div>
           <br />
-          {domainData.subtopics.map((item, index) => {
+          {domainData.subTopics.map((item, index) => {
             return (
               <div
                 key={index}
-                className="w-[100%] flex justify-between items-center gap-5"
+                className={`w-[100%] flex justify-between items-center gap-5 ${
+                  index === 0 ? "mt-0" : "mt-5"
+                }`}
               >
                 <Input
                   label="Topic name"
-                  name="topicName"
-                  value={item.topicName}
+                  name="content"
+                  value={item.content}
                   onChange={(e) => handleSubtopicChange(index, e)}
                   required
                 />
 
-                <Input
-                  label="Marks"
-                  name="marks"
-                  type="number"
-                  value={item.marks}
-                  onChange={(e) => handleSubtopicChange(index, e)}
-                  required
-                />
-
-                <Input
-                  label="Observation"
-                  name="observation"
-                  value={item.observation}
-                  onChange={(e) => handleSubtopicChange(index, e)}
-                />
                 {index === 0 ? null : (
-                    <AiFillDelete className="text-[50px] cursor-pointer" onClick={() => removeSubtopic(index)}/>
+                  <AiFillDelete
+                    className="text-[20px] cursor-pointer"
+                    onClick={() => removeSubtopic(index)}
+                  />
                 )}
                 {index === 0 ? (
-               <FaPlus className="text-[50px] cursor-pointer" onClick={addSubtopic}/>
+                  <FaPlus
+                    className="text-[20px] cursor-pointer"
+                    onClick={addSubtopic}
+                  />
                 ) : null}
               </div>
             );

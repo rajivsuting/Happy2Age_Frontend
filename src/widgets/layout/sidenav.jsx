@@ -22,23 +22,16 @@ export function Sidenav({ brandImg, brandName, routes }) {
     <aside
       className={`${sidenavTypes[sidenavType]} ${
         openSidenav ? "translate-x-0" : "-translate-x-80"
-      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
+      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] overflow-y-auto w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100 ober`}
+      style={{ overflowY: "auto" }}
     >
-      <div
-        className={`relative`}
-      >
+      <div className={`relative`}>
         <Link to="/" className="py-6 px-8 text-center">
-          {/* <Typography
-            variant="h6"
-            color={sidenavType === "dark" ? "white" : "blue-gray"}
-          >
-            {brandName}
-          </Typography> */}
           <img
-      className=" w-[200px] m-auto object-cover object-center"
-      src="/img/Happy-2age-logo-1-1.png"
-      alt="nature image"
-    />
+            className=" w-[200px] m-auto object-cover object-center"
+            src="/img/Happy-2age-logo-1-1.png"
+            alt="nature image"
+          />
         </Link>
         <IconButton
           variant="text"
@@ -55,7 +48,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
         {routes.map(({ layout, title, pages }, key) => (
           <ul key={key} className="mb-4 flex flex-col gap-1">
             {title && (
-              <li className="mx-3.5 mt-4 mb-2">
+              <li className="mx-3.5 mt-2 mb-2">
                 <Typography
                   variant="small"
                   color={sidenavType === "dark" ? "white" : "blue-gray"}
@@ -78,10 +71,18 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           ? "white"
                           : "blue-gray"
                       }
-                      className={`flex items-center gap-4 px-4 capitalize ${isActive ? "bg-maincolor" : "bg-white"}`}
+                      className={`flex items-center gap-4 px-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
                       fullWidth
                     >
-                      <span className={`${isActive ? "text-white" : "text-maincolor2"}`}>{icon}</span>
+                      <span
+                        className={`${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        {icon}
+                      </span>
                       <Typography
                         color="inherit"
                         className="font-medium capitalize"
@@ -96,12 +97,32 @@ export function Sidenav({ brandImg, brandName, routes }) {
           </ul>
         ))}
       </div>
+      <style>
+        {`
+          /* Hide scrollbar for WebKit browsers (Chrome, Safari) */
+          .overflow-y-auto::-webkit-scrollbar {
+            width: 0 !important;
+          }
+
+          /* Optional: Style the scrollbar track, thumb, etc. */
+          .overflow-y-auto::-webkit-scrollbar-track {
+            background-color: transparent;
+          }
+
+          .overflow-y-auto::-webkit-scrollbar-thumb {
+            background-color: transparent;
+          }
+
+        
+        `}
+      </style>
     </aside>
   );
 }
 
 Sidenav.defaultProps = {
-  brandImg: "https://demos.creative-tim.com/material-tailwind-dashboard-react/img/team-3.jpeg",
+  brandImg:
+    "https://demos.creative-tim.com/material-tailwind-dashboard-react/img/team-3.jpeg",
   brandName: "Material Tailwind React",
 };
 

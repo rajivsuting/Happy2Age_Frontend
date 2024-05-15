@@ -3,12 +3,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 
-export const Domainlist = () => {
-  const [domainList, setDomainList] = useState([]);
+export const Sessionlist = () => {
+  const [sessionlist, setSessionlist] = useState([]);
 
   useEffect(() => {
-    axios.get(`${serverUrl}/domain/all`).then((res) => {
-      setDomainList(res.data);
+    axios.get(`${serverUrl}/sessions/all`).then((res) => {
+      setSessionlist(res.data.sessions);
     });
   }, []);
   return (
@@ -22,7 +22,7 @@ export const Domainlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Domain name
+                Session name
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -31,7 +31,7 @@ export const Domainlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Category
+                Cohort name
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -40,42 +40,35 @@ export const Domainlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Total subtopics
+                Activity name
               </Typography>
             </th>
-
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
               <Typography
                 variant="small"
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-               All subtopics
+                Session date
               </Typography>
             </th>
-            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="font-normal leading-none opacity-70"
-              ></Typography>
-            </th>
+            
           </tr>
         </thead>
         <tbody>
-          {domainList?.map(({ name, category, subTopics }, index) => {
-            const isLast = index === domainList.length - 1;
+          {sessionlist?.map((el, index) => {
+            const isLast = index === Sessionlist.length - 1;
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
             return (
-              <tr key={name}>
+              <tr key={el._id}>
                 <td className={classes}>
                   <Typography
                     variant="small"
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {name}
+                    {el.name}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -84,7 +77,7 @@ export const Domainlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {category || "-"}
+                    {el.cohort.name || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -93,7 +86,7 @@ export const Domainlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {subTopics.length || "-"}
+                    {el.activity.name || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -102,22 +95,10 @@ export const Domainlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {subTopics?.map((el) => {
-                      return el.content.substring(0, 5) + "... ," || "-";
-                    })}
+                    {el.date.split("T")[0] || "-"}
                   </Typography>
                 </td>
-              <td className={classes}>
-                <Typography
-                  as="a"
-                  href="#"
-                  variant="small"
-                  color="blue-gray"
-                  className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
-                >
-                  See deatails
-                </Typography>
-              </td>
+                
               </tr>
             );
           })}
@@ -127,4 +108,4 @@ export const Domainlist = () => {
   );
 };
 
-export default Domainlist;
+export default Sessionlist;
