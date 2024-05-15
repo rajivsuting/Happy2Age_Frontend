@@ -28,7 +28,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
       <div className={`relative`}>
         <Link to="/" className="py-6 px-8 text-center">
           <img
-            className=" w-[200px] m-auto object-cover object-center"
+            className=" w-[200px] m-auto object-cover fixed  object-center"
             src="/img/Happy-2age-logo-1-1.png"
             alt="nature image"
           />

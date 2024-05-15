@@ -5,9 +5,31 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { serverUrl } from "../../api";
 
 export function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmitLogin = (e) => {
+    e.preventDefault();
+    axios.post(`${serverUrl}/auth/login`,{ email, password })
+    .then((res)=>{
+      if (res.status==200){
+        alert("Login suucessfully");
+        navigate("/dashboard/home")
+      } else {
+        alert("Something went wrong")
+      }
+    }).catch((err)=>{
+      console.log(err)
+      alert(err.response)
+    })
+  };
   return (
     <section className="m-8 flex gap-4">
       <div className="w-full lg:w-3/5 mt-24">
@@ -23,10 +45,25 @@ export function SignIn() {
             Enter your email and password to Sign In.
           </Typography>
         </div>
-        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2">
-          <Input label="Email" name="name" />
+        <form
+          className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2"
+          onSubmit={handleSubmitLogin}
+        >
+          <Input
+            label="Email"
+            name="name"
+            value={email}
+            type="email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <div className="mt-5">
-            <Input label="Password" name="email" />
+            <Input
+              label="Password"
+              name="password"
+              value={password}
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
           {/* <Checkbox
             label={
@@ -46,7 +83,7 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           /> */}
-          <Button className="mt-6" fullWidth>
+          <Button className="mt-6" fullWidth type="submit">
             Sign In
           </Button>
 
@@ -107,7 +144,6 @@ export function SignIn() {
           src="https://happy2age.com/wp-content/uploads/2023/10/IMG-20230714-WA0011.jpg"
           className="h-full w-full object-cover rounded-3xl"
         />
-
       </div>
     </section>
   );

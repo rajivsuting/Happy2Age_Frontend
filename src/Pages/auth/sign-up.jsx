@@ -5,9 +5,33 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { serverUrl } from "../../api";
 
 export function SignUp() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmitLogin = (e) => {
+    e.preventDefault();
+    axios.post(`${serverUrl}/auth/register`,{ email, password, firstName, lastName })
+    .then((res)=>{
+      if (res.status==200){
+        alert("Register suucessfully");
+        navigate("/auth/sign-in");
+      } else {
+        alert("Something went wrong")
+      }
+    }).catch((err)=>{
+      console.log(err)
+      alert(err.response)
+    })
+  };
   return (
     <section className="m-8 flex mt-28">
       <div className="w-2/5 h-full hidden lg:block">
@@ -33,14 +57,14 @@ export function SignUp() {
             Enter your details to register.
           </Typography>
         </div>
-        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2">
+        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={handleSubmitLogin}>
           <div className="flex justify-between items-center m-auto mb-5 gap-10">
-            <Input label="First Name" name="name" />
-            <Input label="Last Name" name="email" />
+            <Input label="First Name" name="firstName" value={firstName} onChange={(e)=>setFirstName(e.target.value)}/>
+            <Input label="Last Name" name="lastName" value={lastName} onChange={(e)=>setLastName(e.target.value)} />
           </div>
-          <Input label="Email" name="email" />
+          <Input label="Email" name="email" value={email} onChange={(e)=>setEmail(e.target.value)} />
           <div className="mt-5" >
-            <Input label="Password" name="email" />
+            <Input label="Password" name="password" value={password}  onChange={(e)=>setPassword(e.target.value)}/>
           </div>
           {/* <Checkbox
             label={
@@ -60,7 +84,7 @@ export function SignUp() {
             }
             containerProps={{ className: "-ml-2.5" }}
           /> */}
-          <Button className="mt-6" fullWidth>
+          <Button className="mt-6" fullWidth type="submit">
             Register Now
           </Button>
 
