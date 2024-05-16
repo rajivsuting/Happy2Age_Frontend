@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { serverUrl } from "../../api";

@@ -27,7 +27,7 @@ export const Participantlist = () => {
     });
   }, []);
   return (
-    <Card className="h-full w-full overflow-scroll mt-5">
+    <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <table className="w-full min-w-max table-auto text-left">
         <thead>
           <tr>

@@ -21,9 +21,9 @@ const AllRoutes = () => {
 
       {/* template---------------------- */}
 
-      <Route path="/dashboard/*" element={<Dashboard />} />
+      <Route path="/mainpage/*" element={<Dashboard />} />
       <Route path="/auth/*" element={<Auth />} />
-      <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
+      <Route path="*" element={<Navigate to="/mainpage/home" replace />} />
     </Routes>
   );
 };

@@ -87,7 +87,7 @@ export const AddParticipant = () => {
       })
     };
   return (
-    <div className="flex justify-center items-center gap-10">
+    <div className="flex justify-center items-center gap-10 mb-24">
       <form className="m-auto border rounded-xl shadow w-[70%] py-8 mt-8 bg-white" onSubmit={handleSubmitParticipant}>
         {/* Basic details */}
         <div className="w-[90%] m-auto mb-5 flex justify-center items-center">

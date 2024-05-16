@@ -36,7 +36,7 @@ export const AddActivity = () => {
   };
 
   return (
-    <div className="w-[100%] flex justify-center items-center gap-10">
+    <div className="w-[100%] flex justify-center items-center gap-10 mb-24">
       <form className="m-auto border rounded-xl shadow w-[70%] py-8 mt-16 bg-white " onSubmit={handleSubmitActivity}>
         {/* Basic details */}
         <div className="w-[90%] m-auto mb-5 flex justify-center items-center">

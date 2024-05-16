@@ -13,3 +13,4 @@ export * from "../../Pages/dashboard/domainlist";
 export * from "../../Pages/dashboard/adddomain";
 export * from "../../Pages/dashboard/addsession";
 export * from "../../Pages/dashboard/sessionlist";
+export * from "../../Pages/dashboard/addevaluation";

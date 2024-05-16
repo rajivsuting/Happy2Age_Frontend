@@ -76,7 +76,7 @@ export const AddCohort = () => {
   };
 
   return (
-    <div className="flex justify-center items-center gap-10">
+    <div className="flex justify-center items-center gap-10 mb-24">
     <form
       className="m-auto border rounded-xl shadow w-[70%] py-8 mt-16 bg-white"
       onSubmit={handleSubmitCohort}

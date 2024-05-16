@@ -8,11 +8,11 @@ export const Sessionlist = () => {
 
   useEffect(() => {
     axios.get(`${serverUrl}/sessions/all`).then((res) => {
-      setSessionlist(res.data.sessions);
+      setSessionlist(res.data.message);
     });
   }, []);
   return (
-    <Card className="h-full w-full overflow-scroll mt-5">
+    <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <table className="w-full min-w-max table-auto text-left">
         <thead>
           <tr>
@@ -77,7 +77,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.cohort.name || "-"}
+                    {el.cohort.length || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -86,7 +86,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.activity.name || "-"}
+                    {el.activity.length || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>
