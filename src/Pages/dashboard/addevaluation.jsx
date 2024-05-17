@@ -7,10 +7,13 @@ import {
   Card,
   List,
   ListItem,
+  Textarea,
 } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import axios from "axios";
+import { toastConfig } from "../../App";
+import { toast } from "react-toastify";
 
 const initialState = {
   session: "",
@@ -52,19 +55,20 @@ export const AddEvaluation = () => {
 
   useEffect(() => {
     axios.get(`${serverUrl}/participant/all`).then((res) => {
-      setParticipantList(res.data.participants);
+      setParticipantList(res.data.message);
     });
     axios.get(`${serverUrl}/cohort/all`).then((res) => {
-      setCohortList(res.data);
+      setCohortList(res.data.message);
     });
     axios.get(`${serverUrl}/activity/all`).then((res) => {
-      setActivityList(res.data);
+      setActivityList(res.data.message);
     });
     axios.get(`${serverUrl}/domain/all`).then((res) => {
-      setDomainList(res.data);
+      setDomainList(res.data.message);
     });
-    axios.get(`${serverUrl}/sessions/all`).then((res) => {
+    axios.get(`${serverUrl}/session/all`).then((res) => {
       setSessionList(res.data.message);
+      console.log("res.data.message", res.data.message);
     });
   }, []);
 
@@ -91,10 +95,34 @@ export const AddEvaluation = () => {
     });
   };
 
+  const handleObservationChange = ( observation) => {
+    setEvaluationData((prevData) => {
+      // Create a new copy of the domain object and update the marks of the specific subtopic
+      const updatedDomain = { ...prevData.domain };
+      updatedDomain.observation = observation;
+      // Return the updated evaluation data
+      return {
+        ...prevData,
+        domain: updatedDomain,
+      };
+    });
+  };
+
   const handleSubmitEvaluation = (e) => {
     e.preventDefault();
     console.log(evaluationData);
-    console.log(domainList);
+    axios.post(`${serverUrl}/evaluation/create`,evaluationData)
+    .then((res)=>{
+      if (res.status==201){
+        toast.success("Evaluation added suucessfully", toastConfig);
+        setEvaluationData(initialState);
+      } else {
+        toast.error("Something went wrong", toastConfig);
+      }
+    }).catch((err)=>{
+      console.log(err)
+      toast.error(err.response.data.error, toastConfig);
+    })
   };
 
   return (
@@ -195,7 +223,7 @@ export const AddEvaluation = () => {
         </div>
         {domain && (
           <Card className="w-[90%] m-auto mt-5">
-            <Typography className="mt-3 mb-3">{domain.name}</Typography>
+            <div className="m-3"><Typography>{domain.name}</Typography></div>
             {domain?.subTopics?.map((subtopic, index) => (
               <List key={index}>
                 <ListItem>
@@ -207,12 +235,21 @@ export const AddEvaluation = () => {
                     <Input
                       label="Add Marks"
                       value={subtopic.score}
+                      type="number"
                       onChange={(e) => handleMarksChange(index, e.target.value)}
                     />
                   </div>
                 </ListItem>
               </List>
             ))}
+            <div className="w-[95%] m-auto mt-5 mb-5">
+            <Textarea
+              label="Description"
+              name="description"
+              value={domain.observation}
+              onChange={(e) => handleObservationChange(e.target.value)}
+            />
+            </div>
           </Card>
         )}
         <div className="w-[90%] text-center mt-5 m-auto">

@@ -25,6 +25,7 @@ import {
   MdSportsKabaddi,
 } from "react-icons/md";
 import { AiOutlineFieldTime } from "react-icons/ai";
+import { TiUser } from "react-icons/ti";
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -162,28 +163,26 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
               {/* partcipanst-------------------------- */}
-              <li onClick={() => toggleSection("participant")}>
+              <li className="" onClick={() => toggleSection("participant")}>
                 <Button
                   variant={"text"}
-                  className="mb-2 flex justify-between items-center px-5"
+                  className="mb-2 flex justify-between items-center px-4"
                   fullWidth
                 >
                   <Typography
                     variant="small"
                     color="inherit"
-                    className="text-[16px] font-medium capitalize"
+                    className="text-[16px] font-medium capitalize flex justify-between gap-4 items-center"
                   >
+                    <div className="text-maincolor2">
+                      <TiUser {...icon} />
+                    </div>
                     Participant
                   </Typography>
 
-                  <IoIosArrowDown fontSize={15}/>
+                  <IoIosArrowDown fontSize={15} />
                 </Button>
               </li>
-
-
-
-
-
               {participantOpen ? (
                 <>
                   <li>
@@ -198,7 +197,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               ? "white"
                               : "blue-gray"
                           }
-                          className={`flex items-center gap-4 px-4 capitalize ${
+                          className={`flex items-center gap-4 px-8 capitalize ${
                             isActive ? "bg-maincolor" : "bg-white"
                           }`}
                           fullWidth
@@ -208,7 +207,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
                           >
-                            <FaUserAlt {...icon} />
+                            {/* <FaUserAlt {...icon} /> */}
                           </span>
                           <Typography
                             color="inherit"
@@ -232,7 +231,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               ? "white"
                               : "blue-gray"
                           }
-                          className={`flex items-center gap-4 px-4 capitalize ${
+                          className={`flex items-center gap-4 px-8 capitalize ${
                             isActive ? "bg-maincolor" : "bg-white"
                           }`}
                           fullWidth
@@ -242,7 +241,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
                           >
-                            <IoList {...icon} />
+                            {/* <IoList {...icon} /> */}
                           </span>
                           <Typography
                             color="inherit"
@@ -260,18 +259,21 @@ export function Sidenav({ brandImg, brandName, routes }) {
               <li onClick={() => toggleSection("cohort")}>
                 <Button
                   variant={"text"}
-                  className="mb-2 flex justify-between items-center px-5"
+                  className="mb-2 flex justify-between items-center px-4"
                   fullWidth
                 >
                   <Typography
                     variant="small"
                     color="inherit"
-                    className="text-[16px] font-medium capitalize"
+                    className="text-[16px] flex justify-between items-center gap-4 font-medium capitalize"
                   >
+                    <div className="text-maincolor2">
+                      <GrGroup {...icon} />
+                    </div>
                     Cohort
                   </Typography>
 
-                  <IoIosArrowDown fontSize={15}/>
+                  <IoIosArrowDown fontSize={15} />
                 </Button>
               </li>
               {cohortOpen ? (
@@ -288,7 +290,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               ? "white"
                               : "blue-gray"
                           }
-                          className={`flex items-center gap-4 px-4 capitalize ${
+                          className={`flex items-center gap-4 px-8 capitalize ${
                             isActive ? "bg-maincolor" : "bg-white"
                           }`}
                           fullWidth
@@ -297,9 +299,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             className={`${
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
-                          >
-                            <GrGroup {...icon} />
-                          </span>
+                          ></span>
                           <Typography
                             color="inherit"
                             className="font-medium capitalize"
@@ -322,7 +322,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               ? "white"
                               : "blue-gray"
                           }
-                          className={`flex items-center gap-4 px-4 capitalize ${
+                          className={`flex items-center gap-4 px-8 capitalize ${
                             isActive ? "bg-maincolor" : "bg-white"
                           }`}
                           fullWidth
@@ -332,7 +332,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
                           >
-                            <IoList {...icon} />
+                            {/* <IoList {...icon} /> */}
                           </span>
                           <Typography
                             color="inherit"
@@ -350,18 +350,21 @@ export function Sidenav({ brandImg, brandName, routes }) {
               <li onClick={() => toggleSection("activity")}>
                 <Button
                   variant={"text"}
-                  className="mb-2 flex justify-between items-center px-5"
+                  className="mb-2 flex justify-between items-center px-4"
                   fullWidth
                 >
                   <Typography
                     variant="small"
                     color="inherit"
-                    className="text-[16px] font-medium capitalize"
+                    className="text-[16px] flex justify-between items-center gap-4 font-medium capitalize"
                   >
+                    <div className="text-maincolor2">
+                    <MdSportsKabaddi {...icon} />
+                    </div>
                     Activity
                   </Typography>
 
-                  <IoIosArrowDown fontSize={15}/>
+                  <IoIosArrowDown fontSize={15} />
                 </Button>
               </li>
               {activityOpen ? (
@@ -378,7 +381,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               ? "white"
                               : "blue-gray"
                           }
-                          className={`flex items-center gap-4 px-4 capitalize ${
+                          className={`flex items-center gap-4 px-8 capitalize ${
                             isActive ? "bg-maincolor" : "bg-white"
                           }`}
                           fullWidth
@@ -388,7 +391,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
                           >
-                            <MdSportsKabaddi {...icon} />
+                            
                           </span>
                           <Typography
                             color="inherit"
@@ -412,7 +415,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               ? "white"
                               : "blue-gray"
                           }
-                          className={`flex items-center gap-4 px-4 capitalize ${
+                          className={`flex items-center gap-4 px-8 capitalize ${
                             isActive ? "bg-maincolor" : "bg-white"
                           }`}
                           fullWidth
@@ -422,7 +425,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
                           >
-                            <IoList {...icon} />
+                            {/* <IoList {...icon} /> */}
                           </span>
                           <Typography
                             color="inherit"
@@ -440,18 +443,19 @@ export function Sidenav({ brandImg, brandName, routes }) {
               <li onClick={() => toggleSection("domain")}>
                 <Button
                   variant={"text"}
-                  className="mb-2 flex justify-between items-center px-5"
+                  className="mb-2 flex justify-between items-center px-4"
                   fullWidth
                 >
                   <Typography
                     variant="small"
                     color="inherit"
-                    className="text-[16px] font-medium capitalize"
+                    className="text-[16px] font-medium capitalize  flex justify-between items-center gap-4"
                   >
+                    <div className="text-maincolor2"><MdDomainVerification {...icon} /></div>
                     Domain
                   </Typography>
 
-                  <IoIosArrowDown fontSize={15}/>
+                  <IoIosArrowDown fontSize={15} />
                 </Button>
               </li>
               {domainOpen ? (
@@ -468,7 +472,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               ? "white"
                               : "blue-gray"
                           }
-                          className={`flex items-center gap-4 px-4 capitalize ${
+                          className={`flex items-center gap-4 px-8 capitalize ${
                             isActive ? "bg-maincolor" : "bg-white"
                           }`}
                           fullWidth
@@ -478,7 +482,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
                           >
-                            <MdDomainVerification {...icon} />
+                            
                           </span>
                           <Typography
                             color="inherit"
@@ -502,7 +506,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               ? "white"
                               : "blue-gray"
                           }
-                          className={`flex items-center gap-4 px-4 capitalize ${
+                          className={`flex items-center gap-4 px-8 capitalize ${
                             isActive ? "bg-maincolor" : "bg-white"
                           }`}
                           fullWidth
@@ -512,7 +516,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
                           >
-                            <IoList {...icon} />
+                            {/* <IoList {...icon} /> */}
                           </span>
                           <Typography
                             color="inherit"
@@ -530,18 +534,19 @@ export function Sidenav({ brandImg, brandName, routes }) {
               <li onClick={() => toggleSection("session")}>
                 <Button
                   variant={"text"}
-                  className="mb-2 flex justify-between items-center px-5"
+                  className="mb-2 flex justify-between items-center px-4"
                   fullWidth
                 >
                   <Typography
                     variant="small"
                     color="inherit"
-                    className="text-[16px] font-medium capitalize"
+                    className="text-[16px] flex justify-between items-center gap-4 font-medium capitalize"
                   >
+                    <div className="text-maincolor2"> <AiOutlineFieldTime {...icon} /></div>
                     Session
                   </Typography>
 
-                  <IoIosArrowDown fontSize={15}/>
+                  <IoIosArrowDown fontSize={15} />
                 </Button>
               </li>
               {sessionOpen ? (
@@ -558,7 +563,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               ? "white"
                               : "blue-gray"
                           }
-                          className={`flex items-center gap-4 px-4 capitalize ${
+                          className={`flex items-center gap-4 px-8 capitalize ${
                             isActive ? "bg-maincolor" : "bg-white"
                           }`}
                           fullWidth
@@ -568,7 +573,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
                           >
-                            <AiOutlineFieldTime {...icon} />
+                           
                           </span>
                           <Typography
                             color="inherit"
@@ -592,7 +597,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               ? "white"
                               : "blue-gray"
                           }
-                          className={`flex items-center gap-4 px-4 capitalize ${
+                          className={`flex items-center gap-4 px-8 capitalize ${
                             isActive ? "bg-maincolor" : "bg-white"
                           }`}
                           fullWidth
@@ -602,7 +607,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
                           >
-                            <IoList {...icon} />
+                            {/* <IoList {...icon} /> */}
                           </span>
                           <Typography
                             color="inherit"

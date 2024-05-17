@@ -7,7 +7,7 @@ export const Sessionlist = () => {
   const [sessionlist, setSessionlist] = useState([]);
 
   useEffect(() => {
-    axios.get(`${serverUrl}/sessions/all`).then((res) => {
+    axios.get(`${serverUrl}/session/all`).then((res) => {
       setSessionlist(res.data.message);
     });
   }, []);

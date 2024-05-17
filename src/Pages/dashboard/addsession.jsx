@@ -10,6 +10,8 @@ import React, { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import axios from "axios";
 import { AiFillDelete } from "react-icons/ai";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 const initialState = {
   name: "",
@@ -81,27 +83,27 @@ export const AddSession = () => {
 
   useEffect(() => {
     axios.get(`${serverUrl}/cohort/all/`).then((res) => {
-      setCohortList(res.data);
+      setCohortList(res.data.message);
     });
 
     axios.get(`${serverUrl}/activity/all/`).then((res) => {
-      setActivityList(res.data);
+      setActivityList(res.data.message);
     });
   }, []);
 
   const handleSubmitSession = (e) => {
     e.preventDefault();
     // console.log(sessionData);
-    axios.post(`${serverUrl}/sessions/create`,sessionData)
+    axios.post(`${serverUrl}/session/create`,sessionData)
     .then((res)=>{
       if (res.status==201){
-        alert("Session added suucessfully")
+        toast.success("Session added suucessfully", toastConfig);
+        setSessionData(initialState);
       } else {
-        alert("Something went wrong")
+        toast.error("Something went wrong", toastConfig);
       }
     }).catch((err)=>{
-      console.log(err)
-      alert(err.response.data.error)
+      toast.error(err.response.data.error, toastConfig);
     })
   };
   return (

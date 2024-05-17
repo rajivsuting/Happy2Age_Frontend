@@ -8,7 +8,7 @@ export const Cohortlist = () => {
 
   useEffect(() => {
     axios.get(`${serverUrl}/cohort/all`).then((res) => {
-      setCohortList(res.data);
+      setCohortList(res.data.message);
     });
   }, []);
   return (

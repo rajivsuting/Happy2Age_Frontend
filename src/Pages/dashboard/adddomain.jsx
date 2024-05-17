@@ -11,12 +11,14 @@ import axios from "axios";
 import { serverUrl } from "../../api";
 import { FaPlus } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
+import { toastConfig } from "../../App";
+import { toast } from "react-toastify";
 
 const initialState = {
   name: "",
   category: "",
   subTopics: [{ content: "", score: 0 }],
-  observation: "",
+  // observation: "",
 };
 
 export const Adddomain = () => {
@@ -59,13 +61,13 @@ export const Adddomain = () => {
     axios.post(`${serverUrl}/domain/create`,domainData)
     .then((res)=>{
       if (res.status==201){
-        alert("Domain added suucessfully")
+        toast.success("Domain added suucessfully", toastConfig);
+        setdomainData(initialState);
       } else {
-        alert("Something went wrong")
+        toast.error("Something went wrong", toastConfig);
       }
     }).catch((err)=>{
-      console.log(err)
-      alert(err.response.data.error)
+      toast.error(err.response.data.error, toastConfig);
     })
   };
 

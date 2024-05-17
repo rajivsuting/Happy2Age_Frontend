@@ -37,16 +37,16 @@ export function Home() {
   const [cohortsList, setCohortList] = useState([]);
   const [activityList, setActivityList] = useState([]);
   useEffect(() => {
-    axios.get(`${serverUrl}/participant/all/?page=1&limit=7`).then((res) => {
-      setPartcipantList(res.data.participants);
+    axios.get(`${serverUrl}/participant/all/`).then((res) => {
+      setPartcipantList(res.data.message);
     });
 
     axios.get(`${serverUrl}/cohort/all/`).then((res) => {
-      setCohortList(res.data);
+      setCohortList(res.data.message);
     });
 
     axios.get(`${serverUrl}/activity/all/`).then((res) => {
-      setActivityList(res.data);
+      setActivityList(res.data.message);
     });
   }, []);
   return (

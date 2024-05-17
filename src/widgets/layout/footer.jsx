@@ -12,16 +12,15 @@ export function Footer({ brandName, brandLink, routes }) {
           &copy; {year}, made with{" "}
           <HeartIcon className="-mt-0.5 inline-block h-3.5 w-3.5 text-red-600" /> by{" "}
           <a
-            href={brandLink}
+            href={"https://happy2age.com/"}
             target="_blank"
             rel="noopener noreferrer"
             className="transition-colors hover:text-blue-500 font-bold"
           >
-            {brandName}
+            Happy2Age
           </a>{" "}
-          for a better web.
         </Typography>
-        <ul className="flex items-center gap-4">
+        {/* <ul className="flex items-center gap-4">
           {routes.map(({ name, path }) => (
             <li key={name}>
               <Typography
@@ -36,7 +35,7 @@ export function Footer({ brandName, brandLink, routes }) {
               </Typography>
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
     </footer>
   );

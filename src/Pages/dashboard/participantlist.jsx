@@ -23,7 +23,7 @@ export const Participantlist = () => {
 
   useEffect(() => {
     axios.get(`${serverUrl}/participant/all`).then((res) => {
-      setPartcipantList(res.data.participants);
+      setPartcipantList(res.data.message);
     });
   }, []);
   return (

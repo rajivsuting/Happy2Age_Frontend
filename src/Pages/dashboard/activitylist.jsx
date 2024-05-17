@@ -8,7 +8,7 @@ export const ActivityList = () => {
 
   useEffect(() => {
     axios.get(`${serverUrl}/activity/all`).then((res) => {
-      setActivityList(res.data);
+      setActivityList(res.data.message);
     });
   }, []);
   return (

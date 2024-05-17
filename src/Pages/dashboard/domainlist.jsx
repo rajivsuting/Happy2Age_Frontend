@@ -8,7 +8,7 @@ export const Domainlist = () => {
 
   useEffect(() => {
     axios.get(`${serverUrl}/domain/all`).then((res) => {
-      setDomainList(res.data);
+      setDomainList(res.data.message);
     });
   }, []);
   return (

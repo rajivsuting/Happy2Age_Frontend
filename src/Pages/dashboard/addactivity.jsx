@@ -2,6 +2,8 @@ import { Button, Input, Select, Option, Textarea } from "@material-tailwind/reac
 import React, { useState } from "react";
 import axios from "axios";
 import { serverUrl } from "../../api";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 const initialState = {
   name: "",
@@ -26,12 +28,13 @@ export const AddActivity = () => {
     axios.post(`${serverUrl}/activity/create`,activityData)
     .then((res)=>{
       if (res.status==201){
-        alert("Activity added suucessfully")
+        toast.success("Activity added suucessfully", toastConfig);
+        setActivityData(initialState);
       } else {
-        alert("Something went wrong")
+        toast.error("Something went wrong", toastConfig);
       }
     }).catch((err)=>{
-      alert(err.response.data.error)
+      toast.error(err.response.data.error, toastConfig);
     })
   };
 

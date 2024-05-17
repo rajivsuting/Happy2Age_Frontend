@@ -35,6 +35,12 @@ export function SignUp() {
   };
   return (
     <section className="m-8 flex mt-28">
+          <div
+              className="w-[70px] mt-[-50px] border-b cursor-pointer hover:border-b-blue text-blue-500"
+              onClick={() => window.history.back()}
+            >
+              Go back
+            </div>
       <div className="w-2/5 h-full hidden lg:block">
         <img
           src="https://happy2age.com/wp-content/uploads/2024/03/IMG-20240307-WA0003.jpg"
@@ -58,8 +64,8 @@ export function SignUp() {
             Enter your details to register.
           </Typography>
         </div>
-        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={handleSubmitLogin}>
-          <div className="flex justify-between items-center m-auto mb-5 gap-10">
+        <form className="mt-8 mb-2 mx-auto w-64 max-w-screen-lg lg:w-1/2" onSubmit={handleSubmitLogin}>
+          <div className="flex justify-between items-center m-auto mb-5 gap-4">
             <Input label="First Name" name="firstName" value={firstName} onChange={(e)=>setFirstName(e.target.value)}/>
             <Input label="Last Name" name="lastName" value={lastName} onChange={(e)=>setLastName(e.target.value)} />
           </div>
@@ -85,7 +91,7 @@ export function SignUp() {
             }
             containerProps={{ className: "-ml-2.5" }}
           /> */}
-          <Button className="mt-6" fullWidth type="submit">
+          <Button className="mt-6 bg-maincolor" fullWidth type="submit">
             Register Now
           </Button>
 
