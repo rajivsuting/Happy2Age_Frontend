@@ -15,7 +15,7 @@ import { toastConfig } from "../../App";
 
 const initialState = {
   name: "",
-  cohort: [],
+  cohort: "",
   activity: [],
   date: "",
 };
@@ -36,30 +36,7 @@ export const AddSession = () => {
     }));
   };
 
-  const handleChangeCohortAndActivity = (name, value) => {
-    setSessionData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
 
-  const handleAddCohort = () => {
-    if (selectedCohort !== "") {
-      setSessionData({
-        ...sessionData,
-        cohort: [...cohort, selectedCohort],
-      });
-      setSelectedCohort(""); // Reset selected participant
-    }
-  };
-
-  const handleRemoveCohort = (cohortToRemove) => {
-    const updatedCohorts = cohort.filter((cohort) => cohort !== cohortToRemove);
-    setSessionData({
-      ...sessionData,
-      cohort: updatedCohorts,
-    });
-  };
 
   const handleAddActivity = () => {
     if (selectedActivity !== "") {
@@ -93,7 +70,7 @@ export const AddSession = () => {
 
   const handleSubmitSession = (e) => {
     e.preventDefault();
-    // console.log(sessionData);
+    console.log(sessionData);
     axios.post(`${serverUrl}/session/create`,sessionData)
     .then((res)=>{
       if (res.status==201){
@@ -133,66 +110,50 @@ export const AddSession = () => {
           />
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
-          <div className="w-[47%] flex justify-between items-center gap-5">
-            <Select
+          <div className="w-[50%] flex justify-between items-center gap-5">
+            <select
               label="Cohort"
               name="cohort"
-              value={selectedCohort}
-              onChange={(value) => setSelectedCohort(value)}
+              value={cohort}
+              onChange={handleChangeInput}
+              className="border border-gray-400 w-[100%] px-2 py-2 rounded-md"
             >
+              <option value="">Select cohort</option>
               {cohortsList?.map((el) => {
-                return <Option value={el._id}>{el.name}</Option>;
+                return <option value={el._id}>{el.name}</option>;
               })}
-            </Select>
-            <Button
+            </select>
+            {/* <Button
               className="w-[120px] bg-maincolor"
               onClick={handleAddCohort}
             >
               Add
-            </Button>
+            </Button> */}
           </div>
-          <div className="w-[47%] flex justify-between items-center gap-5">
-            <Select
+          <div className="w-[50%] flex justify-between items-center gap-5">
+            <select
               label="Activity"
               name="activity"
               value={selectedActivity}
-              onChange={(value) => setselectedActivity(value)}
+              onChange={(e)=>setselectedActivity(e.target.value)}
+              className="border border-gray-400 w-[80%] px-2 py-2 rounded-md"
             >
+              <option value="">Select a activity</option>
               {activityList?.map((el) => {
-                return <Option value={el._id}>{el.name}</Option>;
+                return <option value={el._id}>{el.name}</option>;
               })}
-            </Select>
+            </select>
             <Button
-              className="w-[120px] bg-maincolor"
+              className="w-[100px] bg-maincolor"
               onClick={handleAddActivity}
             >
               Add
             </Button>
           </div>
         </div>
-        <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
-          {cohort?.length ? (
-            <div className="w-[100%] m-auto mt-5">
-              <h3>Cohorts:</h3>
-              <List>
-                {cohort?.map((cohort, index) => (
-                  <ListItem
-                    className="w-[97%] flex justify-between items-center"
-                    key={index}
-                  >
-                    {cohortsList?.map((el) => {
-                      if (el._id == cohort) {
-                        return el.name;
-                      }
-                    })}
-                    <AiFillDelete onClick={() => handleRemoveCohort(cohort)} />
-                  </ListItem>
-                ))}
-              </List>
-            </div>
-          ) : null}
+        <div className="w-[100%] flex justify-start items-center m-auto gap-10 mt-5 px-8">
           {activity?.length ? (
-            <div className="w-[90%] m-auto mt-5">
+            <div className="w-[50%] ml-3 mt-5">
               <h3>Activities:</h3>
               <List>
                 {activity?.map((activity, index) => (

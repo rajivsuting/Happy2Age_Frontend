@@ -18,9 +18,9 @@ import {
   ActivityList,
   Participantlist,
   Domainlist,
-  Adddomain,
   Sessionlist,
   AddEvaluation,
+  Editdomain,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -102,8 +102,8 @@ export const routes = [
           {
             icon_u: <GrDomain {...icon} />,
             name_u: "add domain",
-            path_u: "/add-domain",
-            element_u: <Adddomain />,
+            path_u: "/edit-domain/:domainid",
+            element_u: <Editdomain />,
           },
           {
             icon_u: <IoListSharp {...icon} />,
@@ -148,12 +148,12 @@ export const routes = [
         path: "/sign-in",
         element: <SignIn />,
       },
-      {
-        icon: <RectangleStackIcon {...icon} />,
-        name: "sign up",
-        path: "/sign-up",
-        element: <SignUp />,
-      },
+      // {
+      //   icon: <RectangleStackIcon {...icon} />,
+      //   name: "sign out",
+      //   path: "/sign-out",
+      //   // element: <SignUp />,
+      // },
      
     ],
   },

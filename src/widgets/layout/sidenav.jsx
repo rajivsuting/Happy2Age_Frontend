@@ -452,7 +452,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     className="text-[16px] font-medium capitalize  flex justify-between items-center gap-4"
                   >
                     <div className="text-maincolor2"><MdDomainVerification {...icon} /></div>
-                    Domain
+                    Evaluation master list
                   </Typography>
 
                   <IoIosArrowDown fontSize={15} />
@@ -460,7 +460,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
               </li>
               {domainOpen ? (
                 <>
-                  <li>
+                  {/* <li>
                     <NavLink to={`/mainpage/add-domain`}>
                       {({ isActive }) => (
                         <Button
@@ -488,12 +488,12 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            add domain
+                            
                           </Typography>
                         </Button>
                       )}
                     </NavLink>
-                  </li>
+                  </li> */}
                   <li>
                     <NavLink to={`/mainpage/domains-list`}>
                       {({ isActive }) => (
@@ -522,7 +522,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            domains list
+                            domain list
                           </Typography>
                         </Button>
                       )}
@@ -650,7 +650,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                        evaluation
+                        evaluate
                       </Typography>
                     </Button>
                   )}
@@ -691,10 +691,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/auth/sign-up`}>
+                <NavLink >
                   {({ isActive }) => (
                     <Button
-                      variant={isActive ? "yellow" : "text"}
+                      variant={isActive ? "text" : "text"}
                       color={
                         isActive
                           ? sidenavColor
@@ -702,23 +702,19 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           ? "white"
                           : "blue-gray"
                       }
-                      className={`flex items-center gap-4 px-4 capitalize ${
-                        isActive ? "bg-maincolor" : "bg-white"
-                      }`}
+                      className={`flex items-center gap-4 px-4 capitalize bg-white`}
                       fullWidth
                     >
                       <span
-                        className={`${
-                          isActive ? "text-white" : "text-maincolor2"
-                        }`}
-                      >
+                            className={`text-maincolor2`}
+                          >
                         <RectangleStackIcon {...icon} />
                       </span>
                       <Typography
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                        sign up
+                        sign out
                       </Typography>
                     </Button>
                   )}

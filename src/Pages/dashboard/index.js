@@ -10,7 +10,7 @@ export * from "../../Pages/dashboard/activitylist";
 export * from "../../Pages/dashboard/participantlist";
 export * from "../../Pages/dashboard/cohortlist";
 export * from "../../Pages/dashboard/domainlist";
-export * from "../../Pages/dashboard/adddomain";
+export * from "../../Pages/dashboard/editdomain"
 export * from "../../Pages/dashboard/addsession";
 export * from "../../Pages/dashboard/sessionlist";
 export * from "../../Pages/dashboard/addevaluation";

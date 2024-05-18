@@ -10,6 +10,8 @@ axios.defaults.withCredentials = true;
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { serverUrl } from "../../api";
+import { toastConfig } from "../../App";
+import { toast } from "react-toastify";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
@@ -21,14 +23,14 @@ export function SignIn() {
     axios.post(`${serverUrl}/auth/login`,{ email, password })
     .then((res)=>{
       if (res.status==200){
-        alert("Login suucessfully");
-        navigate("/dashboard/home")
+        toast.success("Login suucessfully", toastConfig);
+        navigate("/mainpage/home")
       } else {
-        alert("Something went wrong")
+        toast.error("Something went wrong", toastConfig);
       }
     }).catch((err)=>{
       console.log(err)
-      alert(err.response)
+      toast.error(err.response, toastConfig);
     })
   };
   return (

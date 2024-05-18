@@ -2,6 +2,8 @@ import { Card, Typography } from "@material-tailwind/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
+import { CiEdit } from "react-icons/ci";
+import { MdOutlineDeleteOutline } from "react-icons/md";
 
 export const Participantlist = () => {
   const [partcipantList, setPartcipantList] = useState([]);
@@ -19,6 +21,9 @@ export const Participantlist = () => {
     "Emg. name",
     "Emg. relationship",
     "Created date",
+    "",
+    "",
+    ""
   ];
 
   useEffect(() => {
@@ -162,6 +167,48 @@ export const Participantlist = () => {
                     {el.createdAt.split("T")[0] || "-"}
                   </Typography>
                 </td>
+                <td className={classes}>
+                <Typography
+                  as="a"
+                  href="#"
+                  variant="small"
+                  color="blue-gray"
+                  className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
+                >
+                  See deatails
+                </Typography>
+              </td>
+                <td className={classes}>
+                <Typography
+                  as="a"
+                  href="#"
+                  variant="small"
+                  color="blue-gray"
+                  className="text-maincolor2 text-[20px]"
+                >
+              <CiEdit />
+                </Typography>
+              </td>
+              <td className={classes}>
+              <Typography
+                  as="a"
+                  href="#"
+                  variant="small"
+                  color="blue-gray"
+                  className="text-maincolor2 text-[20px]"
+                >
+              <MdOutlineDeleteOutline/>
+                </Typography>
+                {/* <Typography
+                  as="a"
+                  href="#"
+                  variant="small"
+                  color="blue-gray"
+                  className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
+                >
+                  See deatails
+                </Typography> */}
+              </td>
               </tr>
             );
           })}

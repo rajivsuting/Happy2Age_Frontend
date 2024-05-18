@@ -2,6 +2,8 @@ import { Card, Typography } from "@material-tailwind/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
+import { MdOutlineDeleteOutline } from "react-icons/md";
+import { CiEdit } from "react-icons/ci";
 
 export const Cohortlist = () => {
   const [cohortList, setCohortList] = useState([]);
@@ -34,6 +36,27 @@ export const Cohortlist = () => {
                 Participants name
               </Typography>
             </th>
+            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-normal leading-none opacity-70"
+              ></Typography>
+            </th>
+            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-normal leading-none opacity-70"
+              ></Typography>
+            </th>
+            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-normal leading-none opacity-70"
+              ></Typography>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -63,13 +86,15 @@ export const Cohortlist = () => {
                     })}
                   </Typography>
                 </td>
-                {/* <td className={classes}>
+                <td className={classes}>
                   <Typography
+                    as="a"
+                    href="#"
                     variant="small"
                     color="blue-gray"
-                    className="font-normal"
+                    className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
                   >
-                    {date}
+                    See deatails
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -78,11 +103,22 @@ export const Cohortlist = () => {
                     href="#"
                     variant="small"
                     color="blue-gray"
-                    className="font-medium"
+                    className="text-maincolor2 text-[20px]"
                   >
-                    Edit
+                    <CiEdit />
                   </Typography>
-                </td> */}
+                </td>
+                <td className={classes}>
+                  <Typography
+                    as="a"
+                    href="#"
+                    variant="small"
+                    color="blue-gray"
+                    className="text-maincolor2 text-[20px]"
+                  >
+                    <MdOutlineDeleteOutline />
+                  </Typography>
+                </td>
               </tr>
             );
           })}

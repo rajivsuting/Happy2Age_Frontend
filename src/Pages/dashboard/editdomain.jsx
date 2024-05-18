@@ -13,16 +13,16 @@ import { FaPlus } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
-const initialState = {
-  name: "",
-  category: "",
-  subTopics: [{ content: "", score: 0 }],
-  // observation: "",
-};
-
-export const Adddomain = () => {
-  const [domainData, setdomainData] = useState(initialState);
+export const Editdomain = () => {
+  const { domainid } = useParams();
+  const [domainData, setdomainData] = useState({
+    name: "",
+    category: "",
+    subTopics: [{ content: "", score: 0 }],
+    // observation: "",
+  });
 
   const handleChangeInput = (event) => {
     const { name, value } = event.target;
@@ -49,27 +49,36 @@ export const Adddomain = () => {
   };
 
   const handleChangeCategory = (name, value) => {
-    setdomainData(prevData => ({
+    setdomainData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
 
+  useEffect(() => {
+    axios.get(`${serverUrl}/domain/${domainid}`).then((res) => {
+      setdomainData(res.data.message);
+    });
+  }, [domainid]);
+
   const handleSubmitCohort = (e) => {
     e.preventDefault();
-    console.log(domainData)
-    axios.post(`${serverUrl}/domain/create`,domainData)
-    .then((res)=>{
-      if (res.status==201){
-        toast.success("Domain added suucessfully", toastConfig);
-        setdomainData(initialState);
-      } else {
-        toast.error("Something went wrong", toastConfig);
-      }
-    }).catch((err)=>{
-      toast.error(err.response.data.error, toastConfig);
-    })
+    // console.log(domainData);
+    axios
+      .patch(`${serverUrl}/domain/edit/${domainid}`, domainData)
+      .then((res) => {
+        console.log(res)
+        if (res.status == 200) {
+          toast.success("Domain Edited suucessfully", toastConfig);
+        } else {
+          toast.error("Something went wrong", toastConfig);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.response.data.error, toastConfig);
+      });
   };
+
 
   return (
     <div className="flex justify-center items-center gap-10 mb-24">
@@ -85,7 +94,7 @@ export const Adddomain = () => {
         <div className="w-[90%] m-auto mt-5">
           <div className="flex justify-between items-center m-auto gap-10">
             <Input
-              label="Name of Cohort"
+              label="Name of Domain"
               name="name"
               value={domainData.name}
               onChange={handleChangeInput}
@@ -95,7 +104,7 @@ export const Adddomain = () => {
               label="Category"
               name="category"
               value={domainData.category}
-              onChange={(value)=>handleChangeCategory("category",value)}
+              onChange={(value) => handleChangeCategory("category", value)}
               required
             >
               <Option value="General">General</Option>
@@ -137,7 +146,7 @@ export const Adddomain = () => {
         </div>
         <div className="w-[90%] text-center mt-5 m-auto">
           <Button className="bg-maincolor" type="submit">
-            Add Domain
+            Edit Domain
           </Button>
         </div>
       </form>
@@ -145,4 +154,4 @@ export const Adddomain = () => {
   );
 };
 
-export default Adddomain;
+export default Editdomain;

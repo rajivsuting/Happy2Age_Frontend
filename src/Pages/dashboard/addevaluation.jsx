@@ -20,7 +20,7 @@ const initialState = {
   cohort: "",
   participant: "",
   activity: "",
-  domain: {}, // Changed to object instead of string
+  domain: [], // Changed to object instead of string
 };
 
 export const AddEvaluation = () => {
@@ -30,9 +30,11 @@ export const AddEvaluation = () => {
   const [sessionList, setSessionList] = useState([]);
   const [activityList, setActivityList] = useState([]);
   const [cohortList, setCohortList] = useState([]);
-  const [cohortFromSession, setCohortFromSession] = useState([]);
+  const [domainCategory, setDomainCategory] = useState("");
+  const [sessionFromCohort, setsessionFromCohort] = useState([]);
   const [participantsFromSession, setParticipantsFromSession] = useState([]);
   const [activityFromSession, setActivityFromSession] = useState([]);
+  const [selectDomainByType, setSelectDomainByType] = useState([]);
 
   const { session, cohort, participant, activity, domain } = evaluationData;
 
@@ -63,39 +65,65 @@ export const AddEvaluation = () => {
     axios.get(`${serverUrl}/activity/all`).then((res) => {
       setActivityList(res.data.message);
     });
-    axios.get(`${serverUrl}/domain/all`).then((res) => {
+    axios.get(`${serverUrl}/domain/all/?category=All`).then((res) => {
       setDomainList(res.data.message);
+      console.log();
     });
     axios.get(`${serverUrl}/session/all`).then((res) => {
       setSessionList(res.data.message);
-      console.log("res.data.message", res.data.message);
+      // console.log("res.data.message", res.data.message);
     });
   }, []);
 
   useEffect(() => {
-    setCohortFromSession(sessionList?.filter((el) => el._id === session));
-  }, [session]);
-
-  useEffect(() => {
-    setParticipantsFromSession(
-      cohortFromSession[0]?.cohort?.filter((el) => el._id === cohort)
+    setsessionFromCohort(
+      cohortList?.filter((el) => el._id === cohort)[0]?.sessions
     );
   }, [cohort]);
 
-  const handleMarksChange = (index, score) => {
-    setEvaluationData((prevData) => {
-      // Create a new copy of the domain object and update the marks of the specific subtopic
-      const updatedDomain = { ...prevData.domain };
-      updatedDomain.subTopics[index].score = score;
-      // Return the updated evaluation data
+  useEffect(() => {
+    setParticipantsFromSession(
+      cohortList?.filter((el) => el._id === cohort)[0]?.participants
+    );
+  }, [cohort]);
+
+  useEffect(() => {
+    setActivityFromSession(
+      sessionList?.filter((el) => el._id === session)[0]?.activity
+    );
+  }, [session]);
+
+  useEffect(() => {
+    setSelectDomainByType(
+      domainList?.filter((el) => el.category === domainCategory)
+    );
+  }, [domainCategory]);
+
+  // console.log(cohortList)
+  const handleMarksChange = (domainIndex, subtopicIndex, newScore) => {
+    const updatedDomains = selectDomainByType?.map((domain, dIndex) => {
+      if (dIndex === domainIndex) {
+        return {
+          ...domain,
+          subTopics: domain.subTopics.map((subTopic, sIndex) => {
+            if (sIndex === subtopicIndex) {
+              return { ...subTopic, score: newScore };
+            }
+            return subTopic;
+          }),
+        };
+      }
+      return domain;
+    });
+    setEvaluationData((prevData)=>{
       return {
         ...prevData,
-        domain: updatedDomain,
+        domain: updatedDomains,
       };
     });
   };
 
-  const handleObservationChange = ( observation) => {
+  const handleObservationChange = (observation) => {
     setEvaluationData((prevData) => {
       // Create a new copy of the domain object and update the marks of the specific subtopic
       const updatedDomain = { ...prevData.domain };
@@ -111,19 +139,23 @@ export const AddEvaluation = () => {
   const handleSubmitEvaluation = (e) => {
     e.preventDefault();
     console.log(evaluationData);
-    axios.post(`${serverUrl}/evaluation/create`,evaluationData)
-    .then((res)=>{
-      if (res.status==201){
-        toast.success("Evaluation added suucessfully", toastConfig);
-        setEvaluationData(initialState);
-      } else {
-        toast.error("Something went wrong", toastConfig);
-      }
-    }).catch((err)=>{
-      console.log(err)
-      toast.error(err.response.data.error, toastConfig);
-    })
+    // axios
+    //   .post(`${serverUrl}/evaluation/create`, evaluationData)
+    //   .then((res) => {
+    //     if (res.status == 201) {
+    //       toast.success("Evaluation added suucessfully", toastConfig);
+    //       setEvaluationData(initialState);
+    //     } else {
+    //       toast.error("Something went wrong", toastConfig);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     toast.error(err.response.data.error, toastConfig);
+    //   });
   };
+
+  // console.log("domainList", domainList);
 
   return (
     <div className="flex justify-center items-center gap-10 mb-24">
@@ -137,32 +169,32 @@ export const AddEvaluation = () => {
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10">
           <select
-            label="Select session"
-            name="session"
-            value={session}
+            id=""
+            name="cohort"
+            value={cohort}
             onChange={handleChangeEvaluation}
-            className="border w-[30%] px-2 py-2 rounded-md"
+            className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
           >
-            <option value="">Select session</option>;
-            {sessionList?.map((el) => {
+            <option value="">Select cohort</option>;
+            {cohortList.map((el) => {
               return (
-                <option key={el._id} className="py-1 m-2" value={el._id}>
+                <option key={el._id} value={el._id}>
                   {el.name}
                 </option>
               );
             })}
           </select>
           <select
-            id=""
-            name="cohort"
-            value={cohort}
+            label="Select session"
+            name="session"
+            value={session}
             onChange={handleChangeEvaluation}
-            className="border w-[30%] px-2 py-2 rounded-md"
+            className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
           >
-            <option value="">Select cohort</option>;
-            {cohortFromSession[0]?.cohort?.map((el) => {
+            <option value="">Select session</option>;
+            {sessionFromCohort?.map((el) => {
               return (
-                <option key={el._id} value={el._id}>
+                <option key={el._id} className="py-1 m-2" value={el._id}>
                   {el.name}
                 </option>
               );
@@ -173,18 +205,16 @@ export const AddEvaluation = () => {
             name="participant"
             value={participant}
             onChange={handleChangeEvaluation}
-            className="border w-[30%] px-2 py-2 rounded-md"
+            className="border w-[30%] px-2 py-2 rounded-md  text-gray-600 border border-gray-600"
           >
             <option value="">Select participant</option>;
-            {participantsFromSession &&
-              participantsFromSession[0] &&
-              participantsFromSession[0].participants?.map((el) => {
-                return (
-                  <option key={el._id} value={el._id}>
-                    {el.name}
-                  </option>
-                );
-              })}
+            {participantsFromSession?.map((el) => {
+              return (
+                <option key={el._id} value={el._id}>
+                  {el.name}
+                </option>
+              );
+            })}
           </select>
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
@@ -193,10 +223,10 @@ export const AddEvaluation = () => {
             name="activity"
             value={activity}
             onChange={handleChangeEvaluation}
-            className="border w-[50%] px-2 py-2 rounded-md"
+            className="border w-[50%] px-2 py-2 rounded-md  text-gray-600 border border-gray-600"
           >
             <option value="">Select activity</option>;
-            {cohortFromSession[0]?.activity?.map((el) => {
+            {activityFromSession?.map((el) => {
               return (
                 <option key={el._id} value={el._id}>
                   {el.name}
@@ -207,51 +237,53 @@ export const AddEvaluation = () => {
           <select
             id=""
             name="domain"
-            value={domain.name} // Assuming domain.name is the identifier for domain object
-            onChange={handleChangeEvaluation}
-            className="border w-[50%] px-2 py-2 rounded-md"
+            value={domainCategory} // Assuming domain.name is the identifier for domain object
+            onChange={(e) => setDomainCategory(e.target.value)}
+            className="border w-[50%] px-2 py-2 rounded-md  text-gray-600 border border-gray-600"
           >
-            <option value="">Select domain</option>;
-            {domainList?.map((el) => {
-              return (
-                <option value={el.name} key={el._id}>
-                  {el.name}
-                </option>
-              );
-            })}
+            <option value="">Select evaluation type</option>;
+            <option value="General">General</option>
+            <option value="Special Need">Special Need</option>
           </select>
         </div>
-        {domain && (
-          <Card className="w-[90%] m-auto mt-5">
-            <div className="m-3"><Typography>{domain.name}</Typography></div>
-            {domain?.subTopics?.map((subtopic, index) => (
-              <List key={index}>
-                <ListItem>
-                  <Typography className="w-[50%]">
-                    {index + 1}. {subtopic.content}
-                  </Typography>
-                  <div className="w-[50%]">
-                    {/* Input for marks with onChange handler */}
-                    <Input
-                      label="Add Marks"
-                      value={subtopic.score}
-                      type="number"
-                      onChange={(e) => handleMarksChange(index, e.target.value)}
-                    />
-                  </div>
-                </ListItem>
-              </List>
-            ))}
-            <div className="w-[95%] m-auto mt-5 mb-5">
-            <Textarea
-              label="Description"
-              name="description"
-              value={domain.observation}
-              onChange={(e) => handleObservationChange(e.target.value)}
-            />
-            </div>
-          </Card>
-        )}
+        {selectDomainByType?.map((domain, domainIndex) => (
+        <Card className="w-[90%] m-auto mt-5" key={domainIndex}>
+          <div className="m-3">
+            <Typography>{domain.name}</Typography>
+          </div>
+          {domain?.subTopics?.map((subtopic, subtopicIndex) => (
+            <List key={subtopicIndex}>
+              <ListItem>
+                <Typography className="w-[50%]">
+                  {subtopicIndex + 1}. {subtopic.content}
+                </Typography>
+                <div className="w-[50%]">
+                  <Input
+                    label="Add Marks"
+                    value={subtopic.score || ''}
+                    type="number"
+                    onChange={(e) =>
+                      handleMarksChange(domainIndex, subtopicIndex, e.target.value)
+                    }
+                  />
+                </div>
+              </ListItem>
+            </List>
+          ))}
+        <div className="w-[90%] m-auto mt-5 mb-5">
+          <Textarea
+            label="Observation"
+            name="description"
+            value={domain.observation}
+            onChange={(e) => handleObservationChange(e.target.value)}
+          />
+        </div>
+        </Card>
+      ))}
+
+        {/* {domain && (
+          
+        )} */}
         <div className="w-[90%] text-center mt-5 m-auto">
           <Button className="bg-maincolor" type="submit">
             Add Evaluation
