@@ -21,6 +21,7 @@ import {
   Sessionlist,
   AddEvaluation,
   Editdomain,
+  Evaluationlist,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -130,12 +131,37 @@ export const routes = [
             element_u: <Sessionlist />,
           }
         ],
-      }, {
-        icon: <HomeIcon {...icon} />,
-        name: "evaluation",
-        path: "/add-evaluation",
-        element: <AddEvaluation />,
-      }
+      },
+      //  {
+      //   icon: <HomeIcon {...icon} />,
+      //   name: "evaluation",
+      //   path: "/add-evaluation",
+      //   element: <AddEvaluation />,
+      // },
+      {
+        mainHeading: "evaluation",
+        allPages: [
+          {
+            icon_u: <GrDomain {...icon} />,
+            name_u: "add evaluation",
+            path_u: "/add-evaluation",
+            element_u: <AddEvaluation />,
+          },
+
+          {
+            icon_u: <IoListSharp {...icon} />,
+            name_u: "evaluation list",
+            path_u: "/evaluation-list",
+            element_u: <Evaluationlist />,
+          }
+        ],
+      }, 
+      // {
+      //   icon: <HomeIcon {...icon} />,
+      //   name: "evaluation",
+      //   path: "/add-evaluation",
+      //   element: <AddEvaluation />,
+      // }
     ],
   },
   {

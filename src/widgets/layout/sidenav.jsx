@@ -621,8 +621,98 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   </li>
                 </>
               ) : null}
+              <li onClick={() => toggleSection("evaluation")}>
+                <Button
+                  variant={"text"}
+                  className="mb-2 flex justify-between items-center px-4"
+                  fullWidth
+                >
+                  <Typography
+                    variant="small"
+                    color="inherit"
+                    className="text-[16px] flex justify-between items-center gap-4 font-medium capitalize"
+                  >
+                    <div className="text-maincolor2"> <MdEditNote {...icon} /></div>
+                    Evaluation
+                  </Typography>
+
+                  <IoIosArrowDown fontSize={15} />
+                </Button>
+              </li>
+              {evaluationOpen ? (
+                <>
+                  <li>
+                    <NavLink to={`/mainpage/add-evaluation`}>
+                      {({ isActive }) => (
+                        <Button
+                          variant={isActive ? "yellow" : "text"}
+                          color={
+                            isActive
+                              ? sidenavColor
+                              : sidenavType === "dark"
+                              ? "white"
+                              : "blue-gray"
+                          }
+                          className={`flex items-center gap-4 px-8 capitalize ${
+                            isActive ? "bg-maincolor" : "bg-white"
+                          }`}
+                          fullWidth
+                        >
+                          <span
+                            className={`${
+                              isActive ? "text-white" : "text-maincolor2"
+                            }`}
+                          >
+                           
+                          </span>
+                          <Typography
+                            color="inherit"
+                            className="font-medium capitalize"
+                          >
+                            add evaluation
+                          </Typography>
+                        </Button>
+                      )}
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={`/mainpage/evaluation-list`}>
+                      {({ isActive }) => (
+                        <Button
+                          variant={isActive ? "yellow" : "text"}
+                          color={
+                            isActive
+                              ? sidenavColor
+                              : sidenavType === "dark"
+                              ? "white"
+                              : "blue-gray"
+                          }
+                          className={`flex items-center gap-4 px-8 capitalize ${
+                            isActive ? "bg-maincolor" : "bg-white"
+                          }`}
+                          fullWidth
+                        >
+                          <span
+                            className={`${
+                              isActive ? "text-white" : "text-maincolor2"
+                            }`}
+                          >
+                            {/* <IoList {...icon} /> */}
+                          </span>
+                          <Typography
+                            color="inherit"
+                            className="font-medium capitalize"
+                          >
+                            evaluation list
+                          </Typography>
+                        </Button>
+                      )}
+                    </NavLink>
+                  </li>
+                </>
+              ) : null}
               {/* evaluation-------------------------------------- */}
-              <li>
+              {/* <li>
                 <NavLink to={`/mainpage/add-evaluation`}>
                   {({ isActive }) => (
                     <Button
@@ -644,7 +734,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <MdEditNote {...icon} />
+                        
                       </span>
                       <Typography
                         color="inherit"
@@ -655,7 +745,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     </Button>
                   )}
                 </NavLink>
-              </li>
+              </li> */}
               <li>
                 <NavLink to={`/auth/sign-in`}>
                   {({ isActive }) => (

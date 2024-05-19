@@ -8,6 +8,7 @@ import {
   List,
   ListItem,
   Textarea,
+  Radio,
 } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
@@ -73,7 +74,12 @@ export const AddEvaluation = () => {
       setSessionList(res.data.message);
       // console.log("res.data.message", res.data.message);
     });
-  }, []);
+  
+  
+    axios.get(`${serverUrl}/evaluation/all`).then((res) => {
+      // setSessionList(res.data.message);
+      console.log("res.data.message", res.data.message);
+    });}, []);
 
   useEffect(() => {
     setsessionFromCohort(
@@ -100,59 +106,46 @@ export const AddEvaluation = () => {
   }, [domainCategory]);
 
   // console.log(cohortList)
-  const handleMarksChange = (domainIndex, subtopicIndex, newScore) => {
-    const updatedDomains = selectDomainByType?.map((domain, dIndex) => {
-      if (dIndex === domainIndex) {
-        return {
-          ...domain,
-          subTopics: domain.subTopics.map((subTopic, sIndex) => {
-            if (sIndex === subtopicIndex) {
-              return { ...subTopic, score: newScore };
-            }
-            return subTopic;
-          }),
-        };
-      }
-      return domain;
-    });
-    setEvaluationData((prevData)=>{
+  const handleScoreChange = (domainIndex, questionIndex, newScore) => {
+    const updatedDomains = [...selectDomainByType];
+    updatedDomains[domainIndex].subTopics[questionIndex].score = newScore;
+    setEvaluationData((prev)=>{
       return {
-        ...prevData,
-        domain: updatedDomains,
-      };
+        ...prev,
+        domain:updatedDomains
+      }
     });
   };
 
-  const handleObservationChange = (observation) => {
-    setEvaluationData((prevData) => {
-      // Create a new copy of the domain object and update the marks of the specific subtopic
-      const updatedDomain = { ...prevData.domain };
-      updatedDomain.observation = observation;
-      // Return the updated evaluation data
+  // Handle observation change
+  const handleObservationChange = (domainIndex, newObservation) => {
+    const updatedDomains = [...selectDomainByType];
+    updatedDomains[domainIndex].observation = newObservation;
+    setEvaluationData((prev)=>{
       return {
-        ...prevData,
-        domain: updatedDomain,
-      };
+        ...prev,
+        domain:updatedDomains
+      }
     });
   };
 
   const handleSubmitEvaluation = (e) => {
     e.preventDefault();
-    console.log(evaluationData);
-    // axios
-    //   .post(`${serverUrl}/evaluation/create`, evaluationData)
-    //   .then((res) => {
-    //     if (res.status == 201) {
-    //       toast.success("Evaluation added suucessfully", toastConfig);
-    //       setEvaluationData(initialState);
-    //     } else {
-    //       toast.error("Something went wrong", toastConfig);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     toast.error(err.response.data.error, toastConfig);
-    //   });
+    console.log(evaluationData)
+    axios
+      .post(`${serverUrl}/evaluation/create`, evaluationData)
+      .then((res) => {
+        if (res.status == 201) {
+          toast.success("Evaluation added suucessfully", toastConfig);
+          setEvaluationData(initialState);
+        } else {
+          toast.error("Something went wrong", toastConfig);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.error, toastConfig);
+      });
   };
 
   // console.log("domainList", domainList);
@@ -247,39 +240,73 @@ export const AddEvaluation = () => {
           </select>
         </div>
         {selectDomainByType?.map((domain, domainIndex) => (
-        <Card className="w-[90%] m-auto mt-5" key={domainIndex}>
-          <div className="m-3">
-            <Typography>{domain.name}</Typography>
-          </div>
-          {domain?.subTopics?.map((subtopic, subtopicIndex) => (
-            <List key={subtopicIndex}>
-              <ListItem>
-                <Typography className="w-[50%]">
-                  {subtopicIndex + 1}. {subtopic.content}
-                </Typography>
-                <div className="w-[50%]">
-                  <Input
-                    label="Add Marks"
-                    value={subtopic.score || ''}
-                    type="number"
-                    onChange={(e) =>
-                      handleMarksChange(domainIndex, subtopicIndex, e.target.value)
-                    }
-                  />
-                </div>
-              </ListItem>
-            </List>
-          ))}
-        <div className="w-[90%] m-auto mt-5 mb-5">
-          <Textarea
-            label="Observation"
-            name="description"
-            value={domain.observation}
-            onChange={(e) => handleObservationChange(e.target.value)}
-          />
-        </div>
-        </Card>
-      ))}
+          <Card className="w-[90%] m-auto mt-5" key={domainIndex}>
+            <div className="m-3">
+              <Typography>{domain.name}</Typography>
+            </div>
+
+            {domain?.subTopics?.map((question, questionIndex) => {
+              // console.log(domain.name)
+              // if (domain.name.includes("Skills")){
+              //   return <List key={questionIndex}>
+              //   <ListItem>
+              //     <div className="w-[40%]">
+              //       <Radio
+              //         value={question.score || ""}
+              //         type="radio"
+              //         onChange={(e) =>
+              //           handleScoreChange(
+              //             domainIndex,
+              //             questionIndex,
+              //             e.target.value
+              //           )
+              //         }
+              //         // defaultChecked 
+              //       />
+              //     </div>
+              //     <Typography className="w-[60%] mr-5">
+              //       {questionIndex + 1}. {question.content}
+              //     </Typography>
+              //   </ListItem>
+              // </List>
+              // } else {
+               return <List key={questionIndex}>
+                <ListItem>
+                  <Typography className="w-[60%] mr-5">
+                    {questionIndex + 1}. {question.content}
+                  </Typography>
+                  <div className="w-[40%]">
+                    <Input
+                      label="Add score"
+                      value={question.score || ""}
+                      type="number"
+                      onChange={(e) =>
+                        handleScoreChange(
+                          domainIndex,
+                          questionIndex,
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                </ListItem>
+              </List>
+              // }
+            })}
+
+            <div className="m-3">
+              <Textarea
+                label="Observation"
+                value={domain.observation}
+                fullWidth
+                multiline
+                onChange={(e) =>
+                  handleObservationChange(domainIndex, e.target.value)
+                }
+              />
+            </div>
+          </Card>
+        ))}
 
         {/* {domain && (
           

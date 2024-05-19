@@ -63,7 +63,7 @@ export const Editdomain = () => {
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
-    // console.log(domainData);
+    console.log(domainData);
     axios
       .patch(`${serverUrl}/domain/edit/${domainid}`, domainData)
       .then((res) => {
