@@ -137,7 +137,7 @@ export function SignIn() {
               <span>Sign in With Twitter</span>
             </Button>
           </div> */}
-          <Typography
+          {/* <Typography
             variant="paragraph"
             className="text-center text-blue-gray-500 font-medium mt-4"
           >
@@ -145,7 +145,7 @@ export function SignIn() {
             <Link to="/auth/sign-up" className="text-gray-900 ml-1">
               Create account
             </Link>
-          </Typography>
+          </Typography> */}
         </form>
       </div>
       <div className="w-[500px] mt-12 h-full hidden lg:block">

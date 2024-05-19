@@ -11,6 +11,7 @@ export const Sessionlist = () => {
   useEffect(() => {
     axios.get(`${serverUrl}/session/all`).then((res) => {
       setSessionlist(res.data.message);
+      console.log(res.data.message);
     });
   }, []);
   return (
@@ -106,7 +107,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {/* {el.cohort.length || "-"} */}
+                    {el.cohort.name || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -115,7 +116,9 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {/* {el.activity.length || "-"} */}
+                    {el.activity.map((bl)=>{
+                      return bl.name.substring(0, 5) + "... ," || "-";
+                    }) || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>
