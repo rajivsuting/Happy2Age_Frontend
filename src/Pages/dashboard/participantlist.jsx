@@ -167,7 +167,7 @@ export const Participantlist = () => {
                     {el.createdAt.split("T")[0] || "-"}
                   </Typography>
                 </td>
-                <td className={classes}>
+                {/* <td className={classes}>
                 <Typography
                   as="a"
                   href="#"
@@ -177,7 +177,7 @@ export const Participantlist = () => {
                 >
                   See deatails
                 </Typography>
-              </td>
+              </td> */}
                 <td className={classes}>
                 <Typography
                   as="a"
@@ -195,7 +195,7 @@ export const Participantlist = () => {
                   href="#"
                   variant="small"
                   color="blue-gray"
-                  className="text-maincolor2 text-[20px]"
+                  className="text-red-500  text-[20px]"
                 >
               <MdOutlineDeleteOutline/>
                 </Typography>

@@ -4,9 +4,17 @@ import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
+import SeeDetailsCohort from "../../Componants/SeeDetailsCohort";
 
 export const Cohortlist = () => {
   const [cohortList, setCohortList] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [singleCohort, setSingleCohort] = useState({})
+  const toggleModal = (el) => {
+     setIsModalOpen(!isModalOpen);
+     setSingleCohort(el)
+   };
+
 
   useEffect(() => {
     axios.get(`${serverUrl}/cohort/all`).then((res) => {
@@ -60,19 +68,19 @@ export const Cohortlist = () => {
           </tr>
         </thead>
         <tbody>
-          {cohortList?.map(({ name, participants }, index) => {
+          {cohortList?.map((el, index) => {
             const isLast = index === cohortList.length - 1;
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
             return (
-              <tr key={name}>
+              <tr key={el.name}>
                 <td className={classes}>
                   <Typography
                     variant="small"
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {name || "-"}
+                    {el.name || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -81,7 +89,7 @@ export const Cohortlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {participants?.map((el) => {
+                    {el.participants?.map((el) => {
                       return el.name.substring(0, 5) + "... ," || "-";
                     })}
                   </Typography>
@@ -92,9 +100,10 @@ export const Cohortlist = () => {
                     href="#"
                     variant="small"
                     color="blue-gray"
+                    onClick={()=>toggleModal(el)}
                     className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
                   >
-                    See deatails
+                    See details
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -114,7 +123,7 @@ export const Cohortlist = () => {
                     href="#"
                     variant="small"
                     color="blue-gray"
-                    className="text-maincolor2 text-[20px]"
+                    className="text-red-500 text-[20px]"
                   >
                     <MdOutlineDeleteOutline />
                   </Typography>
@@ -124,6 +133,8 @@ export const Cohortlist = () => {
           })}
         </tbody>
       </table>
+ <SeeDetailsCohort isOpen={isModalOpen} onClose={toggleModal} singleCohort={singleCohort}/>
+
     </Card>
   );
 };

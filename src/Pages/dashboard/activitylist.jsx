@@ -81,26 +81,16 @@ export const ActivityList = () => {
                     {name || "-"}
                   </Typography>
                 </td>
-                <td className={classes}>
+                <td className={`${classes} w-[700px]`}>
                   <Typography
                     variant="small"
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {description.substring(0, 15) + "... ," || "-"}
+                    {description}
                   </Typography>
                 </td>
-                <td className={classes}>
-                  <Typography
-                    as="a"
-                    href="#"
-                    variant="small"
-                    color="blue-gray"
-                    className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
-                  >
-                    See deatails
-                  </Typography>
-                </td>
+              
                 <td className={classes}>
                   <Typography
                     as="a"
@@ -118,7 +108,7 @@ export const ActivityList = () => {
                     href="#"
                     variant="small"
                     color="blue-gray"
-                    className="text-maincolor2 text-[20px]"
+                    className="text-red-500  text-[20px]"
                   >
                     <MdOutlineDeleteOutline />
                   </Typography>

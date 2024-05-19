@@ -116,8 +116,8 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.activity.map((bl)=>{
-                      return bl.name.substring(0, 5) + "... ," || "-";
+                    {el.activity.map((bl,index)=>{
+                      return <div key={index}>{index+1}. {bl.name}</div>
                     }) || "-"}
                   </Typography>
                 </td>
@@ -130,7 +130,7 @@ export const Sessionlist = () => {
                     {el.date.split("T")[0] || "-"}
                   </Typography>
                 </td>
-                <td className={classes}>
+                {/* <td className={classes}>
                   <Typography
                     as="a"
                     href="#"
@@ -138,9 +138,9 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
                   >
-                    See deatails
+                    See details
                   </Typography>
-                </td>
+                </td> */}
                 <td className={classes}>
                   <Typography
                     as="a"
@@ -158,7 +158,7 @@ export const Sessionlist = () => {
                     href="#"
                     variant="small"
                     color="blue-gray"
-                    className="text-maincolor2 text-[20px]"
+                    className="text-red-500 text-[20px]"
                   >
                     <MdOutlineDeleteOutline />
                   </Typography>

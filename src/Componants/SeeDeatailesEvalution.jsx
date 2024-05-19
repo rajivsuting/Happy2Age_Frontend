@@ -1,9 +1,7 @@
 import React from "react";
 
-const SeeDeatailesEvalution = ({ isOpen, onClose, singleEvalustion }) => {
+const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
   if (!isOpen) return null;
-
-  console.log(singleEvalustion);
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
@@ -35,32 +33,24 @@ const SeeDeatailesEvalution = ({ isOpen, onClose, singleEvalustion }) => {
                 <td>
                   {singleEvalustion.domain?.map((el, index1) => {
                     return (
-                      <table className="min-w-full divide-y divide-gray-200 mb-5 border-b border-t border-b-gray-300 border-t-gray-300">
+                      <table key={index1} className="min-w-full divide-y divide-gray-200 mb-5 border-b border-t border-b-gray-300 border-t-gray-300">
                         <tbody>
                           <tr>
                             <td className="py-2 font-semibold">Domain name</td>
                             <td>{el.name || "-"}</td>
                           </tr>
-                          <tr>
-                            <td className="py-2 font-semibold">Category</td>
-                            <td>{el.category || "-"}</td>
-                          </tr>
                           {el.subTopics.map((el, index2) => {
                             return (
-                              <tr>
-                                <td className="py-2 font-semibold" key={index2}>
+                              <tr key={index2}>
+                                <td className="py-2 font-semibold">
                                   Quesion:{index2+1}
                                 </td>
                                 <td>{el.content || "-"}</td>
-                                <td className="py-2 font-semibold" key={index2}>
+                                <td className="py-2 font-semibold">
                                   Score
                                 </td>
                                 <td>{el.score || "-"}</td>
                               </tr>
-                              //   <div className="flex">
-                              //     <div>{}</div>
-                              //     <div>{el.score}</div>
-                              //   </div>
                             );
                           })}
                           <tr>
@@ -103,4 +93,4 @@ const SeeDeatailesEvalution = ({ isOpen, onClose, singleEvalustion }) => {
   );
 };
 
-export default SeeDeatailesEvalution;
+export default SeeDetailsCohort;
