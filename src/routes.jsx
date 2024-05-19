@@ -6,11 +6,29 @@ import {
   ServerStackIcon,
   RectangleStackIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Notifications, AddParticipant,AddCohort, AddActivity, Cohortlist, ActivityList,Participantlist, Domainlist, Adddomain } from "./Pages/dashboard";
+import {
+  Home,
+  Profile,
+  Tables,
+  Notifications,
+  AddParticipant,
+  AddCohort,
+  AddActivity,
+  Cohortlist,
+  ActivityList,
+  Participantlist,
+  Domainlist,
+  Sessionlist,
+  AddEvaluation,
+  Editdomain,
+  Evaluationlist,
+  Adddomain,
+} from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
 import { GrDomain } from "react-icons/gr";
 import { IoListSharp } from "react-icons/io5";
+import Addsession from "./Pages/dashboard/addsession";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -18,7 +36,7 @@ const icon = {
 
 export const routes = [
   {
-    layout: "dashboard",
+    layout: "mainpage",
     pages: [
       {
         icon: <HomeIcon {...icon} />,
@@ -27,72 +45,151 @@ export const routes = [
         element: <Home />,
       },
       {
-        icon: <UserCircleIcon {...icon} />,
-        name: "add partcipants",
-        path: "/add-participant",
-        element: <AddParticipant />,
+        mainHeading: "participant",
+        allPages: [
+          {
+            icon_u: <UserCircleIcon {...icon} />,
+            name_u: "add partcipants",
+            path_u: "/add-participant",
+            element_u: <AddParticipant />,
+          },
+          {
+            icon_u: <IoListSharp {...icon} />,
+            name_u: "participants list",
+            path_u: "/participants-list",
+            element_u: <Participantlist />,
+          },
+        ],
+      },
+
+      {
+        mainHeading: "cohort",
+        allPages: [
+          {
+            icon_u: <MdGroups {...icon} />,
+            name_u: "add cohort",
+            path_u: "/add-cohort",
+            element_u: <AddCohort />,
+          },
+          {
+            icon_u: <IoListSharp {...icon} />,
+            name_u: "cohorts list",
+            path_u: "/cohorts-list",
+            element_u: <Cohortlist />,
+          },
+        ],
+      },
+
+      {
+        mainHeading: "activity",
+        allPages: [
+          {
+            icon_u: <MdOutlineSportsKabaddi {...icon} />,
+            name_u: "add activity",
+            path_u: "/add-activity",
+            element_u: <AddActivity />,
+          },
+          {
+            icon_u: <IoListSharp {...icon} />,
+            name_u: "activities list",
+            path_u: "/activities-list",
+            element_u: <ActivityList />,
+          },
+        ],
+      },
+
+      {
+        mainHeading: "domain",
+        allPages: [
+          {
+            icon_u: <GrDomain {...icon} />,
+            name_u: "edit domain",
+            path_u: "/edit-domain/:domainid",
+            element_u: <Editdomain />,
+          },
+          {
+            icon_u: <GrDomain {...icon} />,
+            name_u: "add domain",
+            path_u: "/add-domain/",
+            element_u: <Adddomain />,
+          },
+          {
+            icon_u: <IoListSharp {...icon} />,
+            name_u: "domains list",
+            path_u: "/domains-list",
+            element_u: <Domainlist />,
+          },
+        ],
       },
       {
-        icon: <MdGroups {...icon} />,
-        name: "add cohort",
-        path: "/add-cohort",
-        element: <AddCohort />,
+        mainHeading: "session",
+        allPages: [
+          {
+            icon_u: <GrDomain {...icon} />,
+            name_u: "add session",
+            path_u: "/add-session",
+            element_u: <Addsession />,
+          },
+
+          {
+            icon_u: <IoListSharp {...icon} />,
+            name_u: "sessions list",
+            path_u: "/sessions-list",
+            element_u: <Sessionlist />,
+          }
+        ],
       },
+      //  {
+      //   icon: <HomeIcon {...icon} />,
+      //   name: "evaluation",
+      //   path: "/add-evaluation",
+      //   element: <AddEvaluation />,
+      // },
       {
-        icon: <MdOutlineSportsKabaddi {...icon} />,
-        name: "add activity",
-        path: "/add-activity",
-        element: <AddActivity />,
-      },
-      {
-        icon: <GrDomain {...icon} />,
-        name: "add domain",
-        path: "/add-domain",
-        element: <Adddomain />,
-      },{
-        icon: <IoListSharp {...icon} />,
-        name: "participant",
-        path: "/participant-list",
-        element: <Participantlist />,
-      },
-      {
-        icon: <IoListSharp {...icon} />,
-        name: "cohort list",
-        path: "/cohort-list",
-        element: <Cohortlist />,
-      },
-      {
-        icon: <IoListSharp {...icon} />,
-        name: "activity list",
-        path: "/activity-list",
-        element: <ActivityList />,
-      },
-      {
-        icon: <IoListSharp {...icon} />,
-        name: "domain list",
-        path: "/domain-list",
-        element: <Domainlist />,
-      }
+        mainHeading: "evaluation",
+        allPages: [
+          {
+            icon_u: <GrDomain {...icon} />,
+            name_u: "add evaluation",
+            path_u: "/add-evaluation",
+            element_u: <AddEvaluation />,
+          },
+
+          {
+            icon_u: <IoListSharp {...icon} />,
+            name_u: "evaluation list",
+            path_u: "/evaluation-list",
+            element_u: <Evaluationlist />,
+          }
+        ],
+      }, 
+      // {
+      //   icon: <HomeIcon {...icon} />,
+      //   name: "evaluation",
+      //   path: "/add-evaluation",
+      //   element: <AddEvaluation />,
+      // }
     ],
   },
-  // {
-  //   title: "auth pages",
-  //   layout: "auth",
-  //   pages: [
-  //     {
-  //       icon: <ServerStackIcon {...icon} />,
-  //       name: "sign in",
-  //       path: "/sign-in",
-  //       element: <SignIn />,
-  //     },
-  //     {
-  //       icon: <RectangleStackIcon {...icon} />,
-  //       name: "sign up",
-  //       path: "/sign-up",
-  //       element: <SignUp />,
-  //     },
-  //   ],
-  // },
+  {
+    // title: "auth pages",
+    layout: "auth",
+    pages: [
+      {
+        icon: <ServerStackIcon {...icon} />,
+        name: "sign in",
+        path: "/sign-in",
+        element: <SignIn />,
+      },
+      // {
+      //   icon: <RectangleStackIcon {...icon} />,
+      //   name: "sign out",
+      //   path: "/sign-out",
+      //   // element: <SignUp />,
+      // },
+     
+    ],
+  },
 ];
 
 export default routes;

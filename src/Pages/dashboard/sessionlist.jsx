@@ -4,71 +4,30 @@ import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
-import SeeDetailsCohort from "../../Componants/SeeDetailsCohort";
-import EditCohort from "../../Componants/EditCohort";
-import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { toastConfig } from "../../App";
 
+export const Sessionlist = () => {
+  const [sessionlist, setSessionlist] = useState([]);
 
-export const Cohortlist = () => {
-  const [cohortList, setCohortList] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
-  const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
-  const [searchParams, setsearchParams] = useSearchParams()
-  const [singleCohort, setSingleCohort] = useState({})
-
-  const toggleModal = (el) => {
-     setIsModalOpen(!isModalOpen);
-     setSingleCohort(el)
-   };
-
-   const toggleModalEdit = (el) => {
-    setsearchParams({id:el._id})
-    setIsModalOpenEdit(!isModalOpenEdit);
-    setSingleCohort(el)
-  };
-
-  const toggleModalDelete = (id) => {
-    setsearchParams({id})
-    setIsModalOpenDelete(!isModalOpenDelete);
-  };
-
-  const handleDelete = () => {
-    axios.delete(`${serverUrl}/cohort/delete/${searchParams.get("id")}`)
-    .then((res)=>{
-      if (res.status==200){
-        toast.success("Cohort delete suucessfully", toastConfig);
-        getAlldata()
-      } else {
-        toast.error("Something went wrong", toastConfig);
-      }
-    }).catch((err)=>{
-      console.log(err)
-      toast.error(err.response.data.error, toastConfig);
-    })
-  };
-
-  const getAlldata = ()=>{
-    axios.get(`${serverUrl}/cohort/all`).then((res) => {
-      setCohortList(res.data.message);
-    });
-  }
   useEffect(() => {
-    getAlldata()
-    return ()=>{
-      console.log("Avoid errors")
-    }
+    axios.get(`${serverUrl}/session/all`).then((res) => {
+      setSessionlist(res.data.message);
+      console.log(res.data.message);
+    });
   }, []);
-
-  
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <table className="w-full min-w-max table-auto text-left">
         <thead>
           <tr>
+            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-normal leading-none opacity-70"
+              >
+                Session name
+              </Typography>
+            </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
               <Typography
                 variant="small"
@@ -84,7 +43,7 @@ export const Cohortlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Participants name
+                Activity name
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -92,38 +51,54 @@ export const Cohortlist = () => {
                 variant="small"
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
-              ></Typography>
+              >
+                Session date
+              </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
               <Typography
                 variant="small"
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
-              ></Typography>
+              >
+                
+              </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
               <Typography
                 variant="small"
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
-              ></Typography>
+              >
+                
+              </Typography>
             </th>
+            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-normal leading-none opacity-70"
+              >
+                
+              </Typography>
+            </th>
+            
           </tr>
         </thead>
         <tbody>
-          {cohortList?.map((el, index) => {
-            const isLast = index === cohortList.length - 1;
+          {sessionlist?.map((el, index) => {
+            const isLast = index === Sessionlist.length - 1;
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
             return (
-              <tr key={el.name}>
+              <tr key={el._id}>
                 <td className={classes}>
                   <Typography
                     variant="small"
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.name || "-"}
+                    {el.name}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -132,23 +107,40 @@ export const Cohortlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.participants?.map((el) => {
-                      return el.name.substring(0, 5) + "... ," || "-";
-                    })}
+                    {el.cohort.name || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal"
+                  >
+                    {el.activity.map((bl,index)=>{
+                      return <div key={index}>{index+1}. {bl.name}</div>
+                    }) || "-"}
+                  </Typography>
+                </td>
+                <td className={classes}>
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal"
+                  >
+                    {el.date.split("T")[0] || "-"}
+                  </Typography>
+                </td>
+                {/* <td className={classes}>
                   <Typography
                     as="a"
                     href="#"
                     variant="small"
                     color="blue-gray"
-                    onClick={()=>toggleModal(el)}
                     className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
                   >
                     See details
                   </Typography>
-                </td>
+                </td> */}
                 <td className={classes}>
                   <Typography
                     as="a"
@@ -156,7 +148,6 @@ export const Cohortlist = () => {
                     variant="small"
                     color="blue-gray"
                     className="text-maincolor2 text-[20px]"
-                    onClick={()=>toggleModalEdit(el)}
                   >
                     <CiEdit />
                   </Typography>
@@ -168,7 +159,6 @@ export const Cohortlist = () => {
                     variant="small"
                     color="blue-gray"
                     className="text-red-500 text-[20px]"
-                    onClick={()=>toggleModalDelete(el._id)}
                   >
                     <MdOutlineDeleteOutline />
                   </Typography>
@@ -178,11 +168,8 @@ export const Cohortlist = () => {
           })}
         </tbody>
       </table>
- <SeeDetailsCohort isOpen={isModalOpen} onClose={toggleModal} singleCohort={singleCohort}/>
- <EditCohort isOpen={isModalOpenEdit} onClose={toggleModalEdit} singleCohort={singleCohort}/>
- <ConfirmDeleteModal isOpen={isModalOpenDelete} onClose={toggleModalDelete} handleDelete={handleDelete} getAlldata={getAlldata}/>
     </Card>
   );
 };
 
-export default Cohortlist;
+export default Sessionlist;

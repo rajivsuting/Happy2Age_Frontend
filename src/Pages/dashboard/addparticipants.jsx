@@ -2,6 +2,8 @@ import { Button, Input, Select, Option } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { serverUrl } from "../../api";
 import axios from "axios";
+import { toastConfig } from "../../App";
+import { toast } from "react-toastify";
 
 
 const initialState = {
@@ -19,6 +21,7 @@ const initialState = {
   emergencyContact: {
     name: "",
     relationship: "",
+    phone:""
   },
 }
 export const AddParticipant = () => {
@@ -50,7 +53,8 @@ export const AddParticipant = () => {
       }));
     };
   
-    const handleChangeStateAndCity = (name, value) => {
+    const handleChangeStateAndCity = (e) => {
+      const {name, value} = e.target;
       setParticipantData(prevData => ({
         ...prevData,
         address: {
@@ -74,20 +78,21 @@ export const AddParticipant = () => {
   
     const handleSubmitParticipant = (e) => {
       e.preventDefault();
+      // console.log(participantData)
       axios.post(`${serverUrl}/participant/create`,participantData)
       .then((res)=>{
         if (res.status==201){
-          alert("Participant added suucessfully")
+          toast.success("Participant added suucessfully", toastConfig);
+          setParticipantData(initialState);
         } else {
-          alert("Something went wrong")
+          toast.error("Something went wrong", toastConfig);
         }
       }).catch((err)=>{
-        console.log(err)
-        alert(err.response.data.error)
+        toast.error(err.response.data.error, toastConfig);
       })
     };
   return (
-    <div className="flex justify-center items-center gap-10">
+    <div className="flex justify-center items-center gap-10 mb-24">
       <form className="m-auto border rounded-xl shadow w-[70%] py-8 mt-8 bg-white" onSubmit={handleSubmitParticipant}>
         {/* Basic details */}
         <div className="w-[90%] m-auto mb-5 flex justify-center items-center">
@@ -120,20 +125,8 @@ export const AddParticipant = () => {
           <Input label="Pincode" type="number" name="pincode" value={participantData.address.pincode} onChange={handleChangeAddress} />
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
-          <Select label="State" name="state" value={participantData.address.state}  onChange={(value) => handleChangeStateAndCity("state", value)}>
-            <Option value="Assam">Assam</Option>
-            <Option value="Arunachal Pradesh">Arunachal Pradesh</Option>
-            <Option value="West Bangal">West Bangal</Option>
-            <Option value="Bihar">Bihar</Option>
-            <Option value="Kerala">Kerala</Option>
-          </Select>
-          <Select label="City" name="city" value={participantData.address.city}   onChange={(value) => handleChangeStateAndCity("city", value)}>
-            <Option value="Guwahati">Guwahati</Option>
-            <Option value="Tawang">Tawang</Option>
-            <Option value="Kalkutta">Kalkutta</Option>
-            <Option value="Mirzapur">Mirzapur</Option>
-            <Option value="Hyderabad">Hyderabad</Option>
-          </Select>
+          <Input label="State" name="state" value={participantData.address.state}  onChange={handleChangeStateAndCity}/>
+          <Input label="City" name="city" value={participantData.address.city}   onChange={handleChangeStateAndCity}/>
         </div>
 
         {/* Emergency contact */}
@@ -142,6 +135,7 @@ export const AddParticipant = () => {
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
           <Input label="Name" name="name" value={participantData.emergencyContact.name} onChange={handleChangeEmergencyContact} />
+          <Input maxLength={10} minLength={10} label="Phone" name="phone" value={participantData.emergencyContact.phone} onChange={handleChangeEmergencyContact} />
           <Input label="Relationship" name="relationship" value={participantData.emergencyContact.relationship} onChange={handleChangeEmergencyContact} />
         </div>
 

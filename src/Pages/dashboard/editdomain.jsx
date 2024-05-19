@@ -15,7 +15,8 @@ import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-export const Adddomain = () => {
+export const Editdomain = () => {
+  const { domainid } = useParams();
   const [domainData, setdomainData] = useState({
     name: "",
     category: "",
@@ -54,21 +55,21 @@ export const Adddomain = () => {
     }));
   };
 
+  useEffect(() => {
+    axios.get(`${serverUrl}/domain/${domainid}`).then((res) => {
+      setdomainData(res.data.message);
+    });
+  }, [domainid]);
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
+    console.log(domainData);
     axios
-      .post(`${serverUrl}/domain/create/`, domainData)
+      .patch(`${serverUrl}/domain/edit/${domainid}`, domainData)
       .then((res) => {
         console.log(res)
-        if (res.status == 201) {
-          toast.success("Domain added suucessfully", toastConfig);
-          setdomainData({
-            name: "",
-            category: "",
-            subTopics: [{ content: "", score: 0 }],
-            // observation: "",
-          })
+        if (res.status == 200) {
+          toast.success("Domain Edited suucessfully", toastConfig);
         } else {
           toast.error("Something went wrong", toastConfig);
         }
@@ -145,7 +146,7 @@ export const Adddomain = () => {
         </div>
         <div className="w-[90%] text-center mt-5 m-auto">
           <Button className="bg-maincolor" type="submit">
-            Add Domain
+            Edit Domain
           </Button>
         </div>
       </form>
@@ -153,4 +154,4 @@ export const Adddomain = () => {
   );
 };
 
-export default Adddomain;
+export default Editdomain;

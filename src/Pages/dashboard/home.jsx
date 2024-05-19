@@ -13,7 +13,11 @@ import {
   Tooltip,
   Progress,
 } from "@material-tailwind/react";
-import { EllipsisVerticalIcon, ArrowUpIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import {
+  EllipsisVerticalIcon,
+  ArrowUpIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline";
 import { StatisticsCard } from "../../widgets/cards";
 import { StatisticsChart } from "../../widgets/charts";
 import {
@@ -24,6 +28,7 @@ import {
 } from "../../data";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { serverUrl } from "../../api";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
 
@@ -32,20 +37,20 @@ export function Home() {
   const [cohortsList, setCohortList] = useState([]);
   const [activityList, setActivityList] = useState([]);
   useEffect(() => {
-    axios.get(`${serverUrl}/participant/all/?page=1&limit=7`).then((res) => {
-      setPartcipantList(res.data.participants);
+    axios.get(`${serverUrl}/participant/all/`).then((res) => {
+      setPartcipantList(res.data.message);
     });
 
     axios.get(`${serverUrl}/cohort/all/`).then((res) => {
-      setCohortList(res.data);
+      setCohortList(res.data.message);
     });
 
     axios.get(`${serverUrl}/activity/all/`).then((res) => {
-      setActivityList(res.data);
+      setActivityList(res.data.message);
     });
   }, []);
   return (
-    <div className="mt-12">
+    <div className="mt-12 mb-24">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
         {/* {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
           <StatisticsCard
@@ -65,41 +70,40 @@ export function Home() {
         ))} */}
 
         <StatisticsCard
-            title={"Total participants"}
-            icon={React.createElement(UserCircleIcon, {
-              className: "w-6 h-6 text-white",
-            })}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className={"text-gray"}>{partcipantsList?.length}</strong>
-              </Typography>
-            }
-          />
+          title={"Total participants"}
+          icon={React.createElement(UserCircleIcon, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className={"text-gray"}>{partcipantsList?.length}</strong>
+            </Typography>
+          }
+        />
 
-<StatisticsCard
-            title={"Total cohorts"}
-            icon={React.createElement(MdGroups, {
-              className: "w-6 h-6 text-white",
-            })}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className={"text-gray"}>{cohortsList?.length}</strong>
-              </Typography>
-            }
-          />
+        <StatisticsCard
+          title={"Total cohorts"}
+          icon={React.createElement(MdGroups, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className={"text-gray"}>{cohortsList?.length}</strong>
+            </Typography>
+          }
+        />
 
-<StatisticsCard
-            title={"Total activities"}
-            icon={React.createElement(MdOutlineSportsKabaddi, {
-              className: "w-6 h-6 text-white",
-            })}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className={"text-gray"}>{activityList?.length}</strong>
-              </Typography>
-            }
-          />
-          
+        <StatisticsCard
+          title={"Total activities"}
+          icon={React.createElement(MdOutlineSportsKabaddi, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className={"text-gray"}>{activityList?.length}</strong>
+            </Typography>
+          }
+        />
       </div>
       <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
         {statisticsChartsData.map((props) => (
@@ -228,7 +232,7 @@ export function Home() {
                       </td>
                       <td className={className}>
                         <div className="flex gap-1">
-                        {participants.map(({ name }, key) => (
+                          {participants.map(({ name }, key) => (
                             <Typography
                               variant="small"
                               color="blue-gray"
@@ -238,7 +242,7 @@ export function Home() {
                                 ? name.slice(0, 5) + "..."
                                 : name || "-"}
                             </Typography>
-                        ))}
+                          ))}
                         </div>
                       </td>
 
