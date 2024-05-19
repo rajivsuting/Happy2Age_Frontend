@@ -87,7 +87,7 @@ export const Sessionlist = () => {
         </thead>
         <tbody>
           {sessionlist?.map((el, index) => {
-            const isLast = index === Sessionlist.length - 1;
+            const isLast = index === Sessionlist?.length - 1;
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
             return (
@@ -98,7 +98,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.name}
+                    {el?.name}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -107,7 +107,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.cohort.name || "-"}
+                    {el.cohort?.name || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -116,7 +116,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.activity.map((bl,index)=>{
+                    {el.activity?.map((bl,index)=>{
                       return <div key={index}>{index+1}. {bl.name}</div>
                     }) || "-"}
                   </Typography>
@@ -127,7 +127,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.date.split("T")[0] || "-"}
+                    {el?.date.split("T")[0] || "-"}
                   </Typography>
                 </td>
                 {/* <td className={classes}>
@@ -141,7 +141,7 @@ export const Sessionlist = () => {
                     See details
                   </Typography>
                 </td> */}
-                <td className={classes}>
+                {/* <td className={classes}>
                   <Typography
                     as="a"
                     href="#"
@@ -151,7 +151,7 @@ export const Sessionlist = () => {
                   >
                     <CiEdit />
                   </Typography>
-                </td>
+                </td> */}
                 <td className={classes}>
                   <Typography
                     as="a"

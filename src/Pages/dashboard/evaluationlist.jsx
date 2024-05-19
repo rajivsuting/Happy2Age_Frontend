@@ -133,7 +133,7 @@ export const Evaluationlist = () => {
         </thead>
         <tbody>
           {evalutionlist?.map((el, index) => {
-            const isLast = index === evalutionlist.length - 1;
+            const isLast = index === evalutionlist?.length - 1;
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
             return (
@@ -144,7 +144,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.participant.name}
+                    {el.participant?.name}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -153,7 +153,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.session.name}
+                    {el?.session?.name}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -162,7 +162,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.cohort.name}
+                    {el?.cohort?.name}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -171,7 +171,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.activity.name}
+                    {el.activity?.name}
                   </Typography>
                 </td>
                 <td className={classes}>
