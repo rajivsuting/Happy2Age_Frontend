@@ -4,10 +4,20 @@ import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
+import EditParticipants from "../../Componants/EditParticipants";
+import { useSearchParams } from "react-router-dom";
 
 export const Participantlist = () => {
   const [partcipantList, setPartcipantList] = useState([]);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [singleParticipant, setSinglePartcipant] = useState({})
+  const toggleModal = (el) => {
+    setSearchParams({id:el._id})
+     setIsModalOpen(!isModalOpen);
+     setSinglePartcipant(el)
+   };
+  
   const tableHead = [
     "Name",
     "Email",
@@ -29,6 +39,7 @@ export const Participantlist = () => {
   useEffect(() => {
     axios.get(`${serverUrl}/participant/all`).then((res) => {
       setPartcipantList(res.data.message);
+      console.log(res.data.message)
     });
   }, []);
   return (
@@ -184,6 +195,7 @@ export const Participantlist = () => {
                   href="#"
                   variant="small"
                   color="blue-gray"
+                  onClick={()=>toggleModal(el)}
                   className="text-maincolor2 text-[20px]"
                 >
               <CiEdit />
@@ -214,6 +226,8 @@ export const Participantlist = () => {
           })}
         </tbody>
       </table>
+
+ <EditParticipants isOpen={isModalOpen} onClose={toggleModal} singleParticipant={singleParticipant}/>
     </Card>
   );
 };

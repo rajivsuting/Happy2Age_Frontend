@@ -5,22 +5,65 @@ import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDetailsCohort from "../../Componants/SeeDetailsCohort";
+import EditCohort from "../../Componants/EditCohort";
+import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
+
 
 export const Cohortlist = () => {
   const [cohortList, setCohortList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
+  const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
+  const [searchParams, setsearchParams] = useSearchParams()
   const [singleCohort, setSingleCohort] = useState({})
+
   const toggleModal = (el) => {
      setIsModalOpen(!isModalOpen);
      setSingleCohort(el)
    };
 
+   const toggleModalEdit = (el) => {
+    setsearchParams({id:el._id})
+    setIsModalOpenEdit(!isModalOpenEdit);
+    setSingleCohort(el)
+  };
 
-  useEffect(() => {
+  const toggleModalDelete = (id) => {
+    setsearchParams({id})
+    setIsModalOpenDelete(!isModalOpenDelete);
+  };
+
+  const handleDelete = () => {
+    axios.delete(`${serverUrl}/cohort/delete/${searchParams.get("id")}`)
+    .then((res)=>{
+      if (res.status==200){
+        toast.success("Cohort delete suucessfully", toastConfig);
+        getAlldata()
+      } else {
+        toast.error("Something went wrong", toastConfig);
+      }
+    }).catch((err)=>{
+      console.log(err)
+      toast.error(err.response.data.error, toastConfig);
+    })
+  };
+
+  const getAlldata = ()=>{
     axios.get(`${serverUrl}/cohort/all`).then((res) => {
       setCohortList(res.data.message);
     });
+  }
+  useEffect(() => {
+    getAlldata()
+    return ()=>{
+      console.log("Avoid errors")
+    }
   }, []);
+
+  
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <table className="w-full min-w-max table-auto text-left">
@@ -113,6 +156,7 @@ export const Cohortlist = () => {
                     variant="small"
                     color="blue-gray"
                     className="text-maincolor2 text-[20px]"
+                    onClick={()=>toggleModalEdit(el)}
                   >
                     <CiEdit />
                   </Typography>
@@ -124,6 +168,7 @@ export const Cohortlist = () => {
                     variant="small"
                     color="blue-gray"
                     className="text-red-500 text-[20px]"
+                    onClick={()=>toggleModalDelete(el._id)}
                   >
                     <MdOutlineDeleteOutline />
                   </Typography>
@@ -134,7 +179,8 @@ export const Cohortlist = () => {
         </tbody>
       </table>
  <SeeDetailsCohort isOpen={isModalOpen} onClose={toggleModal} singleCohort={singleCohort}/>
-
+ <EditCohort isOpen={isModalOpenEdit} onClose={toggleModalEdit} singleCohort={singleCohort}/>
+ <ConfirmDeleteModal isOpen={isModalOpenDelete} onClose={toggleModalDelete} handleDelete={handleDelete} getAlldata={getAlldata}/>
     </Card>
   );
 };

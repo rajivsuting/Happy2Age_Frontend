@@ -15,3 +15,4 @@ export * from "../../Pages/dashboard/addsession";
 export * from "../../Pages/dashboard/sessionlist";
 export * from "../../Pages/dashboard/addevaluation";
 export * from "../../Pages/dashboard/evaluationlist";
+export * from "../../Pages/dashboard/adddomain";

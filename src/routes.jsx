@@ -22,6 +22,7 @@ import {
   AddEvaluation,
   Editdomain,
   Evaluationlist,
+  Adddomain,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -102,9 +103,15 @@ export const routes = [
         allPages: [
           {
             icon_u: <GrDomain {...icon} />,
-            name_u: "add domain",
+            name_u: "edit domain",
             path_u: "/edit-domain/:domainid",
             element_u: <Editdomain />,
+          },
+          {
+            icon_u: <GrDomain {...icon} />,
+            name_u: "add domain",
+            path_u: "/add-domain/",
+            element_u: <Adddomain />,
           },
           {
             icon_u: <IoListSharp {...icon} />,

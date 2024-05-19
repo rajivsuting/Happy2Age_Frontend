@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "../../context";
-import { IoIosArrowDown, IoMdHome } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowForward, IoMdHome } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { getLocalData, saveLocalData } from "../../Utils/localStorage";
 import { FaUserAlt } from "react-icons/fa";
@@ -180,7 +180,11 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     Participant
                   </Typography>
 
-                  <IoIosArrowDown fontSize={15} />
+{
+  participantOpen ? <IoIosArrowDown fontSize={15} />
+ : <IoIosArrowForward fontSize={15}/>
+}
+                  
                 </Button>
               </li>
               {participantOpen ? (
@@ -273,7 +277,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     Cohort
                   </Typography>
 
-                  <IoIosArrowDown fontSize={15} />
+                  {
+  cohortOpen ? <IoIosArrowDown fontSize={15} />
+ : <IoIosArrowForward fontSize={15}/>
+}
                 </Button>
               </li>
               {cohortOpen ? (
@@ -364,7 +371,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     Activity
                   </Typography>
 
-                  <IoIosArrowDown fontSize={15} />
+                  {
+  activityOpen ? <IoIosArrowDown fontSize={15} />
+ : <IoIosArrowForward fontSize={15}/>
+}
                 </Button>
               </li>
               {activityOpen ? (
@@ -455,12 +465,15 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     Evaluation master list
                   </Typography>
 
-                  <IoIosArrowDown fontSize={15} />
+                  {
+  domainOpen ? <IoIosArrowDown fontSize={15} />
+ : <IoIosArrowForward fontSize={15}/>
+}
                 </Button>
               </li>
               {domainOpen ? (
                 <>
-                  {/* <li>
+                  <li>
                     <NavLink to={`/mainpage/add-domain`}>
                       {({ isActive }) => (
                         <Button
@@ -488,12 +501,12 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            
+                            Add domain
                           </Typography>
                         </Button>
                       )}
                     </NavLink>
-                  </li> */}
+                  </li>
                   <li>
                     <NavLink to={`/mainpage/domains-list`}>
                       {({ isActive }) => (
@@ -546,7 +559,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     Session
                   </Typography>
 
-                  <IoIosArrowDown fontSize={15} />
+                  {
+  sessionOpen ? <IoIosArrowDown fontSize={15} />
+ : <IoIosArrowForward fontSize={15}/>
+}
                 </Button>
               </li>
               {sessionOpen ? (
@@ -635,8 +651,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     <div className="text-maincolor2"> <MdEditNote {...icon} /></div>
                     Evaluation
                   </Typography>
-
-                  <IoIosArrowDown fontSize={15} />
+                  {
+  evaluationOpen ? <IoIosArrowDown fontSize={15} />
+ : <IoIosArrowForward fontSize={15}/>
+}
                 </Button>
               </li>
               {evaluationOpen ? (
