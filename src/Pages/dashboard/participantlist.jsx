@@ -6,9 +6,9 @@ import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import EditParticipants from "../../Componants/EditParticipants";
 import { useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export const Participantlist = () => {
-  const [partcipantList, setPartcipantList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [singleParticipant, setSinglePartcipant] = useState({})
@@ -36,12 +36,18 @@ export const Participantlist = () => {
     ""
   ];
 
-  useEffect(() => {
-    axios.get(`${serverUrl}/participant/all`).then((res) => {
-      setPartcipantList(res.data.message);
-      console.log(res.data.message)
-    });
-  }, []);
+  const {partcipantList} = useSelector((state)=>{
+    return {
+      partcipantList : state.AllListReducer.partcipantList
+    }
+  })
+
+  // useEffect(() => {
+  //   axios.get(`${serverUrl}/participant/all`).then((res) => {
+  //     setPartcipantList(res.data.message);
+  //     console.log(res.data.message)
+  //   });
+  // }, []);
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <table className="w-full min-w-max table-auto text-left">

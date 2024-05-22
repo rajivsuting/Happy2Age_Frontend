@@ -9,7 +9,7 @@ import { Link, useSearchParams } from "react-router-dom";
 export const Domainlist = () => {
   const [domainList, setDomainList] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "All");
+  const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "General");
 
 
   useEffect(() => {
@@ -30,7 +30,6 @@ export const Domainlist = () => {
           className="border w-[30%] px-2 py-2 rounded-md mt-3 mb-3"
           onChange={(e) => setCategoryFilter(e.target.value)}
         >
-          <option value="All">All domains</option>
           <option value="General">General</option>
           <option value="Special Need">Special Need</option>
         </select>

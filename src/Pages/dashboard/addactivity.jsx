@@ -4,6 +4,7 @@ import axios from "axios";
 import { serverUrl } from "../../api";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import { CgSpinner } from "react-icons/cg";
 
 const initialState = {
   name: "",
@@ -12,6 +13,7 @@ const initialState = {
 
 export const AddActivity = () => {
   const [activityData, setActivityData] = useState(initialState);
+  const [isAddActivityLoading, setIsAddActivityLoading] = useState(false)
 
   const {name, description} = activityData
 
@@ -25,15 +27,18 @@ export const AddActivity = () => {
 
   const handleSubmitActivity = (e) => {
     e.preventDefault();
+    setIsAddActivityLoading(true)
     axios.post(`${serverUrl}/activity/create`,activityData)
     .then((res)=>{
       if (res.status==201){
         toast.success("Activity added suucessfully", toastConfig);
         setActivityData(initialState);
+        setIsAddActivityLoading(false);
       } else {
         toast.error("Something went wrong", toastConfig);
       }
     }).catch((err)=>{
+      setIsAddActivityLoading(false);
       toast.error(err.response.data.error, toastConfig);
     })
   };
@@ -47,14 +52,14 @@ export const AddActivity = () => {
           <hr className="w-[85%] border" />
         </div>
         <div className="w-[90%] m-auto mt-5">
-          <Input label="Name" name="name" value={name} onChange={handleChangeInput} />
+          <Input label="Name" name="name" value={name} onChange={handleChangeInput} required/>
         </div>
         <div className="w-[90%] m-auto mt-5">
-          <Textarea label="Description" name="description" value={description} onChange={handleChangeInput} />
+          <Textarea label="Description" name="description" value={description} onChange={handleChangeInput} required/>
         </div>
 
-        <div className="w-[90%] text-center mt-5 m-auto">
-          <Button className="bg-maincolor" type="submit">Add Activity</Button>
+        <div className="w-[90%] flex justify-center items-center text-center mt-5 m-auto">
+          <Button disabled={isAddActivityLoading} className="bg-maincolor" type="submit">{isAddActivityLoading  ? <CgSpinner size={18} className=" m-auto animate-spin"/> : "Add Activity"}</Button>
         </div>
       </form>
     </div>

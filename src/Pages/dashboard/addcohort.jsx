@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Button,
   Input,
-  Select,
-  Option,
   List,
   ListItem,
 } from "@material-tailwind/react";
@@ -12,6 +10,7 @@ import axios from "axios";
 import { serverUrl } from "../../api";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
+import { CgSpinner } from "react-icons/cg";
 
 const initialState = {
   name: "",
@@ -20,8 +19,8 @@ const initialState = {
 
 export const AddCohort = () => {
   const [cohortData, setCohortData] = useState(initialState);
-  const [selectedParticipant, setSelectedParticipant] = useState("");
-  const [allPartcipants, setAllparticipants] = useState([]);
+  const [allParticipants, setAllParticipants] = useState([]);
+  const [isAddCohortLoading, setIsAddCohortLoading] = useState(false);
 
   const { name, participants } = cohortData;
 
@@ -32,31 +31,25 @@ export const AddCohort = () => {
     });
   };
 
-  const handleAddParticipant = () => {
-    if (selectedParticipant !== "") {
+  const handleToggleParticipant = (participantId) => {
+    if (participants.includes(participantId)) {
       setCohortData({
         ...cohortData,
-        participants: [...participants, selectedParticipant],
+        participants: participants.filter((id) => id !== participantId),
       });
-      setSelectedParticipant(""); // Reset selected participant
+    } else {
+      setCohortData({
+        ...cohortData,
+        participants: [...participants, participantId],
+      });
     }
-  };
-
-  const handleRemoveParticipant = (participantToRemove) => {
-    const updatedParticipants = participants.filter(
-      (participant) => participant !== participantToRemove
-    );
-    setCohortData({
-      ...cohortData,
-      participants: updatedParticipants,
-    });
   };
 
   useEffect(() => {
     axios
       .get(`${serverUrl}/participant/all`)
       .then((res) => {
-        setAllparticipants(res.data.message);
+        setAllParticipants(res.data.message);
       })
       .catch((err) => {
         console.log(err);
@@ -65,17 +58,21 @@ export const AddCohort = () => {
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
+    console.log(cohortData)
+    setIsAddCohortLoading(true);
     axios
       .post(`${serverUrl}/cohort/create`, cohortData)
       .then((res) => {
         if (res.status == 201) {
-          toast.success("Cohort added suucessfully", toastConfig);
+          toast.success("Cohort added successfully", toastConfig);
           setCohortData(initialState);
+          setIsAddCohortLoading(false);
         } else {
           toast.error("Something went wrong", toastConfig);
         }
       })
       .catch((err) => {
+        setIsAddCohortLoading(false);
         toast.error(err.response.data.error, toastConfig);
       });
   };
@@ -97,60 +94,61 @@ export const AddCohort = () => {
             name="name"
             value={name}
             onChange={handleChangeInput}
+            required
           />
-          <select
-            id=""
-            value={selectedParticipant}
-            onChange={(e) => setSelectedParticipant(e.target.value)}
-            className="border w-[60%] px-2 py-3 rounded-md"
-          >
-            <option value="">Select participant</option>;
-            {allPartcipants?.map((el) => {
-              return (
-                <option
-                  value={el._id}
-                  disabled={participants.includes(el.name)}
-                >
-                  {el.name}
-                </option>
-              );
-            })}
-          </select>
-          <Button
-            className="w-[120px] bg-maincolor"
-            onClick={handleAddParticipant}
-          >
-            Add
-          </Button>
         </div>
 
-        {/* Display list of participants */}
-        {participants.length ? (
+        {/* List of participants with checkboxes */}
+        <div className="w-[90%] m-auto mt-5">
+          <h3>Select Participants:</h3>
+          <List className="grid grid-cols-3 gap-4">
+            {allParticipants.map((participant) => (
+              <ListItem
+                className="flex justify-between items-center"
+                key={participant._id}
+              >
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={participants.includes(participant._id)}
+                    onChange={() => handleToggleParticipant(participant._id)}
+                    className="mr-2 cursor-pointer"
+                    required = {!participants.length}
+                  />
+                  {participant.name}
+                </label>
+              </ListItem>
+            ))}
+          </List>
+        </div>
+
+        {/* Display list of selected participants */}
+        {/* {participants.length ? (
           <div className="w-[90%] m-auto mt-5">
-            <h3>Participants:</h3>
+            <h3>Selected Participants:</h3>
             <List>
-              {participants.map((participant, index) => (
+              {participants.map((participantId, index) => (
                 <ListItem
                   className="w-[40%] flex justify-between items-center"
                   key={index}
                 >
-                  {allPartcipants.map((el) => {
-                    if (el._id == participant) {
-                      return el.name;
-                    }
-                  })}
+                  {allParticipants.find((el) => el._id === participantId)?.name}
                   <AiFillDelete
-                    onClick={() => handleRemoveParticipant(participant)}
+                    onClick={() => handleToggleParticipant(participantId)}
                   />
                 </ListItem>
               ))}
             </List>
           </div>
-        ) : null}
+        ) : null} */}
 
         <div className="w-[90%] text-center mt-5 m-auto">
-          <Button className="bg-maincolor" type="submit">
-            Add Cohort
+          <Button className="bg-maincolor" type="submit" disabled={isAddCohortLoading}>
+            {isAddCohortLoading ? (
+              <CgSpinner size={18} className="m-auto animate-spin" />
+            ) : (
+              "Add Cohort"
+            )}
           </Button>
         </div>
       </form>

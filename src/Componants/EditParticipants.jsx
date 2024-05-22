@@ -5,10 +5,12 @@ import axios from "axios";
 import { toastConfig } from "../App";
 import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
+import { CgSpinner } from "react-icons/cg";
 
 const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
   const [participantData, setParticipantData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isEditParticipant, setIsEditParticipant] = useState(false);
   useEffect(() => {
     if (singleParticipant) {
       setParticipantData(singleParticipant);
@@ -67,20 +69,26 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
 
   const handleSubmitParticipant = (e) => {
     e.preventDefault();
+    setIsEditParticipant(true);
     axios
-    .patch(`${serverUrl}/participant/edit/${searchParams.get("id")}`, participantData)
-    .then((res) => {
-      if (res.status === 200) {
-        toast.success("Participant edited successfully", toastConfig);
-        window.location.reload();
-      } else {
-        toast.error("Something went wrong", toastConfig);
-      }
-    })
-    .catch((err) => {
-      console.log(err)
-      toast.error(err.response.data.error, toastConfig);
-    });
+      .patch(
+        `${serverUrl}/participant/edit/${searchParams.get("id")}`,
+        participantData
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success("Participant edited successfully", toastConfig);
+          window.location.reload();
+          setIsEditParticipant(false);
+        } else {
+          setIsEditParticipant(false);
+          toast.error("Something went wrong", toastConfig);
+        }
+      })
+      .catch((err) => {
+        setIsEditParticipant(false);
+        toast.error(err.response.data.error, toastConfig);
+      });
   };
 
   return (
@@ -210,18 +218,21 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
               />
             </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500">
-          <button
-            onClick={onClose}
-            className="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg hover:bg-red-500/10 active:bg-red-500/30  border border-red-300"
-          >
-            Close
-          </button>
-          <Button className="bg-maincolor" type="submit">
-            Edit participant
+            <div className="flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500">
+              <button
+                onClick={onClose}
+                className="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg hover:bg-red-500/10 active:bg-red-500/30  border border-red-300"
+              >
+                Close
+              </button>
+              <Button className="bg-maincolor" type="submit" disabled={isAddsessionLoading}>
+                {isAddsessionLoading ? (
+                  <CgSpinner size={18} className=" m-auto animate-spin" />
+                ) : (
+                  "Edit participant"
+                )}
               </Button>
-        </div>
-
+            </div>
           </form>
         </div>
       </div>

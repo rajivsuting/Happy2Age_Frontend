@@ -23,7 +23,7 @@ const AllRoutes = () => {
 
       <Route path="/mainpage/*" element={<Dashboard />} />
       <Route path="/auth/*" element={<Auth />} />
-      <Route path="*" element={<Navigate to="/mainpage/home" replace />} />
+      <Route path="*" element={<Navigate to="/auth/sign-in" replace />} />
     </Routes>
   );
 };

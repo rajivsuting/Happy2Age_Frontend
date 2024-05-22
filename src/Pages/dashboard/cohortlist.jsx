@@ -56,6 +56,7 @@ export const Cohortlist = () => {
       setCohortList(res.data.message);
     });
   }
+  
   useEffect(() => {
     getAlldata()
     return ()=>{

@@ -12,6 +12,7 @@ import axios from "axios";
 import { AiFillDelete } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import { CgSpinner } from "react-icons/cg";
 
 const initialState = {
   name: "",
@@ -25,7 +26,7 @@ export const AddSession = () => {
   const [selectedActivity, setselectedActivity] = useState("");
   const [cohortsList, setCohortList] = useState([]);
   const [activityList, setActivityList] = useState([]);
-
+const [isAddsessionLoading, setIsSessionLoading] = useState(false)
   const { name, cohort, activity, date } = sessionData;
 
   const handleChangeInput = (e) => {
@@ -70,16 +71,19 @@ export const AddSession = () => {
 
   const handleSubmitSession = (e) => {
     e.preventDefault();
-    console.log(sessionData);
+    setIsSessionLoading(true);
     axios.post(`${serverUrl}/session/create`,sessionData)
     .then((res)=>{
       if (res.status==201){
+        setIsSessionLoading(false);
         toast.success("Session added suucessfully", toastConfig);
         setSessionData(initialState);
       } else {
+        setIsSessionLoading(false);
         toast.error("Something went wrong", toastConfig);
       }
     }).catch((err)=>{
+      setIsSessionLoading(false);
       toast.error(err.response.data.error, toastConfig);
     })
   };
@@ -177,8 +181,12 @@ export const AddSession = () => {
         </div>
 
         <div className="w-[90%] text-center mt-5 m-auto">
-          <Button className="bg-maincolor" type="submit">
-            Add Session
+          <Button className="bg-maincolor" type="submit" disabled={isAddsessionLoading}>
+          {isAddsessionLoading ? (
+              <CgSpinner size={18} className=" m-auto animate-spin" />
+            ) : (
+              "Add Session"
+            )}
           </Button>
         </div>
       </form>

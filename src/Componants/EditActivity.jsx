@@ -8,7 +8,8 @@ import { useSearchParams } from "react-router-dom";
 
 const EditActivity = ({ isOpen, onClose, singleActivity }) => {
   const [activityData, setActivityData] = useState(null);
-  const [searchParams, setsearchParams] = useSearchParams()
+  const [searchParams, setsearchParams] = useSearchParams();
+  const [isEditActivityLoading, setIsEditActivityLoading] = useState(false);
   useEffect(() => {
     if (singleActivity) {
       setActivityData(singleActivity);
@@ -25,18 +26,22 @@ const EditActivity = ({ isOpen, onClose, singleActivity }) => {
 
   const handleSubmitActivity = (e) => {
     e.preventDefault();
+    setIsEditActivityLoading(true);
     axios
     .patch(`${serverUrl}/activity/edit/${searchParams.get("id")}`, activityData)
     .then((res) => {
       if (res.status === 200) {
         toast.success("Activity edited successfully", toastConfig);
         window.location.reload()
+        setIsEditActivityLoading(false);
       } else {
+      setIsEditActivityLoading(false)
         toast.error("Something went wrong", toastConfig);
       }
     })
     .catch((err) => {
       console.log(err)
+      setIsEditActivityLoading(false);
       toast.error(err.response.data.error, toastConfig);
     });
   };

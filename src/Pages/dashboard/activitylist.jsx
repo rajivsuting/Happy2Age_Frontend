@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 
 export const ActivityList = () => {
-  const [activityList, setActivityList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [singleActivity, setSingleActivity] = useState({});
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
@@ -44,11 +43,12 @@ export const ActivityList = () => {
     setSingleActivity(el);
   };
 
-  useEffect(() => {
-    axios.get(`${serverUrl}/activity/all`).then((res) => {
-      setActivityList(res.data.message);
-    });
-  }, []);
+  const {activityList} = useSelector((state)=>{
+    return {
+      activityList : state.AllListReducer.activityList
+    }
+  })
+
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <table className="w-full min-w-max table-auto text-left">

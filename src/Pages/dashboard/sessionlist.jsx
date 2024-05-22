@@ -152,7 +152,7 @@ export const Sessionlist = () => {
                     <CiEdit />
                   </Typography>
                 </td> */}
-                <td className={classes}>
+                {/* <td className={classes}>
                   <Typography
                     as="a"
                     href="#"
@@ -162,7 +162,7 @@ export const Sessionlist = () => {
                   >
                     <MdOutlineDeleteOutline />
                   </Typography>
-                </td>
+                </td> */}
               </tr>
             );
           })}

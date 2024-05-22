@@ -14,6 +14,7 @@ import { AiFillDelete } from "react-icons/ai";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
+import { CgSpinner } from "react-icons/cg";
 
 export const Adddomain = () => {
   const [domainData, setdomainData] = useState({
@@ -22,6 +23,7 @@ export const Adddomain = () => {
     subTopics: [{ content: "", score: 0 }],
     // observation: "",
   });
+  const [isaddDomainLoading, setIsaddDomainLoading] = useState(false);
 
   const handleChangeInput = (event) => {
     const { name, value } = event.target;
@@ -54,13 +56,13 @@ export const Adddomain = () => {
     }));
   };
 
-
   const handleSubmitCohort = (e) => {
     e.preventDefault();
+    setIsaddDomainLoading(true);
     axios
       .post(`${serverUrl}/domain/create/`, domainData)
       .then((res) => {
-        console.log(res)
+        console.log(res);
         if (res.status == 201) {
           toast.success("Domain added suucessfully", toastConfig);
           setdomainData({
@@ -68,16 +70,17 @@ export const Adddomain = () => {
             category: "",
             subTopics: [{ content: "", score: 0 }],
             // observation: "",
-          })
+          });
+          setIsaddDomainLoading(false);
         } else {
           toast.error("Something went wrong", toastConfig);
         }
       })
       .catch((err) => {
+        setIsaddDomainLoading(false);
         toast.error(err.response.data.error, toastConfig);
       });
   };
-
 
   return (
     <div className="flex justify-center items-center gap-10 mb-24">
@@ -144,8 +147,12 @@ export const Adddomain = () => {
           })}
         </div>
         <div className="w-[90%] text-center mt-5 m-auto">
-          <Button className="bg-maincolor" type="submit">
-            Add Domain
+          <Button className="bg-maincolor" type="submit" disabled={isaddDomainLoading}>
+            {isaddDomainLoading ? (
+              <CgSpinner size={18} className=" m-auto animate-spin" />
+            ) : (
+              "Add Domain"
+            )}
           </Button>
         </div>
       </form>

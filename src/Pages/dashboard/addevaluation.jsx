@@ -15,6 +15,7 @@ import { serverUrl } from "../../api";
 import axios from "axios";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
+import { CgSpinner } from "react-icons/cg";
 
 const initialState = {
   session: "",
@@ -36,6 +37,7 @@ export const AddEvaluation = () => {
   const [participantsFromSession, setParticipantsFromSession] = useState([]);
   const [activityFromSession, setActivityFromSession] = useState([]);
   const [selectDomainByType, setSelectDomainByType] = useState([]);
+  const [isAddEvaluationLoading, setIsAddEvaluationLoading] = useState(false)
 
   const { session, cohort, participant, activity, domain } = evaluationData;
 
@@ -131,19 +133,20 @@ export const AddEvaluation = () => {
 
   const handleSubmitEvaluation = (e) => {
     e.preventDefault();
-    console.log(evaluationData)
+    setIsAddEvaluationLoading(true);
     axios
       .post(`${serverUrl}/evaluation/create`, evaluationData)
       .then((res) => {
         if (res.status == 201) {
           toast.success("Evaluation added suucessfully", toastConfig);
           setEvaluationData(initialState);
+          setIsAddEvaluationLoading(false);
         } else {
           toast.error("Something went wrong", toastConfig);
         }
       })
       .catch((err) => {
-        console.log(err);
+        setIsAddEvaluationLoading(false);
         toast.error(err.response.data.error, toastConfig);
       });
   };
@@ -167,6 +170,7 @@ export const AddEvaluation = () => {
             value={cohort}
             onChange={handleChangeEvaluation}
             className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
+            required
           >
             <option value="">Select cohort</option>;
             {cohortList.map((el) => {
@@ -183,6 +187,7 @@ export const AddEvaluation = () => {
             value={session}
             onChange={handleChangeEvaluation}
             className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
+            required
           >
             <option value="">Select session</option>;
             {sessionFromCohort?.map((el) => {
@@ -199,6 +204,7 @@ export const AddEvaluation = () => {
             value={participant}
             onChange={handleChangeEvaluation}
             className="border w-[30%] px-2 py-2 rounded-md  text-gray-600 border border-gray-600"
+            required
           >
             <option value="">Select participant</option>;
             {participantsFromSession?.map((el) => {
@@ -217,6 +223,7 @@ export const AddEvaluation = () => {
             value={activity}
             onChange={handleChangeEvaluation}
             className="border w-[50%] px-2 py-2 rounded-md  text-gray-600 border border-gray-600"
+            required
           >
             <option value="">Select activity</option>;
             {activityFromSession?.map((el) => {
@@ -233,6 +240,7 @@ export const AddEvaluation = () => {
             value={domainCategory} // Assuming domain.name is the identifier for domain object
             onChange={(e) => setDomainCategory(e.target.value)}
             className="border w-[50%] px-2 py-2 rounded-md  text-gray-600 border border-gray-600"
+            required
           >
             <option value="">Select evaluation type</option>;
             <option value="General">General</option>
@@ -312,8 +320,12 @@ export const AddEvaluation = () => {
           
         )} */}
         <div className="w-[90%] text-center mt-5 m-auto">
-          <Button className="bg-maincolor" type="submit">
-            Add Evaluation
+          <Button className="bg-maincolor" type="submit" disabled={isAddEvaluationLoading}>
+          {isAddEvaluationLoading ? (
+              <CgSpinner size={18} className=" m-auto animate-spin" />
+            ) : (
+              "Add Evaluation"
+            )}
           </Button>
         </div>
       </form>
