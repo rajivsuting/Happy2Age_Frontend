@@ -76,7 +76,7 @@ export function Configurator() {
   
     const handleSubmitLogin = (e) => {
       e.preventDefault();
-      setIsAddAdminLoading(true);
+      setIsAddAdminLoading(true); 
       axios.post(`${serverUrl}/auth/register`,{ email, password, firstName, lastName })
       .then((res)=>{
         if (res.status==200){
