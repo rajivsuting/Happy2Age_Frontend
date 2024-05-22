@@ -12,27 +12,36 @@ import { Link, useNavigate } from "react-router-dom";
 import { serverUrl } from "../../api";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
+import { CgSpinner } from "react-icons/cg";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoginLoading, setIsLoginLoading] = useState(false)
   const navigate = useNavigate();
 
   const handleSubmitLogin = (e) => {
     e.preventDefault();
+    setIsLoginLoading(true);
     axios.post(`${serverUrl}/auth/login`,{ email, password })
     .then((res)=>{
       if (res.status==200){
         toast.success("Login suucessfully", toastConfig);
+        setIsLoginLoading(false);
         navigate("/mainpage/home")
       } else {
+        setIsLoginLoading(false);
         toast.error("Something went wrong", toastConfig);
       }
     }).catch((err)=>{
+      setIsLoginLoading(false);
       console.log(err)
       toast.error(err.response, toastConfig);
     })
   };
+
+  console.log(isLoginLoading)
+
   return (
     <section className="m-8 flex gap-4">
       <div
@@ -92,8 +101,8 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           /> */}
-          <Button className="mt-6 bg-maincolor" fullWidth type="submit">
-            Sign In
+          <Button className="mt-6 bg-maincolor" fullWidth type="submit" disabled={isLoginLoading}>
+          {isLoginLoading  ? <CgSpinner size={18} className=" m-auto animate-spin"/> : "Sign In"}
           </Button>
 
           {/* <div className="flex items-center justify-between gap-2 mt-6">

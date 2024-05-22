@@ -25,6 +25,7 @@ import {
 } from "../../context";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import { CgSpinner } from "react-icons/cg";
 
 function formatNumber(number, decPlaces) {
   decPlaces = Math.pow(10, decPlaces);
@@ -70,19 +71,24 @@ export function Configurator() {
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [isAddAdminLoading, setIsAddAdminLoading] = useState(false);
     const navigate = useNavigate();
   
     const handleSubmitLogin = (e) => {
       e.preventDefault();
+      setIsAddAdminLoading(true);
       axios.post(`${serverUrl}/auth/register`,{ email, password, firstName, lastName })
       .then((res)=>{
         if (res.status==200){
+          setIsAddAdminLoading(false);
           toast.success("Admin added", toastConfig);
         }  else {
+          setIsAddAdminLoading(false);
           toast.error("Something went wrong", toastConfig);
         }
       }).catch((err)=>{
-        console.log(err.response.data)
+        console.log(err)
+        setIsAddAdminLoading(false);
         toast.error(err.response.data.error, toastConfig);
       })
     };
@@ -156,8 +162,8 @@ export function Configurator() {
             }
             containerProps={{ className: "-ml-2.5" }}
           /> */}
-          <Button className="mt-6 bg-maincolor" fullWidth type="submit">
-            Add
+          <Button className="mt-6 bg-maincolor" fullWidth type="submit" disabled={isAddAdminLoading}>
+          {isAddAdminLoading  ? <CgSpinner size={18} className=" m-auto animate-spin"/> : "Add"}
           </Button>
 
           {/* <div className="space-y-4 mt-8">
