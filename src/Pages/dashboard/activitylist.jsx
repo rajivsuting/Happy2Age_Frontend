@@ -9,12 +9,22 @@ import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllActivities } from "../../Redux/AllListReducer/action";
 
 export const ActivityList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [singleActivity, setSingleActivity] = useState({});
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
-  const [searchParams, setsearchParams] = useSearchParams()
+  const [searchParams, setsearchParams] = useSearchParams();
+  const dispatch = useDispatch();
+
+  const {activityList} = useSelector((state)=>{
+    return {
+      activityList : state.AllListReducer.activityList
+    }
+  })
+
   const toggleModalDelete = (id) => {
     setsearchParams({id})
     setIsModalOpenDelete(!isModalOpenDelete);
@@ -25,9 +35,7 @@ export const ActivityList = () => {
     .then((res)=>{
       if (res.status==200){
         toast.success("Activity delete suucessfully", toastConfig);
-        axios.get(`${serverUrl}/activity/all`).then((res) => {
-          setActivityList(res.data.message);
-        });
+        getAllData();
       } else {
         toast.error("Something went wrong", toastConfig);
       }
@@ -43,11 +51,11 @@ export const ActivityList = () => {
     setSingleActivity(el);
   };
 
-  const {activityList} = useSelector((state)=>{
-    return {
-      activityList : state.AllListReducer.activityList
-    }
-  })
+  function getAllData(){
+   return dispatch(getAllActivities).then((res)=>{return true})
+  }
+
+  
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -154,10 +162,11 @@ export const ActivityList = () => {
         isOpen={isModalOpen}
         onClose={toggleModal}
         singleActivity={singleActivity}
+        getAllData={getAllData}
       />
       <ConfirmDeleteModal
         isOpen={isModalOpenDelete}
-        onClose={toggleModalDelete}
+        onClose={()=>toggleModalDelete()}
         handleDelete={handleDelete}
       />
     </Card>

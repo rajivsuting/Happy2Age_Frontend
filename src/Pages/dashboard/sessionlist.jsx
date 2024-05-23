@@ -4,16 +4,18 @@ import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
+import { useDispatch, useSelector } from "react-redux";
 
 export const Sessionlist = () => {
-  const [sessionlist, setSessionlist] = useState([]);
+const dispatch = useDispatch();
 
-  useEffect(() => {
-    axios.get(`${serverUrl}/session/all`).then((res) => {
-      setSessionlist(res.data.message);
-      console.log(res.data.message);
-    });
-  }, []);
+  
+  const {sessionlist} = useSelector((state)=>{
+    return {
+      sessionlist : state.AllListReducer.sessionlist
+    }
+  })
+
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <table className="w-full min-w-max table-auto text-left">

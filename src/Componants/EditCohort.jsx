@@ -42,17 +42,21 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
   };
 
   const handleToggleParticipant = (participantId) => {
-    if (participants.includes(participantId)) {
-      setCohortData({
-        ...cohortData,
-        participants: participants.filter((id) => id !== participantId),
-      });
-    } else {
-      setCohortData({
-        ...cohortData,
-        participants: [...participants, participantId],
-      });
-    }
+    setCohortData((prevData) => {
+      if (prevData.participants.filter((el)=>el._id == participantId).length) {
+        return {
+          ...prevData,
+          participants: prevData.participants.filter(
+            (el) => el._id !== participantId
+          ),
+        };
+      } else {
+        return {
+          ...prevData,
+          participants: [...prevData.participants, participantId],
+        };
+      }
+    });
   };
 
   const handleSubmitCohort = (e) => {
@@ -62,10 +66,10 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
       .patch(`${serverUrl}/cohort/edit/${searchParams.get("id")}`, cohortData)
       .then((res) => {
         if (res.status === 200) {
-          toast.success("Cohort edited successfully", toastConfig);
-          getAlldata(); // Call the function to refresh the data
-          setIsEditCohortLoading(false);
-          window.location.reload(); // Close the modal after submission
+          getAlldata().then((res)=>{
+            setIsEditCohortLoading(false);
+            toast.success("Cohort edited successfully", toastConfig);
+          }); // Call the function to refresh the data
         } else {
           setIsEditCohortLoading(false);
           toast.error("Something went wrong", toastConfig);
@@ -75,11 +79,12 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
         setIsEditCohortLoading(false);
         toast.error(err.response.data.error, toastConfig);
       });
+    onClose();
   };
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
-      <div className="relative m-4 w-2/5 min-w-[50%] max-w-[50%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-8">
+      <div className="relative m-4 w-2/5 min-w-[60%] max-w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-4">
         <div className="flex items-center p-4 font-sans text-2xl font-semibold text-blue-gray-900">
           Edit Cohort
         </div>
@@ -100,28 +105,50 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
             </div>
 
             {/* Display list of participants */}
-            <div className="w-[90%] m-auto mt-5">
+            <div className="w-[100%] m-auto mt-5 max-h-[40vh] overflow-hidden">
               <h3>Select Participants:</h3>
-              <List className="grid grid-cols-3 gap-4">
-                {allParticipants.map((participant) => (
-                  <ListItem
-                    className="flex justify-between items-center"
-                    key={participant._id}
-                  >
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={participants?.includes(participant._id)}
-                        onChange={() =>
-                          handleToggleParticipant(participant._id)
-                        }
-                        className="mr-2 cursor-pointer"
-                      />
-                      {participant.name}
-                    </label>
-                  </ListItem>
-                ))}
-              </List>
+              <div className="max-h-[30vh] overflow-y-auto">
+                <List className="grid grid-cols-4 gap-4">
+                  {allParticipants.map((participant) => {
+                    console.log(participants &&
+                      participants.includes(participant._id))
+                    return (
+                      <div className="relative group">
+                        <ListItem
+                          className="flex justify-between items-center"
+                          key={participant._id}
+                        >
+                          <label className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={
+                                participants &&
+                                participants.filter((el)=>el._id == participant._id).length
+                              }
+                              onChange={() =>
+                                handleToggleParticipant(participant._id)
+                              }
+                              className="mr-2 cursor-pointer"
+                              required={!participants?.length}
+                            />
+                            {participant.name.length > 10
+                              ? participant.name.substring(0, 10) + "..."
+                              : participant.name}
+                          </label>
+                        </ListItem>
+                        <ul className="w-[200px] mt-[-10px] ml-[10px] shadow absolute hidden bg-white border rounded p-2 text-gray-700 group-hover:block z-50">
+                          <li className="w-full text-xs font-semibold">
+                            {participant.name}
+                          </li>
+                          <li className="w-full text-xs font-semibold">
+                            {participant.email}
+                          </li>
+                        </ul>
+                      </div>
+                    );
+                  })}
+                </List>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500">

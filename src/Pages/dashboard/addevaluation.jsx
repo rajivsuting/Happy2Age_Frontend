@@ -16,6 +16,8 @@ import axios from "axios";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllEvaluations } from "../../Redux/AllListReducer/action";
 
 const initialState = {
   session: "",
@@ -28,17 +30,14 @@ const initialState = {
 export const AddEvaluation = () => {
   const [evaluationData, setEvaluationData] = useState(initialState);
   const [participantList, setParticipantList] = useState([]);
-  const [domainList, setDomainList] = useState([]);
-  const [sessionList, setSessionList] = useState([]);
-  const [activityList, setActivityList] = useState([]);
-  const [cohortList, setCohortList] = useState([]);
+  // const [domainList, setDomainList] = useState([]);
   const [domainCategory, setDomainCategory] = useState("");
   const [sessionFromCohort, setsessionFromCohort] = useState([]);
   const [participantsFromSession, setParticipantsFromSession] = useState([]);
   const [activityFromSession, setActivityFromSession] = useState([]);
   const [selectDomainByType, setSelectDomainByType] = useState([]);
-  const [isAddEvaluationLoading, setIsAddEvaluationLoading] = useState(false)
-
+  const [isAddEvaluationLoading, setIsAddEvaluationLoading] = useState(false);
+  const dispatch = useDispatch();
   const { session, cohort, participant, activity, domain } = evaluationData;
 
   const handleChangeEvaluation = (e) => {
@@ -58,30 +57,31 @@ export const AddEvaluation = () => {
     }
   };
 
-  useEffect(() => {
-    axios.get(`${serverUrl}/participant/all`).then((res) => {
-      setParticipantList(res.data.message);
-    });
-    axios.get(`${serverUrl}/cohort/all`).then((res) => {
-      setCohortList(res.data.message);
-    });
-    axios.get(`${serverUrl}/activity/all`).then((res) => {
-      setActivityList(res.data.message);
-    });
-    axios.get(`${serverUrl}/domain/all/?category=All`).then((res) => {
-      setDomainList(res.data.message);
-      console.log();
-    });
-    axios.get(`${serverUrl}/session/all`).then((res) => {
-      setSessionList(res.data.message);
-      // console.log("res.data.message", res.data.message);
-    });
-  
-  
-    axios.get(`${serverUrl}/evaluation/all`).then((res) => {
-      // setSessionList(res.data.message);
-      console.log("res.data.message", res.data.message);
-    });}, []);
+  const {
+    cohortList,
+    partcipantList,
+    evalutionlist,
+    sessionlist,
+    domainList,
+    activityList,
+  } = useSelector((state) => {
+    return {
+      cohortList: state.AllListReducer.cohortList,
+      activityList: state.AllListReducer.activityList,
+      domainList: state.AllListReducer.domainList,
+      sessionlist: state.AllListReducer.sessionlist,
+      evalutionlist: state.AllListReducer.evalutionlist,
+      partcipantList: state.AllListReducer.partcipantList,
+
+    };
+  });
+
+  // useEffect(()=>{
+  //   axios.get(`${serverUrl}/domain/all/?category=All`).then((res) => {
+  //     setDomainList(res.data.message);
+  //     console.log();
+  //   });
+  // },[])
 
   useEffect(() => {
     setsessionFromCohort(
@@ -97,7 +97,7 @@ export const AddEvaluation = () => {
 
   useEffect(() => {
     setActivityFromSession(
-      sessionList?.filter((el) => el._id === session)[0]?.activity
+      sessionlist?.filter((el) => el._id === session)[0]?.activity
     );
   }, [session]);
 
@@ -107,15 +107,17 @@ export const AddEvaluation = () => {
     );
   }, [domainCategory]);
 
+  console.log(domainList)
+
   // console.log(cohortList)
   const handleScoreChange = (domainIndex, questionIndex, newScore) => {
     const updatedDomains = [...selectDomainByType];
     updatedDomains[domainIndex].subTopics[questionIndex].score = newScore;
-    setEvaluationData((prev)=>{
+    setEvaluationData((prev) => {
       return {
         ...prev,
-        domain:updatedDomains
-      }
+        domain: updatedDomains,
+      };
     });
   };
 
@@ -123,11 +125,11 @@ export const AddEvaluation = () => {
   const handleObservationChange = (domainIndex, newObservation) => {
     const updatedDomains = [...selectDomainByType];
     updatedDomains[domainIndex].observation = newObservation;
-    setEvaluationData((prev)=>{
+    setEvaluationData((prev) => {
       return {
         ...prev,
-        domain:updatedDomains
-      }
+        domain: updatedDomains,
+      };
     });
   };
 
@@ -140,6 +142,7 @@ export const AddEvaluation = () => {
         if (res.status == 201) {
           toast.success("Evaluation added suucessfully", toastConfig);
           setEvaluationData(initialState);
+          dispatch(getAllEvaluations).then((res)=>{return true})
           setIsAddEvaluationLoading(false);
         } else {
           toast.error("Something went wrong", toastConfig);
@@ -269,7 +272,7 @@ export const AddEvaluation = () => {
               //             e.target.value
               //           )
               //         }
-              //         // defaultChecked 
+              //         // defaultChecked
               //       />
               //     </div>
               //     <Typography className="w-[60%] mr-5">
@@ -278,27 +281,29 @@ export const AddEvaluation = () => {
               //   </ListItem>
               // </List>
               // } else {
-               return <List key={questionIndex}>
-                <ListItem>
-                  <Typography className="w-[60%] mr-5">
-                    {questionIndex + 1}. {question.content}
-                  </Typography>
-                  <div className="w-[40%]">
-                    <Input
-                      label="Add score"
-                      value={question.score || ""}
-                      type="number"
-                      onChange={(e) =>
-                        handleScoreChange(
-                          domainIndex,
-                          questionIndex,
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </ListItem>
-              </List>
+              return (
+                <List key={questionIndex}>
+                  <ListItem>
+                    <Typography className="w-[60%] mr-5">
+                      {questionIndex + 1}. {question.content}
+                    </Typography>
+                    <div className="w-[40%]">
+                      <Input
+                        label="Add score"
+                        value={question.score || ""}
+                        type="number"
+                        onChange={(e) =>
+                          handleScoreChange(
+                            domainIndex,
+                            questionIndex,
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                  </ListItem>
+                </List>
+              );
               // }
             })}
 
@@ -320,8 +325,12 @@ export const AddEvaluation = () => {
           
         )} */}
         <div className="w-[90%] text-center mt-5 m-auto">
-          <Button className="bg-maincolor" type="submit" disabled={isAddEvaluationLoading}>
-          {isAddEvaluationLoading ? (
+          <Button
+            className="bg-maincolor"
+            type="submit"
+            disabled={isAddEvaluationLoading}
+          >
+            {isAddEvaluationLoading ? (
               <CgSpinner size={18} className=" m-auto animate-spin" />
             ) : (
               "Add Evaluation"

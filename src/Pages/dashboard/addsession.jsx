@@ -13,6 +13,8 @@ import { AiFillDelete } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { CgSpinner } from "react-icons/cg";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllSessions } from "../../Redux/AllListReducer/action";
 
 const initialState = {
   name: "",
@@ -24,10 +26,9 @@ export const AddSession = () => {
   const [sessionData, setSessionData] = useState(initialState);
   const [selectedCohort, setSelectedCohort] = useState("");
   const [selectedActivity, setselectedActivity] = useState("");
-  const [cohortsList, setCohortList] = useState([]);
-  const [activityList, setActivityList] = useState([]);
 const [isAddsessionLoading, setIsSessionLoading] = useState(false)
   const { name, cohort, activity, date } = sessionData;
+  const dispatch = useDispatch();
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -59,15 +60,14 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
     });
   };
 
-  useEffect(() => {
-    axios.get(`${serverUrl}/cohort/all/`).then((res) => {
-      setCohortList(res.data.message);
-    });
+  
+  const {cohortList,activityList} = useSelector((state)=>{
+    return {
+      cohortList : state.AllListReducer.cohortList,
+      activityList:state.AllListReducer.activityList,
+    }
+  })
 
-    axios.get(`${serverUrl}/activity/all/`).then((res) => {
-      setActivityList(res.data.message);
-    });
-  }, []);
 
   const handleSubmitSession = (e) => {
     e.preventDefault();
@@ -77,6 +77,7 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
       if (res.status==201){
         setIsSessionLoading(false);
         toast.success("Session added suucessfully", toastConfig);
+        dispatch(getAllSessions)
         setSessionData(initialState);
       } else {
         setIsSessionLoading(false);
@@ -87,6 +88,9 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
       toast.error(err.response.data.error, toastConfig);
     })
   };
+
+
+
   return (
     <div className="flex justify-center items-center gap-10 mb-24">
       <form
@@ -123,7 +127,7 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
               className="border border-gray-400 w-[100%] px-2 py-2 rounded-md"
             >
               <option value="">Select cohort</option>
-              {cohortsList?.map((el) => {
+              {cohortList?.map((el) => {
                 return <option value={el._id}>{el.name}</option>;
               })}
             </select>
@@ -168,7 +172,7 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
                     {activityList?.map((el) => {
                       if (el._id == activity) {
                         return el.name;
-                      }
+                      } 
                     })}
                     <AiFillDelete
                       onClick={() => handleRemoveActivity(activity)}

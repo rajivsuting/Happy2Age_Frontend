@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { toastConfig } from "../App";
 import { useSearchParams } from "react-router-dom";
 
-const EditActivity = ({ isOpen, onClose, singleActivity }) => {
+const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
   const [activityData, setActivityData] = useState(null);
   const [searchParams, setsearchParams] = useSearchParams();
   const [isEditActivityLoading, setIsEditActivityLoading] = useState(false);
@@ -31,9 +31,11 @@ const EditActivity = ({ isOpen, onClose, singleActivity }) => {
     .patch(`${serverUrl}/activity/edit/${searchParams.get("id")}`, activityData)
     .then((res) => {
       if (res.status === 200) {
-        toast.success("Activity edited successfully", toastConfig);
-        window.location.reload()
-        setIsEditActivityLoading(false);
+        getAllData().then((res)=>{
+          toast.success("Activity edited successfully", toastConfig);
+          setIsEditActivityLoading(false);
+          onClose();
+        });
       } else {
       setIsEditActivityLoading(false)
         toast.error("Something went wrong", toastConfig);

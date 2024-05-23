@@ -26,10 +26,10 @@ const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     console.log("one tme ")
-    dispatch(getAllParticipants);
+    dispatch(getAllParticipants("",""));
     dispatch(getAllCohorts);
     dispatch(getAllActivities);
-    dispatch(getAllDomains);
+    dispatch(getAllDomains("All"));
     dispatch(getAllSessions);
     dispatch(getAllEvaluations);
   }, []);

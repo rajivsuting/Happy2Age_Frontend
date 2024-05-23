@@ -10,15 +10,23 @@ import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCohorts } from "../../Redux/AllListReducer/action";
 
 
 export const Cohortlist = () => {
-  const [cohortList, setCohortList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [searchParams, setsearchParams] = useSearchParams()
-  const [singleCohort, setSingleCohort] = useState({})
+  const [singleCohort, setSingleCohort] = useState({});
+  const dispatch = useDispatch();
+
+  const {cohortList} = useSelector((state)=>{
+    return {
+      cohortList : state.AllListReducer.cohortList
+    }
+  })
 
   const toggleModal = (el) => {
      setIsModalOpen(!isModalOpen);
@@ -41,7 +49,7 @@ export const Cohortlist = () => {
     .then((res)=>{
       if (res.status==200){
         toast.success("Cohort delete suucessfully", toastConfig);
-        getAlldata()
+        dispatch(getAllCohorts).then((res)=>{})
       } else {
         toast.error("Something went wrong", toastConfig);
       }
@@ -51,18 +59,6 @@ export const Cohortlist = () => {
     })
   };
 
-  const getAlldata = ()=>{
-    axios.get(`${serverUrl}/cohort/all`).then((res) => {
-      setCohortList(res.data.message);
-    });
-  }
-  
-  useEffect(() => {
-    getAlldata()
-    return ()=>{
-      console.log("Avoid errors")
-    }
-  }, []);
 
   
   return (
@@ -180,8 +176,8 @@ export const Cohortlist = () => {
         </tbody>
       </table>
  <SeeDetailsCohort isOpen={isModalOpen} onClose={toggleModal} singleCohort={singleCohort}/>
- <EditCohort isOpen={isModalOpenEdit} onClose={toggleModalEdit} singleCohort={singleCohort}/>
- <ConfirmDeleteModal isOpen={isModalOpenDelete} onClose={toggleModalDelete} handleDelete={handleDelete} getAlldata={getAlldata}/>
+ <EditCohort isOpen={isModalOpenEdit} onClose={toggleModalEdit} singleCohort={singleCohort} getAllCohorts={()=>dispatch(getAllCohorts).then((res)=>{})}/>
+ <ConfirmDeleteModal isOpen={isModalOpenDelete} onClose={toggleModalDelete} handleDelete={handleDelete} />
     </Card>
   );
 };

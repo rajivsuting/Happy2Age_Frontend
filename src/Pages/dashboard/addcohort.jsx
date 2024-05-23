@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Input,
-  List,
-  ListItem,
-} from "@material-tailwind/react";
+import { Button, Input, List, ListItem } from "@material-tailwind/react";
 import { AiFillDelete } from "react-icons/ai";
 import axios from "axios";
 import { serverUrl } from "../../api";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
+import { useDispatch } from "react-redux";
+import { getAllCohorts } from "../../Redux/AllListReducer/action";
 
 const initialState = {
   name: "",
@@ -21,6 +18,7 @@ export const AddCohort = () => {
   const [cohortData, setCohortData] = useState(initialState);
   const [allParticipants, setAllParticipants] = useState([]);
   const [isAddCohortLoading, setIsAddCohortLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const { name, participants } = cohortData;
 
@@ -49,6 +47,7 @@ export const AddCohort = () => {
     axios
       .get(`${serverUrl}/participant/all`)
       .then((res) => {
+        console.log(res.data.message);
         setAllParticipants(res.data.message);
       })
       .catch((err) => {
@@ -58,7 +57,7 @@ export const AddCohort = () => {
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
-    console.log(cohortData)
+    console.log(cohortData);
     setIsAddCohortLoading(true);
     axios
       .post(`${serverUrl}/cohort/create`, cohortData)
@@ -67,6 +66,7 @@ export const AddCohort = () => {
           toast.success("Cohort added successfully", toastConfig);
           setCohortData(initialState);
           setIsAddCohortLoading(false);
+          dispatch(getAllCohorts)
         } else {
           toast.error("Something went wrong", toastConfig);
         }
@@ -80,7 +80,7 @@ export const AddCohort = () => {
   return (
     <div className="flex justify-center items-center gap-10 mb-24">
       <form
-        className="m-auto border rounded-xl shadow w-[70%] py-8 mt-16 bg-white"
+        className="m-auto border rounded-xl shadow w-[70%] py-8 mt-16 bg-white "
         onSubmit={handleSubmitCohort}
       >
         {/* Basic details */}
@@ -99,28 +99,56 @@ export const AddCohort = () => {
         </div>
 
         {/* List of participants with checkboxes */}
-        <div className="w-[90%] m-auto mt-5">
+        <div className="w-[90%] m-auto mt-5 max-h-[40vh] overflow-hidden">
           <h3>Select Participants:</h3>
-          <List className="grid grid-cols-3 gap-4">
-            {allParticipants.map((participant) => (
-              <ListItem
-                className="flex justify-between items-center"
-                key={participant._id}
-              >
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={participants.includes(participant._id)}
-                    onChange={() => handleToggleParticipant(participant._id)}
-                    className="mr-2 cursor-pointer"
-                    required = {!participants.length}
-                  />
-                  {participant.name}
-                </label>
-              </ListItem>
-            ))}
-          </List>
+          <div className="max-h-[30vh] overflow-y-auto">
+            <List className="grid grid-cols-4 gap-4">
+              {allParticipants.map((participant) => (
+                <div className="relative group">
+                  <ListItem
+                    className="flex justify-between items-center"
+                    key={participant._id}
+                  >
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={participants.includes(participant._id)}
+                        onChange={() =>
+                          handleToggleParticipant(participant._id)
+                        }
+                        className="mr-2 cursor-pointer"
+                        required={!participants.length}
+                      />
+                      {participant.name.length > 10
+                        ? participant.name.substring(0, 10) + "..."
+                        : participant.name}
+                    </label>
+                  </ListItem>
+                  <ul className="w-[200px] mt-[-10px] ml-[10px] shadow absolute hidden bg-white border rounded p-2 text-gray-700 group-hover:block z-50">
+                    <li className="w-full text-xs font-semibold">
+                      {participant.name}
+                    </li>
+                    <li className="w-full text-xs font-semibold">
+                      {participant.email}
+                    </li>
+                  </ul>
+                </div>
+              ))}
+            </List>
+          </div>
         </div>
+
+        {/* <div className="relative group">
+          <FaPlus
+            onClick={handleSalesTargetModalOpen}
+            className="bg-forestgreen text-xl text-white rounded-full p-1 cursor-pointer"
+          />
+          <ul className="w-[200px] absolute text-center hidden bg-white border rounded p-2 text-gray-700 group-hover:block">
+            <li className="w-full text-xs font-semibold">
+              Click this button to add or edit sales target for your office
+            </li>
+          </ul>
+        </div> */}
 
         {/* Display list of selected participants */}
         {/* {participants.length ? (
@@ -143,7 +171,11 @@ export const AddCohort = () => {
         ) : null} */}
 
         <div className="w-[90%] text-center mt-5 m-auto">
-          <Button className="bg-maincolor" type="submit" disabled={isAddCohortLoading}>
+          <Button
+            className="bg-maincolor"
+            type="submit"
+            disabled={isAddCohortLoading}
+          >
             {isAddCohortLoading ? (
               <CgSpinner size={18} className="m-auto animate-spin" />
             ) : (

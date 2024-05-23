@@ -114,11 +114,12 @@ export const Adddomain = () => {
             </Select>
           </div>
           <br />
+          <div className={`max-h-[30vh]  overflow-auto`}>
           {domainData.subTopics.map((item, index) => {
             return (
               <div
                 key={index}
-                className={`w-[100%] flex justify-between items-center gap-5 ${
+                className={`w-[90%] flex justify-between items-center gap-5 ${
                   index === 0 ? "mt-0" : "mt-5"
                 }`}
               >
@@ -145,6 +146,7 @@ export const Adddomain = () => {
               </div>
             );
           })}
+          </div>
         </div>
         <div className="w-[90%] text-center mt-5 m-auto">
           <Button className="bg-maincolor" type="submit" disabled={isaddDomainLoading}>

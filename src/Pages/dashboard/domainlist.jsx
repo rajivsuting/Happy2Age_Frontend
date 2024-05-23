@@ -27,7 +27,7 @@ export const Domainlist = () => {
           name=""
           id=""
           value={categoryFilter}
-          className="border w-[30%] px-2 py-2 rounded-md mt-3 mb-3"
+          className="border w-[20%] px-2 py-2 rounded-md mt-3 mb-3"
           onChange={(e) => setCategoryFilter(e.target.value)}
         >
           <option value="General">General</option>

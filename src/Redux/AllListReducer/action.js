@@ -4,10 +4,10 @@ import axios from "axios";
 
 // partcipants ---------------------------
 
-export const getAllParticipants = (dispatch) => {
+export const getAllParticipants = (page="", limit="")=>(dispatch) => {
   dispatch({ type: types.GET_PARTICIPANTS_REQUEST });
   return axios
-    .get(`${serverUrl}/participant/all`)
+    .get(`${serverUrl}/participant/all/?page=${page}&limit=${limit}`)
     .then((res) => {
       return dispatch({
         type: types.GET_PARTICIPANTS_SUCCESS,
@@ -58,11 +58,12 @@ export const getAllActivities = (dispatch) => {
 
 // domains --------------
 
-export const getAllDomains = (dispatch) => {
+export const getAllDomains =(category="All")=> (dispatch) => {
   dispatch({ type: types.GET_DOMAINS_REQUEST });
   return axios
-    .get(`${serverUrl}/domain/all`)
+    .get(`${serverUrl}/domain/all/?category=${category}`)
     .then((res) => {
+      console.log(res)
       return dispatch({
         type: types.GET_DOMAINS_SUCCESS,
         payload: res.data.message,

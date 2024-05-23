@@ -4,6 +4,7 @@ import { serverUrl } from "../../api";
 import axios from "axios";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
+import {CgSpinner} from "react-icons/cg"
 
 
 const initialState = {
@@ -135,7 +136,7 @@ export const AddParticipant = () => {
         {/* Emergency contact */}
         <div className="w-[90%] m-auto mb-5 flex justify-center items-center mt-5">
           <div className="w-[20%]">Emergency contact</div> <hr className="w-[80%] border" />
-        </div>
+        </div> 
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
           <Input label="Name" required name="name" value={participantData.emergencyContact.name} onChange={handleChangeEmergencyContact} />
           <Input maxLength={10} required minLength={10} label="Phone" name="phone" value={participantData.emergencyContact.phone} onChange={handleChangeEmergencyContact} />
