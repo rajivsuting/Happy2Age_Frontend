@@ -23,6 +23,7 @@ import {
   Editdomain,
   Evaluationlist,
   Adddomain,
+  Cohortreport,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -136,7 +137,7 @@ export const routes = [
             name_u: "sessions list",
             path_u: "/sessions-list",
             element_u: <Sessionlist />,
-          }
+          },
         ],
       },
       //  {
@@ -160,15 +161,15 @@ export const routes = [
             name_u: "evaluation list",
             path_u: "/evaluation-list",
             element_u: <Evaluationlist />,
-          }
+          },
         ],
-      }, 
-      // {
-      //   icon: <HomeIcon {...icon} />,
-      //   name: "evaluation",
-      //   path: "/add-evaluation",
-      //   element: <AddEvaluation />,
-      // }
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "cohort report",
+        path: "/cohort-report",
+        element: <Cohortreport />,
+      },
     ],
   },
   {
@@ -187,7 +188,6 @@ export const routes = [
       //   path: "/sign-out",
       //   // element: <SignUp />,
       // },
-     
     ],
   },
 ];

@@ -11,14 +11,14 @@ export function Footer({ brandName, brandLink, routes }) {
         <Typography variant="small" className="font-normal text-inherit">
           &copy; {year}, made with{" "}
           <HeartIcon className="-mt-0.5 inline-block h-3.5 w-3.5 text-red-600" /> by{" "}
-          <a
+          {/* <a
             href={"https://happy2age.com/"}
             target="_blank"
             rel="noopener noreferrer"
             className="transition-colors hover:text-blue-500 font-bold"
-          >
-            Happy2Age
-          </a>{" "}
+          > */}
+            Brafony
+          {/* </a>{" "} */}
         </Typography>
         {/* <ul className="flex items-center gap-4">
           {routes.map(({ name, path }) => (

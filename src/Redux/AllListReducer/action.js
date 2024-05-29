@@ -20,6 +20,25 @@ export const getAllParticipants = (page="", limit="")=>(dispatch) => {
     });
 };
 
+
+// get partcicipants by name --------------------------
+
+export const getParticipantsByName = (name)=>(dispatch) => {
+  dispatch({ type: types.GET_PARTICIPANTS_REQUEST });
+  return axios
+    .get(`${serverUrl}/participant/name/?name=${name}`)
+    .then((res) => {
+      return dispatch({
+        type: types.GET_PARTICIPANTS_SUCCESS,
+        payload: res.data.message,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      return dispatch({ type: types.GET_PARTICIPANTS_FAILURE });
+    });
+};
+
 // cohort -------
 
 export const getAllCohorts = (dispatch) => {

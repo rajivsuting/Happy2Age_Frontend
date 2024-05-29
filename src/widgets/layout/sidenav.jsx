@@ -180,11 +180,11 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     Participant
                   </Typography>
 
-{
-  participantOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
-                  
+                  {participantOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {participantOpen ? (
@@ -277,10 +277,11 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     Cohort
                   </Typography>
 
-                  {
-  cohortOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
+                  {cohortOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {cohortOpen ? (
@@ -366,15 +367,16 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     className="text-[16px] flex justify-between items-center gap-4 font-medium capitalize"
                   >
                     <div className="text-maincolor2">
-                    <MdSportsKabaddi {...icon} />
+                      <MdSportsKabaddi {...icon} />
                     </div>
                     Activity
                   </Typography>
 
-                  {
-  activityOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
+                  {activityOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {activityOpen ? (
@@ -400,9 +402,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             className={`${
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
-                          >
-                            
-                          </span>
+                          ></span>
                           <Typography
                             color="inherit"
                             className="font-medium capitalize"
@@ -461,14 +461,17 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     color="inherit"
                     className="text-[16px] font-medium capitalize  flex justify-between items-center gap-4"
                   >
-                    <div className="text-maincolor2"><MdDomainVerification {...icon} /></div>
+                    <div className="text-maincolor2">
+                      <MdDomainVerification {...icon} />
+                    </div>
                     Evaluation master list
                   </Typography>
 
-                  {
-  domainOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
+                  {domainOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {domainOpen ? (
@@ -494,9 +497,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             className={`${
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
-                          >
-                            
-                          </span>
+                          ></span>
                           <Typography
                             color="inherit"
                             className="font-medium capitalize"
@@ -555,14 +556,18 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     color="inherit"
                     className="text-[16px] flex justify-between items-center gap-4 font-medium capitalize"
                   >
-                    <div className="text-maincolor2"> <AiOutlineFieldTime {...icon} /></div>
+                    <div className="text-maincolor2">
+                      {" "}
+                      <AiOutlineFieldTime {...icon} />
+                    </div>
                     Session
                   </Typography>
 
-                  {
-  sessionOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
+                  {sessionOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {sessionOpen ? (
@@ -588,9 +593,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             className={`${
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
-                          >
-                           
-                          </span>
+                          ></span>
                           <Typography
                             color="inherit"
                             className="font-medium capitalize"
@@ -648,13 +651,17 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     color="inherit"
                     className="text-[16px] flex justify-between items-center gap-4 font-medium capitalize"
                   >
-                    <div className="text-maincolor2"> <MdEditNote {...icon} /></div>
+                    <div className="text-maincolor2">
+                      {" "}
+                      <MdEditNote {...icon} />
+                    </div>
                     Evaluation
                   </Typography>
-                  {
-  evaluationOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
+                  {evaluationOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {evaluationOpen ? (
@@ -680,9 +687,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             className={`${
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
-                          >
-                           
-                          </span>
+                          ></span>
                           <Typography
                             color="inherit"
                             className="font-medium capitalize"
@@ -729,6 +734,40 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   </li>
                 </>
               ) : null}
+              <li>
+                <NavLink to={`/mainpage/cohort-report`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 px-8 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+               
+                      </span>
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        cohort report
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
               {/* evaluation-------------------------------------- */}
               {/* <li>
                 <NavLink to={`/mainpage/add-evaluation`}>
@@ -799,7 +838,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
               <li>
-                <NavLink >
+                <NavLink>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "text" : "text"}
@@ -813,9 +852,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                       className={`flex items-center gap-4 px-4 capitalize bg-white`}
                       fullWidth
                     >
-                      <span
-                            className={`text-maincolor2`}
-                          >
+                      <span className={`text-maincolor2`}>
                         <RectangleStackIcon {...icon} />
                       </span>
                       <Typography

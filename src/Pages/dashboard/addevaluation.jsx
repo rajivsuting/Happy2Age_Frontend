@@ -76,6 +76,10 @@ export const AddEvaluation = () => {
     };
   });
 
+  console.log(cohortList ,
+    sessionlist ,
+    domainList)
+
   // useEffect(()=>{
   //   axios.get(`${serverUrl}/domain/all/?category=All`).then((res) => {
   //     setDomainList(res.data.message);
@@ -95,6 +99,10 @@ export const AddEvaluation = () => {
     );
   }, [cohort]);
 
+  useEffect(()=>{
+    setDomainCategory(participantsFromSession?.filter((el)=>el._id == participant)[0]?.participantType)
+  },[participant])
+
   useEffect(() => {
     setActivityFromSession(
       sessionlist?.filter((el) => el._id === session)[0]?.activity
@@ -107,7 +115,6 @@ export const AddEvaluation = () => {
     );
   }, [domainCategory]);
 
-  console.log(domainList)
 
   // console.log(cohortList)
   const handleScoreChange = (domainIndex, questionIndex, newScore) => {
@@ -237,7 +244,7 @@ export const AddEvaluation = () => {
               );
             })}
           </select>
-          <select
+          {/* <select
             id=""
             name="domain"
             value={domainCategory} // Assuming domain.name is the identifier for domain object
@@ -248,7 +255,7 @@ export const AddEvaluation = () => {
             <option value="">Select evaluation type</option>;
             <option value="General">General</option>
             <option value="Special Need">Special Need</option>
-          </select>
+          </select> */}
         </div>
         {selectDomainByType?.map((domain, domainIndex) => (
           <Card className="w-[90%] m-auto mt-5" key={domainIndex}>

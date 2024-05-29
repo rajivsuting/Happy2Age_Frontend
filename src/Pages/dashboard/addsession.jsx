@@ -77,8 +77,10 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
       if (res.status==201){
         setIsSessionLoading(false);
         toast.success("Session added suucessfully", toastConfig);
-        dispatch(getAllSessions)
-        setSessionData(initialState);
+        dispatch(getAllSessions).then((res)=>{
+          setSessionData(initialState);
+          return true;
+        })
       } else {
         setIsSessionLoading(false);
         toast.error("Something went wrong", toastConfig);

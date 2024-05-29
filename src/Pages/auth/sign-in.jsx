@@ -13,12 +13,19 @@ import { serverUrl } from "../../api";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoginLoading, setIsLoginLoading] = useState(false)
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleSubmitLogin = (e) => {
     e.preventDefault();
@@ -74,14 +81,24 @@ export function SignIn() {
             type="email"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <div className="mt-5">
+          <div className="mt-5 relative">
             <Input
               label="Password"
               name="password"
               value={password}
-              type="password"
+              type={showPassword ? "text" : "password"}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <div
+                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? (
+                  <AiFillEyeInvisible fontSize={"20px"} />
+                ) : (
+                  <AiFillEye fontSize={"20px"} />
+                )}
+              </div>
           </div>
           {/* <Checkbox
             label={
