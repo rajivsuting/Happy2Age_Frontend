@@ -24,6 +24,7 @@ import {
   Evaluationlist,
   Adddomain,
   Cohortreport,
+  Cohortreportdetails,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -169,6 +170,12 @@ export const routes = [
         name: "cohort report",
         path: "/cohort-report",
         element: <Cohortreport />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "participant report details",
+        path: "/participant-report-details/:participantid",
+        element: <Cohortreportdetails />,
       },
     ],
   },

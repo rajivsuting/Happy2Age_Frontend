@@ -5,7 +5,7 @@ import { serverUrl } from "../../api";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import EditParticipants from "../../Componants/EditParticipants";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllParticipants, getParticipantsByName } from "../../Redux/AllListReducer/action";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
@@ -157,13 +157,13 @@ dispatch(getParticipantsByName(searchResult))
            return (
              <tr key={el._id}>
                <td className={classes}>
-                 <Typography
+                 <Link to={`/mainpage/participant-report-details/${el?._id}`}><Typography
                    variant="small"
                    color="blue-gray"
                    className="font-normal"
                  >
                    {el.name || "-"}
-                 </Typography>
+                 </Typography></Link>
                </td>
                <td className={classes}>
                  <Typography

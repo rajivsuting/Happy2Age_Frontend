@@ -5,6 +5,8 @@ import { serverUrl } from "../../api";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { CgSpinner } from "react-icons/cg";
+import { useDispatch } from "react-redux";
+import { getAllActivities } from "../../Redux/AllListReducer/action";
 
 const initialState = {
   name: "",
@@ -14,7 +16,7 @@ const initialState = {
 export const AddActivity = () => {
   const [activityData, setActivityData] = useState(initialState);
   const [isAddActivityLoading, setIsAddActivityLoading] = useState(false)
-
+const dispatch = useDispatch();
   const {name, description} = activityData
 
   const handleChangeInput = (e) => {
@@ -33,6 +35,7 @@ export const AddActivity = () => {
       if (res.status==201){
         toast.success("Activity added suucessfully", toastConfig);
         setActivityData(initialState);
+        dispatch(getAllActivities)
         setIsAddActivityLoading(false);
       } else {
         toast.error("Something went wrong", toastConfig);

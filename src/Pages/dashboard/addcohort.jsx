@@ -66,7 +66,7 @@ export const AddCohort = () => {
           toast.success("Cohort added successfully", toastConfig);
           setCohortData(initialState);
           setIsAddCohortLoading(false);
-          dispatch(getAllCohorts)
+          dispatch(getAllCohorts);
         } else {
           toast.error("Something went wrong", toastConfig);
         }

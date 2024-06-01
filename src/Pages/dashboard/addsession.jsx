@@ -26,7 +26,7 @@ export const AddSession = () => {
   const [sessionData, setSessionData] = useState(initialState);
   const [selectedCohort, setSelectedCohort] = useState("");
   const [selectedActivity, setselectedActivity] = useState("");
-const [isAddsessionLoading, setIsSessionLoading] = useState(false)
+  const [isAddsessionLoading, setIsSessionLoading] = useState(false);
   const { name, cohort, activity, date } = sessionData;
   const dispatch = useDispatch();
 
@@ -37,8 +37,6 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
       [name]: value,
     }));
   };
-
-
 
   const handleAddActivity = () => {
     if (selectedActivity !== "") {
@@ -60,38 +58,35 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
     });
   };
 
-  
-  const {cohortList,activityList} = useSelector((state)=>{
+  const { cohortList, activityList } = useSelector((state) => {
     return {
-      cohortList : state.AllListReducer.cohortList,
-      activityList:state.AllListReducer.activityList,
-    }
-  })
-
+      cohortList: state.AllListReducer.cohortList,
+      activityList: state.AllListReducer.activityList,
+    };
+  });
 
   const handleSubmitSession = (e) => {
     e.preventDefault();
-    setIsSessionLoading(true);
-    axios.post(`${serverUrl}/session/create`,sessionData)
-    .then((res)=>{
-      if (res.status==201){
-        setIsSessionLoading(false);
-        toast.success("Session added suucessfully", toastConfig);
-        dispatch(getAllSessions).then((res)=>{
-          setSessionData(initialState);
-          return true;
-        })
-      } else {
-        setIsSessionLoading(false);
-        toast.error("Something went wrong", toastConfig);
-      }
-    }).catch((err)=>{
-      setIsSessionLoading(false);
-      toast.error(err.response.data.error, toastConfig);
-    })
+    // setIsSessionLoading(true);
+    // axios.post(`${serverUrl}/session/create`,sessionData)
+    // .then((res)=>{
+    //   if (res.status==201){
+    //     setIsSessionLoading(false);
+    //     toast.success("Session added suucessfully", toastConfig);
+    //     dispatch(getAllSessions).then((res)=>{
+    //       setSessionData(initialState);
+    //       return true;
+    //     })
+    //   } else {
+    //     setIsSessionLoading(false);
+    //     toast.error("Something went wrong", toastConfig);
+    //   }
+    // }).catch((err)=>{
+    //   setIsSessionLoading(false);
+    //   toast.error(err.response.data.error, toastConfig);
+    // })
+    console.log(cohortList?.filter((el) => el._id == cohort));
   };
-
-
 
   return (
     <div className="flex justify-center items-center gap-10 mb-24">
@@ -145,7 +140,7 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
               label="Activity"
               name="activity"
               value={selectedActivity}
-              onChange={(e)=>setselectedActivity(e.target.value)}
+              onChange={(e) => setselectedActivity(e.target.value)}
               className="border border-gray-400 w-[80%] px-2 py-2 rounded-md"
             >
               <option value="">Select a activity</option>
@@ -161,7 +156,47 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
             </Button>
           </div>
         </div>
-        <div className="w-[100%] flex justify-start items-center m-auto gap-10 mt-5 px-8">
+        <div className="w-[100%] flex justify-between  m-auto gap-10 mt-5 px-8">
+          {cohort && (
+            <div className="w-[50%]">
+              <h3>Select Participants:</h3>
+              <div className="max-h-[30vh] overflow-y-auto">
+                <List className="">
+                  {cohortList
+                    ?.filter((el) => el._id == cohort)[0]
+                    ?.participants?.map((participant) => (
+                      // <div className="relative group">
+                        <ListItem
+                          className="flex justify-between items-center"
+                          key={participant._id}
+                        >
+                          <label className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={true}
+                              // onChange={() =>
+                              //   handleToggleParticipant(participant._id)
+                              // }
+                              className="mr-2 cursor-pointer"
+                              // required={!participants.length}
+                            />
+                            {participant.name}
+                          </label>
+                        </ListItem>
+                      //   <ul className="w-[200px] mt-[-10px] ml-[10px] shadow absolute hidden bg-white border rounded p-2 text-gray-700 group-hover:block z-50">
+                      //     <li className="w-full text-xs font-semibold">
+                      //       {participant.name}
+                      //     </li>
+                      //     <li className="w-full text-xs font-semibold">
+                      //       {participant.email}
+                      //     </li>
+                      //   </ul>
+                      // </div>
+                    ))}
+                </List>
+              </div>
+            </div>
+          )}
           {activity?.length ? (
             <div className="w-[50%] ml-3 mt-5">
               <h3>Activities:</h3>
@@ -174,7 +209,7 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
                     {activityList?.map((el) => {
                       if (el._id == activity) {
                         return el.name;
-                      } 
+                      }
                     })}
                     <AiFillDelete
                       onClick={() => handleRemoveActivity(activity)}
@@ -187,8 +222,12 @@ const [isAddsessionLoading, setIsSessionLoading] = useState(false)
         </div>
 
         <div className="w-[90%] text-center mt-5 m-auto">
-          <Button className="bg-maincolor" type="submit" disabled={isAddsessionLoading}>
-          {isAddsessionLoading ? (
+          <Button
+            className="bg-maincolor"
+            type="submit"
+            disabled={isAddsessionLoading}
+          >
+            {isAddsessionLoading ? (
               <CgSpinner size={18} className=" m-auto animate-spin" />
             ) : (
               "Add Session"

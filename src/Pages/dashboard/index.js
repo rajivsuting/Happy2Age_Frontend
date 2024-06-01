@@ -17,3 +17,6 @@ export * from "../../Pages/dashboard/addevaluation";
 export * from "../../Pages/dashboard/evaluationlist";
 export * from "../../Pages/dashboard/adddomain";
 export * from "../../Pages/dashboard/cohortreport";
+export * from "../../Pages/dashboard/cohortreportdetails";
+
+

@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 export const Sessionlist = () => {
 const dispatch = useDispatch();
 
-  
   const {sessionlist} = useSelector((state)=>{
     return {
       sessionlist : state.AllListReducer.sessionlist
@@ -84,7 +83,6 @@ const dispatch = useDispatch();
                 
               </Typography>
             </th>
-            
           </tr>
         </thead>
         <tbody>
