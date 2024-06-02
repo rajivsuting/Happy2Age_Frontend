@@ -26,6 +26,7 @@ export const AddSession = () => {
   const [sessionData, setSessionData] = useState(initialState);
   const [selectedCohort, setSelectedCohort] = useState("");
   const [selectedActivity, setselectedActivity] = useState("");
+  const [checkedBox, setCheckBox] = useState(false);
   const [isAddsessionLoading, setIsSessionLoading] = useState(false);
   const { name, cohort, activity, date } = sessionData;
   const dispatch = useDispatch();
@@ -67,25 +68,25 @@ export const AddSession = () => {
 
   const handleSubmitSession = (e) => {
     e.preventDefault();
-    // setIsSessionLoading(true);
-    // axios.post(`${serverUrl}/session/create`,sessionData)
-    // .then((res)=>{
-    //   if (res.status==201){
-    //     setIsSessionLoading(false);
-    //     toast.success("Session added suucessfully", toastConfig);
-    //     dispatch(getAllSessions).then((res)=>{
-    //       setSessionData(initialState);
-    //       return true;
-    //     })
-    //   } else {
-    //     setIsSessionLoading(false);
-    //     toast.error("Something went wrong", toastConfig);
-    //   }
-    // }).catch((err)=>{
-    //   setIsSessionLoading(false);
-    //   toast.error(err.response.data.error, toastConfig);
-    // })
-    console.log(cohortList?.filter((el) => el._id == cohort));
+    setIsSessionLoading(true);
+    axios.post(`${serverUrl}/session/create`,sessionData)
+    .then((res)=>{
+      if (res.status==201){
+        setIsSessionLoading(false);
+        toast.success("Session added suucessfully", toastConfig);
+        dispatch(getAllSessions).then((res)=>{
+          setSessionData(initialState);
+          return true;
+        })
+      } else {
+        setIsSessionLoading(false);
+        toast.error("Something went wrong", toastConfig);
+      }
+    }).catch((err)=>{
+      setIsSessionLoading(false);
+      toast.error(err.response.data.error, toastConfig);
+    })
+    // console.log(cohortList?.filter((el) => el._id == cohort));
   };
 
   return (
@@ -173,10 +174,9 @@ export const AddSession = () => {
                           <label className="flex items-center">
                             <input
                               type="checkbox"
-                              checked={true}
-                              // onChange={() =>
-                              //   handleToggleParticipant(participant._id)
-                              // }
+                              checked={checkedBox}
+                              onChange={(e)=>setCheckBox(!checkedBox)
+                              }
                               className="mr-2 cursor-pointer"
                               // required={!participants.length}
                             />

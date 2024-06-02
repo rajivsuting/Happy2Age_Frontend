@@ -76,22 +76,53 @@ export const Cohortreportdetails = () => {
     };
   });
 
-  const resultGraph = partcipantReportdata?.map((item) => {
-    const maxdomainAverageObject = item.list.reduce((max, obj) => {
-      return Number(obj.domainAverage) > Number(max.domainAverage) ? obj : max;
-    }, item.list[0]);
-    const newObject = {
-      domain: item.domainName,
-      maxValue: maxdomainAverageObject.domainAverage + 1,
-    };
-    // console.log(maxdomainAverageObject)
+  // const resultGraph = partcipantReportdata?.map((item) => {
+  //   const maxdomainAverageObject = item.list.reduce((max, obj) => {
+  //     return Number(obj.domainAverage) > Number(max.domainAverage) ? obj : max;
+  //   }, item.list[0]);
+  //   const newObject = {
+  //     domain: item.domainName,
+  //     maxValue: maxdomainAverageObject.domainAverage + 1,
+  //   };
+  //   // console.log(maxdomainAverageObject)
 
-    item.list.forEach((session) => {
-      newObject[session.sessionName] = Number(session.domainAverage);
+  //   item.list.forEach((session) => {
+  //     newObject[session.sessionName] = Number(session.domainAverage);
+  //   });
+
+  //   return newObject;
+  // });
+
+  const sessionMap = {};
+  let maxDomainAverage = -Infinity;
+  
+  // Collect all session data and find the maximum domainAverage
+  partcipantReportdata?.forEach(domain => {
+    const domainName = domain.domainName;
+    domain.list.forEach(session => {
+      const sessionName = session.sessionName;
+      const domainAverage = session.domainAverage;
+  
+      if (!sessionMap[sessionName]) {
+        sessionMap[sessionName] = { sessionName };
+      }
+      sessionMap[sessionName][domainName] = domainAverage;
+  
+      if (domainAverage > maxDomainAverage) {
+        maxDomainAverage = domainAverage;
+      }
     });
-
-    return newObject;
   });
+  
+  // Convert the sessionMap to the desired output array
+  const outPutArray = Object.values(sessionMap);
+  
+  // Add the maximum domainAverage to each session object
+  outPutArray.forEach(session => {
+    session.maxDomainAverage = maxDomainAverage + 1;
+  });
+  
+  console.log(outPutArray);
 
   return (
     <div className=" mt-5 mb-10">
@@ -231,28 +262,25 @@ export const Cohortreportdetails = () => {
           <LineChart
             width={760}
             height={300}
-            data={resultGraph}
+            data={outPutArray}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
             <CartesianGrid vertical={false} strokeDasharray={1} />
             <XAxis
-              dataKey="domain"
+              dataKey="sessionName"
               padding={{ left: 30, right: 30 }}
               tick={{ fontSize: 12 }}
             />
-            <YAxis dataKey="maxValue" tick={{ fontSize: 12 }} />
+            <YAxis dataKey="maxDomainAverage" tick={{ fontSize: 12 }} />
             <Tooltip />
             <Legend />
-            {partcipantReportdata &&
-              partcipantReportdata[0] &&
-              partcipantReportdata[0].list &&
-              partcipantReportdata[0].list.map((el, index) => {
+            {partcipantReportdata?.map((el, index) => {
                 // console.log(el.list[0])
                 return (
                   <Line
                     key={index}
                     type="monotone"
-                    dataKey={el.sessionName}
+                    dataKey={el.domainName}
                     stroke={darkColors[index]}
                     strokeWidth={3}
                     // dot={false}
