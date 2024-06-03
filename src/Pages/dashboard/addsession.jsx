@@ -22,12 +22,12 @@ const initialState = {
   activity: [],
   date: "",
 };
+
 export const AddSession = () => {
   const [sessionData, setSessionData] = useState(initialState);
-  const [selectedCohort, setSelectedCohort] = useState("");
-  const [selectedActivity, setselectedActivity] = useState("");
-  const [checkedBox, setCheckBox] = useState(false);
-  const [isAddsessionLoading, setIsSessionLoading] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState("");
+  const [isAddSessionLoading, setIsSessionLoading] = useState(false);
+  const [checkedParticipants, setCheckedParticipants] = useState({});
   const { name, cohort, activity, date } = sessionData;
   const dispatch = useDispatch();
 
@@ -45,14 +45,12 @@ export const AddSession = () => {
         ...sessionData,
         activity: [...activity, selectedActivity],
       });
-      setselectedActivity(""); // Reset selected participant
+      setSelectedActivity(""); // Reset selected activity
     }
   };
 
   const handleRemoveActivity = (activityToRemove) => {
-    const updatedActivity = activity.filter(
-      (activity) => activity !== activityToRemove
-    );
+    const updatedActivity = activity.filter((activity) => activity !== activityToRemove);
     setSessionData({
       ...sessionData,
       activity: updatedActivity,
@@ -66,27 +64,47 @@ export const AddSession = () => {
     };
   });
 
+  useEffect(() => {
+    if (cohort) {
+      const selectedCohort = cohortList.find((el) => el._id === cohort);
+      if (selectedCohort) {
+        const initialCheckedState = selectedCohort.participants.reduce((acc, participant) => {
+          acc[participant._id] = true;
+          return acc;
+        }, {});
+        setCheckedParticipants(initialCheckedState);
+      }
+    }
+  }, [cohort, cohortList]);
+
+  const handleCheckboxChange = (participantId) => {
+    setCheckedParticipants((prevCheckedParticipants) => ({
+      ...prevCheckedParticipants,
+      [participantId]: !prevCheckedParticipants[participantId],
+    }));
+  };
+
   const handleSubmitSession = (e) => {
     e.preventDefault();
     setIsSessionLoading(true);
-    axios.post(`${serverUrl}/session/create`,sessionData)
-    .then((res)=>{
-      if (res.status==201){
+    axios.post(`${serverUrl}/session/create`, sessionData)
+      .then((res) => {
+        if (res.status === 201) {
+          setIsSessionLoading(false);
+          toast.success("Session added successfully", toastConfig);
+          dispatch(getAllSessions).then((res) => {
+            setSessionData(initialState);
+            setCheckedParticipants({});
+            return true;
+          });
+        } else {
+          setIsSessionLoading(false);
+          toast.error("Something went wrong", toastConfig);
+        }
+      }).catch((err) => {
         setIsSessionLoading(false);
-        toast.success("Session added suucessfully", toastConfig);
-        dispatch(getAllSessions).then((res)=>{
-          setSessionData(initialState);
-          return true;
-        })
-      } else {
-        setIsSessionLoading(false);
-        toast.error("Something went wrong", toastConfig);
-      }
-    }).catch((err)=>{
-      setIsSessionLoading(false);
-      toast.error(err.response.data.error, toastConfig);
-    })
-    // console.log(cohortList?.filter((el) => el._id == cohort));
+        toast.error(err.response.data.error, toastConfig);
+      });
   };
 
   return (
@@ -126,27 +144,21 @@ export const AddSession = () => {
             >
               <option value="">Select cohort</option>
               {cohortList?.map((el) => {
-                return <option value={el._id}>{el.name}</option>;
+                return <option key={el._id} value={el._id}>{el.name}</option>;
               })}
             </select>
-            {/* <Button
-              className="w-[120px] bg-maincolor"
-              onClick={handleAddCohort}
-            >
-              Add
-            </Button> */}
           </div>
           <div className="w-[50%] flex justify-between items-center gap-5">
             <select
               label="Activity"
               name="activity"
               value={selectedActivity}
-              onChange={(e) => setselectedActivity(e.target.value)}
+              onChange={(e) => setSelectedActivity(e.target.value)}
               className="border border-gray-400 w-[80%] px-2 py-2 rounded-md"
             >
-              <option value="">Select a activity</option>
+              <option value="">Select an activity</option>
               {activityList?.map((el) => {
-                return <option value={el._id}>{el.name}</option>;
+                return <option key={el._id} value={el._id}>{el.name}</option>;
               })}
             </select>
             <Button
@@ -157,41 +169,29 @@ export const AddSession = () => {
             </Button>
           </div>
         </div>
-        <div className="w-[100%] flex justify-between  m-auto gap-10 mt-5 px-8">
+        <div className="w-[100%] flex justify-between m-auto gap-10 mt-5 px-8">
           {cohort && (
             <div className="w-[50%]">
               <h3>Select Participants:</h3>
               <div className="max-h-[30vh] overflow-y-auto">
-                <List className="">
+                <List>
                   {cohortList
-                    ?.filter((el) => el._id == cohort)[0]
+                    ?.find((el) => el._id === cohort)
                     ?.participants?.map((participant) => (
-                      // <div className="relative group">
-                        <ListItem
-                          className="flex justify-between items-center"
-                          key={participant._id}
-                        >
-                          <label className="flex items-center">
-                            <input
-                              type="checkbox"
-                              checked={checkedBox}
-                              onChange={(e)=>setCheckBox(!checkedBox)
-                              }
-                              className="mr-2 cursor-pointer"
-                              // required={!participants.length}
-                            />
-                            {participant.name}
-                          </label>
-                        </ListItem>
-                      //   <ul className="w-[200px] mt-[-10px] ml-[10px] shadow absolute hidden bg-white border rounded p-2 text-gray-700 group-hover:block z-50">
-                      //     <li className="w-full text-xs font-semibold">
-                      //       {participant.name}
-                      //     </li>
-                      //     <li className="w-full text-xs font-semibold">
-                      //       {participant.email}
-                      //     </li>
-                      //   </ul>
-                      // </div>
+                      <ListItem
+                        className="flex justify-between items-center"
+                        key={participant._id}
+                      >
+                        <label className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={checkedParticipants[participant._id] || false}
+                            onChange={() => handleCheckboxChange(participant._id)}
+                            className="mr-2 cursor-pointer"
+                          />
+                          {participant.name}
+                        </label>
+                      </ListItem>
                     ))}
                 </List>
               </div>
@@ -206,11 +206,7 @@ export const AddSession = () => {
                     className="w-[97%] flex justify-between items-center"
                     key={index}
                   >
-                    {activityList?.map((el) => {
-                      if (el._id == activity) {
-                        return el.name;
-                      }
-                    })}
+                    {activityList?.find((el) => el._id === activity)?.name}
                     <AiFillDelete
                       onClick={() => handleRemoveActivity(activity)}
                     />
@@ -225,10 +221,10 @@ export const AddSession = () => {
           <Button
             className="bg-maincolor"
             type="submit"
-            disabled={isAddsessionLoading}
+            disabled={isAddSessionLoading}
           >
-            {isAddsessionLoading ? (
-              <CgSpinner size={18} className=" m-auto animate-spin" />
+            {isAddSessionLoading ? (
+              <CgSpinner size={18} className="m-auto animate-spin" />
             ) : (
               "Add Session"
             )}
