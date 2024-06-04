@@ -1,4 +1,4 @@
-import { Card, Typography } from "@material-tailwind/react";
+import { Button, Card, Input, Typography } from "@material-tailwind/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
@@ -59,6 +59,27 @@ export const ActivityList = () => {
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
+      <div className="flex justify-between items-center gap-5 m-3">
+        <div className="w-[50%]">
+          <form className="flex justify-start items-center gap-5" >
+            <div className="w-[50%]">
+            <Input
+              label="Search by domain name..."
+              name="password"
+              // type="search"
+              required
+              // value={searchResult}
+              // type={showPassword ? "text" : "password"}
+              // onChange={(e) => setSearchResult(e.target.value)}
+            />
+
+            </div>
+            <Button type="submit" variant="">Search</Button>
+            <Button type="button"  variant="" >Clear</Button>
+          </form>
+        </div>
+       
+      </div>
       <table className="w-full min-w-max table-auto text-left">
         <thead>
           <tr>

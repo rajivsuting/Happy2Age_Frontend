@@ -192,7 +192,7 @@ export const Evaluationlist = () => {
                     onClick={()=>toggleModal(el)}
                     className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
                   >
-                    See deatails
+                    See details
                   </Typography>
                 </td>
                 {/* <td className={classes}>

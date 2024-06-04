@@ -72,7 +72,7 @@ export const Cohortlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Cohort name
+                Center name
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">

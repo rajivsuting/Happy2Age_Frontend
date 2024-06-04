@@ -182,7 +182,7 @@ export const AddEvaluation = () => {
             className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
             required
           >
-            <option value="">Select cohort</option>;
+            <option value="">Select center</option>;
             {cohortList.map((el) => {
               return (
                 <option key={el._id} value={el._id}>

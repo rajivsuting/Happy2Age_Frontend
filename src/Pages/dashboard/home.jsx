@@ -82,7 +82,7 @@ export function Home() {
         />
 
         <StatisticsCard
-          title={"Total cohorts"}
+          title={"Total centers"}
           icon={React.createElement(MdGroups, {
             className: "w-6 h-6 text-white",
           })}
@@ -135,7 +135,7 @@ export function Home() {
           >
             <div>
               <Typography variant="h6" color="blue-gray" className="mb-1">
-                Cohorts
+                Centers
               </Typography>
               {/* <Typography
                 variant="small"

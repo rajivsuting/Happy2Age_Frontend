@@ -26,6 +26,7 @@ import {
 } from "react-icons/md";
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { TiUser } from "react-icons/ti";
+import { TbReportAnalytics } from "react-icons/tb";
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -274,7 +275,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     <div className="text-maincolor2">
                       <GrGroup {...icon} />
                     </div>
-                    Cohort
+                    Center
                   </Typography>
 
                   {cohortOpen ? (
@@ -287,7 +288,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
               {cohortOpen ? (
                 <>
                   <li>
-                    <NavLink to={`/mainpage/add-cohort`}>
+                    <NavLink to={`/mainpage/add-center`}>
                       {({ isActive }) => (
                         <Button
                           variant={isActive ? "yellow" : "text"}
@@ -312,14 +313,14 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            add cohort
+                            add center
                           </Typography>
                         </Button>
                       )}
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to={`/mainpage/cohorts-list`}>
+                    <NavLink to={`/mainpage/centers-list`}>
                       {({ isActive }) => (
                         <Button
                           variant={isActive ? "yellow" : "text"}
@@ -346,7 +347,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            cohorts list
+                            centers list
                           </Typography>
                         </Button>
                       )}
@@ -735,7 +736,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </>
               ) : null}
               <li>
-                <NavLink to={`/mainpage/cohort-report`}>
+                <NavLink to={`/mainpage/center-report`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -746,28 +747,30 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           ? "white"
                           : "blue-gray"
                       }
-                      className={`flex items-center gap-4 px-8 capitalize ${
+                      className={`flex items-center gap-4 capitalize ${
                         isActive ? "bg-maincolor" : "bg-white"
                       }`}
                       fullWidth
                     >
                       <span
-                        className={`${
+                        className={`ml-[-8px] ${
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-               
+                        <TbReportAnalytics  {...icon}/>
                       </span>
+                      
                       <Typography
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                        cohort report
+                        Reports
                       </Typography>
                     </Button>
                   )}
                 </NavLink>
               </li>
+              {/* */}
               {/* evaluation-------------------------------------- */}
               {/* <li>
                 <NavLink to={`/mainpage/add-evaluation`}>

@@ -5,6 +5,7 @@ import axios from "axios";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import {CgSpinner} from "react-icons/cg"
+import { useSelector } from "react-redux";
 
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   email: "",
   dob: "",
   gender: "",
+  cohort : "",
   participantType: "",
   address: {
     addressLine: "",
@@ -27,7 +29,13 @@ const initialState = {
 }
 export const AddParticipant = () => {
     const [participantData, setParticipantData] = useState(initialState);
-    const [isAddParticipantsLoading, setIsAddParticipantsLoading] = useState(false)
+    const [isAddParticipantsLoading, setIsAddParticipantsLoading] = useState(false);
+    const {cohortList} = useSelector((state)=>{
+      return {
+        cohortList : state.AllListReducer.cohortList
+      }
+    })
+  
 
     const handleChangeInput = (e) => {
       const { name, value } = e.target;
@@ -80,6 +88,7 @@ export const AddParticipant = () => {
   
     const handleSubmitParticipant = (e) => {
       e.preventDefault();
+  // console.log(participantData);
       setIsAddParticipantsLoading(true);
       axios.post(`${serverUrl}/participant/create`,participantData)
       .then((res)=>{
@@ -106,9 +115,9 @@ export const AddParticipant = () => {
         <div className="w-[90%] flex justify-between items-center m-auto gap-10">
           <Input label="Name" name="name" required value={participantData.name} onChange={handleChangeInput} />
           <Input label="Email" name="email" required value={participantData.email} type="email" onChange={handleChangeInput} />
+          <Input label="Date of Birth" name="dob" required value={participantData.dob} type="date" onChange={handleChangeInput} />
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
-          <Input label="Date of Birth" name="dob" required value={participantData.dob} type="date" onChange={handleChangeInput} />
           <Select label="Gender" name="gender" required value={participantData.gender} onChange={(value)=>handleChangeGenderAndParticipants("gender",value)}>
             <Option value="Male">Male</Option>
             <Option value="Female">Female</Option>
@@ -118,6 +127,30 @@ export const AddParticipant = () => {
             <Option value="General">General</Option>
             <Option value="Special Need">Special Need</Option>
           </Select>
+          <Select label="Select center" required name="cohort" value={participantData.cohort} onChange={(value)=>handleChangeGenderAndParticipants("cohort",value)}>
+            {
+              cohortList?.map((el)=>{
+                return <Option value={el._id}>{el.name}</Option>
+              })
+            }
+          </Select>
+          {/* <select
+            id=""
+            name="cohort"
+            value={cohort}
+            onChange={handleChangeEvaluation}
+            className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
+            required
+          >
+            <option value="">Select cohort</option>;
+            {cohortList.map((el) => {
+              return (
+                <option key={el._id} value={el._id}>
+                  {el.name}
+                </option>
+              );
+            })}
+          </select> */}
         </div>
 
         {/* Address */}

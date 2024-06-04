@@ -5,9 +5,16 @@ import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
+import SeeDetailesActivity from "../../Componants/SeeDetailesActivity";
 
 export const Sessionlist = () => {
 const dispatch = useDispatch();
+const [isModalOpen, setIsModalOpen] = useState(false);
+// const [singleEvalustion, setSingleEvaluation] = useState({})
+const toggleModal = (el) => {
+   setIsModalOpen(!isModalOpen);
+  //  setSingleEvaluation(el)
+ };
 
   const {sessionlist} = useSelector((state)=>{
     return {
@@ -65,7 +72,7 @@ const dispatch = useDispatch();
                 
               </Typography>
             </th>
-            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+            {/* <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
               <Typography
                 variant="small"
                 color="blue-gray"
@@ -82,7 +89,7 @@ const dispatch = useDispatch();
               >
                 
               </Typography>
-            </th>
+            </th> */}
           </tr>
         </thead>
         <tbody>
@@ -130,6 +137,18 @@ const dispatch = useDispatch();
                     {el?.date.split("T")[0] || "-"}
                   </Typography>
                 </td>
+                <td className={classes}>
+                  <Typography
+                    as="a"
+                    href="#"
+                    variant="small"
+                    color="blue-gray"
+                    onClick={()=>toggleModal(el)}
+                    className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
+                  >
+                    See details
+                  </Typography>
+                </td>
                 {/* <td className={classes}>
                   <Typography
                     as="a"
@@ -168,6 +187,7 @@ const dispatch = useDispatch();
           })}
         </tbody>
       </table>
+      <SeeDetailesActivity isOpen={isModalOpen} onClose={toggleModal}/>
     </Card>
   );
 };

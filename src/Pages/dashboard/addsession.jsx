@@ -21,14 +21,15 @@ const initialState = {
   cohort: "",
   activity: [],
   date: "",
+  participants: [], // Add this line to include participants in sessionData
 };
 
 export const AddSession = () => {
   const [sessionData, setSessionData] = useState(initialState);
   const [selectedActivity, setSelectedActivity] = useState("");
   const [isAddSessionLoading, setIsSessionLoading] = useState(false);
-  const [checkedParticipants, setCheckedParticipants] = useState({});
-  const { name, cohort, activity, date } = sessionData;
+  const [checkedParticipants, setCheckedParticipants] = useState([]);
+  const { name, cohort, activity, date, participants } = sessionData; // Include participants here
   const dispatch = useDispatch();
 
   const handleChangeInput = (e) => {
@@ -68,21 +69,32 @@ export const AddSession = () => {
     if (cohort) {
       const selectedCohort = cohortList.find((el) => el._id === cohort);
       if (selectedCohort) {
-        const initialCheckedState = selectedCohort.participants.reduce((acc, participant) => {
-          acc[participant._id] = true;
-          return acc;
-        }, {});
+        const initialCheckedState = selectedCohort.participants.map(participant => participant._id);
         setCheckedParticipants(initialCheckedState);
+        setSessionData((prevData) => ({
+          ...prevData,
+          participants: initialCheckedState
+        }));
       }
     }
   }, [cohort, cohortList]);
 
   const handleCheckboxChange = (participantId) => {
-    setCheckedParticipants((prevCheckedParticipants) => ({
-      ...prevCheckedParticipants,
-      [participantId]: !prevCheckedParticipants[participantId],
-    }));
+    setCheckedParticipants((prevCheckedParticipants) => {
+      if (prevCheckedParticipants.includes(participantId)) {
+        return prevCheckedParticipants.filter((id) => id !== participantId);
+      } else {
+        return [...prevCheckedParticipants, participantId];
+      }
+    });
   };
+
+  useEffect(() => {
+    setSessionData((prevData) => ({
+      ...prevData,
+      participants: checkedParticipants
+    }));
+  }, [checkedParticipants]);
 
   const handleSubmitSession = (e) => {
     e.preventDefault();
@@ -94,7 +106,7 @@ export const AddSession = () => {
           toast.success("Session added successfully", toastConfig);
           dispatch(getAllSessions).then((res) => {
             setSessionData(initialState);
-            setCheckedParticipants({});
+            setCheckedParticipants([]);
             return true;
           });
         } else {
@@ -105,7 +117,9 @@ export const AddSession = () => {
         setIsSessionLoading(false);
         toast.error(err.response.data.error, toastConfig);
       });
+    // console.log(sessionData);
   };
+
 
   return (
     <div className="flex justify-center items-center gap-10 mb-24">
@@ -142,7 +156,7 @@ export const AddSession = () => {
               onChange={handleChangeInput}
               className="border border-gray-400 w-[100%] px-2 py-2 rounded-md"
             >
-              <option value="">Select cohort</option>
+              <option value="">Select center</option>
               {cohortList?.map((el) => {
                 return <option key={el._id} value={el._id}>{el.name}</option>;
               })}
@@ -185,7 +199,7 @@ export const AddSession = () => {
                         <label className="flex items-center">
                           <input
                             type="checkbox"
-                            checked={checkedParticipants[participant._id] || false}
+                            checked={checkedParticipants.includes(participant._id)}
                             onChange={() => handleCheckboxChange(participant._id)}
                             className="mr-2 cursor-pointer"
                           />

@@ -85,12 +85,12 @@ export const AddCohort = () => {
       >
         {/* Basic details */}
         <div className="w-[90%] m-auto mb-5 flex justify-center items-center">
-          <div className="w-[15%]">Cohort details</div>{" "}
+          <div className="w-[15%]">Center details</div>{" "}
           <hr className="w-[85%] border" />
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
           <Input
-            label="Name of Cohort"
+            label="Name of Center"
             name="name"
             value={name}
             onChange={handleChangeInput}
@@ -179,7 +179,7 @@ export const AddCohort = () => {
             {isAddCohortLoading ? (
               <CgSpinner size={18} className="m-auto animate-spin" />
             ) : (
-              "Add Cohort"
+              "Add Center"
             )}
           </Button>
         </div>

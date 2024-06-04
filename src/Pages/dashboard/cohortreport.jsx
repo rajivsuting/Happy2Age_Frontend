@@ -98,7 +98,7 @@ export const Cohortreport = () => {
             onChange={(e) => setCohortSelect(e.target.value)}
             required
           >
-            <option value="">Select a cohort</option>
+            <option value="">Select a center</option>
             {cohortList?.map((el) => {
               return <option value={el._id}>{el.name}</option>;
             })}
@@ -136,7 +136,7 @@ export const Cohortreport = () => {
         <div className="w-[100%] m-auto bg-white shadow rounded-xl px-8 py-4 mt-5">
           <div className="flex justify-between m-auto gap-10">
             <div className="w-[50%] font-normal">
-              Cohort :{" "}
+              Center :{" "}
               <b>
                 {cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
                   "Unknown"}
@@ -180,7 +180,7 @@ export const Cohortreport = () => {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Cohort
+                    Center
                   </Typography>
                 </th>
                 {/* <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -270,10 +270,10 @@ export const Cohortreport = () => {
                 return (
                   <tr key={el._id}>
                     <td className={classes}>
-                      {/* <Link
-                    to={`/mainpage/cohort-report-details/${el.participant?._id}`}
+                      <Link
+                    to={`/mainpage/participant-report-details/${el.participant?._id}`}
                   >
-                    {" "} */}
+                    {" "}
                       <Typography
                         variant="small"
                         color="blue-gray"
@@ -281,7 +281,7 @@ export const Cohortreport = () => {
                       >
                         {el.participant?.name}
                       </Typography>
-                      {/* </Link> */}
+                      </Link>
                     </td>
                     <td className={classes}>
                       <Typography
@@ -382,7 +382,8 @@ export const Cohortreport = () => {
           value={remarks}
           onChange={(e) => setRemarks(e.target.value)}
         />
-        <div className="text-end mt-5">
+        <div className="flex justify-end gap-5 mt-5">
+        <Button >Export to excel</Button>
           <Button onClick={generatePDF}>Generate PDF</Button>
         </div>
       </div>

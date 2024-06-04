@@ -391,7 +391,8 @@ export const Cohortreportdetails = () => {
           value={remarks}
           onChange={(e) => setRemarks(e.target.value)}
         />
-        <div className="text-end mt-5">
+       <div className="flex justify-end gap-5 mt-5">
+        <Button >Export to excel</Button>
           <Button onClick={generatePDF}>Generate PDF</Button>
         </div>
       </div>

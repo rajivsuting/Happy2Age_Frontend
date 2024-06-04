@@ -157,13 +157,13 @@ dispatch(getParticipantsByName(searchResult))
            return (
              <tr key={el._id}>
                <td className={classes}>
-                 <Link to={`/mainpage/participant-report-details/${el?._id}`}><Typography
+                <Typography
                    variant="small"
                    color="blue-gray"
                    className="font-normal"
                  >
                    {el.name || "-"}
-                 </Typography></Link>
+                 </Typography>
                </td>
                <td className={classes}>
                  <Typography
