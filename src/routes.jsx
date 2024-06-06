@@ -25,6 +25,7 @@ import {
   Adddomain,
   Cohortreport,
   Cohortreportdetails,
+  OxfordHappiness,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -176,6 +177,12 @@ export const routes = [
         name: "participant report details",
         path: "/participant-report-details/:participantid",
         element: <Cohortreportdetails />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "Oxford Happiness",
+        path: "/oxford-happiness-questionnaire/",
+        element: <OxfordHappiness/>,
       },
     ],
   },

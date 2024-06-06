@@ -18,5 +18,6 @@ export * from "../../Pages/dashboard/evaluationlist";
 export * from "../../Pages/dashboard/adddomain";
 export * from "../../Pages/dashboard/cohortreport";
 export * from "../../Pages/dashboard/cohortreportdetails";
+export * from "../../Pages/dashboard/oxfordHappiness";
 
 
