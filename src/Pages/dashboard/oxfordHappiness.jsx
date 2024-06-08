@@ -76,9 +76,7 @@ export const OxfordHappiness = () => {
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
-    const totalScore = questions.reduce((acc, q) => acc + q.score, 0);
-    const data = { ...questionData, totalScore };
-    console.log(data);
+    console.log(questionData);
     // Here you can send data to the backend
   };
 

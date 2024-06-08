@@ -1,4 +1,3 @@
-
 export * from "../../Pages/dashboard/home";
 export * from "../../Pages/dashboard/profile";
 export * from "../../Pages/dashboard/tables";
@@ -19,5 +18,6 @@ export * from "../../Pages/dashboard/adddomain";
 export * from "../../Pages/dashboard/cohortreport";
 export * from "../../Pages/dashboard/cohortreportdetails";
 export * from "../../Pages/dashboard/oxfordHappiness";
+export * from "../../Pages/dashboard/caspQuestions";
 
 

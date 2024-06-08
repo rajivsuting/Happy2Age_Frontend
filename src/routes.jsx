@@ -26,6 +26,7 @@ import {
   Cohortreport,
   Cohortreportdetails,
   OxfordHappiness,
+  CaspQuestions,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -183,6 +184,12 @@ export const routes = [
         name: "Oxford Happiness",
         path: "/oxford-happiness-questionnaire/",
         element: <OxfordHappiness/>,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "CASP-19 QUESTIONNAIRE",
+        path: "/casp-questionnaire/",
+        element: <CaspQuestions/>,
       },
     ],
   },
