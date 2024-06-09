@@ -1,4 +1,4 @@
-import { Button, Input, Select, Option } from "@material-tailwind/react";
+import { Button, Input, Select, Option, Textarea } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { serverUrl } from "../../api";
 import axios from "axios";
@@ -14,6 +14,7 @@ const initialState = {
   dob: "",
   gender: "",
   cohort : "",
+  participantBio:"",
   participantType: "",
   address: {
     addressLine: "",
@@ -88,7 +89,7 @@ export const AddParticipant = () => {
   
     const handleSubmitParticipant = (e) => {
       e.preventDefault();
-  // console.log(participantData);
+  console.log(participantData);
       setIsAddParticipantsLoading(true);
       axios.post(`${serverUrl}/participant/create`,participantData)
       .then((res)=>{
@@ -127,7 +128,7 @@ export const AddParticipant = () => {
             <Option value="General">General</Option>
             <Option value="Special Need">Special Need</Option>
           </Select>
-          <Select label="Select center" required name="cohort" value={participantData.cohort} onChange={(value)=>handleChangeGenderAndParticipants("cohort",value)}>
+          <Select label="Select center" name="cohort" value={participantData.cohort} onChange={(value)=>handleChangeGenderAndParticipants("cohort",value)}>
             {
               cohortList?.map((el)=>{
                 return <Option value={el._id}>{el.name}</Option>
@@ -174,6 +175,9 @@ export const AddParticipant = () => {
           <Input label="Name" required name="name" value={participantData.emergencyContact.name} onChange={handleChangeEmergencyContact} />
           <Input maxLength={10} required minLength={10} label="Phone" name="phone" value={participantData.emergencyContact.phone} onChange={handleChangeEmergencyContact} />
           <Input label="Relationship" required name="relationship" value={participantData.emergencyContact.relationship} onChange={handleChangeEmergencyContact} />
+        </div>
+        <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
+        <Textarea label="About participant" name="participantBio" required value={participantData.participantBio} onChange={handleChangeInput} />
         </div>
 
         <div className="w-[90%] text-center mt-5 m-auto">
