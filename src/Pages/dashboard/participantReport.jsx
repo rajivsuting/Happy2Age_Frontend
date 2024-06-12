@@ -17,11 +17,10 @@ import {
   XAxis,
   YAxis,
   Line,
-  LabelList
+  LabelList,
 } from "recharts";
 import { Link } from "react-router-dom";
-import { cohortDataForGraph } from "./dummy";
-
+import { participantReportGraph } from "./dummy";
 
 const darkColors = [
   "#17a589",
@@ -40,11 +39,28 @@ const darkColors = [
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
+    const barData = payload.find((p) => p.dataKey === "average");
+    const lineData = payload.find((p) => p.dataKey === "chortaverage");
+
+    console.log(lineData);
+
     return (
-      <div className="custom-tooltip" style={{ backgroundColor: '#fff', padding: '10px', border: '1px solid #ccc' }}>
+      <div
+        className="custom-tooltip"
+        style={{
+          backgroundColor: "#fff",
+          padding: "10px",
+          border: "1px solid #ccc",
+        }}
+      >
         <p className="label">{`Domain: ${label}`}</p>
-        <p className="intro">{`Average: ${payload[0].value}`}</p>
-        <p className="desc">{`Number of Sessions: ${payload[0].payload.numberOfSessions}`}</p>
+        {barData && <p className="intro">{`Average: ${barData.value}`}</p>}
+        {lineData && (
+          <p className="desc">{`Chort Average: ${lineData.value}`}</p>
+        )}
+        {barData && (
+          <p className="desc">{`Number of Sessions: ${barData.payload.numberOfSessions}`}</p>
+        )}
       </div>
     );
   }
@@ -66,11 +82,12 @@ const CustomBar = (props) => {
   );
 };
 
-export const Cohortreport = () => {
+export const ParticipantReport = () => {
   const [evalutionlist, setEvalutionlist] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cohortSelect, setCohortSelect] = useState(
-    "665a11a12046aa42c1ae540c" || ""
+  const [allParticipants, setAllParticipants] = useState([]);
+  const [singleParticipant, setSingleParticipant] = useState(
+    "6647108b4130b27400c0e041" || ""
   );
   const [sessionSelect, setSessionSelect] = useState("");
   const [getReportData, setGetReportData] = useState([]);
@@ -123,7 +140,18 @@ export const Cohortreport = () => {
     onAfterPrint: () => toast.success("PDF file download successfully"),
   });
 
-  console.log(cohortList);
+  useEffect(() => {
+    axios
+      .get(`${serverUrl}/participant/all`)
+      .then((res) => {
+        setAllParticipants(res.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  console.log(allParticipants);
 
   return (
     <div className="mb-24">
@@ -133,18 +161,18 @@ export const Cohortreport = () => {
           className="flex justify-center items-center gap-3"
         >
           <select
-            name=""
-            id=""
-            value={"665a11a12046aa42c1ae540c"}
-            className="border px-2 py-3 rounded-md mt-3 mb-3"
-            onChange={(e) => setCohortSelect(e.target.value)}
+            className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
+            value={singleParticipant}
+            onChange={(e) => setSingleParticipant(e.target.value)}
             required
             disabled
           >
-            <option value="">Select a center</option>
-            {cohortList?.map((el) => {
-              return <option value={el._id}>{el.name}</option>;
-            })}
+            <option value="">Select Participant</option>
+            {allParticipants?.map((el, index) => (
+              <option key={index} value={el._id}>
+                {el.name}
+              </option>
+            ))}
           </select>
           <select
             name=""
@@ -182,24 +210,17 @@ export const Cohortreport = () => {
             <div className="w-[50%] font-normal">
               Center :{" "}
               <b>
-                {cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
-                  "Unknown"}
+                {allParticipants?.filter((el) => el._id == singleParticipant)[0]
+                  ?.name || "Unknown"}
               </b>
               {/* <b>{filterParticipant?.name}</b> */}
             </div>
             <div className="w-[50%] font-normal">
-              No. of participant :{" "}
-              <b>
-                {cohortList?.filter((el) => el._id == cohortSelect)[0]
-                  ?.participants?.length || "0"}
-              </b>
-              {/* <b>{filterParticipant?.name}</b> */}
+              Total no. of sessions :{" "}
+              <b>{participantReportGraph.TotalnumberOfSessions}</b>
             </div>
             <div className="w-[50%] font-normal">
-              Total sessions : <b>{cohortDataForGraph.TotalnumberOfSessions}</b>
-            </div>
-            <div className="w-[50%] font-normal">
-              Attendence : <b>{cohortDataForGraph.attendence}</b>
+              Attendence : <b>{participantReportGraph.attendence}</b>
             </div>
           </div>
         </div>
@@ -303,16 +324,32 @@ export const Cohortreport = () => {
           </table>
         </Card> */}
         <div className="w-[100%] flex justify-center items-center m-auto mt-12">
-        <BarChart width={1100} height={500} data={cohortDataForGraph.graphDetails}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis minTickGap={1} dataKey="domainName" tick={{ fontSize: 12 }} />
-        <YAxis tick={{ fontSize: 12 }} />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend />
-        <Bar dataKey="average" fill="#4A3AFF" barSize={20} radius={[5, 5, 0, 0]} >
-          <LabelList dataKey="numberOfSessions" position="top" />
-        </Bar>
-      </BarChart>
+          <BarChart
+            width={1100}
+            height={500}
+            data={participantReportGraph.graphDetails}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              minTickGap={1}
+              dataKey="domainName"
+              tick={{ fontSize: 12 }}
+            />
+            <YAxis tick={{ fontSize: 12 }} />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
+            <Bar
+              dataKey="average"
+              fill="#4A3AFF"
+              barSize={20}
+              radius={[5, 5, 0, 0]}
+            >
+              <LabelList dataKey="numberOfSessions" position="top" />
+            </Bar>
+            {participantReportGraph.graphDetails[0].chortaverage !== undefined && (
+          <Line type="monotone" dataKey="chortaverage" stroke="#FF0000" activeDot={{ r: 8 }} />
+        )}
+          </BarChart>
         </div>
         <div className="mt-5">
           <i>Remarks : {remarks}</i>
@@ -336,4 +373,4 @@ export const Cohortreport = () => {
   );
 };
 
-export default Cohortreport;
+export default ParticipantReport;

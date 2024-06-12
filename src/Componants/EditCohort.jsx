@@ -43,11 +43,11 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
 
   const handleToggleParticipant = (participantId) => {
     setCohortData((prevData) => {
-      if (prevData.participants.filter((el)=>el._id == participantId).length) {
+      if (prevData.participants.includes(participantId)) {
         return {
           ...prevData,
           participants: prevData.participants.filter(
-            (el) => el._id !== participantId
+            (id) => id !== participantId
           ),
         };
       } else {
@@ -109,44 +109,33 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
               <h3>Select Participants:</h3>
               <div className="max-h-[30vh] overflow-y-auto">
                 <List className="grid grid-cols-4 gap-4">
-                  {allParticipants.map((participant) => {
-                    console.log(participants &&
-                      participants.includes(participant._id))
-                    return (
-                      <div className="relative group">
-                        <ListItem
-                          className="flex justify-between items-center"
-                          key={participant._id}
-                        >
-                          <label className="flex items-center">
-                            <input
-                              type="checkbox"
-                              checked={
-                                participants &&
-                                participants.filter((el)=>el._id == participant._id).length
-                              }
-                              onChange={() =>
-                                handleToggleParticipant(participant._id)
-                              }
-                              className="mr-2 cursor-pointer"
-                              required={!participants?.length}
-                            />
-                            {participant.name.length > 10
-                              ? participant.name.substring(0, 10) + "..."
-                              : participant.name}
-                          </label>
-                        </ListItem>
-                        <ul className="w-[200px] mt-[-10px] ml-[10px] shadow absolute hidden bg-white border rounded p-2 text-gray-700 group-hover:block z-50">
-                          <li className="w-full text-xs font-semibold">
-                            {participant.name}
-                          </li>
-                          <li className="w-full text-xs font-semibold">
-                            {participant.email}
-                          </li>
-                        </ul>
-                      </div>
-                    );
-                  })}
+                  {allParticipants.map((participant) => (
+                    <div key={participant._id} className="relative group">
+                      <ListItem
+                        className="flex justify-between items-center"
+                      >
+                        <label className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={participants.includes(participant._id)}
+                            onChange={() => handleToggleParticipant(participant._id)}
+                            className="mr-2 cursor-pointer"
+                          />
+                          {participant.name.length > 10
+                            ? participant.name.substring(0, 10) + "..."
+                            : participant.name}
+                        </label>
+                      </ListItem>
+                      <ul className="w-[200px] mt-[-10px] ml-[10px] shadow absolute hidden bg-white border rounded p-2 text-gray-700 group-hover:block z-50">
+                        <li className="w-full text-xs font-semibold">
+                          {participant.name}
+                        </li>
+                        <li className="w-full text-xs font-semibold">
+                          {participant.email}
+                        </li>
+                      </ul>
+                    </div>
+                  ))}
                 </List>
               </div>
             </div>

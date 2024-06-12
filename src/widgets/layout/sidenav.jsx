@@ -764,7 +764,42 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                        Reports
+                        Center report
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to={`/mainpage/participant-report`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics  {...icon}/>
+                      </span>
+                      
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Participant report
                       </Typography>
                     </Button>
                   )}
@@ -840,6 +875,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   )}
                 </NavLink>
               </li>
+              
               {/* */}
               {/* evaluation-------------------------------------- */}
               {/* <li>

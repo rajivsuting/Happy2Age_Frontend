@@ -27,6 +27,7 @@ import {
   Cohortreportdetails,
   OxfordHappiness,
   CaspQuestions,
+  ParticipantReport,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -172,6 +173,12 @@ export const routes = [
         name: "center report",
         path: "/center-report",
         element: <Cohortreport />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "participant report",
+        path: "/participant-report",
+        element: <ParticipantReport/>,
       },
       {
         icon: <HomeIcon {...icon} />,

@@ -21,7 +21,7 @@ const initialState = {
   cohort: "",
   activity: [],
   date: "",
-  participants: [], // Add this line to include participants in sessionData
+  participants: [],
 };
 
 export const AddSession = () => {
@@ -29,7 +29,7 @@ export const AddSession = () => {
   const [selectedActivity, setSelectedActivity] = useState("");
   const [isAddSessionLoading, setIsSessionLoading] = useState(false);
   const [checkedParticipants, setCheckedParticipants] = useState([]);
-  const { name, cohort, activity, date, participants } = sessionData; // Include participants here
+  const { name, cohort, activity, date, participants } = sessionData;
   const dispatch = useDispatch();
 
   const handleChangeInput = (e) => {
@@ -69,7 +69,10 @@ export const AddSession = () => {
     if (cohort) {
       const selectedCohort = cohortList.find((el) => el._id === cohort);
       if (selectedCohort) {
-        const initialCheckedState = selectedCohort.participants.map(participant => participant._id);
+        const initialCheckedState = selectedCohort.participants.map(participant => ({
+          participantId: participant._id,
+          cohortId: cohort
+        }));
         setCheckedParticipants(initialCheckedState);
         setSessionData((prevData) => ({
           ...prevData,
@@ -81,10 +84,10 @@ export const AddSession = () => {
 
   const handleCheckboxChange = (participantId) => {
     setCheckedParticipants((prevCheckedParticipants) => {
-      if (prevCheckedParticipants.includes(participantId)) {
-        return prevCheckedParticipants.filter((id) => id !== participantId);
+      if (prevCheckedParticipants.some(participant => participant.participantId === participantId)) {
+        return prevCheckedParticipants.filter((participant) => participant.participantId !== participantId);
       } else {
-        return [...prevCheckedParticipants, participantId];
+        return [...prevCheckedParticipants, { participantId, cohortId: cohort }];
       }
     });
   };
@@ -98,7 +101,8 @@ export const AddSession = () => {
 
   const handleSubmitSession = (e) => {
     e.preventDefault();
-    setIsSessionLoading(true);
+    // setIsSessionLoading(true);
+    console.log(sessionData)
     axios.post(`${serverUrl}/session/create`, sessionData)
       .then((res) => {
         if (res.status === 201) {
@@ -117,7 +121,6 @@ export const AddSession = () => {
         setIsSessionLoading(false);
         toast.error(err.response.data.error, toastConfig);
       });
-    // console.log(sessionData);
   };
 
 
@@ -199,7 +202,7 @@ export const AddSession = () => {
                         <label className="flex items-center">
                           <input
                             type="checkbox"
-                            checked={checkedParticipants.includes(participant._id)}
+                            checked={checkedParticipants.some(p => p.participantId === participant._id)}
                             onChange={() => handleCheckboxChange(participant._id)}
                             className="mr-2 cursor-pointer"
                           />
