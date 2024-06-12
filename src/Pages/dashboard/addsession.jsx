@@ -101,8 +101,8 @@ export const AddSession = () => {
 
   const handleSubmitSession = (e) => {
     e.preventDefault();
-    // setIsSessionLoading(true);
-    console.log(sessionData)
+    setIsSessionLoading(true);
+    // console.log(sessionData)
     axios.post(`${serverUrl}/session/create`, sessionData)
       .then((res) => {
         if (res.status === 201) {
