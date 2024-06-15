@@ -5,7 +5,8 @@ import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
-import SeeDetailesActivity from "../../Componants/SeeDetailesActivity";
+import SeeDetailesSession from "../../Componants/SeeDetailesSession";
+
 
 export const Sessionlist = () => {
 const dispatch = useDispatch();
@@ -21,8 +22,6 @@ const toggleModal = (el) => {
       sessionlist : state.AllListReducer.sessionlist
     }
   })
-
-  console.log(sessionlist);
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -189,7 +188,7 @@ const toggleModal = (el) => {
           })}
         </tbody>
       </table>
-      <SeeDetailesActivity isOpen={isModalOpen} onClose={toggleModal} singleSession={singleSession}/>
+      <SeeDetailesSession isOpen={isModalOpen} onClose={toggleModal} singleSession={singleSession}/>
     </Card>
   );
 };

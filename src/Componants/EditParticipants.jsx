@@ -6,11 +6,15 @@ import { toastConfig } from "../App";
 import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
+import { useDispatch } from "react-redux";
+import { getAllParticipants } from "../Redux/AllListReducer/action";
 
 const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
   const [participantData, setParticipantData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isEditParticipant, setIsEditParticipant] = useState(false);
+  // const [isEditParticipantLoading, setIsEditParticipantLoadingLoading] = useState(false);
+  const [isEditParticipantLoading, setIsEditParticipantLoading] = useState(false);
+  const dispatch = useDispatch();
   useEffect(() => {
     if (singleParticipant) {
       setParticipantData(singleParticipant);
@@ -69,7 +73,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
 
   const handleSubmitParticipant = (e) => {
     e.preventDefault();
-    setIsEditParticipant(true);
+    setIsEditParticipantLoading(true);
     axios
       .patch(
         `${serverUrl}/participant/edit/${searchParams.get("id")}`,
@@ -77,16 +81,18 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
       )
       .then((res) => {
         if (res.status === 200) {
-          toast.success("Participant edited successfully", toastConfig);
-          window.location.reload();
-          setIsEditParticipant(false);
+          dispatch(getAllParticipants("","")).then((res)=>{
+            toast.success("Participant edited successfully", toastConfig);
+            onClose();
+          })
+          setIsEditParticipantLoading(false);
         } else {
-          setIsEditParticipant(false);
+          setIsEditParticipantLoading(false);
           toast.error("Something went wrong", toastConfig);
         }
       })
       .catch((err) => {
-        setIsEditParticipant(false);
+        setIsEditParticipantLoading(false);
         toast.error(err.response.data.error, toastConfig);
       });
   };
@@ -97,7 +103,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
         <div className="flex items-center p-4 font-sans text-2xl font-semibold text-blue-gray-900">
           Edit participant
         </div>
-        <div className="flex justify-center items-center gap-10 ">
+        <div className="px-4">
           <form
             className="m-auto rounded-xl "
             onSubmit={handleSubmitParticipant}
@@ -225,8 +231,8 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
               >
                 Close
               </button>
-              <Button className="bg-maincolor" type="submit" disabled={isAddsessionLoading}>
-                {isAddsessionLoading ? (
+              <Button className="bg-maincolor" type="submit" disabled={isEditParticipantLoading}>
+                {isEditParticipantLoading ? (
                   <CgSpinner size={18} className=" m-auto animate-spin" />
                 ) : (
                   "Edit participant"

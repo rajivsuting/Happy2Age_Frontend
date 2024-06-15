@@ -21,6 +21,26 @@ export const getAllParticipants = (page="", limit="")=>(dispatch) => {
 };
 
 
+// admins ---------------------------
+
+export const getAllAdmins =(dispatch) => {
+  dispatch({ type: types.GET_ADMIN_REQUEST });
+  return axios
+    .get(`${serverUrl}/auth/alluser`)
+    .then((res) => {
+      console.log(res);
+      return dispatch({
+        type: types.GET_ADMIN_SUCCESS,
+        payload: res.data.message,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      return dispatch({ type: types.GET_ADMIN_FAILURE });
+    });
+};
+
+
 // get partcicipants by name --------------------------
 
 export const getParticipantsByName = (name)=>(dispatch) => {

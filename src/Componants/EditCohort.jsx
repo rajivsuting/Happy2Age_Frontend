@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
 
-const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
+const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
   const [cohortData, setCohortData] = useState(null);
   const [allParticipants, setAllParticipants] = useState([]);
   const [isEditCohortLoading, setIsEditCohortLoading] = useState(false);
@@ -19,20 +19,11 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
     }
   }, [singleCohort]);
 
-  useEffect(() => {
-    axios
-      .get(`${serverUrl}/participant/all`)
-      .then((res) => {
-        setAllParticipants(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+
 
   if (!isOpen || !cohortData) return null;
 
-  const { name, participants } = cohortData;
+  const { name } = cohortData;
 
   const handleChangeInput = (e) => {
     setCohortData({
@@ -41,23 +32,6 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
     });
   };
 
-  const handleToggleParticipant = (participantId) => {
-    setCohortData((prevData) => {
-      if (prevData.participants.includes(participantId)) {
-        return {
-          ...prevData,
-          participants: prevData.participants.filter(
-            (id) => id !== participantId
-          ),
-        };
-      } else {
-        return {
-          ...prevData,
-          participants: [...prevData.participants, participantId],
-        };
-      }
-    });
-  };
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
@@ -66,9 +40,10 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
       .patch(`${serverUrl}/cohort/edit/${searchParams.get("id")}`, cohortData)
       .then((res) => {
         if (res.status === 200) {
-          getAlldata().then((res)=>{
+          getAllCohorts().then((res)=>{
             setIsEditCohortLoading(false);
             toast.success("Cohort edited successfully", toastConfig);
+            onClose();
           }); // Call the function to refresh the data
         } else {
           setIsEditCohortLoading(false);
@@ -76,26 +51,21 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
         }
       })
       .catch((err) => {
+        console.log(err);
         setIsEditCohortLoading(false);
         toast.error(err.response.data.error, toastConfig);
       });
-    onClose();
   };
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
-      <div className="relative m-4 w-2/5 min-w-[60%] max-w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-4">
+      <div className="relative m-4 w-2/5 min-w-[30%] max-w-[30%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-4">
         <div className="flex items-center p-4 font-sans text-2xl font-semibold text-blue-gray-900">
           Edit Cohort
         </div>
-        <div className="flex justify-center items-center gap-10">
+        <div className="px-4">
           <form className="m-auto rounded-xl" onSubmit={handleSubmitCohort}>
-            {/* Basic details */}
-            <div className="m-auto mb-5 flex justify-center items-center">
-              <div className="w-[20%]">Cohort details</div>
-              <hr className="w-[80%] border" />
-            </div>
-            <div className="flex justify-between items-center m-auto gap-10 mt-5">
+            <div className="flex justify-between items-center m-auto mt-5">
               <Input
                 label="Name of Cohort"
                 name="name"
@@ -105,7 +75,7 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
             </div>
 
             {/* Display list of participants */}
-            <div className="w-[100%] m-auto mt-5 max-h-[40vh] overflow-hidden">
+            {/* <div className="w-[100%] m-auto mt-5 max-h-[40vh] overflow-hidden">
               <h3>Select Participants:</h3>
               <div className="max-h-[30vh] overflow-y-auto">
                 <List className="grid grid-cols-4 gap-4">
@@ -117,7 +87,7 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
                         <label className="flex items-center">
                           <input
                             type="checkbox"
-                            checked={participants.includes(participant._id)}
+                            // checked={participants.includes(participant._id)}
                             onChange={() => handleToggleParticipant(participant._id)}
                             className="mr-2 cursor-pointer"
                           />
@@ -138,7 +108,7 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAlldata }) => {
                   ))}
                 </List>
               </div>
-            </div>
+            </div> */}
 
             <div className="flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500">
               <button

@@ -5,6 +5,7 @@ import { serverUrl } from "../api";
 import { toast } from "react-toastify";
 import { toastConfig } from "../App";
 import { useSearchParams } from "react-router-dom";
+import { CgSpinner } from "react-icons/cg";
 
 const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
   const [activityData, setActivityData] = useState(null);
@@ -58,7 +59,7 @@ const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
         <div className="flex items-center p-4 font-sans text-2xl font-semibold text-blue-gray-900">
           Edit Activity
         </div>
-        <div className="flex justify-center items-center gap-10">
+        <div className="px-4">
           <form
             className="m-auto rounded-xl "
             onSubmit={handleSubmitActivity}
@@ -91,8 +92,12 @@ const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
               >
                 Close
               </button>
-              <Button className="bg-maincolor" type="submit">
-                Edit activity
+              <Button className="bg-maincolor" type="submit" disabled={isEditActivityLoading}>
+                {isEditActivityLoading ? (
+                  <CgSpinner size={18} className=" m-auto animate-spin" />
+                ) : (
+                  "Edit activity"
+                )}
               </Button>
             </div>
           </form>

@@ -29,31 +29,31 @@ export const AddCohort = () => {
     });
   };
 
-  const handleToggleParticipant = (participantId) => {
-    if (participants.includes(participantId)) {
-      setCohortData({
-        ...cohortData,
-        participants: participants.filter((id) => id !== participantId),
-      });
-    } else {
-      setCohortData({
-        ...cohortData,
-        participants: [...participants, participantId],
-      });
-    }
-  };
+  // const handleToggleParticipant = (participantId) => {
+  //   if (participants.includes(participantId)) {
+  //     setCohortData({
+  //       ...cohortData,
+  //       participants: participants.filter((id) => id !== participantId),
+  //     });
+  //   } else {
+  //     setCohortData({
+  //       ...cohortData,
+  //       participants: [...participants, participantId],
+  //     });
+  //   }
+  // };
 
-  useEffect(() => {
-    axios
-      .get(`${serverUrl}/participant/all`)
-      .then((res) => {
-        console.log(res.data.message);
-        setAllParticipants(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get(`${serverUrl}/participant/all`)
+  //     .then((res) => {
+  //       console.log(res.data.message);
+  //       setAllParticipants(res.data.message);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
@@ -99,7 +99,7 @@ export const AddCohort = () => {
         </div>
 
         {/* List of participants with checkboxes */}
-        <div className="w-[90%] m-auto mt-5 max-h-[40vh] overflow-hidden">
+        {/* <div className="w-[90%] m-auto mt-5 max-h-[40vh] overflow-hidden">
           <h3>Select Participants:</h3>
           <div className="max-h-[30vh] overflow-y-auto">
             <List className="grid grid-cols-4 gap-4">
@@ -136,7 +136,7 @@ export const AddCohort = () => {
               ))}
             </List>
           </div>
-        </div>
+        </div> */}
 
         {/* <div className="relative group">
           <FaPlus

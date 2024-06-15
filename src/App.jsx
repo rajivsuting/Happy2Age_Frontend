@@ -3,7 +3,7 @@ import AllRoutes from "./Routes/AllRoutes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
-import { getAllParticipants } from "./Redux/AllListReducer/action";
+import { getAllAdmins, getAllParticipants } from "./Redux/AllListReducer/action";
 import { getAllCohorts } from "./Redux/AllListReducer/action";
 import { getAllActivities } from "./Redux/AllListReducer/action";
 import { getAllDomains } from "./Redux/AllListReducer/action";
@@ -28,6 +28,7 @@ const App = () => {
     console.log("one tme ")
     dispatch(getAllParticipants("",""));
     dispatch(getAllCohorts);
+    dispatch(getAllAdmins);
     dispatch(getAllActivities);
     dispatch(getAllDomains("All"));
     dispatch(getAllSessions);

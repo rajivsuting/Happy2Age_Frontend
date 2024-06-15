@@ -1,30 +1,40 @@
 import { List, ListItem, Typography } from "@material-tailwind/react";
 import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 
-const SeeDetailesActivity = ({ isOpen, onClose, singleSession }) => {
+const SeeDetailesSession = ({ isOpen, onClose, singleSession }) => {
   if (!isOpen) return null;
 
-  console.log(singleSession)
+  const {
+    partcipantList
+  } = useSelector((state) => {
+    return {
+      partcipantList: state.AllListReducer.partcipantList,
+    };
+  });
 
-  const arr = ["Hilton", "Vivek", "Rajiv", "Saraj"];
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
-      <div className="relative m-4 w-2/5 min-w-[80%] max-w-[80%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-8">
+      <div className="relative m-4 w-2/5 min-w-[30%] max-w-[30%] max-h-[80vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-8">
         <div className="flex items-center font-sans text-2xl font-semibold text-blue-gray-900">
           All participants
         </div>
         <div className="mt-5">
-          {arr?.map((el,index) => {
-            return (
-              <List key={index}>
-                <ListItem>
-                  <Typography className="w-[60%] mr-5">
-                    {index + 1}. {el}
-                  </Typography>
-                </ListItem>
-              </List>
-            );
+          {singleSession?.participants?.map((el,index) => {
+            return partcipantList?.map((pl)=>{
+              if (pl._id == el.participantId){
+                return (
+                  <List key={index}>
+                    <ListItem>
+                      <Typography className="w-[60%] mr-5">
+                        {index + 1}. {pl.name}
+                      </Typography>
+                    </ListItem>
+                  </List>
+                );
+              }
+            })
           })}
         </div>
         <div className="flex flex-wrap items-center justify-center p-4 text-blue-gray-500">
@@ -46,4 +56,4 @@ const SeeDetailesActivity = ({ isOpen, onClose, singleSession }) => {
   );
 };
 
-export default SeeDetailesActivity;
+export default SeeDetailesSession;

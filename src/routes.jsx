@@ -28,6 +28,7 @@ import {
   OxfordHappiness,
   CaspQuestions,
   ParticipantReport,
+  AdminList,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -197,6 +198,12 @@ export const routes = [
         name: "CASP-19 QUESTIONNAIRE",
         path: "/casp-questionnaire/",
         element: <CaspQuestions/>,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "Admin list",
+        path: "/adminlist/",
+        element: <AdminList/>,
       },
     ],
   },

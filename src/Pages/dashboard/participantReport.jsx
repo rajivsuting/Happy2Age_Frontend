@@ -22,6 +22,8 @@ import {
   ComposedChart
 } from "recharts";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 // import {
 //   ComposedChart,
@@ -147,6 +149,13 @@ export const ParticipantReport = () => {
       .then((res) => {
         console.log(res);
         setResultlist(res.data.report);
+      })
+      .catch((err)=>{
+        toast.error(err.response.data.error)
+        // if (err.data.status == 404){
+        // } else {
+        //   toast.error("Something went wrong",toastConfig)
+        // }
       });
   };
 
@@ -190,7 +199,7 @@ export const ParticipantReport = () => {
     return `${years} years, ${months} months, ${days} days`;
 }
   
-console.log(resultnlist?.partcipantDetails?.dob);
+console.log(resultnlist);
 
   return (
     <div className="mb-24">
@@ -297,7 +306,7 @@ console.log(resultnlist?.partcipantDetails?.dob);
         </div>
 
         <div className="mb-5 mt-5 ">
-          <b className="text-[18px]">Brief Background:</b>{" "}
+          <b className="text-[18px]">Brief Background:</b>{" "}{resultnlist?.partcipantDetails?.briefBackground}
         </div>
         <div>
           <b className="text-[18px]">Graph (Bar):</b> On various Domains ratings

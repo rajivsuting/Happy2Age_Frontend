@@ -26,6 +26,8 @@ import {
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { CgSpinner } from "react-icons/cg";
+import { useDispatch } from "react-redux";
+import { getAllAdmins } from "../../Redux/AllListReducer/action";
 
 function formatNumber(number, decPlaces) {
   decPlaces = Math.pow(10, decPlaces);
@@ -73,6 +75,7 @@ export function Configurator() {
     const [lastName, setLastName] = useState("");
     const [isAddAdminLoading, setIsAddAdminLoading] = useState(false);
     const navigate = useNavigate();
+    const dispatchSecond = useDispatch();
   
     const handleSubmitLogin = (e) => {
       e.preventDefault();
@@ -80,8 +83,10 @@ export function Configurator() {
       axios.post(`${serverUrl}/auth/register`,{ email, password, firstName, lastName })
       .then((res)=>{
         if (res.status==200){
-          setIsAddAdminLoading(false);
-          toast.success("Admin added", toastConfig);
+          dispatchSecond(getAllAdmins).then((res)=>{
+            setIsAddAdminLoading(false);
+            toast.success("Admin added", toastConfig);
+          })
         }  else {
           setIsAddAdminLoading(false);
           toast.error("Something went wrong", toastConfig);

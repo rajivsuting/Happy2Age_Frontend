@@ -20,5 +20,6 @@ export * from "../../Pages/dashboard/cohortreportdetails";
 export * from "../../Pages/dashboard/oxfordHappiness";
 export * from "../../Pages/dashboard/caspQuestions";
 export * from "../../Pages/dashboard/participantReport";
+export * from "../../Pages/dashboard/AdminList";
 
 
