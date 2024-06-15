@@ -72,13 +72,8 @@ export const AddEvaluation = () => {
       sessionlist: state.AllListReducer.sessionlist,
       evalutionlist: state.AllListReducer.evalutionlist,
       partcipantList: state.AllListReducer.partcipantList,
-
     };
   });
-
-  console.log(cohortList ,
-    sessionlist ,
-    domainList)
 
   // useEffect(()=>{
   //   axios.get(`${serverUrl}/domain/all/?category=All`).then((res) => {
@@ -95,13 +90,18 @@ export const AddEvaluation = () => {
 
   useEffect(() => {
     setParticipantsFromSession(
-      cohortList?.filter((el) => el._id === cohort)[0]?.participants
+      sessionFromCohort?.filter((el) => el._id === session)[0]?.participants
     );
-  }, [cohort]);
+  }, [session]);
 
-  useEffect(()=>{
-    setDomainCategory(participantsFromSession?.filter((el)=>el._id == participant)[0]?.participantType)
-  },[participant])
+  useEffect(() => {
+    setDomainCategory(
+      partcipantList?.filter((el) => el._id == participant)[0]
+        ?.participantType
+    );
+  }, [participant]);
+
+  console.log(domainCategory)
 
   useEffect(() => {
     setActivityFromSession(
@@ -114,7 +114,6 @@ export const AddEvaluation = () => {
       domainList?.filter((el) => el.category === domainCategory)
     );
   }, [domainCategory]);
-
 
   // console.log(cohortList)
   const handleScoreChange = (domainIndex, questionIndex, newScore) => {
@@ -149,7 +148,9 @@ export const AddEvaluation = () => {
         if (res.status == 201) {
           toast.success("Evaluation added suucessfully", toastConfig);
           setEvaluationData(initialState);
-          dispatch(getAllEvaluations).then((res)=>{return true})
+          dispatch(getAllEvaluations).then((res) => {
+            return true;
+          });
           setIsAddEvaluationLoading(false);
         } else {
           toast.error("Something went wrong", toastConfig);
@@ -161,8 +162,11 @@ export const AddEvaluation = () => {
       });
   };
 
-  // console.log("domainList", domainList);
+  // console.log("sessionFromCohort", sessionFromCohort);
 
+  // console.log("participantsFromSession", participantsFromSession);
+
+  // console.log("partcipantList", partcipantList);
   return (
     <div className="flex justify-center items-center gap-10 mb-24">
       <form
@@ -217,12 +221,16 @@ export const AddEvaluation = () => {
             required
           >
             <option value="">Select participant</option>;
-            {participantsFromSession?.map((el) => {
-              return (
-                <option key={el._id} value={el._id}>
-                  {el.name}
-                </option>
-              );
+            {partcipantList?.map((pl) => {
+             return participantsFromSession?.map((el) => {
+                if (el.participantId == pl._id) {
+                  return (
+                    <option key={pl._id} value={pl._id}>
+                      {pl.name}
+                    </option>
+                  );
+                }
+              });
             })}
           </select>
         </div>

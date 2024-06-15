@@ -10,10 +10,10 @@ import SeeDetailesActivity from "../../Componants/SeeDetailesActivity";
 export const Sessionlist = () => {
 const dispatch = useDispatch();
 const [isModalOpen, setIsModalOpen] = useState(false);
-// const [singleEvalustion, setSingleEvaluation] = useState({})
+const [singleSession, setSingleSession] = useState({})
 const toggleModal = (el) => {
    setIsModalOpen(!isModalOpen);
-  //  setSingleEvaluation(el)
+   setSingleSession(el)
  };
 
   const {sessionlist} = useSelector((state)=>{
@@ -21,6 +21,8 @@ const toggleModal = (el) => {
       sessionlist : state.AllListReducer.sessionlist
     }
   })
+
+  console.log(sessionlist);
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -187,7 +189,7 @@ const toggleModal = (el) => {
           })}
         </tbody>
       </table>
-      <SeeDetailesActivity isOpen={isModalOpen} onClose={toggleModal}/>
+      <SeeDetailesActivity isOpen={isModalOpen} onClose={toggleModal} singleSession={singleSession}/>
     </Card>
   );
 };

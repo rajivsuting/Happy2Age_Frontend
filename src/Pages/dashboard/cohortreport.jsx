@@ -19,8 +19,8 @@ import {
   Line,
   LabelList
 } from "recharts";
-import { Link } from "react-router-dom";
-import { cohortDataForGraph } from "./dummy";
+// import { Link } from "react-router-dom";
+// import { resultnlist } from "./dummy";
 
 
 const darkColors = [
@@ -67,11 +67,11 @@ const CustomBar = (props) => {
 };
 
 export const Cohortreport = () => {
-  const [evalutionlist, setEvalutionlist] = useState([]);
+  const [resultnlist, setResultlist] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cohortSelect, setCohortSelect] = useState(
-    "665a11a12046aa42c1ae540c" || ""
-  );
+  const [cohortSelect, setCohortSelect] = useState("");
+  const [startDate ,setStartdate] = useState("");
+  const [endDate ,setEnddate] = useState("");
   const [sessionSelect, setSessionSelect] = useState("");
   const [getReportData, setGetReportData] = useState([]);
   const [remarks, setRemarks] = useState("");
@@ -90,32 +90,34 @@ export const Cohortreport = () => {
     };
   });
 
-  useEffect(() => {
-    axios.get(`${serverUrl}/evaluation/all`).then((res) => {
-      setEvalutionlist(res.data.message);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axios.get(`${serverUrl}/evaluation/all`).then((res) => {
+  //     setEvalutionlist(res.data.message);
+  //   });
+  // }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
       .get(
-        `${serverUrl}/report/get/?cohort=${cohortSelect}&session=${sessionSelect}`
+        `${serverUrl}/report/get/?cohort=${cohortSelect}&start=${startDate}&end=${endDate}`
       )
       .then((res) => {
         console.log(res);
-        setEvalutionlist(res.data.message);
+        setResultlist(res.data.message);
       });
   };
 
-  let arr = [];
+  // let arr = [];
 
-  evalutionlist?.map((el) => {
-    return arr.push({
-      name: el.participant.name,
-      score: Number(el.grandAverage.toFixed(2)),
-    });
-  });
+  // evalutionlist?.map((el) => {
+  //   return arr.push({
+  //     name: el.participant.name,
+  //     score: Number(el.grandAverage.toFixed(2)),
+  //   });
+  // });
+
+  console.log(resultnlist);
 
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
@@ -123,7 +125,7 @@ export const Cohortreport = () => {
     onAfterPrint: () => toast.success("PDF file download successfully"),
   });
 
-  console.log(cohortList);
+
 
   return (
     <div className="mb-24">
@@ -135,31 +137,36 @@ export const Cohortreport = () => {
           <select
             name=""
             id=""
-            value={"665a11a12046aa42c1ae540c"}
+            value={cohortSelect}
             className="border px-2 py-3 rounded-md mt-3 mb-3"
             onChange={(e) => setCohortSelect(e.target.value)}
             required
-            disabled
           >
             <option value="">Select a center</option>
             {cohortList?.map((el) => {
               return <option value={el._id}>{el.name}</option>;
             })}
           </select>
-          <select
+          <div className="ml-10">From</div>
+          <input
             name=""
             id=""
-            value={sessionSelect}
+            type="date"
+            value={startDate}
             className="border px-2 py-3 rounded-md mt-3 mb-3"
-            onChange={(e) => setSessionSelect(e.target.value)}
+            onChange={(e) => setStartdate(e.target.value)}
             required
-            disabled
-          >
-            <option value="">Select a session</option>
-            {sessionlist?.map((el) => {
-              return <option value={el._id}>{el.name}</option>;
-            })}
-          </select>
+          />
+          <div>To</div>
+          <input
+            name=""
+            id=""
+            type="date"
+            value={endDate}
+            className="border px-2 py-3 rounded-md mt-3 mb-3"
+            onChange={(e) => setEnddate(e.target.value)}
+            required
+          />
           <Button type="submit">Search</Button>
         </form>
         <Button onClick={generatePDF}>Download pdf</Button>
@@ -196,10 +203,10 @@ export const Cohortreport = () => {
               {/* <b>{filterParticipant?.name}</b> */}
             </div>
             <div className="w-[50%] font-normal">
-              Total sessions : <b>{cohortDataForGraph.TotalnumberOfSessions}</b>
+              Total sessions : <b>{resultnlist?.TotalnumberOfSessions}</b>
             </div>
             <div className="w-[50%] font-normal">
-              Attendence : <b>{cohortDataForGraph.attendence}</b>
+              Attendence : <b>{resultnlist?.attendence}</b>
             </div>
           </div>
         </div>
@@ -303,13 +310,13 @@ export const Cohortreport = () => {
           </table>
         </Card> */}
         <div className="w-[100%] flex justify-center items-center m-auto mt-12">
-        <BarChart width={1100} height={500} data={cohortDataForGraph.graphDetails}>
+        <BarChart width={1100} height={500} data={resultnlist?.graphDetails}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis minTickGap={1} dataKey="domainName" tick={{ fontSize: 12 }} />
         <YAxis tick={{ fontSize: 12 }} />
         <Tooltip content={<CustomTooltip />} />
         <Legend />
-        <Bar dataKey="average" fill="#4A3AFF" barSize={20} radius={[5, 5, 0, 0]} >
+        <Bar dataKey="cohortaverage" fill="#4A3AFF" barSize={20} radius={[5, 5, 0, 0]} >
           <LabelList dataKey="numberOfSessions" position="top" />
         </Bar>
       </BarChart>

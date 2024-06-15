@@ -1,8 +1,10 @@
 import { List, ListItem, Typography } from "@material-tailwind/react";
-import React from "react";
+import React, { useEffect } from "react";
 
-const SeeDetailesActivity = ({ isOpen, onClose, singleEvalustion }) => {
+const SeeDetailesActivity = ({ isOpen, onClose, singleSession }) => {
   if (!isOpen) return null;
+
+  console.log(singleSession)
 
   const arr = ["Hilton", "Vivek", "Rajiv", "Saraj"];
 

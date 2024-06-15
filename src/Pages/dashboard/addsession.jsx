@@ -102,14 +102,14 @@ export const AddSession = () => {
   const handleSubmitSession = (e) => {
     e.preventDefault();
     setIsSessionLoading(true);
-    // console.log(sessionData)
+    console.log(sessionData)
     axios.post(`${serverUrl}/session/create`, sessionData)
       .then((res) => {
         if (res.status === 201) {
           setIsSessionLoading(false);
           toast.success("Session added successfully", toastConfig);
           dispatch(getAllSessions).then((res) => {
-            setSessionData(initialState);
+            // setSessionData(initialState);
             setCheckedParticipants([]);
             return true;
           });

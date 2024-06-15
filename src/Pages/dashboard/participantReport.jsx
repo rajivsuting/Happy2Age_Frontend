@@ -18,9 +18,32 @@ import {
   YAxis,
   Line,
   LabelList,
+  ResponsiveContainer,
+  ComposedChart
 } from "recharts";
 import { Link } from "react-router-dom";
-import { participantReportGraph } from "./dummy";
+
+// import {
+//   ComposedChart,
+//   Bar,
+//   Line,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   Tooltip,
+//   Legend,
+//   ResponsiveContainer,
+// } from 'recharts';
+
+// const data = [
+//   { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
+//   { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
+//   { name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
+//   { name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
+//   { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
+//   { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
+//   { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
+// ];
 
 const darkColors = [
   "#17a589",
@@ -86,12 +109,14 @@ export const ParticipantReport = () => {
   const [evalutionlist, setEvalutionlist] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allParticipants, setAllParticipants] = useState([]);
-  const [singleParticipant, setSingleParticipant] = useState(
-    "6647108b4130b27400c0e041" || ""
-  );
+  const [singleParticipant, setSingleParticipant] = useState("");
+  const [startDate, setStartdate] = useState("");
+  const [endDate, setEnddate] = useState("");
   const [sessionSelect, setSessionSelect] = useState("");
   const [getReportData, setGetReportData] = useState([]);
   const [remarks, setRemarks] = useState("");
+  const [resultnlist, setResultlist] = useState({});
+
   const componantPDF = useRef();
 
   const [singleEvalustion, setSingleEvaluation] = useState({});
@@ -117,22 +142,13 @@ export const ParticipantReport = () => {
     e.preventDefault();
     axios
       .get(
-        `${serverUrl}/report/get/?cohort=${cohortSelect}&session=${sessionSelect}`
+        `${serverUrl}/report/${singleParticipant}/?&start=${startDate}&end=${endDate}`
       )
       .then((res) => {
         console.log(res);
-        setEvalutionlist(res.data.message);
+        setResultlist(res.data.report);
       });
   };
-
-  let arr = [];
-
-  evalutionlist?.map((el) => {
-    return arr.push({
-      name: el.participant.name,
-      score: Number(el.grandAverage.toFixed(2)),
-    });
-  });
 
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
@@ -151,7 +167,30 @@ export const ParticipantReport = () => {
       });
   }, []);
 
-  console.log(allParticipants);
+  function calculateAge(birthdateStr) {
+    const birthdate = new Date(birthdateStr);
+    const today = new Date();
+
+    let years = today.getFullYear() - birthdate.getFullYear();
+    let months = today.getMonth() - birthdate.getMonth();
+    let days = today.getDate() - birthdate.getDate();
+
+    // Adjust for negative days and months
+    if (days < 0) {
+        months--;
+        const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, birthdate.getDate());
+        days = Math.floor((today - prevMonth) / (1000 * 60 * 60 * 24));
+    }
+
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    return `${years} years, ${months} months, ${days} days`;
+}
+  
+console.log(resultnlist?.partcipantDetails?.dob);
 
   return (
     <div className="mb-24">
@@ -165,7 +204,6 @@ export const ParticipantReport = () => {
             value={singleParticipant}
             onChange={(e) => setSingleParticipant(e.target.value)}
             required
-            disabled
           >
             <option value="">Select Participant</option>
             {allParticipants?.map((el, index) => (
@@ -174,20 +212,26 @@ export const ParticipantReport = () => {
               </option>
             ))}
           </select>
-          <select
+          <div className="ml-10">From</div>
+          <input
             name=""
             id=""
-            value={sessionSelect}
+            type="date"
+            value={startDate}
             className="border px-2 py-3 rounded-md mt-3 mb-3"
-            onChange={(e) => setSessionSelect(e.target.value)}
+            onChange={(e) => setStartdate(e.target.value)}
             required
-            disabled
-          >
-            <option value="">Select a session</option>
-            {sessionlist?.map((el) => {
-              return <option value={el._id}>{el.name}</option>;
-            })}
-          </select>
+          />
+          <div>To</div>
+          <input
+            name=""
+            id=""
+            type="date"
+            value={endDate}
+            className="border px-2 py-3 rounded-md mt-3 mb-3"
+            onChange={(e) => setEnddate(e.target.value)}
+            required
+          />
           <Button type="submit">Search</Button>
         </form>
         <Button onClick={generatePDF}>Download pdf</Button>
@@ -197,138 +241,100 @@ export const ParticipantReport = () => {
         style={{ width: "90%", margin: "auto", marginTop: "20px" }}
         className="border border-black rounded-xl p-8 bg-white"
       >
-        <div className="flex justify-between items-center">
-          <div className="text-[30px] font-bold text-center">Report card</div>
+        <div className="flex justify-center items-center">
           <img
             className="w-[200px] rounded-xl"
             src="/img/Happy-2age-logo-1-1.png"
             alt=""
           />
         </div>
-        <div className="w-[100%] m-auto bg-white shadow rounded-xl px-8 py-4 mt-5">
-          <div className="">
-            <div className="w-[50%] font-normal">
-              Center :{" "}
-              <b>
-                {allParticipants?.filter((el) => el._id == singleParticipant)[0]
-                  ?.name || "Unknown"}
-              </b>
-              {/* <b>{filterParticipant?.name}</b> */}
-            </div>
-            <div className="w-[50%] font-normal">
-              Total no. of sessions :{" "}
-              <b>{participantReportGraph.TotalnumberOfSessions}</b>
-            </div>
-            <div className="w-[50%] font-normal">
-              Attendence : <b>{participantReportGraph.attendence}</b>
-            </div>
+        <div className="text-center">
+          <div className="font-bold mb-5 mt-5 text-[20px]">
+            Report 1: Individual Member Observations
+          </div>
+          <div className="font-bold mb-5 mt-5 text-[20px]">
+            Our Journey Together
+          </div>
+          <div className="w-[70%] m-auto mt-5">
+            (This document is based on our basic observations about your
+            participation and engagements made in our sessions which is held
+            <input className="border-b w-[50px] ml-2 mr-2 text-center border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />{" "}
+            in a week for{" "}
+            <input className="border-b w-[50px] ml-2 mr-2 text-center border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />{" "}
+            hours. It is limited to the progress made by members in various
+            domains that we have chosen while designing activities.)
           </div>
         </div>
-        {/* <Card className="h-full w-full overflow-scroll mt-5 mb-24">
-          <table className="w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Participant
-                  </Typography>
-                </th>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Session
-                  </Typography>
-                </th>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Center
-                  </Typography>
-                </th>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Grand average
-                  </Typography>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {evalutionlist?.map((el, index) => {
-                const isLast = index === evalutionlist?.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
+        <div className="w-[100%] m-auto grid grid-cols-2 border rounded-xl p-8 mt-5">
+          <div className="mb-3">
+            Name :
+            <input value={resultnlist?.partcipantDetails?.name || ""} className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+          </div>
+          <div>
+            Age :
+            <input value={calculateAge(resultnlist?.partcipantDetails?.dob || "")} className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+          </div>
+          <div className="mb-3">
+            Address :
+            <input value={`${resultnlist?.partcipantDetails?.address?.addressLine || ""}, ${resultnlist?.partcipantDetails?.address?.city || ""}, ${resultnlist?.partcipantDetails?.address?.state || ""}, ${resultnlist?.partcipantDetails?.address?.pincode || ""}`} className="border-b w-[330px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+          </div>
+          <div>
+            Mobile No :
+            <input value={resultnlist?.partcipantDetails?.emergencyContact?.phone || ""} className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+          </div>
+          <div className="mb-3">
+            Date From :
+            <input value={startDate || ""} className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+            To :
+            <input value={endDate || ""} className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+          </div>
+          <div>
+            Attendance :
+            <input value={resultnlist?.attendance || ""} className="border-b w-[50px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+            out of :
+            <input value={resultnlist?.totalSessions || ""} className="border-b w-[50px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+          </div>
+        </div>
 
-                return (
-                  <tr key={el._id}>
-                    <td className={classes}>
-                      <Link
-                    to={`/mainpage/participant-report-details/${el.participant?._id}`}
-                  >
-                    {" "}
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {el.participant?.name}
-                      </Typography>
-                      </Link>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {el?.session?.name}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {el?.cohort?.name}
-                      </Typography>
-                    </td>
-                    
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {el.grandAverage.toFixed(2)}
-                      </Typography>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </Card> */}
+        <div className="mb-5 mt-5 ">
+          <b className="text-[18px]">Brief Background:</b>{" "}
+        </div>
+        <div>
+          <b className="text-[18px]">Graph (Bar):</b> On various Domains ratings
+          against the aggregate rating of the Cohort (Centre)
+        </div>
+
         <div className="w-[100%] flex justify-center items-center m-auto mt-12">
-          <BarChart
-            width={1100}
-            height={500}
-            data={participantReportGraph.graphDetails}
-          >
+        <ResponsiveContainer width="100%" height={400}>
+    <ComposedChart data={resultnlist?.graphDetails}>
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis
+              minTickGap={1}
+              dataKey="domainName"
+              tick={{ fontSize: 12 }}
+            />
+            <YAxis tick={{ fontSize: 12 }} />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
+            <Bar
+              dataKey="average"
+              fill="#4A3AFF"
+              barSize={20}
+              radius={[5, 5, 0, 0]}
+            >
+              <LabelList dataKey="numberOfSessions" position="top" />
+            </Bar>
+      
+              <Line
+                type="monotone"
+                dataKey="cohortaverage"
+                stroke="green"
+                activeDot={{ r: 8 }}
+              />
+   
+    </ComposedChart>
+  </ResponsiveContainer>
+          {/* <BarChart width={1100} height={500} data={resultnlist.graphDetails}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               minTickGap={1}
@@ -346,13 +352,52 @@ export const ParticipantReport = () => {
             >
               <LabelList dataKey="numberOfSessions" position="top" />
             </Bar>
-            {participantReportGraph.graphDetails[0].chortaverage !== undefined && (
-          <Line type="monotone" dataKey="chortaverage" stroke="#FF0000" activeDot={{ r: 8 }} />
-        )}
-          </BarChart>
+      
+              <Line
+                type="monotone"
+                dataKey="cohortaverage"
+                stroke="green"
+                activeDot={{ r: 8 }}
+              />
+   
+          </BarChart> */}
+        </div>
+        <div className="mb-5 mt-5">
+          <b className=" text-[18px]">Overall Observations:</b> {remarks}
+        </div>
+        <div className="mb-5 mt-5">
+          <b className=" text-[18px]">Joint Plan:</b>
+          <br />{" "}
+          <textarea
+            className=" p-2 pt-2 placeholder:pl-2 placeholder:pt-2 mt-5 border-2 rounded-md w-[100%] border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+            name=""
+            id=""
+          ></textarea>
+        </div>
+        <div className="mb-5 mt-5">
+          <b>Date:</b>{" "}
+          <input className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+        </div>
+        <div className="mb-5 mt-5">
+          <b>Name:</b>{" "}
+          <input className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+        </div>
+        <div className="mb-5 mt-5">
+          <b>Signature:</b>{" "}
+          <input className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+          (with Stamp)
+        </div>
+        <div className="mb-5 mt-5">
+          <b>Mobile:</b>{" "}
+          <input className="border-b w-[120px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+        </div>
+        <div className="mt-10">
+          We are here to engage with you to spread joy and provide meaningful
+          involvement.{" "}
         </div>
         <div className="mt-5">
-          <i>Remarks : {remarks}</i>
+          We stand for Trust, Building Positive Relationship & Spreading Joy and
+          Going that Extra Mile.{" "}
         </div>
       </div>
       <div className="w-[90%] m-auto">
