@@ -123,9 +123,15 @@ export const CaspQuestions = () => {
       });
   
       setQuestionData({ ...questionData, questions: updatedQuestions });
+
+      axios.post(`${serverUrl}/casp/add`,questionData)
+    .then((res)=>{
+      toast.success(res.data.message, toastConfig);
+    }).catch((err)=>{
+      toast.error(err.response.data.error, toastConfig);
+    })
     };
 
-    console.log(questionData)
   
     return (
       <Card className="h-full w-full overflow-scroll mt-5 mb-24 p-8">

@@ -19,6 +19,8 @@ import {
   Line,
   LabelList
 } from "recharts";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 // import { Link } from "react-router-dom";
 // import { resultnlist } from "./dummy";
 
@@ -105,7 +107,13 @@ export const Cohortreport = () => {
       .then((res) => {
         console.log(res);
         setResultlist(res.data.message);
-      });
+      }).catch((err)=>{
+        toast.error(err.response.data.error,toastConfig)
+        // if (err.data.status == 404){
+        // } else {
+        //   toast.error("Something went wrong",toastConfig)
+        // }
+      });;
   };
 
   // let arr = [];
@@ -203,10 +211,10 @@ export const Cohortreport = () => {
               {/* <b>{filterParticipant?.name}</b> */}
             </div>
             <div className="w-[50%] font-normal">
-              Total sessions : <b>{resultnlist?.TotalnumberOfSessions}</b>
+              Total sessions : <b>{resultnlist?.totalNumberOfSessions}</b>
             </div>
             <div className="w-[50%] font-normal">
-              Attendence : <b>{resultnlist?.attendence}</b>
+              Attendence : <b>{resultnlist?.totalAttendance}</b>
             </div>
           </div>
         </div>
@@ -316,7 +324,7 @@ export const Cohortreport = () => {
         <YAxis tick={{ fontSize: 12 }} />
         <Tooltip content={<CustomTooltip />} />
         <Legend />
-        <Bar dataKey="cohortaverage" fill="#4A3AFF" barSize={20} radius={[5, 5, 0, 0]} >
+        <Bar dataKey="cohortAverage" fill="#4A3AFF" barSize={20} radius={[5, 5, 0, 0]} >
           <LabelList dataKey="numberOfSessions" position="top" />
         </Bar>
       </BarChart>

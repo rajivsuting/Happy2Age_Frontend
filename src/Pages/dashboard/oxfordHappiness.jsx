@@ -7,6 +7,8 @@ import { CgSpinner } from "react-icons/cg";
 import axios from "axios";
 import { serverUrl } from "../../api";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 const initialState = {
   participant: "",
@@ -76,8 +78,13 @@ export const OxfordHappiness = () => {
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
-    console.log(questionData);
-    // Here you can send data to the backend
+    axios.post(`${serverUrl}/oxford/add`,questionData)
+    .then((res)=>{
+      console.log(res);
+      toast.success(res.data.message, toastConfig);
+    }).catch((err)=>{
+      toast.error(err.response.data.error, toastConfig);
+    })
   };
 
   return (
@@ -140,3 +147,5 @@ export const OxfordHappiness = () => {
 };
 
 export default OxfordHappiness;
+
+

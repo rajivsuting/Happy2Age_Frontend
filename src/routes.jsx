@@ -29,6 +29,7 @@ import {
   CaspQuestions,
   ParticipantReport,
   AdminList,
+  Moca,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -204,6 +205,12 @@ export const routes = [
         name: "Admin list",
         path: "/adminlist/",
         element: <AdminList/>,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "MOCA",
+        path: "/moca/",
+        element: <Moca/>,
       },
     ],
   },

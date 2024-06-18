@@ -19,7 +19,7 @@ import {
   Line,
   LabelList,
   ResponsiveContainer,
-  ComposedChart
+  ComposedChart,
 } from "recharts";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -113,6 +113,7 @@ export const ParticipantReport = () => {
   const [allParticipants, setAllParticipants] = useState([]);
   const [singleParticipant, setSingleParticipant] = useState("");
   const [startDate, setStartdate] = useState("");
+  const [happinessScore,setHappinessScore] = useState([])
   const [endDate, setEnddate] = useState("");
   const [sessionSelect, setSessionSelect] = useState("");
   const [getReportData, setGetReportData] = useState([]);
@@ -142,6 +143,14 @@ export const ParticipantReport = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    axios.get(`${serverUrl}/oxford/${singleParticipant}`)
+    .then((res) => {
+      // console.log(res)
+      setHappinessScore(res.data.message);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
     axios
       .get(
         `${serverUrl}/report/${singleParticipant}/?&start=${startDate}&end=${endDate}`
@@ -150,14 +159,16 @@ export const ParticipantReport = () => {
         console.log(res);
         setResultlist(res.data.report);
       })
-      .catch((err)=>{
-        toast.error(err.response.data.error)
+      .catch((err) => {
+        toast.error(err.response.data.error, toastConfig);
         // if (err.data.status == 404){
         // } else {
         //   toast.error("Something went wrong",toastConfig)
         // }
       });
   };
+
+  console.log(happinessScore)
 
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
@@ -176,6 +187,7 @@ export const ParticipantReport = () => {
       });
   }, []);
 
+
   function calculateAge(birthdateStr) {
     const birthdate = new Date(birthdateStr);
     const today = new Date();
@@ -186,20 +198,22 @@ export const ParticipantReport = () => {
 
     // Adjust for negative days and months
     if (days < 0) {
-        months--;
-        const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, birthdate.getDate());
-        days = Math.floor((today - prevMonth) / (1000 * 60 * 60 * 24));
+      months--;
+      const prevMonth = new Date(
+        today.getFullYear(),
+        today.getMonth() - 1,
+        birthdate.getDate()
+      );
+      days = Math.floor((today - prevMonth) / (1000 * 60 * 60 * 24));
     }
 
     if (months < 0) {
-        years--;
-        months += 12;
+      years--;
+      months += 12;
     }
 
     return `${years} years, ${months} months, ${days} days`;
-}
-  
-console.log(resultnlist);
+  }
 
   return (
     <div className="mb-24">
@@ -277,36 +291,70 @@ console.log(resultnlist);
         <div className="w-[100%] m-auto grid grid-cols-2 border rounded-xl p-8 mt-5">
           <div className="mb-3">
             Name :
-            <input value={resultnlist?.partcipantDetails?.name || ""} className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+            <input
+              value={resultnlist?.participantDetails?.name || ""}
+              className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+            />
           </div>
           <div>
             Age :
-            <input value={calculateAge(resultnlist?.partcipantDetails?.dob || "")} className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+            <input
+              value={calculateAge(resultnlist?.participantDetails?.dob || "")}
+              className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+            />
           </div>
           <div className="mb-3">
             Address :
-            <input value={`${resultnlist?.partcipantDetails?.address?.addressLine || ""}, ${resultnlist?.partcipantDetails?.address?.city || ""}, ${resultnlist?.partcipantDetails?.address?.state || ""}, ${resultnlist?.partcipantDetails?.address?.pincode || ""}`} className="border-b w-[330px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+            <input
+              value={`${
+                resultnlist?.participantDetails?.address?.addressLine || ""
+              }, ${resultnlist?.participantDetails?.address?.city || ""}, ${
+                resultnlist?.participantDetails?.address?.state || ""
+              }, ${resultnlist?.participantDetails?.address?.pincode || ""}`}
+              className="border-b w-[330px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+            />
           </div>
           <div>
             Mobile No :
-            <input value={resultnlist?.partcipantDetails?.emergencyContact?.phone || ""} className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+            <input
+              value={
+                resultnlist?.participantDetails?.emergencyContact?.phone || ""
+              }
+              className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+            />
           </div>
           <div className="mb-3">
             Date From :
-            <input value={startDate || ""} className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+            <input
+              value={startDate || ""}
+              className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+            />
             To :
-            <input value={endDate || ""} className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+            <input
+              value={endDate || ""}
+              className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+            />
           </div>
           <div>
             Attendance :
-            <input value={resultnlist?.attendance || ""} className="border-b w-[50px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+            <input
+              value={resultnlist?.attendance || 0}
+              className="border-b w-[50px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+            />
             out of :
-            <input value={resultnlist?.totalSessions || ""} className="border-b w-[50px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
+            <input
+              value={resultnlist?.attendedSessions || 0}
+              className="border-b w-[50px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+            />
           </div>
         </div>
 
         <div className="mb-5 mt-5 ">
-          <b className="text-[18px]">Brief Background:</b>{" "}{resultnlist?.partcipantDetails?.briefBackground}
+          <b className="text-[18px]">Oxford happiness score: {(happinessScore[0]?.happinessScore)?.toFixed(2)}</b>
+        </div>
+        <div className="mb-5 mt-5 ">
+          <b className="text-[18px]">Brief Background:</b>{" "}
+          {resultnlist?.participantDetails?.briefBackground}
         </div>
         <div>
           <b className="text-[18px]">Graph (Bar):</b> On various Domains ratings
@@ -314,35 +362,34 @@ console.log(resultnlist);
         </div>
 
         <div className="w-[100%] flex justify-center items-center m-auto mt-12">
-        <ResponsiveContainer width="100%" height={400}>
-    <ComposedChart data={resultnlist?.graphDetails}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis
-              minTickGap={1}
-              dataKey="domainName"
-              tick={{ fontSize: 12 }}
-            />
-            <YAxis tick={{ fontSize: 12 }} />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend />
-            <Bar
-              dataKey="average"
-              fill="#4A3AFF"
-              barSize={20}
-              radius={[5, 5, 0, 0]}
-            >
-              <LabelList dataKey="numberOfSessions" position="top" />
-            </Bar>
-      
+          <ResponsiveContainer width="100%" height={400}>
+            <ComposedChart data={resultnlist?.graphDetails}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                minTickGap={1}
+                dataKey="domainName"
+                tick={{ fontSize: 12 }}
+              />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+              <Bar
+                dataKey="average"
+                fill="#4A3AFF"
+                barSize={20}
+                radius={[5, 5, 0, 0]}
+              >
+                <LabelList dataKey="numberOfSessions" position="top" />
+              </Bar>
+
               <Line
                 type="monotone"
-                dataKey="cohortaverage"
+                dataKey="cohortAverage"
                 stroke="green"
                 activeDot={{ r: 8 }}
               />
-   
-    </ComposedChart>
-  </ResponsiveContainer>
+            </ComposedChart>
+          </ResponsiveContainer>
           {/* <BarChart width={1100} height={500} data={resultnlist.graphDetails}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
