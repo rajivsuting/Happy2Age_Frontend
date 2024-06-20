@@ -55,7 +55,7 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
                           })}
                           <tr>
                             <td className="py-2 font-semibold">Average</td>
-                            <td>{el?.average.toFixed(2) || "-"}</td>
+                            <td>{el?.average || "-"}</td>
                           </tr>
                           <tr>
                             <td className="py-2 font-semibold">Observation</td>
@@ -69,7 +69,7 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
               </tr>
               <tr>
                 <td className="py-2 font-semibold">Grand average</td>
-                <td>{singleEvalustion?.grandAverage.toFixed(2) || "NA"}</td>
+                <td>{singleEvalustion?.grandAverage || "NA"}</td>
               </tr>
             </tbody>
           </table>

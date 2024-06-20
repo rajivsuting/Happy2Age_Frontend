@@ -8,31 +8,39 @@ import { useDispatch, useSelector } from "react-redux";
 import SeeDetailesSession from "../../Componants/SeeDetailesSession";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
+import SeeDeatailsSessionAttendence from "../../Componants/SeeDeatailsSessionAttendence";
 
-export const Sessionlist = () => {
+export const SessionAttendence = () => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [allAttendence, setAllAttendence] = useState([]);
   const [singleSession, setSingleSession] = useState({});
   const [searchParams, setsearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(searchParams.get("page") || 1);
   const [limit, setLimit] = useState(searchParams.get("limit") || 10); // default limit
-  const [searchResult, setSearchResult] = useState("")
+  const [searchResult, setSearchResult] = useState("");
+  const [openAttendenceModal, setOpenAttendenceModal] = useState(false);
+  const [singleAttentence, setSingleAttence] = useState({})
   const navigate = useNavigate();
   const toggleModal = (el) => {
     setIsModalOpen(!isModalOpen);
     setSingleSession(el);
   };
 
-  const { sessionlist } = useSelector((state) => {
+  const { sessionlist,partcipantList } = useSelector((state) => {
     return {
       sessionlist: state.AllListReducer.sessionlist,
+      partcipantList: state.AllListReducer.partcipantList
     };
   });
 
   const handleSessionDetails = (el) => {
-    console.log(el);
-    // localStorage.setItem("sessiondetails",{ name: "Alex" });
-    navigate(`/mainpage/session-details/${el._id}`);
+    setOpenAttendenceModal(true);
+    setSingleAttence(el)
+  };
+
+  const closeSessionDetails = () => {
+    setOpenAttendenceModal(false);
   };
 
  // useEffect(() => {
@@ -41,6 +49,14 @@ export const Sessionlist = () => {
   //     return true;
   //   });
   // }, [currentPage, limit]);
+
+  useEffect(()=>{
+    axios.get(`${serverUrl}/session/attendance`).then((res)=>{
+        setAllAttendence(res.data.data)
+    }).catch((err)=>{
+        console.log(err)
+    })
+  },[])
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -122,7 +138,7 @@ export const Sessionlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Session name
+                Participant name
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -131,7 +147,7 @@ export const Sessionlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Cohort name
+                Present
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -140,7 +156,7 @@ export const Sessionlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Activity name
+                Absent
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -149,23 +165,7 @@ export const Sessionlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Session date
-              </Typography>
-            </th>
-            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="font-normal leading-none opacity-70"
-              ></Typography>
-            </th>
-            {/* <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="font-normal leading-none opacity-70"
-              >
-                
+                Total attendence
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -174,14 +174,15 @@ export const Sessionlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                
+                Total attendence
               </Typography>
-            </th> */}
+            </th>
+            
           </tr>
         </thead>
         <tbody>
-          {sessionlist?.map((el, index) => {
-            const isLast = index === Sessionlist?.length - 1;
+          {allAttendence?.map((el, index) => {
+            const isLast = index === allAttendence?.length - 1;
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
             return (
@@ -192,7 +193,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el?.name}
+                    {el?.participantName}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -201,7 +202,17 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.cohort?.name || "-"}
+                    {el.sessions.filter((pl)=>pl.present).length}
+                  </Typography>
+                </td>
+                
+                <td className={classes}>
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal"
+                  >
+                    {el.sessions.filter((pl)=>!pl.present).length}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -210,22 +221,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.activity?.map((bl, index) => {
-                      return (
-                        <div key={index}>
-                          {index + 1}. {bl.name}
-                        </div>
-                      );
-                    }) || "-"}
-                  </Typography>
-                </td>
-                <td className={classes}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    {el?.date.split("T")[0] || "-"}
+                    {el.sessions.length}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -278,16 +274,16 @@ export const Sessionlist = () => {
           })}
         </tbody>
       </table>
-      <SeeDetailesSession
-        isOpen={isModalOpen}
-        onClose={toggleModal}
-        singleSession={singleSession}
+      <SeeDeatailsSessionAttendence
+        isOpen={openAttendenceModal}
+        onClose={closeSessionDetails}
+        singleSession={singleAttentence}
       />
     </Card>
   );
 };
 
-export default Sessionlist;
+export default SessionAttendence;
 
 
 // import React, { useState } from 'react';
@@ -360,4 +356,4 @@ export default Sessionlist;
 //   );
 // };
 
-// export default Sessionlist;
+// export default sessionAttendence;

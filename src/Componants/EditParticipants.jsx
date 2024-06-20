@@ -6,7 +6,7 @@ import { toastConfig } from "../App";
 import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getAllParticipants } from "../Redux/AllListReducer/action";
 
 const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
@@ -14,6 +14,12 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   // const [isEditParticipantLoading, setIsEditParticipantLoadingLoading] = useState(false);
   const [isEditParticipantLoading, setIsEditParticipantLoading] = useState(false);
+  const {cohortList} = useSelector((state)=>{
+    return {
+      cohortList : state.AllListReducer.cohortList
+    }
+  })
+
   const dispatch = useDispatch();
   useEffect(() => {
     if (singleParticipant) {
@@ -82,8 +88,10 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
       .then((res) => {
         if (res.status === 200) {
           dispatch(getAllParticipants("","")).then((res)=>{
-            toast.success("Participant edited successfully", toastConfig);
-            onClose();
+            dispatch(getAllCohorts).then((res)=>{
+              toast.success("Participant edited successfully", toastConfig);
+              onClose();
+            })
           })
           setIsEditParticipantLoading(false);
         } else {
@@ -127,8 +135,6 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 type="email"
                 onChange={handleChangeInput}
               />
-            </div>
-            <div className="w-[100%] flex justify-between items-center m-auto gap-10 mt-5">
               <Input
                 label="Date of Birth"
                 name="dob"
@@ -136,6 +142,8 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 type="date"
                 onChange={handleChangeInput}
               />
+            </div>
+            <div className="w-[100%] flex justify-between items-center m-auto gap-10 mt-5">
               <Select
                 label="Gender"
                 name="gender"
@@ -159,6 +167,13 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 <Option value="General">General</Option>
                 <Option value="Special Need">Special Need</Option>
               </Select>
+              <Select label="Select center" name="cohort" value={participantData.cohort} onChange={(value)=>handleChangeGenderAndParticipants("cohort",value)}>
+            {
+              cohortList?.map((el)=>{
+                return <Option value={el._id}>{el.name}</Option>
+              })
+            }
+          </Select>
             </div>
 
             {/* Address */}

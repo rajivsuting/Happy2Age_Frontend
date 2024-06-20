@@ -17,13 +17,12 @@ import {
   XAxis,
   YAxis,
   Line,
-  LabelList
+  LabelList,
 } from "recharts";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 // import { Link } from "react-router-dom";
 // import { resultnlist } from "./dummy";
-
 
 const darkColors = [
   "#17a589",
@@ -43,7 +42,14 @@ const darkColors = [
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="custom-tooltip" style={{ backgroundColor: '#fff', padding: '10px', border: '1px solid #ccc' }}>
+      <div
+        className="custom-tooltip"
+        style={{
+          backgroundColor: "#fff",
+          padding: "10px",
+          border: "1px solid #ccc",
+        }}
+      >
         <p className="label">{`Domain: ${label}`}</p>
         <p className="intro">{`Average: ${payload[0].value}`}</p>
         <p className="desc">{`Number of Sessions: ${payload[0].payload.numberOfSessions}`}</p>
@@ -72,8 +78,8 @@ export const Cohortreport = () => {
   const [resultnlist, setResultlist] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cohortSelect, setCohortSelect] = useState("");
-  const [startDate ,setStartdate] = useState("");
-  const [endDate ,setEnddate] = useState("");
+  const [startDate, setStartdate] = useState("");
+  const [endDate, setEnddate] = useState("");
   const [sessionSelect, setSessionSelect] = useState("");
   const [getReportData, setGetReportData] = useState([]);
   const [remarks, setRemarks] = useState("");
@@ -107,13 +113,14 @@ export const Cohortreport = () => {
       .then((res) => {
         console.log(res);
         setResultlist(res.data.message);
-      }).catch((err)=>{
-        toast.error(err.response.data.error,toastConfig)
+      })
+      .catch((err) => {
+        toast.error(err.response.data.error, toastConfig);
         // if (err.data.status == 404){
         // } else {
         //   toast.error("Something went wrong",toastConfig)
         // }
-      });;
+      });
   };
 
   // let arr = [];
@@ -132,8 +139,6 @@ export const Cohortreport = () => {
     documentTitle: "Cohort report",
     onAfterPrint: () => toast.success("PDF file download successfully"),
   });
-
-
 
   return (
     <div className="mb-24">
@@ -318,16 +323,25 @@ export const Cohortreport = () => {
           </table>
         </Card> */}
         <div className="w-[100%] flex justify-center items-center m-auto mt-12">
-        <BarChart width={1100} height={500} data={resultnlist?.graphDetails}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis minTickGap={1} dataKey="domainName" tick={{ fontSize: 12 }} />
-        <YAxis tick={{ fontSize: 12 }} />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend />
-        <Bar dataKey="cohortAverage" fill="#4A3AFF" barSize={20} radius={[5, 5, 0, 0]} >
-          <LabelList dataKey="numberOfSessions" position="top" />
-        </Bar>
-      </BarChart>
+          <BarChart width={1100} height={500} data={resultnlist?.graphDetails}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              minTickGap={1}
+              dataKey="domainName"
+              tick={{ fontSize: 12 }}
+            />
+            <YAxis tick={{ fontSize: 12 }}  domain={[0, 7]}/>
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
+            <Bar
+              dataKey="cohortAverage"
+              fill="#4A3AFF"
+              barSize={20}
+              radius={[5, 5, 0, 0]}
+            >
+              <LabelList dataKey="numberOfSessions" position="top" />
+            </Bar>
+          </BarChart>
         </div>
         <div className="mt-5">
           <i>Remarks : {remarks}</i>

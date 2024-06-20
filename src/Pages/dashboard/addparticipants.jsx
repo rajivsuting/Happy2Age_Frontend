@@ -5,7 +5,8 @@ import axios from "axios";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import {CgSpinner} from "react-icons/cg"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCohorts } from "../../Redux/AllListReducer/action";
 
 
 const initialState = {
@@ -14,7 +15,7 @@ const initialState = {
   dob: "",
   gender: "",
   cohort : "",
-  participantBio:"",
+  briefBackground:"",
   participantType: "",
   address: {
     addressLine: "",
@@ -31,6 +32,7 @@ const initialState = {
 export const AddParticipant = () => {
     const [participantData, setParticipantData] = useState(initialState);
     const [isAddParticipantsLoading, setIsAddParticipantsLoading] = useState(false);
+    const dispatch = useDispatch();
     const {cohortList} = useSelector((state)=>{
       return {
         cohortList : state.AllListReducer.cohortList
@@ -94,9 +96,11 @@ export const AddParticipant = () => {
       axios.post(`${serverUrl}/participant/create`,participantData)
       .then((res)=>{
         if (res.status==201){
-          toast.success("Participant added suucessfully", toastConfig);
-          setParticipantData(initialState);
-          setIsAddParticipantsLoading(false);
+          dispatch(getAllCohorts).then((res)=>{
+            toast.success("Participant added suucessfully", toastConfig);
+            setParticipantData(initialState);
+            setIsAddParticipantsLoading(false);
+          })
         } else {
           toast.error("Something went wrong", toastConfig);
         }
@@ -177,7 +181,7 @@ export const AddParticipant = () => {
           <Input label="Relationship" required name="relationship" value={participantData.emergencyContact.relationship} onChange={handleChangeEmergencyContact} />
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
-        <Textarea label="About participant" name="participantBio" required value={participantData.participantBio} onChange={handleChangeInput} />
+        <Textarea label="About participant" name="briefBackground" required value={participantData.briefBackground} onChange={handleChangeInput} />
         </div>
 
         <div className="w-[90%] text-center mt-5 m-auto">

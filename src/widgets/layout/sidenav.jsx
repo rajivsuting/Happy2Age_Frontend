@@ -639,6 +639,40 @@ export function Sidenav({ brandImg, brandName, routes }) {
                       )}
                     </NavLink>
                   </li>
+                  <li>
+                    <NavLink to={`/mainpage/sessions-attendence`}>
+                      {({ isActive }) => (
+                        <Button
+                          variant={isActive ? "yellow" : "text"}
+                          color={
+                            isActive
+                              ? sidenavColor
+                              : sidenavType === "dark"
+                              ? "white"
+                              : "blue-gray"
+                          }
+                          className={`flex items-center gap-4 px-8 capitalize ${
+                            isActive ? "bg-maincolor" : "bg-white"
+                          }`}
+                          fullWidth
+                        >
+                          <span
+                            className={`${
+                              isActive ? "text-white" : "text-maincolor2"
+                            }`}
+                          >
+                            {/* <IoList {...icon} /> */}
+                          </span>
+                          <Typography
+                            color="inherit"
+                            className="font-medium capitalize"
+                          >
+                            sessions attendence
+                          </Typography>
+                        </Button>
+                      )}
+                    </NavLink>
+                  </li>
                 </>
               ) : null}
               <li onClick={() => toggleSection("evaluation")}>
@@ -840,6 +874,41 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   )}
                 </NavLink>
               </li>
+              {/* <li>
+                <NavLink to={`/mainpage/oxford-happiness-questionnaire-list`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics  {...icon}/>
+                      </span>
+                      
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Oxford Happiness list
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li> */}
               <li>
                 <NavLink to={`/mainpage/casp-questionnaire`}>
                   {({ isActive }) => (
@@ -875,6 +944,41 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   )}
                 </NavLink>
               </li>
+              {/* <li>
+                <NavLink to={`/mainpage/casp-questionnaire-list`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics  {...icon}/>
+                      </span>
+                      
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        CASP-19 list
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li> */}
               <li>
                 <NavLink to={`/mainpage/moca`}>
                   {({ isActive }) => (
@@ -910,7 +1014,42 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   )}
                 </NavLink>
               </li>
-              <li>
+              {/* <li>
+                <NavLink to={`/mainpage/moca-list`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics  {...icon}/>
+                      </span>
+                      
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        MOCA list
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li> */}
+              {/* <li>
                 <NavLink to={`/mainpage/adminlist`}>
                   {({ isActive }) => (
                     <Button
@@ -944,7 +1083,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     </Button>
                   )}
                 </NavLink>
-              </li>
+              </li> */}
               
               {/* */}
               {/* evaluation-------------------------------------- */}

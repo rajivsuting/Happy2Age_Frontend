@@ -27,7 +27,6 @@ const SeeDeatailesEvalution = ({ isOpen, onClose, singleCohort }) => {
                   })}
                 </td>
               </tr>
-              
             </tbody>
           </table>
         </div>

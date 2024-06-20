@@ -125,7 +125,15 @@ const EditDomain = ({ isOpen, onClose, singleCohort, getAlldata }) => {
               <Option value="Special Need">Special Need</Option>
             </Select>
           </div>
-          <br />
+          <div
+            className="cursor-pointer flex justify-end items-center gap-5 mb-5"
+            onClick={addSubtopic}
+          >
+            <div className="flex justify-center items-center gap-5 border px-4 py-1 rounded">
+              <div>Add questions</div>
+              <FaPlus />
+            </div>
+          </div>
           {domainData.subTopics.map((item, index) => {
             return (
               <div
@@ -142,18 +150,13 @@ const EditDomain = ({ isOpen, onClose, singleCohort, getAlldata }) => {
                   required
                 />
 
-                {index === 0 ? null : (
+                {/* {index === 0 ? null : ( */}
                   <AiFillDelete
                     className="text-[20px] cursor-pointer"
                     onClick={() => removeSubtopic(index)}
                   />
-                )}
-                {index === 0 ? (
-                  <FaPlus
-                    className="text-[20px] cursor-pointer"
-                    onClick={addSubtopic}
-                  />
-                ) : null}
+                {/* )} */}
+                
               </div>
             );
           })}

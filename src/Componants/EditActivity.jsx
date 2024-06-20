@@ -51,7 +51,7 @@ const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
 
   if (!isOpen || !activityData) return null;
 
-  const { name, description } = activityData;
+  const { name, description,references } = activityData;
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
@@ -78,9 +78,18 @@ const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
             </div>
             <div className="m-auto mt-5">
               <Textarea
-                label="Description"
+                label="Methodology"
                 name="description"
                 value={description || ""}
+                onChange={handleChangeInput}
+              />
+            </div>
+
+            <div className="m-auto mt-5">
+              <Textarea
+                 label="References"
+                 name="references"
+                 value={references || ""}
                 onChange={handleChangeInput}
               />
             </div>

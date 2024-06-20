@@ -65,9 +65,7 @@ const darkColors = [
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const barData = payload.find((p) => p.dataKey === "average");
-    const lineData = payload.find((p) => p.dataKey === "chortaverage");
-
-    console.log(lineData);
+    const lineData = payload.find((p) => p.dataKey === "cohortAverage");
 
     return (
       <div
@@ -81,7 +79,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         <p className="label">{`Domain: ${label}`}</p>
         {barData && <p className="intro">{`Average: ${barData.value}`}</p>}
         {lineData && (
-          <p className="desc">{`Chort Average: ${lineData.value}`}</p>
+          <p className="desc">{`Chort Average: ${lineData.value.toFixed(2)}`}</p>
         )}
         {barData && (
           <p className="desc">{`Number of Sessions: ${barData.payload.numberOfSessions}`}</p>
@@ -168,7 +166,7 @@ export const ParticipantReport = () => {
       });
   };
 
-  console.log(happinessScore)
+  // console.log(happinessScore)
 
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
@@ -370,7 +368,7 @@ export const ParticipantReport = () => {
                 dataKey="domainName"
                 tick={{ fontSize: 12 }}
               />
-              <YAxis tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} domain={[0, 7]}/>
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               <Bar

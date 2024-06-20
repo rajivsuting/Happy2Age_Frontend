@@ -114,42 +114,53 @@ export const Adddomain = () => {
             </Select>
           </div>
           <br />
+          <div
+            className="cursor-pointer flex justify-end items-center gap-5 mb-5"
+            onClick={addSubtopic}
+          >
+            <div className="flex justify-center items-center gap-5 border px-4 py-1 rounded">
+              <div>Add questions</div>
+              <FaPlus />
+            </div>
+          </div>
           <div className={`max-h-[30vh]  overflow-auto`}>
-          {domainData.subTopics.map((item, index) => {
-            return (
-              <div
-                key={index}
-                className={`w-[90%] flex justify-between items-center gap-5 ${
-                  index === 0 ? "mt-0" : "mt-5"
-                }`}
-              >
-                <Input
-                  label="Topic name"
-                  name="content"
-                  value={item.content}
-                  onChange={(e) => handleSubtopicChange(index, e)}
-                  required
-                />
+            {domainData.subTopics.map((item, index) => {
+              return (
+                <>
+                  <div
+                    key={index}
+                    className={`w-[90%] flex justify-between items-center gap-5 ${
+                      index === 0 ? "mt-0" : "mt-5"
+                    }`}
+                  >
+                    <Input
+                      label={`Question ${index + 1}`}
+                      name="content"
+                      value={item.content}
+                      onChange={(e) => handleSubtopicChange(index, e)}
+                      required
+                    />
 
-                {index === 0 ? null : (
-                  <AiFillDelete
-                    className="text-[20px] cursor-pointer"
-                    onClick={() => removeSubtopic(index)}
-                  />
-                )}
-                {index === 0 ? (
-                  <FaPlus
-                    className="text-[20px] cursor-pointer"
-                    onClick={addSubtopic}
-                  />
-                ) : null}
-              </div>
-            );
-          })}
+                    {/* {index === 0 ? null : ( */}
+                    <AiFillDelete
+                      className="text-[20px] cursor-pointer"
+                      onClick={() => removeSubtopic(index)}
+                    />
+                    {/* )} */}
+                    {/* {index === 0 ? ( */}
+                    {/* ) : null} */}
+                  </div>
+                </>
+              );
+            })}
           </div>
         </div>
         <div className="w-[90%] text-center mt-5 m-auto">
-          <Button className="bg-maincolor" type="submit" disabled={isaddDomainLoading}>
+          <Button
+            className="bg-maincolor"
+            type="submit"
+            disabled={isaddDomainLoading}
+          >
             {isaddDomainLoading ? (
               <CgSpinner size={18} className=" m-auto animate-spin" />
             ) : (

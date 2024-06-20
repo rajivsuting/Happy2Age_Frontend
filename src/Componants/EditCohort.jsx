@@ -10,16 +10,23 @@ import { CgSpinner } from "react-icons/cg";
 const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
   const [cohortData, setCohortData] = useState(null);
   const [allParticipants, setAllParticipants] = useState([]);
+  const [selectedParticipants, setSelectedParticipants] = useState([]);
   const [isEditCohortLoading, setIsEditCohortLoading] = useState(false);
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (singleCohort) {
       setCohortData(singleCohort);
+      // Extract participants from singleCohort
+      const participants = singleCohort?.participants?.map(participant => ({
+        ...participant,
+        cohortId: singleCohort._id,
+      }));
+      setAllParticipants(participants);
+      // Set initial selected participants
+      setSelectedParticipants(singleCohort?.participants?.map(p => p._id));
     }
   }, [singleCohort]);
-
-
 
   if (!isOpen || !cohortData) return null;
 
@@ -32,19 +39,32 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
     });
   };
 
+  const handleToggleParticipant = (participantId) => {
+    setSelectedParticipants((prevSelected) =>
+      prevSelected.includes(participantId)
+        ? prevSelected.filter((id) => id !== participantId)
+        : [...prevSelected, participantId]
+    );
+  };
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
     setIsEditCohortLoading(true);
+    const updatedCohortData = {
+      ...cohortData,
+      participants: selectedParticipants,
+    };
+
+    // console.log(updatedCohortData)
     axios
-      .patch(`${serverUrl}/cohort/edit/${searchParams.get("id")}`, cohortData)
+      .patch(`${serverUrl}/cohort/edit/${searchParams.get("id")}`, updatedCohortData)
       .then((res) => {
         if (res.status === 200) {
-          getAllCohorts().then((res)=>{
+          getAllCohorts().then(() => {
             setIsEditCohortLoading(false);
             toast.success("Cohort edited successfully", toastConfig);
             onClose();
-          }); // Call the function to refresh the data
+          });
         } else {
           setIsEditCohortLoading(false);
           toast.error("Something went wrong", toastConfig);
@@ -75,19 +95,17 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
             </div>
 
             {/* Display list of participants */}
-            {/* <div className="w-[100%] m-auto mt-5 max-h-[40vh] overflow-hidden">
+            <div className="w-[100%] m-auto mt-5 max-h-[40vh] overflow-hidden">
               <h3>Select Participants:</h3>
               <div className="max-h-[30vh] overflow-y-auto">
                 <List className="grid grid-cols-4 gap-4">
-                  {allParticipants.map((participant) => (
+                  {allParticipants?.map((participant) => (
                     <div key={participant._id} className="relative group">
-                      <ListItem
-                        className="flex justify-between items-center"
-                      >
+                      <ListItem className="flex justify-between items-center">
                         <label className="flex items-center">
                           <input
                             type="checkbox"
-                            // checked={participants.includes(participant._id)}
+                            checked={selectedParticipants.includes(participant._id)}
                             onChange={() => handleToggleParticipant(participant._id)}
                             className="mr-2 cursor-pointer"
                           />
@@ -108,7 +126,7 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
                   ))}
                 </List>
               </div>
-            </div> */}
+            </div>
 
             <div className="flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500">
               <button

@@ -30,6 +30,7 @@ export const Participantlist = () => {
     "Email",
     "Type",
     "Gender",
+    "Center",
     "Date of birth",
     "Address",
     "State",
@@ -43,9 +44,10 @@ export const Participantlist = () => {
     "",
   ];
 
-  const { partcipantList } = useSelector((state) => {
+  const { partcipantList,cohortList } = useSelector((state) => {
     return {
       partcipantList: state.AllListReducer.partcipantList,
+      cohortList : state.AllListReducer.cohortList
     };
   });
 
@@ -61,9 +63,10 @@ export const Participantlist = () => {
   }, [currentPage, limit]);
 
   const handleSearchSubmit = (e)=>{
-e.preventDefault();
-dispatch(getParticipantsByName(searchResult))
-  }
+    e.preventDefault();
+    // dispatch(getParticipantsByName(searchResult))
+      }  
+
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -198,6 +201,21 @@ dispatch(getParticipantsByName(searchResult))
                    color="blue-gray"
                    className="font-normal"
                  >
+                  {
+                    cohortList?.map((pl)=>{
+                      if (el.cohort == pl._id){
+                        return pl.name || "NA"
+                      }
+                    })
+                  }
+                 </Typography>
+               </td>
+               <td className={classes}>
+                 <Typography
+                   variant="small"
+                   color="blue-gray"
+                   className="font-normal"
+                 >
                    {el.dob.split("T")[0] || "-"}
                  </Typography>
                </td>
@@ -207,7 +225,9 @@ dispatch(getParticipantsByName(searchResult))
                    color="blue-gray"
                    className="font-normal"
                  >
-                   {el.address.addressLine || "-"}
+                   {el.address.addressLine.substring(0, 20).length < el.address.addressLine.length
+                      ? el.address.addressLine.substring(0, 20) + "..."
+                      : el.address.addressLine || "-"}
                  </Typography>
                </td>
                <td className={classes}>

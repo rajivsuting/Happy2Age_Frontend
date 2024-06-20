@@ -19,66 +19,70 @@ export const ActivityList = () => {
   const [searchParams, setsearchParams] = useSearchParams();
   const dispatch = useDispatch();
 
-  const {activityList} = useSelector((state)=>{
+  const { activityList } = useSelector((state) => {
     return {
-      activityList : state.AllListReducer.activityList
-    }
-  })
+      activityList: state.AllListReducer.activityList,
+    };
+  });
 
   const toggleModalDelete = (id) => {
-    setsearchParams({id})
+    setsearchParams({ id });
     setIsModalOpenDelete(!isModalOpenDelete);
   };
 
   const handleDelete = () => {
-    axios.delete(`${serverUrl}/activity/delete/${searchParams.get("id")}`)
-    .then((res)=>{
-      if (res.status==200){
-        toast.success("Activity delete suucessfully", toastConfig);
-        getAllData();
-      } else {
-        toast.error("Something went wrong", toastConfig);
-      }
-    }).catch((err)=>{
-      console.log(err)
-      toast.error(err.response.data.error, toastConfig);
-    })
+    axios
+      .delete(`${serverUrl}/activity/delete/${searchParams.get("id")}`)
+      .then((res) => {
+        if (res.status == 200) {
+          toast.success("Activity delete suucessfully", toastConfig);
+          getAllData();
+        } else {
+          toast.error("Something went wrong", toastConfig);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.error, toastConfig);
+      });
   };
 
   const toggleModal = (el) => {
-    setsearchParams({id:el._id})
+    setsearchParams({ id: el._id });
     setIsModalOpen(!isModalOpen);
     setSingleActivity(el);
   };
 
-  function getAllData(){
-   return dispatch(getAllActivities).then((res)=>{return true})
+  function getAllData() {
+    return dispatch(getAllActivities).then((res) => {
+      return true;
+    });
   }
-
-  
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <div className="flex justify-between items-center gap-5 m-3">
         <div className="w-[50%]">
-          <form className="flex justify-start items-center gap-5" >
+          <form className="flex justify-start items-center gap-5">
             <div className="w-[50%]">
-            <Input
-              label="Search by domain name..."
-              name="password"
-              // type="search"
-              required
-              // value={searchResult}
-              // type={showPassword ? "text" : "password"}
-              // onChange={(e) => setSearchResult(e.target.value)}
-            />
-
+              <Input
+                label="Search by domain name..."
+                name="password"
+                // type="search"
+                required
+                // value={searchResult}
+                // type={showPassword ? "text" : "password"}
+                // onChange={(e) => setSearchResult(e.target.value)}
+              />
             </div>
-            <Button type="submit" variant="">Search</Button>
-            <Button type="button"  variant="" >Clear</Button>
+            <Button type="submit" variant="">
+              Search
+            </Button>
+            <Button type="button" variant="">
+              Clear
+            </Button>
           </form>
         </div>
-       
       </div>
       <table className="w-full min-w-max table-auto text-left">
         <thead>
@@ -140,13 +144,26 @@ export const ActivityList = () => {
                     {el.name || "-"}
                   </Typography>
                 </td>
-                <td className={`${classes} w-[700px]`}>
+                <td className={`${classes} w-[400px]`}>
                   <Typography
                     variant="small"
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.description}
+                    {el.description.substring(0, 20).length < el.description.length
+                      ? el.description.substring(0, 20) + "..."
+                      : el.description || "-"}
+                  </Typography>
+                </td>
+                <td className={`${classes} w-[400px]`}>
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal"
+                  >
+                    {el.references.substring(0, 20).length < el.references.length
+                      ? el.references.substring(0, 20) + "..."
+                      : el.references || "-"}
                   </Typography>
                 </td>
 
@@ -187,7 +204,7 @@ export const ActivityList = () => {
       />
       <ConfirmDeleteModal
         isOpen={isModalOpenDelete}
-        onClose={()=>toggleModalDelete()}
+        onClose={() => toggleModalDelete()}
         handleDelete={handleDelete}
       />
     </Card>

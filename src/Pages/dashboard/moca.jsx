@@ -133,6 +133,8 @@ const initialState = {
 export const Moca = () => {
   const [state, setState] = useState(initialState);
   const [allParticipants, setAllParticipants] = useState([]);
+  const [selectParticipant, setSelectParticipant] = useState("");
+  const [participantResult, setParticipantResult] = useState({});
 
   const handleScoreChange = (index, value) => {
     const newQuestions = [...state.questions];
@@ -164,6 +166,21 @@ export const Moca = () => {
     }).catch((err)=>{
       toast.error(err.response.data.error, toastConfig);
     })
+  };
+
+  
+  const handleSubmitOxfordResult = (e) => {
+    e.preventDefault();
+    axios
+      .get(`${serverUrl}/moca/${selectParticipant}`)
+      .then((res) => {
+        console.log(res);
+        setParticipantResult(res.data.message[res.data.message.length - 1]);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.message, toastConfig);
+      });
   };
 
   const renderSection = (section) => {
@@ -237,6 +254,133 @@ export const Moca = () => {
           {/* )} */}
         </Button>
       </div>
+
+      <div className="w-[100%] m- mt-10 mb-5 flex justify-center items-center">
+        <div className="w-[17%]">Get participant result</div>
+        <hr className="w-[83%] border" />
+      </div>
+
+      <form
+        onSubmit={handleSubmitOxfordResult}
+        className="flex justify-start items-center gap-10 mt-5"
+      >
+        <select
+          className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
+          value={selectParticipant}
+          onChange={(e) => setSelectParticipant(e.target.value)}
+          required
+        >
+          <option value="">Select Participant</option>
+          {allParticipants?.map((el, index) => (
+            <option key={index} value={el._id}>
+              {el.name}
+            </option>
+          ))}
+        </select>
+        <Button type="submit" variant="">
+          Generate report
+        </Button>
+      </form>
+
+      {participantResult?.questions ? (
+        <div className="flex justify-between items-center text-[20px] mt-10">
+          <div>
+            Name :{" "}
+            {allParticipants?.map((el) => {
+              if (el._id == selectParticipant) return <span>{el.name}</span>;
+            })}
+          </div>
+          <div>
+            Happiness score : {participantResult?.happinessScore?.toFixed(2)}
+          </div>
+        </div>
+      ) : null}
+
+      {!participantResult ? (
+        <div className="text-center mt-10">No result found!!</div>
+      ) : null}
+
+      {participantResult?.questions && (
+        <Card className="h-full w-full overflow-scroll mt-5 mb-24">
+          <table className="w-full min-w-max table-auto text-left">
+            <thead>
+              <tr>
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal leading-none opacity-70"
+                  >
+                    Question name
+                  </Typography>
+                </th>
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal leading-none opacity-70"
+                  >
+                    Is reversed
+                  </Typography>
+                </th>
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal leading-none opacity-70"
+                  >
+                    Score
+                  </Typography>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {participantResult?.questions?.map((el, index) => {
+                const isLast =
+                  index === participantResult?.questions?.length - 1;
+                const classes = isLast
+                  ? "p-4"
+                  : "p-4 border-b border-blue-gray-50";
+
+                return (
+                  <tr key={index}>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {el.question || "-"}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {el.isReverse ? "Yes" : "No"}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        as="a"
+                        href="#"
+                        variant="small"
+                        color="blue-gray"
+                        // onClick={() => toggleModal(el)}
+                        className="font-normal"
+                      >
+                        {el.score}
+                      </Typography>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </Card>
+      )}
     </form>
   );
 };

@@ -117,7 +117,15 @@ export const Editdomain = () => {
                 <Option value="Special Need">Special Need</Option>
               </Select>
             </div>
-            <br />
+            <div
+            className="cursor-pointer flex justify-end items-center gap-5 mb-5 mt-5"
+            onClick={addSubtopic}
+          >
+            <div className="flex justify-center items-center gap-5 border px-4 py-1 rounded">
+              <div>Add questions</div>
+              <FaPlus />
+            </div>
+          </div>
             <div className="max-h-[30vh] overflow-auto">
             {domainData.subTopics.map((item, index) => {
               return (
@@ -128,25 +136,19 @@ export const Editdomain = () => {
                   }`}
                 >
                   <Input
-                    label="Question name"
+                    label={`Question ${index +1 }`}
                     name="content"
                     value={item.content}
                     onChange={(e) => handleSubtopicChange(index, e)}
                     required
                   />
 
-                  {index === 0 ? null : (
+                  {/* {index === 0 ? null : ( */}
                     <AiFillDelete
                       className="text-[20px] cursor-pointer"
                       onClick={() => removeSubtopic(index)}
                     />
-                  )}
-                  {index === 0 ? (
-                    <FaPlus
-                      className="text-[20px] cursor-pointer"
-                      onClick={addSubtopic}
-                    />
-                  ) : null}
+                  
                 </div>
               );
             })}

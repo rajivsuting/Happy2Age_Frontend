@@ -19,7 +19,6 @@ export const Evaluationlist = () => {
   useEffect(() => {
     axios.get(`${serverUrl}/evaluation/all`).then((res) => {
       setEvalutionlist(res.data.message);
-      console.log(res.data.message);
     });
   }, []);
   return (
@@ -144,7 +143,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.participant?.name}
+                    {el.participant?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -153,7 +152,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el?.session?.name}
+                    {el?.session?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -162,7 +161,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el?.cohort?.name}
+                    {el?.cohort?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -171,7 +170,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.activity?.name}
+                    {el.activity?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -180,7 +179,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.grandAverage.toFixed(2) }
+                    {el.grandAverage  || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>

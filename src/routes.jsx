@@ -28,14 +28,15 @@ import {
   OxfordHappiness,
   CaspQuestions,
   ParticipantReport,
-  AdminList,
   Moca,
+  SessionAttendence,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
 import { GrDomain } from "react-icons/gr";
 import { IoListSharp } from "react-icons/io5";
 import Addsession from "./Pages/dashboard/addsession";
+import Sessiondetails from "./Pages/dashboard/sessiondetails";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -144,6 +145,19 @@ export const routes = [
             path_u: "/sessions-list",
             element_u: <Sessionlist />,
           },
+
+          {
+            icon_u: <IoListSharp {...icon} />,
+            name_u: "sessions details",
+            path_u: "/session-details/:sessionid",
+            element_u: <Sessiondetails />,
+          },
+          {
+            icon_u: <IoListSharp {...icon} />,
+            name_u: "sessions details",
+            path_u: "/sessions-attendence",
+            element_u: <SessionAttendence />,
+          },
         ],
       },
       //  {
@@ -180,7 +194,7 @@ export const routes = [
         icon: <HomeIcon {...icon} />,
         name: "participant report",
         path: "/participant-report",
-        element: <ParticipantReport/>,
+        element: <ParticipantReport />,
       },
       {
         icon: <HomeIcon {...icon} />,
@@ -192,25 +206,25 @@ export const routes = [
         icon: <HomeIcon {...icon} />,
         name: "Oxford Happiness",
         path: "/oxford-happiness-questionnaire/",
-        element: <OxfordHappiness/>,
+        element: <OxfordHappiness />,
       },
       {
         icon: <HomeIcon {...icon} />,
         name: "CASP-19 QUESTIONNAIRE",
         path: "/casp-questionnaire/",
-        element: <CaspQuestions/>,
+        element: <CaspQuestions />,
       },
-      {
-        icon: <HomeIcon {...icon} />,
-        name: "Admin list",
-        path: "/adminlist/",
-        element: <AdminList/>,
-      },
+      // {
+      //   icon: <HomeIcon {...icon} />,
+      //   name: "Admin list",
+      //   path: "/adminlist/",
+      //   element: <AdminList/>,
+      // },
       {
         icon: <HomeIcon {...icon} />,
         name: "MOCA",
         path: "/moca/",
-        element: <Moca/>,
+        element: <Moca />,
       },
     ],
   },
