@@ -17,7 +17,7 @@ import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllEvaluations } from "../../Redux/AllListReducer/action";
+import { getAllCohorts, getAllEvaluations, getAllSessions } from "../../Redux/AllListReducer/action";
 
 const initialState = {
   session: "",
@@ -75,12 +75,11 @@ export const AddEvaluation = () => {
     };
   });
 
-  // useEffect(()=>{
-  //   axios.get(`${serverUrl}/domain/all/?category=All`).then((res) => {
-  //     setDomainList(res.data.message);
-  //     console.log();
-  //   });
-  // },[])
+  useEffect(()=>{
+    dispatch(getAllCohorts("",""))
+    dispatch(getAllSessions("",""));
+    dispatch(getAllActivities("",""))
+  },[])
 
   useEffect(() => {
     setsessionFromCohort(

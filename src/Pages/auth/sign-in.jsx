@@ -14,6 +14,7 @@ import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { saveLocalData } from "../../Utils/localStorage";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
@@ -32,6 +33,7 @@ export function SignIn() {
     setIsLoginLoading(true);
     axios.post(`${serverUrl}/auth/login`,{ email, password })
     .then((res)=>{
+      saveLocalData("token",res.data.token)
       if (res.status==200){
         toast.success("Login suucessfully", toastConfig);
         setIsLoginLoading(false);

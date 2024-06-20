@@ -7,7 +7,7 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDeatailesEvalution from "../../Componants/SeeDeatailesEvalution";
 import { useReactToPrint } from "react-to-print";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Bar,
   BarChart,
@@ -24,6 +24,8 @@ import {
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import { getAllParticipants } from "../../Redux/AllListReducer/action";
+import * as XLSX from "xlsx";
 
 // import {
 //   ComposedChart,
@@ -117,7 +119,7 @@ export const ParticipantReport = () => {
   const [getReportData, setGetReportData] = useState([]);
   const [remarks, setRemarks] = useState("");
   const [resultnlist, setResultlist] = useState({});
-
+const dispatch = useDispatch();
   const componantPDF = useRef();
 
   const [singleEvalustion, setSingleEvaluation] = useState({});
@@ -134,6 +136,7 @@ export const ParticipantReport = () => {
   });
 
   useEffect(() => {
+      dispatch(getAllParticipants("",""));
     axios.get(`${serverUrl}/evaluation/all`).then((res) => {
       setEvalutionlist(res.data.message);
     });
@@ -165,13 +168,31 @@ export const ParticipantReport = () => {
         // }
       });
   };
+  // console.log(resultnlist?.graphDetails);
 
-  // console.log(happinessScore)
+  let filteredData = resultnlist?.graphDetails?.map((el) => ({
+    "Domain name": el.domainName,
+    "Cohort average": el.cohortAverage,
+    "No. of sessions": el.numberOfSessions,
+    "Average": el.average,
+  }));
+
+  let participantNameforExcel = allParticipants?.filter((el) =>el._id == singleParticipant)[0]?.name
+
+  const handleExportToExcel = () => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(filteredData);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Participant report");
+
+    XLSX.writeFile(wb, `${participantNameforExcel}-${startDate}-${endDate}.xlsx`);
+    toast.success("Excel file download successfully",toastConfig);
+  };
 
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
     documentTitle: "Cohort report",
-    onAfterPrint: () => toast.success("PDF file download successfully"),
+    onAfterPrint: () => toast.success("PDF file download successfully",toastConfig),
   });
 
   useEffect(() => {
@@ -464,7 +485,7 @@ export const ParticipantReport = () => {
           onChange={(e) => setRemarks(e.target.value)}
         />
         <div className="flex justify-end gap-5 mt-5">
-          <Button>Export to excel</Button>
+          <Button onClick={handleExportToExcel}>Export to excel</Button>
           <Button onClick={generatePDF}>Generate PDF</Button>
         </div>
       </div>

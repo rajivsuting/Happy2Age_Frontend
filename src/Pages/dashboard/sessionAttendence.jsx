@@ -43,20 +43,20 @@ export const SessionAttendence = () => {
     setOpenAttendenceModal(false);
   };
 
- // useEffect(() => {
-  //   // setSearchParams({ page: currentPage, limit: limit });
-  //   dispatch(getAllParticipants(currentPage, limit)).then((res) => {
-  //     return true;
-  //   });
-  // }, [currentPage, limit]);
-
+//  useEffect(() => {
+//    dispatch(getAllParticipants(currentPage, limit)).then((res) => {
+//      return true;
+//     });
+//   }, [currentPage, limit]);
+  
   useEffect(()=>{
-    axios.get(`${serverUrl}/session/attendance`).then((res)=>{
+    setsearchParams({ page: currentPage, limit: limit });
+    axios.get(`${serverUrl}/session/attendance/?page=${currentPage}&limit=${limit}`).then((res)=>{
         setAllAttendence(res.data.data)
     }).catch((err)=>{
         console.log(err)
     })
-  },[])
+  },[currentPage, limit])
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -105,12 +105,12 @@ export const SessionAttendence = () => {
             <span className="px-5 font-medium">{currentPage}</span>
             <RiArrowRightSLine
               className={`text-lg cursor-pointer ${
-                sessionlist?.length < limit
+                allAttendence?.length < limit
                   ? "text-gray-400 pointer-events-none"
                   : ""
               }`}
               onClick={() =>
-                sessionlist?.length >= limit &&
+                allAttendence?.length >= limit &&
                 handlePageChange(currentPage + 1)
               }
             />

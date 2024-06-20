@@ -31,14 +31,13 @@ export const Cohortlist = () => {
     };
   });
 
-  console.log(cohortList);
 
-  // useEffect(() => {
-  //   // setSearchParams({ page: currentPage, limit: limit });
-  //   dispatch(getAllParticipants(currentPage, limit)).then((res) => {
-  //     return true;
-  //   });
-  // }, [currentPage, limit]);
+  useEffect(() => {
+    // setSearchParams({ page: currentPage, limit: limit });
+    dispatch(getAllCohorts(currentPage, limit)).then((res) => {
+      return true;
+    });
+  }, [currentPage, limit]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -66,7 +65,7 @@ export const Cohortlist = () => {
       .then((res) => {
         if (res.status == 200) {
           toast.success("Cohort delete suucessfully", toastConfig);
-          dispatch(getAllCohorts).then((res) => {});
+          dispatch(getAllCohorts("","")).then((res) => {});
         } else {
           toast.error("Something went wrong", toastConfig);
         }
@@ -277,7 +276,7 @@ export const Cohortlist = () => {
         isOpen={isModalOpenEdit}
         onClose={toggleModalEdit}
         singleCohort={singleCohort}
-        getAllCohorts={() => dispatch(getAllCohorts).then((res) => {})}
+        getAllCohorts={() => dispatch(getAllCohorts("","")).then((res) => {})}
       />
       <ConfirmDeleteModal
         isOpen={isModalOpenDelete}

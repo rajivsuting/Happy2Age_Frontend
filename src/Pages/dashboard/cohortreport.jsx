@@ -7,7 +7,8 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDeatailesEvalution from "../../Componants/SeeDeatailesEvalution";
 import { useReactToPrint } from "react-to-print";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import * as XLSX from "xlsx";
 import {
   Bar,
   BarChart,
@@ -21,6 +22,7 @@ import {
 } from "recharts";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import { getAllCohorts } from "../../Redux/AllListReducer/action";
 // import { Link } from "react-router-dom";
 // import { resultnlist } from "./dummy";
 
@@ -85,6 +87,8 @@ export const Cohortreport = () => {
   const [remarks, setRemarks] = useState("");
   const componantPDF = useRef();
 
+  const dispatch = useDispatch();
+
   const [singleEvalustion, setSingleEvaluation] = useState({});
   const toggleModal = (el) => {
     setIsModalOpen(!isModalOpen);
@@ -98,11 +102,9 @@ export const Cohortreport = () => {
     };
   });
 
-  // useEffect(() => {
-  //   axios.get(`${serverUrl}/evaluation/all`).then((res) => {
-  //     setEvalutionlist(res.data.message);
-  //   });
-  // }, []);
+  useEffect(() => {
+    dispatch(getAllCohorts("", ""));
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -132,12 +134,33 @@ export const Cohortreport = () => {
   //   });
   // });
 
-  console.log(resultnlist);
+  // console.log(resultnlist);
+
+  let filteredData = resultnlist?.graphDetails?.map((el) => ({
+    "Domain name": el.domainName,
+    "Cohort average": el.cohortAverage,
+    "No. of sessions": el.numberOfSessions,
+    "Average": el.average,
+  }));
+
+  let cohortNameforExcel = cohortList?.filter((el) =>el._id == cohortSelect)[0]?.name
+
+  const handleExportToExcel = () => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(filteredData);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Center report");
+
+    XLSX.writeFile(wb, `${cohortNameforExcel}-${startDate}-${endDate}.xlsx`);
+    toast.success("Excel file download successfully",toastConfig);
+  };
+
+  // console.log(cohortList?.filter((el) =>el._id == cohortSelect)[0]?.name);
 
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
     documentTitle: "Cohort report",
-    onAfterPrint: () => toast.success("PDF file download successfully"),
+    onAfterPrint: () => toast.success("PDF file download successfully",toastConfig),
   });
 
   return (
@@ -330,7 +353,7 @@ export const Cohortreport = () => {
               dataKey="domainName"
               tick={{ fontSize: 12 }}
             />
-            <YAxis tick={{ fontSize: 12 }}  domain={[0, 7]}/>
+            <YAxis tick={{ fontSize: 12 }} domain={[0, 7]} />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Bar
@@ -357,7 +380,7 @@ export const Cohortreport = () => {
           onChange={(e) => setRemarks(e.target.value)}
         />
         <div className="flex justify-end gap-5 mt-5">
-          <Button>Export to excel</Button>
+          <Button onClick={handleExportToExcel}>Export to excel</Button>
           <Button onClick={generatePDF}>Generate PDF</Button>
         </div>
       </div>

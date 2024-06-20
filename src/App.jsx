@@ -25,13 +25,12 @@ export const toastConfig = {
 const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("one tme ")
     dispatch(getAllParticipants("",""));
-    dispatch(getAllCohorts);
-    dispatch(getAllAdmins);
-    dispatch(getAllActivities);
+    dispatch(getAllCohorts("",""));
+    // dispatch(getAllAdmins);
+    dispatch(getAllActivities("",""));
     dispatch(getAllDomains("All"));
-    dispatch(getAllSessions);
+    dispatch(getAllSessions("",""));
     dispatch(getAllEvaluations);
   }, []);
 

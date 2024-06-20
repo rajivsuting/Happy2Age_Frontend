@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllParticipants } from "../Redux/AllListReducer/action";
+import { getAllCohorts, getAllParticipants } from "../Redux/AllListReducer/action";
 
 const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
   const [participantData, setParticipantData] = useState(null);
@@ -21,6 +21,11 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
   })
 
   const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(getAllCohorts("",""));
+  },[])
+
   useEffect(() => {
     if (singleParticipant) {
       setParticipantData(singleParticipant);
@@ -87,8 +92,8 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
       )
       .then((res) => {
         if (res.status === 200) {
-          dispatch(getAllParticipants("","")).then((res)=>{
-            dispatch(getAllCohorts).then((res)=>{
+          dispatch(getAllParticipants(searchParams.get("page"),searchParams.get("limit"))).then((res)=>{
+            dispatch(getAllCohorts("","")).then((res)=>{
               toast.success("Participant edited successfully", toastConfig);
               onClose();
             })
@@ -138,7 +143,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
               <Input
                 label="Date of Birth"
                 name="dob"
-                value={participantData?.dob}
+                value={participantData?.dob?.split("T")[0]}
                 type="date"
                 onChange={handleChangeInput}
               />

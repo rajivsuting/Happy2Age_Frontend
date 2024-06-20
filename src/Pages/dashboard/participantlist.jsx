@@ -56,7 +56,7 @@ export const Participantlist = () => {
   };
 
   useEffect(() => {
-    // setSearchParams({ page: currentPage, limit: limit });
+    setSearchParams({ page: currentPage, limit: limit });
     dispatch(getAllParticipants(currentPage, limit)).then((res) => {
       return true;
     });

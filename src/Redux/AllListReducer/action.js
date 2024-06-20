@@ -61,14 +61,15 @@ export const getParticipantsByName = (name)=>(dispatch) => {
 
 // cohort -------
 
-export const getAllCohorts = (dispatch) => {
+export const getAllCohorts =(page="", limit="")=> (dispatch) => {
   dispatch({ type: types.GET_COHORTS_REQUEST });
   return axios
-    .get(`${serverUrl}/cohort/all`)
+    .get(`${serverUrl}/cohort/all/?page=${page}&limit=${limit}`)
     .then((res) => {
+      console.log("cohort",res)
       return dispatch({
         type: types.GET_COHORTS_SUCCESS,
-        payload: res.data.message,
+        payload: res.data.data,
       });
     })
     .catch((err) => {
@@ -79,14 +80,14 @@ export const getAllCohorts = (dispatch) => {
 
 // activity --------------------------
 
-export const getAllActivities = (dispatch) => {
+export const getAllActivities =(page="", limit="")=>  (dispatch) => {
   dispatch({ type: types.GET_ACTIVITIES_REQUEST });
   return axios
-    .get(`${serverUrl}/activity/all`)
+    .get(`${serverUrl}/activity/all?page=${page}&limit=${limit}`)
     .then((res) => {
       return dispatch({
         type: types.GET_ACTIVITIES_SUCCESS,
-        payload: res.data.message,
+        payload: res.data.data,
       });
     })
     .catch((err) => {
@@ -116,10 +117,10 @@ export const getAllDomains =(category="All")=> (dispatch) => {
 
 // sessions ----------------------
 
-export const getAllSessions = (dispatch) => {
+export const getAllSessions =(page="", limit="")=> (dispatch) => {
   dispatch({ type: types.GET_SESSIONS_REQUEST });
   return axios
-    .get(`${serverUrl}/session/all`)
+    .get(`${serverUrl}/session/all/?page=${page}&limit=${limit}`)
     .then((res) => {
       return dispatch({
         type: types.GET_SESSIONS_SUCCESS,

@@ -43,8 +43,9 @@ export const AddActivity = () => {
         if (res.status == 201) {
           toast.success("Activity added suucessfully", toastConfig);
           setActivityData(initialState);
-          dispatch(getAllActivities);
-          setIsAddActivityLoading(false);
+          dispatch(getAllActivities("","")).then((res)=>{
+            setIsAddActivityLoading(false);
+          })
         } else {
           toast.error("Something went wrong", toastConfig);
         }

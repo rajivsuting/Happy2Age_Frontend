@@ -7,6 +7,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 // import CohortsList from "../Pages/CohortsList";
 import Dashboard from "../layouts/dashboard";
 import Auth from "../layouts/auth";
+import PrivateRoute from "./PrivateRoute";
 // import AddParticipants from "../Pages/AddPartcipants";
 
 const AllRoutes = () => {
@@ -20,10 +21,11 @@ const AllRoutes = () => {
       <Route path="/cohort-list" element={<CohortsList />} /> */}
 
       {/* template---------------------- */}
-
-      <Route path="/mainpage/*" element={<Dashboard />} />
       <Route path="/auth/*" element={<Auth />} />
+      <Route element={<PrivateRoute />}>
+      <Route path="/mainpage/*" element={<Dashboard />} />
       <Route path="*" element={<Navigate to="/auth/sign-in" replace />} />
+      </Route>
     </Routes>
   );
 };

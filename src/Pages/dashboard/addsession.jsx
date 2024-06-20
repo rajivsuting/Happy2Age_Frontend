@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllSessions } from "../../Redux/AllListReducer/action";
+import { getAllActivities, getAllCohorts, getAllSessions } from "../../Redux/AllListReducer/action";
 
 const initialState = {
   name: "",
@@ -65,7 +65,13 @@ export const AddSession = () => {
     };
   });
 
+  useEffect(()=>{
+    dispatch(getAllCohorts("",""));
+    dispatch(getAllActivities("",""))
+  },[])
+
   useEffect(() => {
+    
     if (cohort) {
       const selectedCohort = cohortList.find((el) => el._id === cohort);
       if (selectedCohort) {
@@ -108,7 +114,7 @@ export const AddSession = () => {
         if (res.status === 201) {
           setIsSessionLoading(false);
           toast.success("Session added successfully", toastConfig);
-          dispatch(getAllSessions).then((res) => {
+          dispatch(getAllSessions("","")).then((res) => {
             // setSessionData(initialState);
             setCheckedParticipants([]);
             return true;

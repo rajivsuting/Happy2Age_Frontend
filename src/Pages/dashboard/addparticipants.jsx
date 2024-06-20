@@ -1,5 +1,5 @@
 import { Button, Input, Select, Option, Textarea } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import axios from "axios";
 import { toastConfig } from "../../App";
@@ -38,6 +38,10 @@ export const AddParticipant = () => {
         cohortList : state.AllListReducer.cohortList
       }
     })
+
+    useEffect(()=>{
+      dispatch(getAllCohorts("",""))
+    },[])
   
 
     const handleChangeInput = (e) => {
@@ -96,7 +100,7 @@ export const AddParticipant = () => {
       axios.post(`${serverUrl}/participant/create`,participantData)
       .then((res)=>{
         if (res.status==201){
-          dispatch(getAllCohorts).then((res)=>{
+          dispatch(getAllCohorts("","")).then((res)=>{
             toast.success("Participant added suucessfully", toastConfig);
             setParticipantData(initialState);
             setIsAddParticipantsLoading(false);
@@ -132,7 +136,7 @@ export const AddParticipant = () => {
             <Option value="General">General</Option>
             <Option value="Special Need">Special Need</Option>
           </Select>
-          <Select label="Select center" name="cohort" value={participantData.cohort} onChange={(value)=>handleChangeGenderAndParticipants("cohort",value)}>
+          <Select label="Select center" name="cohort" required value={participantData.cohort} onChange={(value)=>handleChangeGenderAndParticipants("cohort",value)}>
             {
               cohortList?.map((el)=>{
                 return <Option value={el._id}>{el.name}</Option>
