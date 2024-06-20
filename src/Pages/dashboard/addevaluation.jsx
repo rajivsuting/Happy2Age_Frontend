@@ -18,6 +18,8 @@ import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCohorts, getAllEvaluations, getAllSessions } from "../../Redux/AllListReducer/action";
+import { getLocalData } from "../../Utils/localStorage";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   session: "",
@@ -38,6 +40,7 @@ export const AddEvaluation = () => {
   const [selectDomainByType, setSelectDomainByType] = useState([]);
   const [isAddEvaluationLoading, setIsAddEvaluationLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { session, cohort, participant, activity, domain } = evaluationData;
 
   const handleChangeEvaluation = (e) => {
@@ -100,7 +103,6 @@ export const AddEvaluation = () => {
     );
   }, [participant]);
 
-  console.log(domainCategory)
 
   useEffect(() => {
     setActivityFromSession(
@@ -142,7 +144,11 @@ export const AddEvaluation = () => {
     e.preventDefault();
     setIsAddEvaluationLoading(true);
     axios
-      .post(`${serverUrl}/evaluation/create`, evaluationData)
+      .post(`${serverUrl}/evaluation/create`, evaluationData,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         if (res.status == 201) {
           toast.success("Evaluation added suucessfully", toastConfig);
@@ -157,7 +163,16 @@ export const AddEvaluation = () => {
       })
       .catch((err) => {
         setIsAddEvaluationLoading(false);
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 

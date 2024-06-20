@@ -9,6 +9,7 @@ import SeeDetailesSession from "../../Componants/SeeDetailesSession";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
 import SeeDeatailsSessionAttendence from "../../Componants/SeeDeatailsSessionAttendence";
+import { getLocalData } from "../../Utils/localStorage";
 
 export const SessionAttendence = () => {
   const dispatch = useDispatch();
@@ -20,76 +21,106 @@ export const SessionAttendence = () => {
   const [limit, setLimit] = useState(searchParams.get("limit") || 10); // default limit
   const [searchResult, setSearchResult] = useState("");
   const [openAttendenceModal, setOpenAttendenceModal] = useState(false);
-  const [singleAttentence, setSingleAttence] = useState({})
+  const [singleAttentence, setSingleAttence] = useState({});
   const navigate = useNavigate();
   const toggleModal = (el) => {
     setIsModalOpen(!isModalOpen);
     setSingleSession(el);
   };
 
-  const { sessionlist,partcipantList } = useSelector((state) => {
+  const { sessionlist, partcipantList } = useSelector((state) => {
     return {
       sessionlist: state.AllListReducer.sessionlist,
-      partcipantList: state.AllListReducer.partcipantList
+      partcipantList: state.AllListReducer.partcipantList,
     };
   });
 
   const handleSessionDetails = (el) => {
     setOpenAttendenceModal(true);
-    setSingleAttence(el)
+    setSingleAttence(el);
   };
 
   const closeSessionDetails = () => {
     setOpenAttendenceModal(false);
   };
 
-//  useEffect(() => {
-//    dispatch(getAllParticipants(currentPage, limit)).then((res) => {
-//      return true;
-//     });
-//   }, [currentPage, limit]);
-  
-  useEffect(()=>{
+  //  useEffect(() => {
+  //    dispatch(getAllParticipants(currentPage, limit)).then((res) => {
+  //      return true;
+  //     });
+  //   }, [currentPage, limit]);
+
+  useEffect(() => {
     setsearchParams({ page: currentPage, limit: limit });
-    axios.get(`${serverUrl}/session/attendance/?page=${currentPage}&limit=${limit}`).then((res)=>{
-        setAllAttendence(res.data.data)
-    }).catch((err)=>{
-        console.log(err)
-    })
-  },[currentPage, limit])
+    axios
+      .get(
+        `${serverUrl}/session/attendance/?page=${currentPage}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        }
+      )
+      .then((res) => {
+        setAllAttendence(res.data.data);
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
+  }, [currentPage, limit]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
- const handleSearchSubmit = (e)=>{
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
     // dispatch(getParticipantsByName(searchResult))
-      }  
+  };
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <div className="flex justify-between items-center gap-5 mt-4 mr-3 ml-3">
         <div className="w-[50%]">
-          <form className="flex justify-start items-center gap-5" onSubmit={handleSearchSubmit}>
+          <form
+            className="flex justify-start items-center gap-5"
+            onSubmit={handleSearchSubmit}
+          >
             <div className="w-[50%]">
-            <Input
-              label="Search session name..."
-              name="password"
-              // type="search"
-              required
-              value={searchResult}
-              // type={showPassword ? "text" : "password"}
-              onChange={(e) => setSearchResult(e.target.value)}
-            />
-
+              <Input
+                label="Search session name..."
+                name="password"
+                // type="search"
+                required
+                value={searchResult}
+                // type={showPassword ? "text" : "password"}
+                onChange={(e) => setSearchResult(e.target.value)}
+              />
             </div>
-            <Button type="submit" variant="">Search</Button>
-            <Button type="button" onClick={()=>{
-            //   setSearchResult("")
-            //  return  dispatch(getAllParticipants(currentPage, limit)).then((res) => {
-            //     return true;
-            //   });
-            }} variant="" disabled={!searchResult}>Clear</Button>
+            <Button type="submit" variant="">
+              Search
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                //   setSearchResult("")
+                //  return  dispatch(getAllParticipants(currentPage, limit)).then((res) => {
+                //     return true;
+                //   });
+              }}
+              variant=""
+              disabled={!searchResult}
+            >
+              Clear
+            </Button>
           </form>
         </div>
         <div className="flex justify-center items-center">
@@ -177,7 +208,6 @@ export const SessionAttendence = () => {
                 Total attendence
               </Typography>
             </th>
-            
           </tr>
         </thead>
         <tbody>
@@ -202,17 +232,17 @@ export const SessionAttendence = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.sessions.filter((pl)=>pl.present).length}
+                    {el.sessions.filter((pl) => pl.present).length}
                   </Typography>
                 </td>
-                
+
                 <td className={classes}>
                   <Typography
                     variant="small"
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.sessions.filter((pl)=>!pl.present).length}
+                    {el.sessions.filter((pl) => !pl.present).length}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -230,7 +260,7 @@ export const SessionAttendence = () => {
                     href="#"
                     variant="small"
                     color="blue-gray"
-                    onClick={()=>handleSessionDetails(el)}
+                    onClick={() => handleSessionDetails(el)}
                     className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
                   >
                     See details
@@ -284,7 +314,6 @@ export const SessionAttendence = () => {
 };
 
 export default SessionAttendence;
-
 
 // import React, { useState } from 'react';
 // import ReactApexChart from 'react-apexcharts';

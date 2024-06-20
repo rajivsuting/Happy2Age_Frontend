@@ -5,20 +5,37 @@ import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDeatailesEvalution from "../../Componants/SeeDeatailesEvalution";
+import { getLocalData } from "../../Utils/localStorage";
+import { useNavigate } from "react-router-dom";
 
 export const Evaluationlist = () => {
   const [evalutionlist, setEvalutionlist] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
   const [singleEvalustion, setSingleEvaluation] = useState({})
   const toggleModal = (el) => {
      setIsModalOpen(!isModalOpen);
      setSingleEvaluation(el)
    };
- 
 
   useEffect(() => {
-    axios.get(`${serverUrl}/evaluation/all`).then((res) => {
+    axios.get(`${serverUrl}/evaluation/all`,{
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
+    }).then((res) => {
       setEvalutionlist(res.data.message);
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
   }, []);
   return (

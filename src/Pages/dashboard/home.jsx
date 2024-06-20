@@ -31,22 +31,70 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 import { serverUrl } from "../../api";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { getLocalData } from "../../Utils/localStorage";
 
 export function Home() {
   const [partcipantsList, setPartcipantList] = useState([]);
   const [cohortsList, setCohortList] = useState([]);
   const [activityList, setActivityList] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
-    axios.get(`${serverUrl}/participant/all/`).then((res) => {
+    axios.get(`${serverUrl}/participant/all/`,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      }).then((res) => {
       setPartcipantList(res.data.message);
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
 
-    axios.get(`${serverUrl}/cohort/all/`).then((res) => {
+    axios.get(`${serverUrl}/cohort/all/`,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      }).then((res) => {
       setCohortList(res.data.message);
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
 
-    axios.get(`${serverUrl}/activity/all/`).then((res) => {
+    axios.get(`${serverUrl}/activity/all/`,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      }).then((res) => {
       setActivityList(res.data.message);
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
   }, []);
   return (

@@ -4,14 +4,16 @@ import { serverUrl } from "../api";
 import axios from "axios";
 import { toastConfig } from "../App";
 import { toast } from "react-toastify";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCohorts, getAllParticipants } from "../Redux/AllListReducer/action";
+import { getLocalData } from "../Utils/localStorage";
 
 const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
   const [participantData, setParticipantData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   // const [isEditParticipantLoading, setIsEditParticipantLoadingLoading] = useState(false);
   const [isEditParticipantLoading, setIsEditParticipantLoading] = useState(false);
   const {cohortList} = useSelector((state)=>{
@@ -88,7 +90,11 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
     axios
       .patch(
         `${serverUrl}/participant/edit/${searchParams.get("id")}`,
-        participantData
+        participantData,{
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        }
       )
       .then((res) => {
         if (res.status === 200) {
@@ -106,7 +112,16 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
       })
       .catch((err) => {
         setIsEditParticipantLoading(false);
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 

@@ -6,6 +6,8 @@ import { serverUrl } from "../../api";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import { getLocalData } from "../../Utils/localStorage";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   participant: "",
@@ -92,17 +94,31 @@ export const CaspQuestions = () => {
   const [selectParticipant, setSelectParticipant] = useState("");
   const [participantResult, setParticipantResult] = useState({});
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const { participant, questions } = questionData;
 
   useEffect(() => {
     axios
-      .get(`${serverUrl}/participant/all`)
+      .get(`${serverUrl}/participant/all`,{
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
+    })
       .then((res) => {
         setAllParticipants(res.data.message);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   }, []);
 
@@ -131,26 +147,51 @@ export const CaspQuestions = () => {
     setQuestionData({ ...questionData, questions: updatedQuestions });
 
     axios
-      .post(`${serverUrl}/casp/add`, questionData)
+      .post(`${serverUrl}/casp/add`, questionData,{
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
+    })
       .then((res) => {
         toast.success(res.data.message, toastConfig);
       })
       .catch((err) => {
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 
   const handleSubmitOxfordResult = (e) => {
     e.preventDefault();
     axios
-      .get(`${serverUrl}/casp/${selectParticipant}`)
+      .get(`${serverUrl}/casp/${selectParticipant}`,{
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
+    })
       .then((res) => {
         console.log(res);
         setParticipantResult(res.data.message[res.data.message.length - 1]);
       })
       .catch((err) => {
-        console.log(err);
-        toast.error(err.response.data.message, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 

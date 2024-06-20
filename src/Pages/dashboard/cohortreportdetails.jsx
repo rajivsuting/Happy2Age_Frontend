@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { serverUrl } from "../../api";
 import { Button, Card, Typography } from "@material-tailwind/react";
 // import {
@@ -23,6 +23,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { getLocalData } from "../../Utils/localStorage";
 
 const darkColors = [
   "#17a589",
@@ -43,6 +44,7 @@ export const Cohortreportdetails = () => {
   const [partcipantReportdata, setPartcipantReportdata] = useState();
   const [remarks, setRemarks] = useState("");
   const componantPDF = useRef();
+  const navigate = useNavigate();
   const { partcipantList } = useSelector((state) => {
     return {
       partcipantList: state.AllListReducer.partcipantList,
@@ -50,9 +52,24 @@ export const Cohortreportdetails = () => {
   });
 
   useEffect(() => {
-    axios.get(`${serverUrl}/report/${participantid}/`).then((res) => {
+    axios.get(`${serverUrl}/report/${participantid}/`,{
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
+    }).then((res) => {
       // console.log(res.data.message);
       setPartcipantReportdata(res.data.message);
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
   }, []);
 
@@ -121,8 +138,6 @@ export const Cohortreportdetails = () => {
   outPutArray.forEach(session => {
     session.maxDomainAverage = maxDomainAverage + 1;
   });
-  
-  console.log(outPutArray);
 
   return (
     <div className=" mt-5 mb-10">

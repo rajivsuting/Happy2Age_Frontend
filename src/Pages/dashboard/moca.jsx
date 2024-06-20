@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Input } from "@material-tailwind/react";
+import { Button, Card, Input, Typography } from "@material-tailwind/react";
 import { CgSpinner } from "react-icons/cg";
 import axios from "axios";
 import { serverUrl } from "../../api";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
+import { getLocalData } from "../../Utils/localStorage";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   participant: "",
@@ -135,7 +139,7 @@ export const Moca = () => {
   const [allParticipants, setAllParticipants] = useState([]);
   const [selectParticipant, setSelectParticipant] = useState("");
   const [participantResult, setParticipantResult] = useState({});
-
+const navigate = useNavigate();
   const handleScoreChange = (index, value) => {
     const newQuestions = [...state.questions];
     newQuestions[index].score = value;
@@ -148,38 +152,77 @@ export const Moca = () => {
 
   useEffect(() => {
     axios
-      .get(`${serverUrl}/participant/all`)
+      .get(`${serverUrl}/participant/all`,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         setAllParticipants(res.data.message);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(state);
-    axios.post(`${serverUrl}/moca/add`,state)
+    axios.post(`${serverUrl}/moca/create`,state,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
     .then((res)=>{
       toast.success(res.data.message, toastConfig);
-    }).catch((err)=>{
-      toast.error(err.response.data.error, toastConfig);
-    })
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
+    });
   };
 
   
   const handleSubmitOxfordResult = (e) => {
-    e.preventDefault();
+    // console.log(e)
+    // e.preventDefault();
     axios
-      .get(`${serverUrl}/moca/${selectParticipant}`)
+      .get(`${serverUrl}/moca/${selectParticipant}`,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         console.log(res);
         setParticipantResult(res.data.message[res.data.message.length - 1]);
       })
       .catch((err) => {
-        console.log(err);
-        toast.error(err.response.data.message, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 
@@ -218,7 +261,31 @@ export const Moca = () => {
     );
   };
 
+  const renderSectionSingle = (section) => {
+    const sectionQuestions = state.questions.filter(
+      (q) => q.section === section
+    );
+    return (
+      <div key={section} className="mb-6">
+        <h2 className=" font-bold mt-10 mb-4">{section}</h2>
+        {sectionQuestions.map((question, index) => (
+          <div key={index} className="flex justify-between items-center gap-[50px] mb-4">
+            <div className=" mb-2">
+              {question.subtopic
+                ? `${question.subtopic} - ${question.name}`
+                : question.name}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const uniqueSections = [...new Set(state.questions.map((q) => q.section))];
+
+  const uniqueSectionsForsingle = [...new Set(participantResult?.questions?.map((q) => q.section))];
+
+  // console.log(uniqueSections);
 
   return (
     <form className="p-6">
@@ -260,8 +327,8 @@ export const Moca = () => {
         <hr className="w-[83%] border" />
       </div>
 
-      <form
-        onSubmit={handleSubmitOxfordResult}
+      <div
+      
         className="flex justify-start items-center gap-10 mt-5"
       >
         <select
@@ -277,10 +344,10 @@ export const Moca = () => {
             </option>
           ))}
         </select>
-        <Button type="submit" variant="">
+        <Button onClick={handleSubmitOxfordResult} variant="">
           Generate report
         </Button>
-      </form>
+      </div>
 
       {participantResult?.questions ? (
         <div className="flex justify-between items-center text-[20px] mt-10">
@@ -320,15 +387,6 @@ export const Moca = () => {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Is reversed
-                  </Typography>
-                </th>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
                     Score
                   </Typography>
                 </th>
@@ -343,25 +401,17 @@ export const Moca = () => {
                   : "p-4 border-b border-blue-gray-50";
 
                 return (
-                  <tr key={index}>
+                  <tr key={index} className="border-b">
                     <td className={classes}>
                       <Typography
                         variant="small"
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {el.question || "-"}
+                       {uniqueSections.map((section) => renderSectionSingle(section))}
                       </Typography>
                     </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {el.isReverse ? "Yes" : "No"}
-                      </Typography>
-                    </td>
+                    
                     <td className={classes}>
                       <Typography
                         as="a"

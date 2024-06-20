@@ -4,13 +4,17 @@ import axios from "axios";
 import { serverUrl } from "../api";
 import { toast } from "react-toastify";
 import { toastConfig } from "../App";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
+import { getLocalData } from "../Utils/localStorage";
 
 const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
   const [activityData, setActivityData] = useState(null);
   const [searchParams, setsearchParams] = useSearchParams();
   const [isEditActivityLoading, setIsEditActivityLoading] = useState(false);
+  const navigate = useNavigate();
+
+
   useEffect(() => {
     if (singleActivity) {
       setActivityData(singleActivity);
@@ -29,7 +33,11 @@ const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
     e.preventDefault();
     setIsEditActivityLoading(true);
     axios
-    .patch(`${serverUrl}/activity/edit/${searchParams.get("id")}`, activityData)
+    .patch(`${serverUrl}/activity/edit/${searchParams.get("id")}`, activityData, {
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
+    })
     .then((res) => {
       if (res.status === 200) {
         getAllData().then((res)=>{
@@ -43,9 +51,16 @@ const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
       }
     })
     .catch((err) => {
-      console.log(err)
-      setIsEditActivityLoading(false);
-      toast.error(err.response.data.error, toastConfig);
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
   };
 

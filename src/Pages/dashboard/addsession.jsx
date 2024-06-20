@@ -15,6 +15,7 @@ import { toastConfig } from "../../App";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllActivities, getAllCohorts, getAllSessions } from "../../Redux/AllListReducer/action";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   name: "",
@@ -31,6 +32,7 @@ export const AddSession = () => {
   const [checkedParticipants, setCheckedParticipants] = useState([]);
   const { name, cohort, activity, date, participants } = sessionData;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -108,8 +110,11 @@ export const AddSession = () => {
   const handleSubmitSession = (e) => {
     e.preventDefault();
     setIsSessionLoading(true);
-    console.log(sessionData)
-    axios.post(`${serverUrl}/session/create`, sessionData)
+    axios.post(`${serverUrl}/session/create`, sessionData,{
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
+    })
       .then((res) => {
         if (res.status === 201) {
           setIsSessionLoading(false);
@@ -123,9 +128,19 @@ export const AddSession = () => {
           setIsSessionLoading(false);
           toast.error("Something went wrong", toastConfig);
         }
-      }).catch((err) => {
+      })
+      .catch((err) => {
         setIsSessionLoading(false);
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 

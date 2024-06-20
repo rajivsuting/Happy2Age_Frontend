@@ -13,6 +13,8 @@ import { toastConfig } from "../../App";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch } from "react-redux";
 import { getAllActivities } from "../../Redux/AllListReducer/action";
+import { getLocalData } from "../../Utils/localStorage";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   name: "",
@@ -24,6 +26,7 @@ export const AddActivity = () => {
   const [activityData, setActivityData] = useState(initialState);
   const [isAddActivityLoading, setIsAddActivityLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { name, description, references } = activityData;
 
   const handleChangeInput = (e) => {
@@ -38,7 +41,11 @@ export const AddActivity = () => {
     e.preventDefault();
     setIsAddActivityLoading(true);
     axios
-      .post(`${serverUrl}/activity/create`, activityData)
+      .post(`${serverUrl}/activity/create`, activityData, {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         if (res.status == 201) {
           toast.success("Activity added suucessfully", toastConfig);
@@ -51,8 +58,16 @@ export const AddActivity = () => {
         }
       })
       .catch((err) => {
-        setIsAddActivityLoading(false);
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 

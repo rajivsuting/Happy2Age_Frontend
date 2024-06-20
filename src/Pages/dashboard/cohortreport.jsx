@@ -23,6 +23,10 @@ import {
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { getAllCohorts } from "../../Redux/AllListReducer/action";
+import { getLocalData } from "../../Utils/localStorage";
+import { useNavigate } from "react-router-dom";
+import ReactApexChart from "react-apexcharts";
+import Heatmap from "../../Componants/Heatmap";
 // import { Link } from "react-router-dom";
 // import { resultnlist } from "./dummy";
 
@@ -86,7 +90,7 @@ export const Cohortreport = () => {
   const [getReportData, setGetReportData] = useState([]);
   const [remarks, setRemarks] = useState("");
   const componantPDF = useRef();
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [singleEvalustion, setSingleEvaluation] = useState({});
@@ -110,18 +114,28 @@ export const Cohortreport = () => {
     e.preventDefault();
     axios
       .get(
-        `${serverUrl}/report/get/?cohort=${cohortSelect}&start=${startDate}&end=${endDate}`
+        `${serverUrl}/report/get/?cohort=${cohortSelect}&start=${startDate}&end=${endDate}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        }
       )
       .then((res) => {
         console.log(res);
         setResultlist(res.data.message);
       })
       .catch((err) => {
-        toast.error(err.response.data.error, toastConfig);
-        // if (err.data.status == 404){
-        // } else {
-        //   toast.error("Something went wrong",toastConfig)
-        // }
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 
@@ -140,10 +154,11 @@ export const Cohortreport = () => {
     "Domain name": el.domainName,
     "Cohort average": el.cohortAverage,
     "No. of sessions": el.numberOfSessions,
-    "Average": el.average,
+    Average: el.average,
   }));
 
-  let cohortNameforExcel = cohortList?.filter((el) =>el._id == cohortSelect)[0]?.name
+  let cohortNameforExcel = cohortList?.filter((el) => el._id == cohortSelect)[0]
+    ?.name;
 
   const handleExportToExcel = () => {
     const wb = XLSX.utils.book_new();
@@ -152,7 +167,7 @@ export const Cohortreport = () => {
     XLSX.utils.book_append_sheet(wb, ws, "Center report");
 
     XLSX.writeFile(wb, `${cohortNameforExcel}-${startDate}-${endDate}.xlsx`);
-    toast.success("Excel file download successfully",toastConfig);
+    toast.success("Excel file download successfully", toastConfig);
   };
 
   // console.log(cohortList?.filter((el) =>el._id == cohortSelect)[0]?.name);
@@ -160,7 +175,101 @@ export const Cohortreport = () => {
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
     documentTitle: "Cohort report",
-    onAfterPrint: () => toast.success("PDF file download successfully",toastConfig),
+    onAfterPrint: () =>
+      toast.success("PDF file download successfully", toastConfig),
+  });
+
+  // heat map----------------------
+
+  // console.log(resultnlist?.detailedScores);
+
+  const arr = [
+        { domain: "abc", score: 1, participant: "Hilton" },
+        { domain: "abc", score: 5, participant: "Rajiv" },
+        { domain: "abc", score: 7, participant: "Vivek" },
+        { domain: "eefef", score: 2, participant: "Rajiv" },
+        { domain: "eefef", score: 6, participant: "Hilton" },
+        { domain: "eefef", score: 1, participant: "Vivek" },
+        { domain: "fbfgb", score: 2, participant: "Rajiv" },
+        { domain: "fbfgb", score: 7, participant: "Hilton" },
+        { domain: "fbfgb", score: 4, participant: "Vivek" }
+      ];
+
+  const participants = [
+    ...new Set(resultnlist?.detailedScores?.map((item) => item.participant)),
+  ];
+  const domains = [
+    ...new Set(resultnlist?.detailedScores?.map((item) => item.domain)),
+  ];
+
+  // Transform data into heatmap format
+  const heatmapData = domains.map((domain) => {
+    return {
+      name: domain,
+      data: participants.map((participant) => {
+        const item = resultnlist?.detailedScores?.find(
+          (el) => el.domain === domain && el.participant === participant
+        );
+        return {
+          x: participant,
+          y: item ? item.score : 0, // Default to 0 if no score is found
+        };
+      }),
+    };
+  });
+
+  const [series, setSeries] = useState(heatmapData);
+
+  const [options, setOptions] = useState({
+    chart: {
+      height: 450,
+      type: "heatmap",
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    plotOptions: {
+      heatmap: {
+        colorScale: {
+          ranges: [
+            {
+              from: 0,
+              to: 3,
+              color: "#FF0000", // Red for scores 0-3
+              name: "Low",
+            },
+            {
+              from: 4,
+              to: 5,
+              color: "#FFFF00", // Yellow for scores 4-5
+              name: "Medium",
+            },
+            {
+              from: 6,
+              to: 7,
+              color: "#00FF00", // Green for scores 6-7
+              name: "High",
+            },
+          ],
+        },
+      },
+    },
+    xaxis: {
+      type: "category",
+      categories: participants,
+    },
+    yaxis: {
+      type: "category",
+      categories: domains,
+    },
+    title: {
+      text: "HeatMap Chart with Conditional Coloring",
+    },
+    grid: {
+      padding: {
+        right: 20,
+      },
+    },
   });
 
   return (
@@ -246,105 +355,20 @@ export const Cohortreport = () => {
             </div>
           </div>
         </div>
-        {/* <Card className="h-full w-full overflow-scroll mt-5 mb-24">
-          <table className="w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Participant
-                  </Typography>
-                </th>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Session
-                  </Typography>
-                </th>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Center
-                  </Typography>
-                </th>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Grand average
-                  </Typography>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {evalutionlist?.map((el, index) => {
-                const isLast = index === evalutionlist?.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
 
-                return (
-                  <tr key={el._id}>
-                    <td className={classes}>
-                      <Link
-                    to={`/mainpage/participant-report-details/${el.participant?._id}`}
-                  >
-                    {" "}
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {el.participant?.name}
-                      </Typography>
-                      </Link>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {el?.session?.name}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {el?.cohort?.name}
-                      </Typography>
-                    </td>
-                    
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {el.grandAverage.toFixed(2)}
-                      </Typography>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </Card> */}
+        <Heatmap arr={resultnlist?.detailedScores}/>
+
+        {/* <div>
+          <div id="chart">
+            <ReactApexChart
+              options={options}
+              series={series}
+              type="heatmap"
+              height={450}
+            />
+          </div>
+          <div id="html-dist"></div>
+        </div> */}
         <div className="w-[100%] flex justify-center items-center m-auto mt-12">
           <BarChart width={1100} height={500} data={resultnlist?.graphDetails}>
             <CartesianGrid strokeDasharray="3 3" />

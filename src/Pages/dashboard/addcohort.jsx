@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch } from "react-redux";
 import { getAllCohorts } from "../../Redux/AllListReducer/action";
+import { getLocalData } from "../../Utils/localStorage";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   name: "",
@@ -19,6 +21,7 @@ export const AddCohort = () => {
   const [allParticipants, setAllParticipants] = useState([]);
   const [isAddCohortLoading, setIsAddCohortLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { name, participants } = cohortData;
 
@@ -60,7 +63,11 @@ export const AddCohort = () => {
     console.log(cohortData);
     setIsAddCohortLoading(true);
     axios
-      .post(`${serverUrl}/cohort/create`, cohortData)
+      .post(`${serverUrl}/cohort/create`, cohortData, {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         if (res.status == 201) {
           toast.success("Cohort added successfully", toastConfig);
@@ -72,9 +79,18 @@ export const AddCohort = () => {
         }
       })
       .catch((err) => {
-        setIsAddCohortLoading(false);
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
+    
   };
 
   return (

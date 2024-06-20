@@ -4,18 +4,34 @@ import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { getLocalData } from "../../Utils/localStorage";
 
 export const Domainlist = () => {
   const [domainList, setDomainList] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "General");
-
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`${serverUrl}/domain/all/?category=${categoryFilter}`).then((res) => {
+    axios.get(`${serverUrl}/domain/all/?category=${categoryFilter}`,{
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
+    }).then((res) => {
       setDomainList(res.data.message);
-    });
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
+    });;
     setSearchParams({ category: categoryFilter });
   }, [categoryFilter]);
 

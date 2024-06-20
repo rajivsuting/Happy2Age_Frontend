@@ -4,15 +4,17 @@ import axios from "axios";
 import { serverUrl } from "../api";
 import { toastConfig } from "../App";
 import { toast } from "react-toastify";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
+import { getLocalData } from "../Utils/localStorage";
 
 const EditDomain = ({ isOpen, onClose, singleCohort, getAlldata }) => {
   const [cohortData, setCohortData] = useState(null);
   const [allParticipants, setAllParticipants] = useState([]);
   const [isEditCohortLoading, setIsEditCohortLoading] = useState(false);
   const [searchParams] = useSearchParams();
-  
+  const navigate = useNavigate();
+
   if (!isOpen || !cohortData) return null;
   
   useEffect(() => {
@@ -64,9 +66,12 @@ const EditDomain = ({ isOpen, onClose, singleCohort, getAlldata }) => {
     e.preventDefault();
     setIsaddDomainLoading(true);
     axios
-      .post(`${serverUrl}/domain/create/`, domainData)
+      .post(`${serverUrl}/domain/create/`, domainData,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
-        console.log(res);
         if (res.status == 201) {
           toast.success("Domain added suucessfully", toastConfig);
           setdomainData({
@@ -82,7 +87,16 @@ const EditDomain = ({ isOpen, onClose, singleCohort, getAlldata }) => {
       })
       .catch((err) => {
         setIsaddDomainLoading(false);
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 

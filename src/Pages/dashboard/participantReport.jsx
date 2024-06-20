@@ -21,11 +21,12 @@ import {
   ResponsiveContainer,
   ComposedChart,
 } from "recharts";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { getAllParticipants } from "../../Redux/AllListReducer/action";
 import * as XLSX from "xlsx";
+import { getLocalData } from "../../Utils/localStorage";
 
 // import {
 //   ComposedChart,
@@ -120,6 +121,7 @@ export const ParticipantReport = () => {
   const [remarks, setRemarks] = useState("");
   const [resultnlist, setResultlist] = useState({});
 const dispatch = useDispatch();
+const navigate = useNavigate();
   const componantPDF = useRef();
 
   const [singleEvalustion, setSingleEvaluation] = useState({});
@@ -137,35 +139,72 @@ const dispatch = useDispatch();
 
   useEffect(() => {
       dispatch(getAllParticipants("",""));
-    axios.get(`${serverUrl}/evaluation/all`).then((res) => {
+    axios.get(`${serverUrl}/evaluation/all`,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      }).then((res) => {
       setEvalutionlist(res.data.message);
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.get(`${serverUrl}/oxford/${singleParticipant}`)
+    axios.get(`${serverUrl}/oxford/${singleParticipant}`,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
     .then((res) => {
       // console.log(res)
       setHappinessScore(res.data.message);
     })
     .catch((err) => {
-      console.log(err);
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
     axios
       .get(
-        `${serverUrl}/report/${singleParticipant}/?&start=${startDate}&end=${endDate}`
+        `${serverUrl}/report/${singleParticipant}/?&start=${startDate}&end=${endDate}`,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      }
       )
       .then((res) => {
         console.log(res);
         setResultlist(res.data.report);
       })
       .catch((err) => {
-        toast.error(err.response.data.error, toastConfig);
-        // if (err.data.status == 404){
-        // } else {
-        //   toast.error("Something went wrong",toastConfig)
-        // }
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
   // console.log(resultnlist?.graphDetails);
@@ -197,12 +236,25 @@ const dispatch = useDispatch();
 
   useEffect(() => {
     axios
-      .get(`${serverUrl}/participant/all`)
+      .get(`${serverUrl}/participant/all`,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         setAllParticipants(res.data.message);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   }, []);
 

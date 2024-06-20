@@ -13,8 +13,9 @@ import { FaPlus } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
+import { getLocalData } from "../../Utils/localStorage";
 
 export const Adddomain = () => {
   const [domainData, setdomainData] = useState({
@@ -23,6 +24,7 @@ export const Adddomain = () => {
     subTopics: [{ content: "", score: 0 }],
     // observation: "",
   });
+  const navigate = useNavigate();
   const [isaddDomainLoading, setIsaddDomainLoading] = useState(false);
 
   const handleChangeInput = (event) => {
@@ -60,7 +62,11 @@ export const Adddomain = () => {
     e.preventDefault();
     setIsaddDomainLoading(true);
     axios
-      .post(`${serverUrl}/domain/create/`, domainData)
+      .post(`${serverUrl}/domain/create/`, domainData, {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         console.log(res);
         if (res.status == 201) {
@@ -78,7 +84,16 @@ export const Adddomain = () => {
       })
       .catch((err) => {
         setIsaddDomainLoading(false);
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 

@@ -4,8 +4,9 @@ import axios from "axios";
 import { serverUrl } from "../api";
 import { toastConfig } from "../App";
 import { toast } from "react-toastify";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
+import { getLocalData } from "../Utils/localStorage";
 
 const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
   const [cohortData, setCohortData] = useState(null);
@@ -13,6 +14,7 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
   const [selectedParticipants, setSelectedParticipants] = useState([]);
   const [isEditCohortLoading, setIsEditCohortLoading] = useState(false);
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (singleCohort) {
@@ -57,7 +59,11 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
 
     // console.log(updatedCohortData)
     axios
-      .patch(`${serverUrl}/cohort/edit/${searchParams.get("id")}`, updatedCohortData)
+      .patch(`${serverUrl}/cohort/edit/${searchParams.get("id")}`, updatedCohortData,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         if (res.status === 200) {
           getAllCohorts().then(() => {
@@ -71,9 +77,16 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
         }
       })
       .catch((err) => {
-        console.log(err);
-        setIsEditCohortLoading(false);
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 

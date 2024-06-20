@@ -6,12 +6,13 @@ import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import EditActivity from "../../Componants/EditActivity";
 import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllActivities } from "../../Redux/AllListReducer/action";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
+import { getLocalData } from "../../Utils/localStorage";
 
 export const ActivityList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,8 +21,9 @@ export const ActivityList = () => {
   const [searchParams, setsearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(searchParams.get("page") || 1);
   const [limit, setLimit] = useState(searchParams.get("limit") || 10); // default limit
-  const [searchResult, setSearchResult] = useState("")
+  const [searchResult, setSearchResult] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { activityList } = useSelector((state) => {
     return {
@@ -36,7 +38,11 @@ export const ActivityList = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`${serverUrl}/activity/delete/${searchParams.get("id")}`)
+      .delete(`${serverUrl}/activity/delete/${searchParams.get("id")}`, {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         if (res.status == 200) {
           toast.success("Activity delete suucessfully", toastConfig);
@@ -46,8 +52,16 @@ export const ActivityList = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 
@@ -58,52 +72,87 @@ export const ActivityList = () => {
   };
 
   function getAllData() {
-    return dispatch(getAllActivities).then((res) => {
-      return true;
-    });
+    return dispatch(getAllActivities(currentPage, limit))
+      .then((res) => {
+        return true;
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
   }
 
-
-useEffect(() => {
+  useEffect(() => {
     // setSearchParams({ page: currentPage, limit: limit });
-    dispatch(getAllActivities(currentPage, limit)).then((res) => {
-      return true;
-    });
+    dispatch(getAllActivities(currentPage, limit))
+      .then((res) => {
+        return true;
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
   }, [currentPage, limit]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
- const handleSearchSubmit = (e)=>{
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
     // dispatch(getParticipantsByName(searchResult))
-      }  
+  };
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
-       
-<div className="flex justify-between items-center gap-5 mt-4 mr-3 ml-3">
+      <div className="flex justify-between items-center gap-5 mt-4 mr-3 ml-3">
         <div className="w-[50%]">
-          <form className="flex justify-start items-center gap-5" onSubmit={handleSearchSubmit}>
+          <form
+            className="flex justify-start items-center gap-5"
+            onSubmit={handleSearchSubmit}
+          >
             <div className="w-[50%]">
-            <Input
-              label="Search session name..."
-              name="password"
-              // type="search"
-              required
-              value={searchResult}
-              // type={showPassword ? "text" : "password"}
-              onChange={(e) => setSearchResult(e.target.value)}
-            />
-
+              <Input
+                label="Search activity name..."
+                name="password"
+                // type="search"
+                required
+                value={searchResult}
+                // type={showPassword ? "text" : "password"}
+                onChange={(e) => setSearchResult(e.target.value)}
+              />
             </div>
-            <Button type="submit" variant="">Search</Button>
-            <Button type="button" onClick={()=>{
-            //   setSearchResult("")
-            //  return  dispatch(getAllParticipants(currentPage, limit)).then((res) => {
-            //     return true;
-            //   });
-            }} variant="" disabled={!searchResult}>Clear</Button>
+            <Button type="submit" variant="">
+              Search
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                //   setSearchResult("")
+                //  return  dispatch(getAllParticipants(currentPage, limit)).then((res) => {
+                //     return true;
+                //   });
+              }}
+              variant=""
+              disabled={!searchResult}
+            >
+              Clear
+            </Button>
           </form>
         </div>
         <div className="flex justify-center items-center">
@@ -143,7 +192,7 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      <div className="flex justify-between items-center gap-5 m-3">
+      {/* <div className="flex justify-between items-center gap-5 m-3">
         <div className="w-[50%]">
           <form className="flex justify-start items-center gap-5">
             <div className="w-[50%]">
@@ -165,7 +214,7 @@ useEffect(() => {
             </Button>
           </form>
         </div>
-      </div>
+      </div> */}
       <table className="w-full min-w-max table-auto text-left">
         <thead>
           <tr>
@@ -232,7 +281,8 @@ useEffect(() => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.description.substring(0, 20).length < el.description.length
+                    {el.description.substring(0, 20).length <
+                    el.description.length
                       ? el.description.substring(0, 20) + "..."
                       : el.description || "-"}
                   </Typography>
@@ -243,7 +293,8 @@ useEffect(() => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.references.substring(0, 20).length < el.references.length
+                    {el.references.substring(0, 20).length <
+                    el.references.length
                       ? el.references.substring(0, 20) + "..."
                       : el.references || "-"}
                   </Typography>

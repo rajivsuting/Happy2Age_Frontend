@@ -64,7 +64,7 @@ export const Participantlist = () => {
 
   const handleSearchSubmit = (e)=>{
     e.preventDefault();
-    // dispatch(getParticipantsByName(searchResult))
+    dispatch(getParticipantsByName(searchResult))
       }  
 
 

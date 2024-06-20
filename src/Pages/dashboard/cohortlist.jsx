@@ -7,12 +7,13 @@ import { CiEdit } from "react-icons/ci";
 import SeeDetailsCohort from "../../Componants/SeeDetailsCohort";
 import EditCohort from "../../Componants/EditCohort";
 import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCohorts } from "../../Redux/AllListReducer/action";
+import { getAllCohorts, getCohortsByName } from "../../Redux/AllListReducer/action";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
+import { getLocalData } from "../../Utils/localStorage";
 
 export const Cohortlist = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +25,7 @@ export const Cohortlist = () => {
   const [searchResult, setSearchResult] = useState("");
   const [singleCohort, setSingleCohort] = useState({});
   const dispatch = useDispatch();
-
+const navigate = useNavigate();
   const { cohortList } = useSelector((state) => {
     return {
       cohortList: state.AllListReducer.cohortList,
@@ -61,7 +62,11 @@ export const Cohortlist = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`${serverUrl}/cohort/delete/${searchParams.get("id")}`)
+      .delete(`${serverUrl}/cohort/delete/${searchParams.get("id")}`,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         if (res.status == 200) {
           toast.success("Cohort delete suucessfully", toastConfig);
@@ -71,14 +76,26 @@ export const Cohortlist = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // dispatch(getParticipantsByName(searchResult))
+    dispatch(getCohortsByName(searchResult)).then((res)=>{
+      console.log(res)
+    }).catch((err)=>{
+      console.log(err)
+    })
   };
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -105,10 +122,10 @@ export const Cohortlist = () => {
             <Button
               type="button"
               onClick={() => {
-                //   setSearchResult("")
-                //  return  dispatch(getAllParticipants(currentPage, limit)).then((res) => {
-                //     return true;
-                //   });
+                  setSearchResult("")
+                 return  dispatch(getAllCohorts(currentPage, limit)).then((res) => {
+                    return true;
+                  });
               }}
               variant=""
               disabled={!searchResult}

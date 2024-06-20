@@ -49,8 +49,6 @@ export function SignIn() {
     })
   };
 
-  console.log(isLoginLoading)
-
   return (
     <section className="m-8 flex gap-4">
       <div

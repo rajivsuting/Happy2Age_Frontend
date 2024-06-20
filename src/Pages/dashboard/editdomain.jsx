@@ -14,9 +14,11 @@ import { AiFillDelete } from "react-icons/ai";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
+import { getLocalData } from "../../Utils/localStorage";
 
 export const Editdomain = () => {
   const { domainid } = useParams();
+  const navigate = useNavigate();
   const [domainData, setdomainData] = useState({
     name: "",
     category: "",
@@ -56,16 +58,23 @@ export const Editdomain = () => {
   };
 
   useEffect(() => {
-    axios.get(`${serverUrl}/domain/${domainid}`).then((res) => {
+    axios.get(`${serverUrl}/domain/${domainid}`,{
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
+    }).then((res) => {
       setdomainData(res.data.message);
     });
   }, [domainid]);
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
-    console.log(domainData);
     axios
-      .patch(`${serverUrl}/domain/edit/${domainid}`, domainData)
+      .patch(`${serverUrl}/domain/edit/${domainid}`, domainData,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         console.log(res);
         if (res.status == 200) {
@@ -75,7 +84,16 @@ export const Editdomain = () => {
         }
       })
       .catch((err) => {
-        toast.error(err.response.data.error, toastConfig);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 

@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import {CgSpinner} from "react-icons/cg"
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCohorts } from "../../Redux/AllListReducer/action";
+import { getLocalData } from "../../Utils/localStorage";
+import { useNavigate } from "react-router-dom";
 
 
 const initialState = {
@@ -33,6 +35,7 @@ export const AddParticipant = () => {
     const [participantData, setParticipantData] = useState(initialState);
     const [isAddParticipantsLoading, setIsAddParticipantsLoading] = useState(false);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const {cohortList} = useSelector((state)=>{
       return {
         cohortList : state.AllListReducer.cohortList
@@ -95,9 +98,12 @@ export const AddParticipant = () => {
   
     const handleSubmitParticipant = (e) => {
       e.preventDefault();
-  console.log(participantData);
       setIsAddParticipantsLoading(true);
-      axios.post(`${serverUrl}/participant/create`,participantData)
+      axios.post(`${serverUrl}/participant/create`,participantData,{
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res)=>{
         if (res.status==201){
           dispatch(getAllCohorts("","")).then((res)=>{
@@ -108,10 +114,20 @@ export const AddParticipant = () => {
         } else {
           toast.error("Something went wrong", toastConfig);
         }
-      }).catch((err)=>{
-        setIsAddParticipantsLoading(false);
-        toast.error(err.response.data.error, toastConfig);
       })
+      .catch((err) => {
+        setIsAddParticipantsLoading(false);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
     };
   return (
     <div className="flex justify-center items-center gap-10 mb-24">
