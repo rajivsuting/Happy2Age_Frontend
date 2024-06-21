@@ -264,9 +264,7 @@ export const Cohortreport = () => {
             <div className="w-[50%] font-normal">
               Attendence : <b>{resultnlist?.totalAttendance}</b>
             </div>
-            <div className="w-[50%] font-normal">
-              Cohort average : <b>{resultnlist?.cohortAverage}</b>
-            </div>
+            
           </div>
         </div>
 
@@ -304,6 +302,9 @@ export const Cohortreport = () => {
             </Bar>
           </BarChart>
         </div>
+        <div className="w-[100%] font-normal text-end">
+              Cohort average : <b>{resultnlist?.cohortAverage}</b>
+            </div>
         <Heatmap arr={resultnlist?.detailedScores}/>
         <div className="mt-5">
           <i>Remarks : {remarks}</i>

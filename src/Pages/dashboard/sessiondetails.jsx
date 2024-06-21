@@ -42,9 +42,10 @@ const Sessiondetails = () => {
       <div><b>Session name:</b> {singleSession?.name || "N/A"}</div>
       <div><b>Cohort name:</b> {singleSession?.cohort?.name || "N/A"}</div>
       <div><b>Date of session:</b> {singleSession?.date?.split("T")[0] || "N/A"}</div>
+      <div><b>No. of hours:</b> {singleSession?.numberOfHours || "N/A"}</div>
       <div>
       <span className="font-bold"> Activities: </span>
-        <ul className="list-disc">
+        <ul className="list-disc ml-5">
           {renderActivities()}
         </ul>
       </div>

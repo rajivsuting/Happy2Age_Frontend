@@ -26,7 +26,7 @@ const Heatmap = ({ arr }) => {
       type: 'heatmap',
     },
     dataLabels: {
-      enabled: false
+      enabled: true
     },
     plotOptions: {
       heatmap: {

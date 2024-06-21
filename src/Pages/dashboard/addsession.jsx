@@ -16,6 +16,7 @@ import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllActivities, getAllCohorts, getAllSessions } from "../../Redux/AllListReducer/action";
 import { useNavigate } from "react-router-dom";
+import { getLocalData } from "../../Utils/localStorage";
 
 const initialState = {
   name: "",
@@ -23,6 +24,7 @@ const initialState = {
   activity: [],
   date: "",
   participants: [],
+  numberOfHours:""
 };
 
 export const AddSession = () => {
@@ -30,7 +32,7 @@ export const AddSession = () => {
   const [selectedActivity, setSelectedActivity] = useState("");
   const [isAddSessionLoading, setIsSessionLoading] = useState(false);
   const [checkedParticipants, setCheckedParticipants] = useState([]);
-  const { name, cohort, activity, date, participants } = sessionData;
+  const { name, cohort, activity, date, participants,numberOfHours } = sessionData;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -168,6 +170,13 @@ export const AddSession = () => {
             name="date"
             value={date}
             type="date"
+            onChange={handleChangeInput}
+          />
+          <Input
+            label="No. of hours"
+            name="numberOfHours"
+            value={numberOfHours}
+            type="number"
             onChange={handleChangeInput}
           />
         </div>
