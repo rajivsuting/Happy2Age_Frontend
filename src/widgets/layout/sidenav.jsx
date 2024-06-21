@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, Navigate } from "react-router-dom";
 import {
   HomeIcon,
   RectangleStackIcon,
@@ -27,6 +27,7 @@ import {
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { TiUser } from "react-icons/ti";
 import { TbReportAnalytics } from "react-icons/tb";
+import { toast } from "react-toastify";
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -101,6 +102,11 @@ export function Sidenav({ brandImg, brandName, routes }) {
     className: "w-5 h-5 text-inherit",
   };
 
+  const handleSignOut = ()=>{
+    toast.success("Sign out successfully")
+  localStorage.clear();
+  <Navigate to={`/auth/sign-in`}/>
+}
   return (
     <aside
       className={`${sidenavTypes[sidenavType]} ${
@@ -1121,7 +1127,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   )}
                 </NavLink>
               </li> */}
-              <li>
+              {/* <li>
                 <NavLink to={`/auth/sign-in`}>
                   {({ isActive }) => (
                     <Button
@@ -1154,8 +1160,8 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     </Button>
                   )}
                 </NavLink>
-              </li>
-              <li>
+              </li> */}
+              <li onClick={handleSignOut}>
                 <NavLink>
                   {({ isActive }) => (
                     <Button

@@ -332,7 +332,7 @@ const navigate = useNavigate();
       </div>
       <div
         ref={componantPDF}
-        style={{ width: "90%", height:"90%", margin: "auto", marginTop: "20px" }}
+        style={{ width: "90%", margin: "auto", marginTop: "20px" }}
         className="border border-black rounded-xl p-8 bg-white"
       >
         <div className="flex justify-center items-center">

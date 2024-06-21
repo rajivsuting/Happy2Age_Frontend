@@ -277,7 +277,7 @@ const navigate = useNavigate();
                 : question.name}
             </div>
             <div className="">
-            {question.score}
+            {question.score || "0"}
             </div>
           </div>
         ))}
@@ -289,7 +289,7 @@ const navigate = useNavigate();
 
   const uniqueSectionsForsingle = [...new Set(participantResult?.questions?.map((q) => q.section))];
 
-  // console.log(participantResult);
+  console.log(participantResult);
 
   return (
     <form className="p-6">
