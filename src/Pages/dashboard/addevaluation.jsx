@@ -17,7 +17,7 @@ import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCohorts, getAllEvaluations, getAllSessions } from "../../Redux/AllListReducer/action";
+import { getAllActivities, getAllCohorts, getAllEvaluations, getAllSessions } from "../../Redux/AllListReducer/action";
 import { getLocalData } from "../../Utils/localStorage";
 import { useNavigate } from "react-router-dom";
 

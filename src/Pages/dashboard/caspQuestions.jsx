@@ -195,6 +195,8 @@ export const CaspQuestions = () => {
       });
   };
 
+  console.log(participantResult);
+
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24 p-8">
       <form onSubmit={handleSubmitCohort}>

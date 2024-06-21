@@ -262,18 +262,22 @@ const navigate = useNavigate();
   };
 
   const renderSectionSingle = (section) => {
-    const sectionQuestions = state.questions.filter(
+    const sectionQuestions = participantResult?.questions?.filter(
       (q) => q.section === section
     );
+
     return (
       <div key={section} className="mb-6">
         <h2 className=" font-bold mt-10 mb-4">{section}</h2>
         {sectionQuestions.map((question, index) => (
-          <div key={index} className="flex justify-between items-center gap-[50px] mb-4">
-            <div className=" mb-2">
+          <div key={index} className="w-[90%] m-auto flex justify-between items-center gap-[20px] mb-4">
+            <div className=" mb-2 w-[80%]">
               {question.subtopic
                 ? `${question.subtopic} - ${question.name}`
                 : question.name}
+            </div>
+            <div className="">
+            {question.score}
             </div>
           </div>
         ))}
@@ -285,7 +289,7 @@ const navigate = useNavigate();
 
   const uniqueSectionsForsingle = [...new Set(participantResult?.questions?.map((q) => q.section))];
 
-  // console.log(uniqueSections);
+  // console.log(participantResult);
 
   return (
     <form className="p-6">
@@ -366,8 +370,8 @@ const navigate = useNavigate();
       {!participantResult ? (
         <div className="text-center mt-10">No result found!!</div>
       ) : null}
-
-      {participantResult?.questions && (
+                       {uniqueSectionsForsingle.map((section) => renderSectionSingle(section))}
+      {/* {participantResult?.questions && (
         <Card className="h-full w-full overflow-scroll mt-5 mb-24">
           <table className="w-full min-w-max table-auto text-left">
             <thead>
@@ -408,7 +412,7 @@ const navigate = useNavigate();
                         color="blue-gray"
                         className="font-normal"
                       >
-                       {uniqueSections.map((section) => renderSectionSingle(section))}
+                       {uniqueSectionsForsingle.map((section) => renderSectionSingle(section))}
                       </Typography>
                     </td>
                     
@@ -430,7 +434,7 @@ const navigate = useNavigate();
             </tbody>
           </table>
         </Card>
-      )}
+      )} */}
     </form>
   );
 };

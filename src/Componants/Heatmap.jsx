@@ -26,7 +26,7 @@ const Heatmap = ({ arr }) => {
       type: 'heatmap',
     },
     dataLabels: {
-      enabled: true,
+      enabled: false
     },
     plotOptions: {
       heatmap: {
@@ -34,46 +34,46 @@ const Heatmap = ({ arr }) => {
           ranges: [
             {
               from: 0,
-              to: 3,
-              color: '#FF0000', // Light red for scores 0-3
-              name: 'Low',
+              to: 3.99,
+              color: '#FF7F7F', // Light red for scores 0-3.99
+              name: 'Low'
             },
             {
-              from: 4,
-              to: 5,
-              color: '#00ff00', // Light green for scores 4-5
-              name: 'Medium',
+                from: 4,
+                to: 5.99,
+                color: '#FFFFED', // Light yellow for scores 6-7
+              name: 'Medium'
             },
             {
-              from: 6,
-              to: 7,
-              color: '#ffff00', // Light yellow for scores 6-7
-              name: 'High',
-            },
-          ],
-        },
-      },
+                from: 6,
+                to: 7,
+                color: '#90ee90', // Light green for scores 4-5.99
+              name: 'High'
+            }
+          ]
+        }
+      }
     },
     xaxis: {
       type: 'category',
-      categories: participants,
+      categories: participants
     },
     yaxis: {
       type: 'category',
-      categories: domains,
+      categories: domains
     },
     title: {
-      text: 'HeatMap Chart with Conditional Coloring',
+      text: 'HeatMap Chart with Conditional Coloring'
     },
     grid: {
       padding: {
-        right: 20,
-      },
-    },
+        right: 20
+      }
+    }
   };
 
   return (
-    <div>
+    <div className='mt-[30px]'>
       <ReactApexChart options={options} series={heatmapData} type="heatmap"  height={450} />
     </div>
   );

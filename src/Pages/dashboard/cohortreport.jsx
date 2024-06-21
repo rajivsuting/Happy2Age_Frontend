@@ -183,95 +183,6 @@ export const Cohortreport = () => {
 
   // console.log(resultnlist?.detailedScores);
 
-  const arr = [
-        { domain: "abc", score: 1, participant: "Hilton" },
-        { domain: "abc", score: 5, participant: "Rajiv" },
-        { domain: "abc", score: 7, participant: "Vivek" },
-        { domain: "eefef", score: 2, participant: "Rajiv" },
-        { domain: "eefef", score: 6, participant: "Hilton" },
-        { domain: "eefef", score: 1, participant: "Vivek" },
-        { domain: "fbfgb", score: 2, participant: "Rajiv" },
-        { domain: "fbfgb", score: 7, participant: "Hilton" },
-        { domain: "fbfgb", score: 4, participant: "Vivek" }
-      ];
-
-  const participants = [
-    ...new Set(resultnlist?.detailedScores?.map((item) => item.participant)),
-  ];
-  const domains = [
-    ...new Set(resultnlist?.detailedScores?.map((item) => item.domain)),
-  ];
-
-  // Transform data into heatmap format
-  const heatmapData = domains.map((domain) => {
-    return {
-      name: domain,
-      data: participants.map((participant) => {
-        const item = resultnlist?.detailedScores?.find(
-          (el) => el.domain === domain && el.participant === participant
-        );
-        return {
-          x: participant,
-          y: item ? item.score : 0, // Default to 0 if no score is found
-        };
-      }),
-    };
-  });
-
-  const [series, setSeries] = useState(heatmapData);
-
-  const [options, setOptions] = useState({
-    chart: {
-      height: 450,
-      type: "heatmap",
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    plotOptions: {
-      heatmap: {
-        colorScale: {
-          ranges: [
-            {
-              from: 0,
-              to: 3,
-              color: "#FF0000", // Red for scores 0-3
-              name: "Low",
-            },
-            {
-              from: 4,
-              to: 5,
-              color: "#FFFF00", // Yellow for scores 4-5
-              name: "Medium",
-            },
-            {
-              from: 6,
-              to: 7,
-              color: "#00FF00", // Green for scores 6-7
-              name: "High",
-            },
-          ],
-        },
-      },
-    },
-    xaxis: {
-      type: "category",
-      categories: participants,
-    },
-    yaxis: {
-      type: "category",
-      categories: domains,
-    },
-    title: {
-      text: "HeatMap Chart with Conditional Coloring",
-    },
-    grid: {
-      padding: {
-        right: 20,
-      },
-    },
-  });
-
   return (
     <div className="mb-24">
       <div className="flex justify-between items-center m-3">
@@ -353,10 +264,13 @@ export const Cohortreport = () => {
             <div className="w-[50%] font-normal">
               Attendence : <b>{resultnlist?.totalAttendance}</b>
             </div>
+            <div className="w-[50%] font-normal">
+              Cohort average : <b>{resultnlist?.cohortAverage}</b>
+            </div>
           </div>
         </div>
 
-        <Heatmap arr={resultnlist?.detailedScores}/>
+        
 
         {/* <div>
           <div id="chart">
@@ -390,6 +304,7 @@ export const Cohortreport = () => {
             </Bar>
           </BarChart>
         </div>
+        <Heatmap arr={resultnlist?.detailedScores}/>
         <div className="mt-5">
           <i>Remarks : {remarks}</i>
         </div>
