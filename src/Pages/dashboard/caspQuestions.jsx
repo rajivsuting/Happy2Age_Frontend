@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Radio, Typography } from "@material-tailwind/react";
+import { Button, Card, Input, Radio, Typography } from "@material-tailwind/react";
 import { CgSpinner } from "react-icons/cg";
 import axios from "axios";
 import { serverUrl } from "../../api";
@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 const initialState = {
   participant: "",
+  date:"",
   questions: [
     {
       question: "My age prevents me from doing the things I would like to do.",
@@ -96,7 +97,7 @@ export const CaspQuestions = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate()
 
-  const { participant, questions } = questionData;
+  const { participant, questions,date } = questionData;
 
   useEffect(() => {
     axios
@@ -123,7 +124,11 @@ export const CaspQuestions = () => {
   }, []);
 
   const handleParticipantChange = (e) => {
-    setQuestionData({ ...questionData, participant: e.target.value });
+    setQuestionData({ ...questionData, participant: e.target.value, });
+  };
+
+  const handleDateChange = (e) => {
+    setQuestionData({ ...questionData, date: e.target.value, });
   };
 
   const handleSubmitCohort = (e) => {
@@ -195,7 +200,7 @@ export const CaspQuestions = () => {
       });
   };
 
-  console.log(participantResult);
+  // console.log(participantResult);
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24 p-8">
@@ -205,7 +210,7 @@ export const CaspQuestions = () => {
           <div className="w-[25%]">Oxford Happiness Questionnaire</div>
           <hr className="w-[75%] border" />
         </div>
-        <div className="flex justify-between items-center m-auto gap-10 mt-5">
+        <div className="flex justify-start items-center m-auto gap-10 mt-5">
           <select
             className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
             value={participant}
@@ -219,6 +224,9 @@ export const CaspQuestions = () => {
               </option>
             ))}
           </select>
+          <div className="w-[20%]">
+          <Input type="date" label="Date" required name="date" value={date} onChange={handleDateChange}/>
+          </div>
         </div>
 
         <div className="w-[95%] m-auto mt-5">
@@ -338,113 +346,7 @@ export const CaspQuestions = () => {
         </div>
       </form>
 
-      <div className="w-[100%] m- mt-10 mb-5 flex justify-center items-center">
-        <div className="w-[17%]">Get participant result</div>
-        <hr className="w-[83%] border" />
-      </div>
 
-      <form
-        onSubmit={handleSubmitOxfordResult}
-        className="flex justify-start items-center gap-10 mt-5"
-      >
-        <select
-          className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
-          value={selectParticipant}
-          onChange={(e) => setSelectParticipant(e.target.value)}
-          required
-        >
-          <option value="">Select Participant</option>
-          {allParticipants?.map((el, index) => (
-            <option key={index} value={el._id}>
-              {el.name}
-            </option>
-          ))}
-        </select>
-        <Button type="submit" variant="">
-          Generate report
-        </Button>
-      </form>
-
-      {participantResult?.questions ? (
-        <div className="flex justify-between items-center text-[20px] mt-10">
-          <div>
-            Name :{" "}
-            {allParticipants?.map((el) => {
-              if (el._id == selectParticipant) return <span>{el.name}</span>;
-            })}
-          </div>
-        </div>
-      ) : null}
-
-      {!participantResult ? (
-        <div className="text-center mt-10">No result found!!</div>
-      ) : null}
-
-      {participantResult?.questions && (
-        <Card className="h-full w-full overflow-scroll mt-5 mb-24">
-          <table className="w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Question name
-                  </Typography>
-                </th>
-
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Score
-                  </Typography>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {participantResult?.questions?.map((el, index) => {
-                const isLast =
-                  index === participantResult?.questions?.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
-
-                return (
-                  <tr key={index}>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {el.question || "-"}
-                      </Typography>
-                    </td>
-
-                    <td className={classes}>
-                      <Typography
-                        as="a"
-                        href="#"
-                        variant="small"
-                        color="blue-gray"
-                        // onClick={() => toggleModal(el)}
-                        className="font-normal"
-                      >
-                        {el.score}
-                      </Typography>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </Card>
-      )}
     </Card>
   );
 };

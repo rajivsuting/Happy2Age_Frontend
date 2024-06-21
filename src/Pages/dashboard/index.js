@@ -23,7 +23,7 @@ export * from "../../Pages/dashboard/participantReport";
 export * from "../../Pages/dashboard/AdminList";
 export * from "../../Pages/dashboard/moca";
 export * from "../../Pages/dashboard/sessionAttendence";
-// export * from "../../Pages/dashboard/oxfordlist";
-// export * from "../../Pages/dashboard/mocalist";
-// export * from "../../Pages/dashboard/casplist";
+export * from "../../Pages/dashboard/oxfordlist";
+export * from "../../Pages/dashboard/mocalist";
+export * from "../../Pages/dashboard/casplist";
 

@@ -106,7 +106,7 @@ export const AddEvaluation = () => {
 
   useEffect(() => {
     setActivityFromSession(
-      sessionlist?.filter((el) => el._id === session)[0]?.activity
+      sessionFromCohort?.filter((el) => el._id === session)[0]?.activity
     );
   }, [session]);
 
@@ -114,9 +114,10 @@ export const AddEvaluation = () => {
     setSelectDomainByType(
       domainList?.filter((el) => el.category === domainCategory)
     );
-  }, [domainCategory]);
+  }, [domainCategory,participant]);
 
-  // console.log(cohortList)
+  // console.log(domainList)
+  // console.log(selectDomainByType)
   const handleScoreChange = (domainIndex, questionIndex, newScore) => {
     const updatedDomains = [...selectDomainByType];
     updatedDomains[domainIndex].subTopics[questionIndex].score = newScore;
@@ -258,12 +259,16 @@ export const AddEvaluation = () => {
             required
           >
             <option value="">Select activity</option>;
-            {activityFromSession?.map((el) => {
-              return (
-                <option key={el._id} value={el._id}>
-                  {el.name}
-                </option>
-              );
+            {activityList?.map((pl) => {
+             return activityFromSession?.map((el) => {
+                if (el == pl._id) {
+                  return (
+                    <option key={pl._id} value={pl._id}>
+                      {pl.name}
+                    </option>
+                  );
+                }
+              });
             })}
           </select>
           {/* <select

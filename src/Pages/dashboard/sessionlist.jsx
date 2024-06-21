@@ -248,7 +248,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el?.numberOfHours || "-"}
+                    {el?.s || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>

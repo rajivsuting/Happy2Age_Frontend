@@ -30,6 +30,9 @@ import {
   ParticipantReport,
   Moca,
   SessionAttendence,
+  Casplist,
+  Oxfordlist,
+  Mocalist,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -210,9 +213,21 @@ export const routes = [
       },
       {
         icon: <HomeIcon {...icon} />,
+        name: "Oxford Happiness list",
+        path: "/oxford-happiness-questionnaire-list/",
+        element: <Oxfordlist />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
         name: "CASP-19 QUESTIONNAIRE",
         path: "/casp-questionnaire/",
         element: <CaspQuestions />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "CASP-19 QUESTIONNAIRE list",
+        path: "/casp-questionnaire-list/",
+        element: <Casplist />,
       },
       // {
       //   icon: <HomeIcon {...icon} />,
@@ -226,6 +241,12 @@ export const routes = [
         path: "/moca/",
         element: <Moca />,
       },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "MOCA list",
+        path: "/moca-list/",
+        element: <Mocalist />,
+      }
     ],
   },
   {

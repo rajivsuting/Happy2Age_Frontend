@@ -880,7 +880,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   )}
                 </NavLink>
               </li>
-              {/* <li>
+              <li>
                 <NavLink to={`/mainpage/oxford-happiness-questionnaire-list`}>
                   {({ isActive }) => (
                     <Button
@@ -914,7 +914,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     </Button>
                   )}
                 </NavLink>
-              </li> */}
+              </li>
               <li>
                 <NavLink to={`/mainpage/casp-questionnaire`}>
                   {({ isActive }) => (
@@ -950,7 +950,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   )}
                 </NavLink>
               </li>
-              {/* <li>
+              <li>
                 <NavLink to={`/mainpage/casp-questionnaire-list`}>
                   {({ isActive }) => (
                     <Button
@@ -984,7 +984,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     </Button>
                   )}
                 </NavLink>
-              </li> */}
+              </li>
               <li>
                 <NavLink to={`/mainpage/moca`}>
                   {({ isActive }) => (
@@ -1020,7 +1020,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   )}
                 </NavLink>
               </li>
-              {/* <li>
+              <li>
                 <NavLink to={`/mainpage/moca-list`}>
                   {({ isActive }) => (
                     <Button
@@ -1054,7 +1054,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     </Button>
                   )}
                 </NavLink>
-              </li> */}
+              </li>
               {/* <li>
                 <NavLink to={`/mainpage/adminlist`}>
                   {({ isActive }) => (

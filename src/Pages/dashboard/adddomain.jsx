@@ -16,6 +16,8 @@ import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
 import { getLocalData } from "../../Utils/localStorage";
+import { useDispatch } from "react-redux";
+import { getAllDomains } from "../../Redux/AllListReducer/action";
 
 export const Adddomain = () => {
   const [domainData, setdomainData] = useState({
@@ -24,6 +26,7 @@ export const Adddomain = () => {
     subTopics: [{ content: "", score: 0 }],
     // observation: "",
   });
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isaddDomainLoading, setIsaddDomainLoading] = useState(false);
 
@@ -68,16 +71,18 @@ export const Adddomain = () => {
         },
       })
       .then((res) => {
-        console.log(res);
+        
         if (res.status == 201) {
-          toast.success("Domain added suucessfully", toastConfig);
-          setdomainData({
-            name: "",
-            category: "",
-            subTopics: [{ content: "", score: 0 }],
-            // observation: "",
-          });
-          setIsaddDomainLoading(false);
+          dispatch(getAllDomains).then((res)=>{
+            toast.success("Domain added suucessfully", toastConfig);
+            setdomainData({
+              name: "",
+              category: "",
+              subTopics: [{ content: "", score: 0 }],
+              // observation: "",
+            });
+            setIsaddDomainLoading(false);
+          })
         } else {
           toast.error("Something went wrong", toastConfig);
         }

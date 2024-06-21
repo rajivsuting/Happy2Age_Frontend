@@ -132,6 +132,7 @@ const initialState = {
     { section: "ORIENTATION", subtopic: "", name: "City", score: "" },
   ],
   totalScore: "",
+  date:""
 };
 
 export const Moca = () => {
@@ -149,6 +150,11 @@ const navigate = useNavigate();
     );
     setState({ ...state, questions: newQuestions, totalScore });
   };
+
+  const handleDateChange = (e) => {
+    setState({ ...state, date: e.target.value, });
+  };
+
 
   useEffect(() => {
     axios
@@ -289,7 +295,6 @@ const navigate = useNavigate();
 
   const uniqueSectionsForsingle = [...new Set(participantResult?.questions?.map((q) => q.section))];
 
-  console.log(participantResult);
 
   return (
     <form className="p-6">
@@ -297,7 +302,7 @@ const navigate = useNavigate();
         <div className="w-[45%] font-bold text-lg">MONTREAL COGNITIVE ASSESSMENT (MOCA)</div>
         <hr className="w-[75%] border" />
       </div>
-      <div className="flex justify-between items-center m-auto gap-10 mt-5">
+      <div className="flex justify-start items-center m-auto gap-10 mt-5">
         <select
           className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
           value={state.participant}
@@ -311,6 +316,9 @@ const navigate = useNavigate();
             </option>
           ))}
         </select>
+          <div className="w-[20%]">
+          <Input type="date" label="Date" required name="date" value={state.date} onChange={handleDateChange}/>
+          </div>
       </div>
       {uniqueSections.map((section) => renderSection(section))}
       <div className="mt-6">
@@ -326,115 +334,7 @@ const navigate = useNavigate();
         </Button>
       </div>
 
-      <div className="w-[100%] m- mt-10 mb-5 flex justify-center items-center">
-        <div className="w-[17%]">Get participant result</div>
-        <hr className="w-[83%] border" />
-      </div>
-
-      <div
       
-        className="flex justify-start items-center gap-10 mt-5"
-      >
-        <select
-          className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
-          value={selectParticipant}
-          onChange={(e) => setSelectParticipant(e.target.value)}
-          required
-        >
-          <option value="">Select Participant</option>
-          {allParticipants?.map((el, index) => (
-            <option key={index} value={el._id}>
-              {el.name}
-            </option>
-          ))}
-        </select>
-        <Button onClick={handleSubmitOxfordResult} variant="">
-          Generate report
-        </Button>
-      </div>
-
-      {participantResult?.questions ? (
-        <div className="flex justify-between items-center text-[20px] mt-10">
-          <div>
-            Name :{" "}
-            {allParticipants?.map((el) => {
-              if (el._id == selectParticipant) return <span>{el.name}</span>;
-            })}
-          </div>
-          <div>
-            Happiness score : {participantResult?.happinessScore?.toFixed(2)}
-          </div>
-        </div>
-      ) : null}
-
-      {!participantResult ? (
-        <div className="text-center mt-10">No result found!!</div>
-      ) : null}
-                       {uniqueSectionsForsingle.map((section) => renderSectionSingle(section))}
-      {/* {participantResult?.questions && (
-        <Card className="h-full w-full overflow-scroll mt-5 mb-24">
-          <table className="w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Question name
-                  </Typography>
-                </th>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Score
-                  </Typography>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {participantResult?.questions?.map((el, index) => {
-                const isLast =
-                  index === participantResult?.questions?.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
-
-                return (
-                  <tr key={index} className="border-b">
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                       {uniqueSectionsForsingle.map((section) => renderSectionSingle(section))}
-                      </Typography>
-                    </td>
-                    
-                    <td className={classes}>
-                      <Typography
-                        as="a"
-                        href="#"
-                        variant="small"
-                        color="blue-gray"
-                        // onClick={() => toggleModal(el)}
-                        className="font-normal"
-                      >
-                        {el.score}
-                      </Typography>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </Card>
-      )} */}
     </form>
   );
 };
