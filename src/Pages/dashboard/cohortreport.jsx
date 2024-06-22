@@ -303,7 +303,7 @@ export const Cohortreport = () => {
           </BarChart>
         </div>
         <div className="w-[100%] font-normal text-end">
-              Cohort average : <b>{resultnlist?.cohortAverage}</b>
+              Cohort average : <b>{resultnlist?.averageForCohort}</b>
             </div>
         <Heatmap arr={resultnlist?.detailedScores}/>
         <div className="mt-5">

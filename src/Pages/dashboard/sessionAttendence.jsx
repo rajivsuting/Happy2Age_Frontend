@@ -10,6 +10,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
 import SeeDeatailsSessionAttendence from "../../Componants/SeeDeatailsSessionAttendence";
 import { getLocalData } from "../../Utils/localStorage";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 export const SessionAttendence = () => {
   const dispatch = useDispatch();
@@ -28,9 +30,11 @@ export const SessionAttendence = () => {
     setSingleSession(el);
   };
 
-  const { sessionlist, partcipantList } = useSelector((state) => {
+
+
+  const { cohortList, partcipantList } = useSelector((state) => {
     return {
-      sessionlist: state.AllListReducer.sessionlist,
+      cohortList: state.AllListReducer.cohortList,
       partcipantList: state.AllListReducer.partcipantList,
     };
   });
@@ -62,6 +66,7 @@ export const SessionAttendence = () => {
         }
       )
       .then((res) => {
+        console.log(res)
         setAllAttendence(res.data.data);
       })
       .catch((err) => {
@@ -83,7 +88,31 @@ export const SessionAttendence = () => {
   };
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // dispatch(getParticipantsByName(searchResult))
+    axios
+    .get(
+      `${serverUrl}/session/attendencecohort/${searchResult}`,
+      {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      }
+    )
+    .then((res) => {
+      console.log(res)
+      setAllAttendence(res.data.data);
+    })
+    .catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
+    });
   };
 
   return (
@@ -94,16 +123,24 @@ export const SessionAttendence = () => {
             className="flex justify-start items-center gap-5"
             onSubmit={handleSearchSubmit}
           >
-            <div className="w-[50%]">
-              <Input
-                label="Search session name..."
-                name="password"
-                // type="search"
-                required
-                value={searchResult}
-                // type={showPassword ? "text" : "password"}
-                onChange={(e) => setSearchResult(e.target.value)}
-              />
+            <div className="w-[100%]">
+            <select
+            id=""
+            name="searchResult"
+            value={searchResult}
+            onChange={(e)=>setSearchResult(e.target.value)}
+            className="borderm w-[100%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
+            required
+          >
+            <option value="">Select center</option>;
+            {cohortList.map((el) => {
+              return (
+                <option key={el._id} value={el._id}>
+                  {el.name}
+                </option>
+              );
+            })}
+          </select>
             </div>
             <Button type="submit" variant="">
               Search
@@ -111,10 +148,32 @@ export const SessionAttendence = () => {
             <Button
               type="button"
               onClick={() => {
-                //   setSearchResult("")
-                //  return  dispatch(getAllParticipants(currentPage, limit)).then((res) => {
-                //     return true;
-                //   });
+                  setSearchResult("")
+                 return axios
+                 .get(
+                   `${serverUrl}/session/attendance/?page=${currentPage}&limit=${limit}`,
+                   {
+                     headers: {
+                       Authorization: `${getLocalData("token")}`,
+                     },
+                   }
+                 )
+                 .then((res) => {
+                   console.log(res)
+                   setAllAttendence(res.data.data);
+                 })
+                 .catch((err) => {
+                   if (err.response && err.response.data && err.response.data.jwtExpired) {
+                     toast.error(err.response.data.message, toastConfig);
+                     setTimeout(() => {
+                       navigate("/auth/sign-in");
+                     }, 3000);
+                   } else if (err.response && err.response.data) {
+                     toast.error(err.response.data.message, toastConfig);
+                   } else {
+                     toast.error("An unexpected error occurred.", toastConfig);
+                   }
+                 });
               }}
               variant=""
               disabled={!searchResult}

@@ -120,8 +120,8 @@ export const ActivityList = () => {
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
-      <div className="flex justify-between items-center gap-5 mt-4 mr-3 ml-3">
-        <div className="w-[50%]">
+      <div className="flex justify-end items-center gap-5 mt-4 mr-3 ml-3">
+        {/* <div className="w-[50%]">
           <form
             className="flex justify-start items-center gap-5"
             onSubmit={handleSearchSubmit}
@@ -154,7 +154,7 @@ export const ActivityList = () => {
               Clear
             </Button>
           </form>
-        </div>
+        </div> */}
         <div className="flex justify-center items-center">
           <div className="flex justify-center items-center">
             <RiArrowLeftSLine
@@ -241,7 +241,7 @@ export const ActivityList = () => {
                 variant="small"
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
-              ></Typography>
+              >References</Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
               <Typography

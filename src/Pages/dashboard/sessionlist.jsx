@@ -57,8 +57,8 @@ export const Sessionlist = () => {
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
-      <div className="flex justify-between items-center gap-5 mt-4 mr-3 ml-3">
-        <div className="w-[50%]">
+      <div className="flex justify-end items-center gap-5 mt-4 mr-3 ml-3">
+        {/* <div className="w-[50%]">
           <form className="flex justify-start items-center gap-5" onSubmit={handleSearchSubmit}>
             <div className="w-[50%]">
             <Input
@@ -80,7 +80,7 @@ export const Sessionlist = () => {
             //   });
             }} variant="" disabled={!searchResult}>Clear</Button>
           </form>
-        </div>
+        </div> */}
         <div className="flex justify-center items-center">
           <div className="flex justify-center items-center">
             <RiArrowLeftSLine
@@ -248,7 +248,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el?.s || "-"}
+                    {el?.numberOfHours || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>

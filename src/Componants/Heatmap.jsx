@@ -41,7 +41,7 @@ const Heatmap = ({ arr }) => {
             {
                 from: 4,
                 to: 5.99,
-                color: '#FFFFED', // Light yellow for scores 6-7
+                color: '#faff72', // Light yellow for scores 6-7
               name: 'Medium'
             },
             {
