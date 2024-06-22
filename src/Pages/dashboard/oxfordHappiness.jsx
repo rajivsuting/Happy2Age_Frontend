@@ -191,7 +191,6 @@ export const OxfordHappiness = () => {
         },
       })
       .then((res) => {
-        console.log(res);
         toast.success(res.data.message, toastConfig);
       })
       .catch((err) => {

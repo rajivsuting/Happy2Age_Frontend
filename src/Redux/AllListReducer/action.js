@@ -38,7 +38,7 @@ export const getAllAdmins = (dispatch) => {
       },
     })
     .then((res) => {
-      console.log(res);
+      // console.log(res);
       return dispatch({
         type: types.GET_ADMIN_SUCCESS,
         payload: res.data.message,

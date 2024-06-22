@@ -13,7 +13,7 @@ import { FaPlus } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getLocalData } from "../../Utils/localStorage";
 
 export const Editdomain = () => {

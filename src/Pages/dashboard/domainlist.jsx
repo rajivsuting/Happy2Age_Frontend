@@ -6,6 +6,8 @@ import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { getLocalData } from "../../Utils/localStorage";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 export const Domainlist = () => {
   const [domainList, setDomainList] = useState([]);

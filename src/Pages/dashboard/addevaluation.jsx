@@ -17,7 +17,7 @@ import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllActivities, getAllCohorts, getAllEvaluations, getAllSessions } from "../../Redux/AllListReducer/action";
+import { getAllActivities, getAllCohorts, getAllDomains, getAllEvaluations, getAllSessions } from "../../Redux/AllListReducer/action";
 import { getLocalData } from "../../Utils/localStorage";
 import { useNavigate } from "react-router-dom";
 
@@ -82,6 +82,7 @@ export const AddEvaluation = () => {
     dispatch(getAllCohorts("",""))
     dispatch(getAllSessions("",""));
     dispatch(getAllActivities("",""))
+    dispatch(getAllDomains("All"))
   },[])
 
   useEffect(() => {
@@ -116,8 +117,9 @@ export const AddEvaluation = () => {
     );
   }, [domainCategory,participant]);
 
-  // console.log(domainList)
-  // console.log(selectDomainByType)
+  console.log(domainCategory)
+  console.log(selectDomainByType)
+  console.log(domainList)
   const handleScoreChange = (domainIndex, questionIndex, newScore) => {
     const updatedDomains = [...selectDomainByType];
     updatedDomains[domainIndex].subTopics[questionIndex].score = newScore;

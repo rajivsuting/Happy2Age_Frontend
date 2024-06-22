@@ -28,6 +28,7 @@ import { AiOutlineFieldTime } from "react-icons/ai";
 import { TiUser } from "react-icons/ti";
 import { TbReportAnalytics } from "react-icons/tb";
 import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -103,7 +104,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
   };
 
   const handleSignOut = ()=>{
-    toast.success("Sign out successfully")
+    toast.success("Sign out successfully",toastConfig)
   localStorage.clear();
   <Navigate to={`/auth/sign-in`}/>
 }

@@ -17,7 +17,6 @@ import {
   Cohortlist,
   ActivityList,
   Participantlist,
-  Domainlist,
   Sessionlist,
   AddEvaluation,
   Editdomain,
@@ -33,6 +32,7 @@ import {
   Casplist,
   Oxfordlist,
   Mocalist,
+  Domainlist,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
