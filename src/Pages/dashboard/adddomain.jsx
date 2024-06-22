@@ -73,7 +73,7 @@ export const Adddomain = () => {
       .then((res) => {
         
         if (res.status == 201) {
-          dispatch(getAllDomains).then((res)=>{
+          dispatch(getAllDomains("All")).then((res)=>{
             toast.success("Domain added suucessfully", toastConfig);
             setdomainData({
               name: "",
@@ -89,6 +89,7 @@ export const Adddomain = () => {
       })
       .catch((err) => {
         setIsaddDomainLoading(false);
+        console.log(err)
         if (err.response && err.response.data && err.response.data.jwtExpired) {
           toast.error(err.response.data.message, toastConfig);
           setTimeout(() => {
