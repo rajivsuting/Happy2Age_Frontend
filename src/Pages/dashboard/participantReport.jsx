@@ -140,9 +140,7 @@ const navigate = useNavigate();
   useEffect(() => {
       dispatch(getAllParticipants("",""));
     axios.get(`${serverUrl}/evaluation/all`,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       }).then((res) => {
       setEvalutionlist(res.data.message);
     }).catch((err) => {
@@ -162,9 +160,7 @@ const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     axios.get(`${serverUrl}/oxford/${singleParticipant}`,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
     .then((res) => {
       // console.log(res)
@@ -185,9 +181,7 @@ const navigate = useNavigate();
     axios
       .get(
         `${serverUrl}/report/${singleParticipant}/?&start=${startDate}&end=${endDate}`,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       }
       )
       .then((res) => {
@@ -237,9 +231,7 @@ const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`${serverUrl}/participant/all`,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         setAllParticipants(res.data.message);

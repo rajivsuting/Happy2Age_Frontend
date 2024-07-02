@@ -33,11 +33,13 @@ const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
     e.preventDefault();
     setIsEditActivityLoading(true);
     axios
-    .patch(`${serverUrl}/activity/edit/${searchParams.get("id")}`, activityData, {
-      headers: {
-        Authorization: `${getLocalData("token")}`,
-      },
-    })
+    .patch(`${serverUrl}/activity/edit/${searchParams.get("id")}`, activityData,
+    // {
+    //   headers: {
+    //     Authorization: `${getLocalData("token")}`,
+    //   },
+    // }
+  )
     .then((res) => {
       if (res.status === 200) {
         getAllData().then((res)=>{

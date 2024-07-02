@@ -159,9 +159,7 @@ const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`${serverUrl}/participant/all`,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         setAllParticipants(res.data.message);
@@ -184,9 +182,7 @@ const navigate = useNavigate();
     e.preventDefault();
     console.log(state);
     axios.post(`${serverUrl}/moca/create`,state,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
     .then((res)=>{
       toast.success(res.data.message, toastConfig);
@@ -210,9 +206,7 @@ const navigate = useNavigate();
     // e.preventDefault();
     axios
       .get(`${serverUrl}/moca/${selectParticipant}`,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         console.log(res);

@@ -42,9 +42,7 @@ export const AddActivity = () => {
     setIsAddActivityLoading(true);
     axios
       .post(`${serverUrl}/activity/create`, activityData, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         if (res.status == 201) {

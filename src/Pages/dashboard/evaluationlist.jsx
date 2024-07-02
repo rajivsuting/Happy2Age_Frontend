@@ -20,9 +20,9 @@ export const Evaluationlist = () => {
 
   useEffect(() => {
     axios.get(`${serverUrl}/evaluation/all`,{
-      headers: {
-        Authorization: `${getLocalData("token")}`,
-      },
+      // headers: {
+      //   Authorization: `${getLocalData("token")}`,
+      // },
     }).then((res) => {
       setEvalutionlist(res.data.message);
     }).catch((err) => {

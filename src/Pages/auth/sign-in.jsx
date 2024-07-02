@@ -33,7 +33,7 @@ export function SignIn() {
     setIsLoginLoading(true);
     axios.post(`${serverUrl}/auth/login`,{ email, password })
     .then((res)=>{
-      saveLocalData("token",res.data.token)
+      // saveLocalData("token",res.data.token)
       if (res.status==200){
         toast.success("Login suucessfully", toastConfig);
         setIsLoginLoading(false);

@@ -66,9 +66,7 @@ export const Adddomain = () => {
     setIsaddDomainLoading(true);
     axios
       .post(`${serverUrl}/domain/create/`, domainData, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         

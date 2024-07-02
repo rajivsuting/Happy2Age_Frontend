@@ -148,9 +148,7 @@ export const AddEvaluation = () => {
     setIsAddEvaluationLoading(true);
     axios
       .post(`${serverUrl}/evaluation/create`, evaluationData,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         if (res.status == 201) {

@@ -31,7 +31,6 @@ export const Sessionlist = () => {
   });
 
   const handleSessionDetails = (el) => {
-    console.log(el);
     // localStorage.setItem("sessiondetails",{ name: "Alex" });
     navigate(`/mainpage/session-details/${el._id}`);
   };

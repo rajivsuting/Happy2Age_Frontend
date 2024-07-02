@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Link, NavLink, Navigate } from "react-router-dom";
+import { Link, NavLink, Navigate, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
   RectangleStackIcon,
@@ -12,6 +12,8 @@ import {
   IconButton,
   Typography,
 } from "@material-tailwind/react";
+import axios from "axios";
+axios.defaults.withCredentials = true;
 import { useMaterialTailwindController, setOpenSidenav } from "../../context";
 import { IoIosArrowDown, IoIosArrowForward, IoMdHome } from "react-icons/io";
 import { useEffect, useState } from "react";
@@ -29,10 +31,12 @@ import { TiUser } from "react-icons/ti";
 import { TbReportAnalytics } from "react-icons/tb";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import { serverUrl } from "../../api";
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavColor, sidenavType, openSidenav } = controller;
+  const navigate = useNavigate();
   const sidenavTypes = {
     dark: "bg-gradient-to-br from-gray-800 to-gray-900",
     white: "bg-white shadow-sm",
@@ -103,11 +107,24 @@ export function Sidenav({ brandImg, brandName, routes }) {
     className: "w-5 h-5 text-inherit",
   };
 
-  const handleSignOut = ()=>{
-    toast.success("Sign out successfully",toastConfig)
-  localStorage.clear();
-  <Navigate to={`/auth/sign-in`}/>
-}
+  const handleSignOut = () => {
+    axios.post(`${serverUrl}/auth/logout`)
+    .then((res)=>{
+      // saveLocalData("token",res.data.token)
+      if (res.status==200){
+        toast.success("Logout suucessfully", toastConfig);
+
+        navigate("/auth/sign-in")
+      } else {
+
+        toast.error("Something went wrong", toastConfig);
+      }
+    }).catch((err)=>{
+      console.log(err)
+      toast.error(err.response, toastConfig);
+    })
+    // <Navigate to={`/auth/sign-in`} />;
+  };
   return (
     <aside
       className={`${sidenavTypes[sidenavType]} ${
@@ -798,9 +815,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics  {...icon}/>
+                        <TbReportAnalytics {...icon} />
                       </span>
-                      
+
                       <Typography
                         color="inherit"
                         className="font-medium capitalize"
@@ -833,9 +850,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics  {...icon}/>
+                        <TbReportAnalytics {...icon} />
                       </span>
-                      
+
                       <Typography
                         color="inherit"
                         className="font-medium capitalize"
@@ -868,9 +885,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics  {...icon}/>
+                        <TbReportAnalytics {...icon} />
                       </span>
-                      
+
                       <Typography
                         color="inherit"
                         className="font-medium capitalize"
@@ -903,9 +920,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics  {...icon}/>
+                        <TbReportAnalytics {...icon} />
                       </span>
-                      
+
                       <Typography
                         color="inherit"
                         className="font-medium capitalize"
@@ -938,9 +955,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics  {...icon}/>
+                        <TbReportAnalytics {...icon} />
                       </span>
-                      
+
                       <Typography
                         color="inherit"
                         className="font-medium capitalize"
@@ -973,9 +990,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics  {...icon}/>
+                        <TbReportAnalytics {...icon} />
                       </span>
-                      
+
                       <Typography
                         color="inherit"
                         className="font-medium capitalize"
@@ -1008,9 +1025,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics  {...icon}/>
+                        <TbReportAnalytics {...icon} />
                       </span>
-                      
+
                       <Typography
                         color="inherit"
                         className="font-medium capitalize"
@@ -1043,9 +1060,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics  {...icon}/>
+                        <TbReportAnalytics {...icon} />
                       </span>
-                      
+
                       <Typography
                         color="inherit"
                         className="font-medium capitalize"
@@ -1091,7 +1108,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   )}
                 </NavLink>
               </li> */}
-              
+
               {/* */}
               {/* evaluation-------------------------------------- */}
               {/* <li>

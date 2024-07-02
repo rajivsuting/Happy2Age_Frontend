@@ -67,9 +67,7 @@ const EditDomain = ({ isOpen, onClose, singleCohort, getAlldata }) => {
     setIsaddDomainLoading(true);
     axios
       .post(`${serverUrl}/domain/create/`, domainData,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         if (res.status == 201) {

@@ -17,9 +17,7 @@ export const Mocalist = () => {
   useEffect(() => {
     axios
       .get(`${serverUrl}/moca/all/`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         setallResult(res.data.message);
@@ -42,9 +40,7 @@ export const Mocalist = () => {
   useEffect(() => {
     axios
       .get(`${serverUrl}/participant/all`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         setAllParticipants(res.data.message);
@@ -67,9 +63,7 @@ export const Mocalist = () => {
     e.preventDefault();
     axios
       .get(`${serverUrl}/moca/participant/${selectParticipant}`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         console.log(res);

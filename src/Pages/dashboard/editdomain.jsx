@@ -59,9 +59,9 @@ export const Editdomain = () => {
 
   useEffect(() => {
     axios.get(`${serverUrl}/domain/${domainid}`,{
-      headers: {
-        Authorization: `${getLocalData("token")}`,
-      },
+      // headers: {
+      // //   Authorization: `${getLocalData("token")}`,
+      // // },
     }).then((res) => {
       setdomainData(res.data.message);
     });
@@ -71,9 +71,7 @@ export const Editdomain = () => {
     e.preventDefault();
     axios
       .patch(`${serverUrl}/domain/edit/${domainid}`, domainData,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         console.log(res);

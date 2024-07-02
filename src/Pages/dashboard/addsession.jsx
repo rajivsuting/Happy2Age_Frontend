@@ -113,9 +113,9 @@ export const AddSession = () => {
     e.preventDefault();
     setIsSessionLoading(true);
     axios.post(`${serverUrl}/session/create`, sessionData,{
-      headers: {
-        Authorization: `${getLocalData("token")}`,
-      },
+      // headers: {
+      //   Authorization: `${getLocalData("token")}`,
+      // },
     })
       .then((res) => {
         if (res.status === 201) {

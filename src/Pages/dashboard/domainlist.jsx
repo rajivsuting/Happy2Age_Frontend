@@ -17,9 +17,9 @@ export const Domainlist = () => {
 
   useEffect(() => {
     axios.get(`${serverUrl}/domain/all/?category=${categoryFilter}`,{
-      headers: {
-        Authorization: `${getLocalData("token")}`,
-      },
+      // headers: {
+      //   Authorization: `${getLocalData("token")}`,
+      // },
     }).then((res) => {
       setDomainList(res.data.message);
     }).catch((err) => {

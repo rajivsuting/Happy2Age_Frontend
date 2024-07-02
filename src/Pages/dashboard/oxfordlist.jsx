@@ -19,9 +19,7 @@ export const Oxfordlist = () => {
   useEffect(() => {
     axios
       .get(`${serverUrl}/oxford/all/`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         setallResult(res.data.message);
@@ -44,9 +42,7 @@ export const Oxfordlist = () => {
   useEffect(() => {
     axios
       .get(`${serverUrl}/participant/all`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         setAllParticipants(res.data.message);
@@ -69,9 +65,7 @@ export const Oxfordlist = () => {
     e.preventDefault();
     axios
       .get(`${serverUrl}/oxford/participant/${selectParticipant}`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         console.log(res);

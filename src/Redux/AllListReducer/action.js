@@ -11,9 +11,7 @@ export const getAllParticipants =
     dispatch({ type: types.GET_PARTICIPANTS_REQUEST });
     return axios
       .get(`${serverUrl}/participant/all/?page=${page}&limit=${limit}`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         return dispatch({
@@ -33,9 +31,9 @@ export const getAllAdmins = (dispatch) => {
   dispatch({ type: types.GET_ADMIN_REQUEST });
   return axios
     .get(`${serverUrl}/auth/alluser`, {
-      headers: {
-        Authorization: `${getLocalData("token")}`,
-      },
+      // headers: {
+      //   Authorization: `${getLocalData("token")}`,
+      // },
     })
     .then((res) => {
       // console.log(res);
@@ -56,9 +54,9 @@ export const getParticipantsByName = (name) => (dispatch) => {
   dispatch({ type: types.GET_PARTICIPANTS_REQUEST });
   return axios
     .get(`${serverUrl}/participant/name/?name=${name}`, {
-      headers: {
-        Authorization: `${getLocalData("token")}`,
-      },
+      // headers: {
+      //   Authorization: `${getLocalData("token")}`,
+      // },
     })
     .then((res) => {
       return dispatch({
@@ -80,9 +78,7 @@ export const getAllCohorts =
     dispatch({ type: types.GET_COHORTS_REQUEST });
     return axios
       .get(`${serverUrl}/cohort/all/?page=${page}&limit=${limit}`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         console.log("cohort", res);
@@ -103,9 +99,7 @@ export const getAllCohorts =
     dispatch({ type: types.GET_COHORTS_REQUEST });
     return axios
       .get(`${serverUrl}/cohort/name/?name=${name}`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         return dispatch({
@@ -127,9 +121,7 @@ export const getAllActivities =
     dispatch({ type: types.GET_ACTIVITIES_REQUEST });
     return axios
       .get(`${serverUrl}/activity/all?page=${page}&limit=${limit}`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         return dispatch({
@@ -151,9 +143,7 @@ export const getAllDomains =
     dispatch({ type: types.GET_DOMAINS_REQUEST });
     return axios
       .get(`${serverUrl}/domain/all/?category=${category}`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         console.log(res);
@@ -176,9 +166,7 @@ export const getAllSessions =
     dispatch({ type: types.GET_SESSIONS_REQUEST });
     return axios
       .get(`${serverUrl}/session/all/?page=${page}&limit=${limit}`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         return dispatch({
@@ -198,9 +186,9 @@ export const getAllEvaluations = (dispatch) => {
   dispatch({ type: types.GET_EVALUATIONS_REQUEST });
   return axios
     .get(`${serverUrl}/evaluation/all`, {
-      headers: {
-        Authorization: `${getLocalData("token")}`,
-      },
+      // headers: {
+      //   Authorization: `${getLocalData("token")}`,
+      // },
     })
     .then((res) => {
       return dispatch({

@@ -64,9 +64,7 @@ export const AddCohort = () => {
     setIsAddCohortLoading(true);
     axios
       .post(`${serverUrl}/cohort/create`, cohortData, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         if (res.status == 201) {

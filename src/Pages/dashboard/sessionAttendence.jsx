@@ -12,6 +12,7 @@ import SeeDeatailsSessionAttendence from "../../Componants/SeeDeatailsSessionAtt
 import { getLocalData } from "../../Utils/localStorage";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import { getAllCohorts } from "../../Redux/AllListReducer/action";
 
 export const SessionAttendence = () => {
   const dispatch = useDispatch();
@@ -39,6 +40,10 @@ export const SessionAttendence = () => {
     };
   });
 
+  useEffect(()=>{
+    dispatch(getAllCohorts("",""))
+  },[])
+
   const handleSessionDetails = (el) => {
     setOpenAttendenceModal(true);
     setSingleAttence(el);
@@ -60,9 +65,7 @@ export const SessionAttendence = () => {
       .get(
         `${serverUrl}/session/attendance/?page=${currentPage}&limit=${limit}`,
         {
-          headers: {
-            Authorization: `${getLocalData("token")}`,
-          },
+          
         }
       )
       .then((res) => {
@@ -92,9 +95,7 @@ export const SessionAttendence = () => {
     .get(
       `${serverUrl}/session/attendencecohort/${searchResult}`,
       {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       }
     )
     .then((res) => {
@@ -153,9 +154,9 @@ export const SessionAttendence = () => {
                  .get(
                    `${serverUrl}/session/attendance/?page=${currentPage}&limit=${limit}`,
                    {
-                     headers: {
-                       Authorization: `${getLocalData("token")}`,
-                     },
+                    //  headers: {
+                    //    Authorization: `${getLocalData("token")}`,
+                    //  },
                    }
                  )
                  .then((res) => {

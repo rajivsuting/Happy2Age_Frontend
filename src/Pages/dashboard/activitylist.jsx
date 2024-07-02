@@ -39,9 +39,7 @@ export const ActivityList = () => {
   const handleDelete = () => {
     axios
       .delete(`${serverUrl}/activity/delete/${searchParams.get("id")}`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         if (res.status == 200) {

@@ -146,9 +146,7 @@ export const OxfordHappiness = () => {
   useEffect(() => {
     axios
       .get(`${serverUrl}/participant/all`,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         setAllParticipants(res.data.message);
@@ -186,9 +184,7 @@ export const OxfordHappiness = () => {
     e.preventDefault();
     axios
       .post(`${serverUrl}/oxford/add`, questionData,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         toast.success(res.data.message, toastConfig);
@@ -211,9 +207,7 @@ export const OxfordHappiness = () => {
     e.preventDefault();
     axios
       .get(`${serverUrl}/oxford/${selectParticipant}`,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         console.log(res);

@@ -33,6 +33,8 @@ import { serverUrl } from "../../api";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { getLocalData } from "../../Utils/localStorage";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 export function Home() {
   const [partcipantsList, setPartcipantList] = useState([]);
@@ -41,9 +43,7 @@ export function Home() {
   const navigate = useNavigate();
   useEffect(() => {
     axios.get(`${serverUrl}/participant/all/`,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       }).then((res) => {
       setPartcipantList(res.data.message);
     }).catch((err) => {
@@ -60,9 +60,7 @@ export function Home() {
     });
 
     axios.get(`${serverUrl}/cohort/all/`,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       }).then((res) => {
       setCohortList(res.data.message);
     }).catch((err) => {
@@ -79,9 +77,7 @@ export function Home() {
     });
 
     axios.get(`${serverUrl}/activity/all/`,{
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       }).then((res) => {
       setActivityList(res.data.message);
     }).catch((err) => {

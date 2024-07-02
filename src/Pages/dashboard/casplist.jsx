@@ -30,9 +30,7 @@ export const Casplist = () => {
   useEffect(() => {
     axios
       .get(`${serverUrl}/casp/all/`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         setallResult(res.data.message);
@@ -55,9 +53,7 @@ export const Casplist = () => {
   useEffect(() => {
     axios
       .get(`${serverUrl}/participant/all`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         setAllParticipants(res.data.message);
@@ -80,9 +76,7 @@ export const Casplist = () => {
     e.preventDefault();
     axios
       .get(`${serverUrl}/casp/participant/${selectParticipant}`, {
-        headers: {
-          Authorization: `${getLocalData("token")}`,
-        },
+        
       })
       .then((res) => {
         console.log(res);
