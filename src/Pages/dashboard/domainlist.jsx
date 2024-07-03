@@ -1,5 +1,6 @@
 import { Card, Typography } from "@material-tailwind/react";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import { CiEdit } from "react-icons/ci";

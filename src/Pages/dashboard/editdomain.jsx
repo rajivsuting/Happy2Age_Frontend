@@ -8,6 +8,7 @@ import {
   ListItem,
 } from "@material-tailwind/react";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { serverUrl } from "../../api";
 import { FaPlus } from "react-icons/fa";
 import { AiFillDelete } from "react-icons/ai";

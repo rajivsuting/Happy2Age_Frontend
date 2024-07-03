@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Input, Radio, Typography } from "@material-tailwind/react";
 import { CgSpinner } from "react-icons/cg";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { serverUrl } from "../../api";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";

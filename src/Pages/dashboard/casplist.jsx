@@ -1,4 +1,5 @@
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import React, { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import { getLocalData } from "../../Utils/localStorage";

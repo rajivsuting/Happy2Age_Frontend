@@ -7,6 +7,7 @@ import {
 } from "@material-tailwind/react";
 import React, { useState } from "react";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { serverUrl } from "../../api";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";

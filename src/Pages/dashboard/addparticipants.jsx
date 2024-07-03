@@ -2,6 +2,7 @@ import { Button, Input, Select, Option, Textarea } from "@material-tailwind/reac
 import React, { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import {CgSpinner} from "react-icons/cg"

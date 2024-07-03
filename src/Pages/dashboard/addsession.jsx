@@ -9,6 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { AiFillDelete } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
