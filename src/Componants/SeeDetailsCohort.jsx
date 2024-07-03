@@ -22,12 +22,11 @@ const SeeDeatailesEvalution = ({ isOpen, onClose, singleCohort }) => {
                 <td>
                   {singleCohort?.participants?.map((el, index1) => {
                     return (
-                      <div>{index1+1}. {el.name}</div>
+                      <div>{index1+1}. {el?.name}</div>
                     );
                   })}
                 </td>
               </tr>
-              
             </tbody>
           </table>
         </div>

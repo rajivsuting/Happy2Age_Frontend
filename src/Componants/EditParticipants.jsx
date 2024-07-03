@@ -4,11 +4,30 @@ import { serverUrl } from "../api";
 import axios from "axios";
 import { toastConfig } from "../App";
 import { toast } from "react-toastify";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { CgSpinner } from "react-icons/cg";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCohorts, getAllParticipants } from "../Redux/AllListReducer/action";
+import { getLocalData } from "../Utils/localStorage";
 
 const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
   const [participantData, setParticipantData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  // const [isEditParticipantLoading, setIsEditParticipantLoadingLoading] = useState(false);
+  const [isEditParticipantLoading, setIsEditParticipantLoading] = useState(false);
+  const {cohortList} = useSelector((state)=>{
+    return {
+      cohortList : state.AllListReducer.cohortList
+    }
+  })
+
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(getAllCohorts("",""));
+  },[])
+
   useEffect(() => {
     if (singleParticipant) {
       setParticipantData(singleParticipant);
@@ -67,20 +86,39 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
 
   const handleSubmitParticipant = (e) => {
     e.preventDefault();
+    setIsEditParticipantLoading(true);
     axios
-    .patch(`${serverUrl}/participant/edit/${searchParams.get("id")}`, participantData)
-    .then((res) => {
-      if (res.status === 200) {
-        toast.success("Participant edited successfully", toastConfig);
-        window.location.reload();
-      } else {
-        toast.error("Something went wrong", toastConfig);
-      }
-    })
-    .catch((err) => {
-      console.log(err)
-      toast.error(err.response.data.error, toastConfig);
-    });
+      .patch(
+        `${serverUrl}/participant/edit/${searchParams.get("id")}`,
+        participantData
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch(getAllParticipants(searchParams.get("page"),searchParams.get("limit"))).then((res)=>{
+            dispatch(getAllCohorts("","")).then((res)=>{
+              toast.success("Participant edited successfully", toastConfig);
+              onClose();
+            })
+          })
+          setIsEditParticipantLoading(false);
+        } else {
+          setIsEditParticipantLoading(false);
+          toast.error("Something went wrong", toastConfig);
+        }
+      })
+      .catch((err) => {
+        setIsEditParticipantLoading(false);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
   };
 
   return (
@@ -89,7 +127,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
         <div className="flex items-center p-4 font-sans text-2xl font-semibold text-blue-gray-900">
           Edit participant
         </div>
-        <div className="flex justify-center items-center gap-10 ">
+        <div className="px-4">
           <form
             className="m-auto rounded-xl "
             onSubmit={handleSubmitParticipant}
@@ -113,15 +151,15 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 type="email"
                 onChange={handleChangeInput}
               />
-            </div>
-            <div className="w-[100%] flex justify-between items-center m-auto gap-10 mt-5">
               <Input
                 label="Date of Birth"
                 name="dob"
-                value={participantData?.dob}
+                value={participantData?.dob?.split("T")[0]}
                 type="date"
                 onChange={handleChangeInput}
               />
+            </div>
+            <div className="w-[100%] flex justify-between items-center m-auto gap-10 mt-5">
               <Select
                 label="Gender"
                 name="gender"
@@ -145,6 +183,13 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 <Option value="General">General</Option>
                 <Option value="Special Need">Special Need</Option>
               </Select>
+              <Select label="Select center" name="cohort" value={participantData.cohort} onChange={(value)=>handleChangeGenderAndParticipants("cohort",value)}>
+            {
+              cohortList?.map((el)=>{
+                return <Option value={el._id}>{el.name}</Option>
+              })
+            }
+          </Select>
             </div>
 
             {/* Address */}
@@ -210,18 +255,21 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
               />
             </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500">
-          <button
-            onClick={onClose}
-            className="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg hover:bg-red-500/10 active:bg-red-500/30  border border-red-300"
-          >
-            Close
-          </button>
-          <Button className="bg-maincolor" type="submit">
-            Edit participant
+            <div className="flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500">
+              <button
+                onClick={onClose}
+                className="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg hover:bg-red-500/10 active:bg-red-500/30  border border-red-300"
+              >
+                Close
+              </button>
+              <Button className="bg-maincolor" type="submit" disabled={isEditParticipantLoading}>
+                {isEditParticipantLoading ? (
+                  <CgSpinner size={18} className=" m-auto animate-spin" />
+                ) : (
+                  "Edit participant"
+                )}
               </Button>
-        </div>
-
+            </div>
           </form>
         </div>
       </div>

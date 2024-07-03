@@ -4,11 +4,17 @@ import axios from "axios";
 import { serverUrl } from "../api";
 import { toast } from "react-toastify";
 import { toastConfig } from "../App";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { CgSpinner } from "react-icons/cg";
+import { getLocalData } from "../Utils/localStorage";
 
-const EditActivity = ({ isOpen, onClose, singleActivity }) => {
+const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
   const [activityData, setActivityData] = useState(null);
-  const [searchParams, setsearchParams] = useSearchParams()
+  const [searchParams, setsearchParams] = useSearchParams();
+  const [isEditActivityLoading, setIsEditActivityLoading] = useState(false);
+  const navigate = useNavigate();
+
+
   useEffect(() => {
     if (singleActivity) {
       setActivityData(singleActivity);
@@ -25,25 +31,44 @@ const EditActivity = ({ isOpen, onClose, singleActivity }) => {
 
   const handleSubmitActivity = (e) => {
     e.preventDefault();
+    setIsEditActivityLoading(true);
     axios
-    .patch(`${serverUrl}/activity/edit/${searchParams.get("id")}`, activityData)
+    .patch(`${serverUrl}/activity/edit/${searchParams.get("id")}`, activityData,
+    // {
+    //   headers: {
+    //     Authorization: `${getLocalData("token")}`,
+    //   },
+    // }
+  )
     .then((res) => {
       if (res.status === 200) {
-        toast.success("Activity edited successfully", toastConfig);
-        window.location.reload()
+        getAllData().then((res)=>{
+          toast.success("Activity edited successfully", toastConfig);
+          setIsEditActivityLoading(false);
+          onClose();
+        });
       } else {
+      setIsEditActivityLoading(false)
         toast.error("Something went wrong", toastConfig);
       }
     })
     .catch((err) => {
-      console.log(err)
-      toast.error(err.response.data.error, toastConfig);
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
   };
 
   if (!isOpen || !activityData) return null;
 
-  const { name, description } = activityData;
+  const { name, description,references } = activityData;
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
@@ -51,7 +76,7 @@ const EditActivity = ({ isOpen, onClose, singleActivity }) => {
         <div className="flex items-center p-4 font-sans text-2xl font-semibold text-blue-gray-900">
           Edit Activity
         </div>
-        <div className="flex justify-center items-center gap-10">
+        <div className="px-4">
           <form
             className="m-auto rounded-xl "
             onSubmit={handleSubmitActivity}
@@ -70,9 +95,18 @@ const EditActivity = ({ isOpen, onClose, singleActivity }) => {
             </div>
             <div className="m-auto mt-5">
               <Textarea
-                label="Description"
+                label="Methodology"
                 name="description"
                 value={description || ""}
+                onChange={handleChangeInput}
+              />
+            </div>
+
+            <div className="m-auto mt-5">
+              <Textarea
+                 label="References"
+                 name="references"
+                 value={references || ""}
                 onChange={handleChangeInput}
               />
             </div>
@@ -84,8 +118,12 @@ const EditActivity = ({ isOpen, onClose, singleActivity }) => {
               >
                 Close
               </button>
-              <Button className="bg-maincolor" type="submit">
-                Edit activity
+              <Button className="bg-maincolor" type="submit" disabled={isEditActivityLoading}>
+                {isEditActivityLoading ? (
+                  <CgSpinner size={18} className=" m-auto animate-spin" />
+                ) : (
+                  "Edit activity"
+                )}
               </Button>
             </div>
           </form>

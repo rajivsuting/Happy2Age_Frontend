@@ -1,268 +1,188 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Button, Input, List, ListItem } from "@material-tailwind/react";
+import axios from "axios";
+import { serverUrl } from "../api";
+import { toastConfig } from "../App";
+import { toast } from "react-toastify";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { CgSpinner } from "react-icons/cg";
+import { getLocalData } from "../Utils/localStorage";
 
-const EditDomain = () => {
+const EditDomain = ({ isOpen, onClose, singleCohort, getAlldata }) => {
+  const [cohortData, setCohortData] = useState(null);
+  const [allParticipants, setAllParticipants] = useState([]);
+  const [isEditCohortLoading, setIsEditCohortLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  if (!isOpen || !cohortData) return null;
+  
+  useEffect(() => {
+    if (singleCohort) {
+      setCohortData(singleCohort);
+    }
+  }, [singleCohort]);
+
+  const [domainData, setdomainData] = useState({
+    name: "",
+    category: "",
+    subTopics: [{ content: "", score: 0 }],
+    // observation: "",
+  });
+  const [isaddDomainLoading, setIsaddDomainLoading] = useState(false);
+
+  const handleChangeInput = (event) => {
+    const { name, value } = event.target;
+    setdomainData({ ...domainData, [name]: value });
+  };
+
+  const addSubtopic = () => {
+    setdomainData({
+      ...domainData,
+      subTopics: [...domainData.subTopics, { content: "", score: 0 }],
+    });
+  };
+
+  const removeSubtopic = (index) => {
+    const updatedSubtopic = [...domainData.subTopics];
+    updatedSubtopic.splice(index, 1);
+    setdomainData({ ...domainData, subTopics: updatedSubtopic });
+  };
+
+  const handleSubtopicChange = (index, event) => {
+    const updatedSubtopic = [...domainData.subTopics];
+    updatedSubtopic[index][event.target.name] = event.target.value;
+    setdomainData({ ...domainData, subTopics: updatedSubtopic });
+  };
+
+  const handleChangeCategory = (name, value) => {
+    setdomainData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmitCohort = (e) => {
+    e.preventDefault();
+    setIsaddDomainLoading(true);
+    axios
+      .post(`${serverUrl}/domain/create/`, domainData,{
+        
+      })
+      .then((res) => {
+        if (res.status == 201) {
+          toast.success("Domain added suucessfully", toastConfig);
+          setdomainData({
+            name: "",
+            category: "",
+            subTopics: [{ content: "", score: 0 }],
+            // observation: "",
+          });
+          setIsaddDomainLoading(false);
+        } else {
+          toast.error("Something went wrong", toastConfig);
+        }
+      })
+      .catch((err) => {
+        setIsaddDomainLoading(false);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
+  };
+
+
+
+
   return (
-    <div>
-      <div class="flex gap-3 mb-3">
-        <button
-          data-ripple-light="true"
-          data-dialog-target="dialog-xs"
-          class="select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-        >
-          Open Dialog XS
-        </button>
-        <div
-          data-dialog-backdrop="dialog-xs"
-          data-dialog-backdrop-close="true"
-          class="pointer-events-none fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300"
-        >
-          <div
-            data-dialog="dialog-xs"
-            class="relative m-4 w-1/4 min-w-[25%] max-w-[25%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 antialiased shadow-2xl"
-          >
-            <div class="flex items-center p-4 font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-900">
-              Its a simple dialog.
-            </div>
-            <div class="relative p-4 font-sans text-base antialiased font-light leading-relaxed border-t border-b border-t-blue-gray-100 border-b-blue-gray-100 text-blue-gray-500">
-              The key to more success is to have a lot of pillows. Put it this
-              way, it took me twenty five years to get these plants, twenty five
-              years of blood sweat and tears, and I&apos;m never giving up,
-              I&apos;m just getting started. I&apos;m up to something. Fan luv.
-            </div>
-            <div class="flex flex-wrap items-center justify-end p-4 shrink-0 text-blue-gray-500">
-              <button
-                data-ripple-dark="true"
-                data-dialog-close="true"
-                class="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg middle none center hover:bg-red-500/10 active:bg-red-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Cancel
-              </button>
-              <button
-                data-ripple-light="true"
-                data-dialog-close="true"
-                class="middle none center rounded-lg bg-gradient-to-tr from-green-600 to-green-400 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
+    <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
+      <div className="relative m-4 w-2/5 min-w-[60%] max-w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-4">
+        <div className="flex items-center p-4 font-sans text-2xl font-semibold text-blue-gray-900">
+          Edit Domain
         </div>
-        <button
-          data-ripple-light="true"
-          data-dialog-target="dialog-sm"
-          class="select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-        >
-          Open Dialog SM
-        </button>
-        <div
-          data-dialog-backdrop="dialog-sm"
-          data-dialog-backdrop-close="true"
-          class="pointer-events-none fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300"
-        >
-          <div
-            data-dialog="dialog-sm"
-            class="relative m-4 w-1/3 min-w-[33.333333%] max-w-[33.333333%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 antialiased shadow-2xl"
-          >
-            <div class="flex items-center p-4 font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-900">
-              Its a simple dialog.
-            </div>
-            <div class="relative p-4 font-sans text-base antialiased font-light leading-relaxed border-t border-b border-t-blue-gray-100 border-b-blue-gray-100 text-blue-gray-500">
-              The key to more success is to have a lot of pillows. Put it this
-              way, it took me twenty five years to get these plants, twenty five
-              years of blood sweat and tears, and I&apos;m never giving up,
-              I&apos;m just getting started. I&apos;m up to something. Fan luv.
-            </div>
-            <div class="flex flex-wrap items-center justify-end p-4 shrink-0 text-blue-gray-500">
-              <button
-                data-ripple-dark="true"
-                data-dialog-close="true"
-                class="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg middle none center hover:bg-red-500/10 active:bg-red-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Cancel
-              </button>
-              <button
-                data-ripple-light="true"
-                data-dialog-close="true"
-                class="middle none center rounded-lg bg-gradient-to-tr from-green-600 to-green-400 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
+        <div className="flex justify-center items-center gap-10">
+        <form
+        className="m-auto border rounded-xl shadow w-[70%] py-8 mt-16 bg-white"
+        onSubmit={handleSubmitCohort}
+      >
+        {/* Basic details */}
+        <div className="w-[90%] m-auto mb-5 flex justify-center items-center">
+          <div className="w-[15%]">Domain details</div>{" "}
+          <hr className="w-[85%] border" />
         </div>
-        <button
-          data-ripple-light="true"
-          data-dialog-target="dialog-md"
-          class="select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-        >
-          Open Dialog MD
-        </button>
-        <div
-          data-dialog-backdrop="dialog-md"
-          data-dialog-backdrop-close="true"
-          class="pointer-events-none fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300"
-        >
+        <div className="w-[90%] m-auto mt-5">
+          <div className="flex justify-between items-center m-auto gap-10">
+            <Input
+              label="Name of Domain"
+              name="name"
+              value={domainData.name}
+              onChange={handleChangeInput}
+              required
+            />
+            <Select
+              label="Category"
+              name="category"
+              value={domainData.category}
+              onChange={(value) => handleChangeCategory("category", value)}
+              required
+            >
+              <Option value="General">General</Option>
+              <Option value="Special Need">Special Need</Option>
+            </Select>
+          </div>
           <div
-            data-dialog="dialog-md"
-            class="relative m-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 antialiased shadow-2xl"
+            className="cursor-pointer flex justify-end items-center gap-5 mb-5"
+            onClick={addSubtopic}
           >
-            <div class="flex items-center p-4 font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-900">
-              Its a simple dialog.
-            </div>
-            <div class="relative p-4 font-sans text-base antialiased font-light leading-relaxed border-t border-b border-t-blue-gray-100 border-b-blue-gray-100 text-blue-gray-500">
-              The key to more success is to have a lot of pillows. Put it this
-              way, it took me twenty five years to get these plants, twenty five
-              years of blood sweat and tears, and I&apos;m never giving up,
-              I&apos;m just getting started. I&apos;m up to something. Fan luv.
-            </div>
-            <div class="flex flex-wrap items-center justify-end p-4 shrink-0 text-blue-gray-500">
-              <button
-                data-ripple-dark="true"
-                data-dialog-close="true"
-                class="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg middle none center hover:bg-red-500/10 active:bg-red-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Cancel
-              </button>
-              <button
-                data-ripple-light="true"
-                data-dialog-close="true"
-                class="middle none center rounded-lg bg-gradient-to-tr from-green-600 to-green-400 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Confirm
-              </button>
+            <div className="flex justify-center items-center gap-5 border px-4 py-1 rounded">
+              <div>Add questions</div>
+              <FaPlus />
             </div>
           </div>
+          {domainData.subTopics.map((item, index) => {
+            return (
+              <div
+                key={index}
+                className={`w-[100%] flex justify-between items-center gap-5 ${
+                  index === 0 ? "mt-0" : "mt-5"
+                }`}
+              >
+                <Input
+                  label="Topic name"
+                  name="content"
+                  value={item.content}
+                  onChange={(e) => handleSubtopicChange(index, e)}
+                  required
+                />
+
+                {/* {index === 0 ? null : ( */}
+                  <AiFillDelete
+                    className="text-[20px] cursor-pointer"
+                    onClick={() => removeSubtopic(index)}
+                  />
+                {/* )} */}
+                
+              </div>
+            );
+          })}
         </div>
-      </div>
-      <div class="flex gap-3 mb-3">
-        <button
-          data-ripple-light="true"
-          data-dialog-target="dialog-lg"
-          class="select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-        >
-          Open Dialog LG
-        </button>
-        <div
-          data-dialog-backdrop="dialog-lg"
-          data-dialog-backdrop-close="true"
-          class="pointer-events-none fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300"
-        >
-          <div
-            data-dialog="dialog-lg"
-            class="relative m-4 w-3/5 min-w-[60%] max-w-[60%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 antialiased shadow-2xl"
-          >
-            <div class="flex items-center p-4 font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-900">
-              Its a simple dialog.
-            </div>
-            <div class="relative p-4 font-sans text-base antialiased font-light leading-relaxed border-t border-b border-t-blue-gray-100 border-b-blue-gray-100 text-blue-gray-500">
-              The key to more success is to have a lot of pillows. Put it this
-              way, it took me twenty five years to get these plants, twenty five
-              years of blood sweat and tears, and I&apos;m never giving up,
-              I&apos;m just getting started. I&apos;m up to something. Fan luv.
-            </div>
-            <div class="flex flex-wrap items-center justify-end p-4 shrink-0 text-blue-gray-500">
-              <button
-                data-ripple-dark="true"
-                data-dialog-close="true"
-                class="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg middle none center hover:bg-red-500/10 active:bg-red-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Cancel
-              </button>
-              <button
-                data-ripple-light="true"
-                data-dialog-close="true"
-                class="middle none center rounded-lg bg-gradient-to-tr from-green-600 to-green-400 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
+        <div className="w-[90%] text-center mt-5 m-auto">
+          <Button className="bg-maincolor" type="submit" disabled={isaddDomainLoading}>
+            {isaddDomainLoading ? (
+              <CgSpinner size={18} className=" m-auto animate-spin" />
+            ) : (
+              "Add Domain"
+            )}
+          </Button>
         </div>
-        <button
-          data-ripple-light="true"
-          data-dialog-target="dialog-xl"
-          class="select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-        >
-          Open Dialog XL
-        </button>
-        <div
-          data-dialog-backdrop="dialog-xl"
-          data-dialog-backdrop-close="true"
-          class="pointer-events-none fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300"
-        >
-          <div
-            data-dialog="dialog-xl"
-            class="relative m-4 w-3/4 min-w-[75%] max-w-[75%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 antialiased shadow-2xl"
-          >
-            <div class="flex items-center p-4 font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-900">
-              Its a simple dialog.
-            </div>
-            <div class="relative p-4 font-sans text-base antialiased font-light leading-relaxed border-t border-b border-t-blue-gray-100 border-b-blue-gray-100 text-blue-gray-500">
-              The key to more success is to have a lot of pillows. Put it this
-              way, it took me twenty five years to get these plants, twenty five
-              years of blood sweat and tears, and I&apos;m never giving up,
-              I&apos;m just getting started. I&apos;m up to something. Fan luv.
-            </div>
-            <div class="flex flex-wrap items-center justify-end p-4 shrink-0 text-blue-gray-500">
-              <button
-                data-ripple-dark="true"
-                data-dialog-close="true"
-                class="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg middle none center hover:bg-red-500/10 active:bg-red-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Cancel
-              </button>
-              <button
-                data-ripple-light="true"
-                data-dialog-close="true"
-                class="middle none center rounded-lg bg-gradient-to-tr from-green-600 to-green-400 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div>
-        <button
-          data-ripple-light="true"
-          data-dialog-target="dialog-xxl"
-          class="select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-        >
-          Open Dialog XXL
-        </button>
-        <div
-          data-dialog-backdrop="dialog-xxl"
-          data-dialog-backdrop-close="true"
-          class="pointer-events-none fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 opacity-0 backdrop-blur-sm transition-opacity duration-300"
-        >
-          <div
-            data-dialog="dialog-xxl"
-            class="relative h-screen w-screen min-w-[100vw] max-w-[100vw] bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 antialiased"
-          >
-            <div class="flex items-center p-4 font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-gray-900">
-              Its a simple dialog.
-            </div>
-            <div class="relative p-4 font-sans text-base antialiased font-light leading-relaxed border-t border-b border-t-blue-gray-100 border-b-blue-gray-100 text-blue-gray-500">
-              The key to more success is to have a lot of pillows. Put it this
-              way, it took me twenty five years to get these plants, twenty five
-              years of blood sweat and tears, and I&apos;m never giving up,
-              I&apos;m just getting started. I&apos;m up to something. Fan luv.
-            </div>
-            <div class="flex flex-wrap items-center justify-end p-4 shrink-0 text-blue-gray-500">
-              <button
-                data-ripple-dark="true"
-                data-dialog-close="true"
-                class="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg middle none center hover:bg-red-500/10 active:bg-red-500/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Cancel
-              </button>
-              <button
-                data-ripple-light="true"
-                data-dialog-close="true"
-                class="middle none center rounded-lg bg-gradient-to-tr from-green-600 to-green-400 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
+      </form>
         </div>
       </div>
     </div>

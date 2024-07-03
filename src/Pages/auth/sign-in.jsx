@@ -12,27 +12,43 @@ import { Link, useNavigate } from "react-router-dom";
 import { serverUrl } from "../../api";
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
+import { CgSpinner } from "react-icons/cg";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { saveLocalData } from "../../Utils/localStorage";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleSubmitLogin = (e) => {
     e.preventDefault();
+    setIsLoginLoading(true);
     axios.post(`${serverUrl}/auth/login`,{ email, password })
     .then((res)=>{
+      // saveLocalData("token",res.data.token)
       if (res.status==200){
         toast.success("Login suucessfully", toastConfig);
+        setIsLoginLoading(false);
         navigate("/mainpage/home")
       } else {
+        setIsLoginLoading(false);
         toast.error("Something went wrong", toastConfig);
       }
     }).catch((err)=>{
+      setIsLoginLoading(false);
       console.log(err)
       toast.error(err.response, toastConfig);
     })
   };
+
   return (
     <section className="m-8 flex gap-4">
       <div
@@ -65,14 +81,24 @@ export function SignIn() {
             type="email"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <div className="mt-5">
+          <div className="mt-5 relative">
             <Input
               label="Password"
               name="password"
               value={password}
-              type="password"
+              type={showPassword ? "text" : "password"}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <div
+                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? (
+                  <AiFillEyeInvisible fontSize={"20px"} />
+                ) : (
+                  <AiFillEye fontSize={"20px"} />
+                )}
+              </div>
           </div>
           {/* <Checkbox
             label={
@@ -92,8 +118,8 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           /> */}
-          <Button className="mt-6 bg-maincolor" fullWidth type="submit">
-            Sign In
+          <Button className="mt-6 bg-maincolor" fullWidth type="submit" disabled={isLoginLoading}>
+          {isLoginLoading  ? <CgSpinner size={18} className=" m-auto animate-spin"/> : "Sign In"}
           </Button>
 
           {/* <div className="flex items-center justify-between gap-2 mt-6">

@@ -1,21 +1,40 @@
 import { Card, Typography } from "@material-tailwind/react";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { getLocalData } from "../../Utils/localStorage";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 export const Domainlist = () => {
   const [domainList, setDomainList] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "All");
-
+  const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "General");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`${serverUrl}/domain/all/?category=${categoryFilter}`).then((res) => {
+    axios.get(`${serverUrl}/domain/all/?category=${categoryFilter}`,{
+      // headers: {
+      //   Authorization: `${getLocalData("token")}`,
+      // },
+    }).then((res) => {
       setDomainList(res.data.message);
-    });
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
+    });;
     setSearchParams({ category: categoryFilter });
   }, [categoryFilter]);
 
@@ -27,10 +46,9 @@ export const Domainlist = () => {
           name=""
           id=""
           value={categoryFilter}
-          className="border w-[30%] px-2 py-2 rounded-md mt-3 mb-3"
+          className="border w-[20%] px-2 py-2 rounded-md mt-3 mb-3"
           onChange={(e) => setCategoryFilter(e.target.value)}
         >
-          <option value="All">All domains</option>
           <option value="General">General</option>
           <option value="Special Need">Special Need</option>
         </select>

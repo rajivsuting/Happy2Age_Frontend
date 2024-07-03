@@ -13,8 +13,14 @@ import {
 import React, { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
+import { CgSpinner } from "react-icons/cg";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllActivities, getAllCohorts, getAllDomains, getAllEvaluations, getAllSessions } from "../../Redux/AllListReducer/action";
+import { getLocalData } from "../../Utils/localStorage";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   session: "",
@@ -27,16 +33,15 @@ const initialState = {
 export const AddEvaluation = () => {
   const [evaluationData, setEvaluationData] = useState(initialState);
   const [participantList, setParticipantList] = useState([]);
-  const [domainList, setDomainList] = useState([]);
-  const [sessionList, setSessionList] = useState([]);
-  const [activityList, setActivityList] = useState([]);
-  const [cohortList, setCohortList] = useState([]);
+  // const [domainList, setDomainList] = useState([]);
   const [domainCategory, setDomainCategory] = useState("");
   const [sessionFromCohort, setsessionFromCohort] = useState([]);
   const [participantsFromSession, setParticipantsFromSession] = useState([]);
   const [activityFromSession, setActivityFromSession] = useState([]);
   const [selectDomainByType, setSelectDomainByType] = useState([]);
-
+  const [isAddEvaluationLoading, setIsAddEvaluationLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { session, cohort, participant, activity, domain } = evaluationData;
 
   const handleChangeEvaluation = (e) => {
@@ -56,30 +61,30 @@ export const AddEvaluation = () => {
     }
   };
 
-  useEffect(() => {
-    axios.get(`${serverUrl}/participant/all`).then((res) => {
-      setParticipantList(res.data.message);
-    });
-    axios.get(`${serverUrl}/cohort/all`).then((res) => {
-      setCohortList(res.data.message);
-    });
-    axios.get(`${serverUrl}/activity/all`).then((res) => {
-      setActivityList(res.data.message);
-    });
-    axios.get(`${serverUrl}/domain/all/?category=All`).then((res) => {
-      setDomainList(res.data.message);
-      console.log();
-    });
-    axios.get(`${serverUrl}/session/all`).then((res) => {
-      setSessionList(res.data.message);
-      // console.log("res.data.message", res.data.message);
-    });
-  
-  
-    axios.get(`${serverUrl}/evaluation/all`).then((res) => {
-      // setSessionList(res.data.message);
-      console.log("res.data.message", res.data.message);
-    });}, []);
+  const {
+    cohortList,
+    partcipantList,
+    evalutionlist,
+    sessionlist,
+    domainList,
+    activityList,
+  } = useSelector((state) => {
+    return {
+      cohortList: state.AllListReducer.cohortList,
+      activityList: state.AllListReducer.activityList,
+      domainList: state.AllListReducer.domainList,
+      sessionlist: state.AllListReducer.sessionlist,
+      evalutionlist: state.AllListReducer.evalutionlist,
+      partcipantList: state.AllListReducer.partcipantList,
+    };
+  });
+
+  useEffect(()=>{
+    dispatch(getAllCohorts("",""))
+    dispatch(getAllSessions("",""));
+    dispatch(getAllActivities("",""))
+    dispatch(getAllDomains("All"))
+  },[])
 
   useEffect(() => {
     setsessionFromCohort(
@@ -89,13 +94,21 @@ export const AddEvaluation = () => {
 
   useEffect(() => {
     setParticipantsFromSession(
-      cohortList?.filter((el) => el._id === cohort)[0]?.participants
+      sessionFromCohort?.filter((el) => el._id === session)[0]?.participants
     );
-  }, [cohort]);
+  }, [session]);
+
+  useEffect(() => {
+    setDomainCategory(
+      partcipantList?.filter((el) => el._id == participant)[0]
+        ?.participantType
+    );
+  }, [participant]);
+
 
   useEffect(() => {
     setActivityFromSession(
-      sessionList?.filter((el) => el._id === session)[0]?.activity
+      sessionFromCohort?.filter((el) => el._id === session)[0]?.activity
     );
   }, [session]);
 
@@ -103,17 +116,19 @@ export const AddEvaluation = () => {
     setSelectDomainByType(
       domainList?.filter((el) => el.category === domainCategory)
     );
-  }, [domainCategory]);
+  }, [domainCategory,participant]);
 
-  // console.log(cohortList)
+  console.log(domainCategory)
+  console.log(selectDomainByType)
+  console.log(domainList)
   const handleScoreChange = (domainIndex, questionIndex, newScore) => {
     const updatedDomains = [...selectDomainByType];
     updatedDomains[domainIndex].subTopics[questionIndex].score = newScore;
-    setEvaluationData((prev)=>{
+    setEvaluationData((prev) => {
       return {
         ...prev,
-        domain:updatedDomains
-      }
+        domain: updatedDomains,
+      };
     });
   };
 
@@ -121,35 +136,53 @@ export const AddEvaluation = () => {
   const handleObservationChange = (domainIndex, newObservation) => {
     const updatedDomains = [...selectDomainByType];
     updatedDomains[domainIndex].observation = newObservation;
-    setEvaluationData((prev)=>{
+    setEvaluationData((prev) => {
       return {
         ...prev,
-        domain:updatedDomains
-      }
+        domain: updatedDomains,
+      };
     });
   };
 
   const handleSubmitEvaluation = (e) => {
     e.preventDefault();
-    console.log(evaluationData)
+    setIsAddEvaluationLoading(true);
     axios
-      .post(`${serverUrl}/evaluation/create`, evaluationData)
+      .post(`${serverUrl}/evaluation/create`, evaluationData,{
+        
+      })
       .then((res) => {
         if (res.status == 201) {
           toast.success("Evaluation added suucessfully", toastConfig);
           setEvaluationData(initialState);
+          dispatch(getAllEvaluations).then((res) => {
+            return true;
+          });
+          setIsAddEvaluationLoading(false);
         } else {
           toast.error("Something went wrong", toastConfig);
         }
       })
       .catch((err) => {
-        console.log(err);
-        toast.error(err.response.data.error, toastConfig);
+        setIsAddEvaluationLoading(false);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
       });
   };
 
-  // console.log("domainList", domainList);
+  // console.log("sessionFromCohort", sessionFromCohort);
 
+  // console.log("participantsFromSession", participantsFromSession);
+
+  // console.log("partcipantList", partcipantList);
   return (
     <div className="flex justify-center items-center gap-10 mb-24">
       <form
@@ -167,8 +200,9 @@ export const AddEvaluation = () => {
             value={cohort}
             onChange={handleChangeEvaluation}
             className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
+            required
           >
-            <option value="">Select cohort</option>;
+            <option value="">Select center</option>;
             {cohortList.map((el) => {
               return (
                 <option key={el._id} value={el._id}>
@@ -183,6 +217,7 @@ export const AddEvaluation = () => {
             value={session}
             onChange={handleChangeEvaluation}
             className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
+            required
           >
             <option value="">Select session</option>;
             {sessionFromCohort?.map((el) => {
@@ -199,14 +234,19 @@ export const AddEvaluation = () => {
             value={participant}
             onChange={handleChangeEvaluation}
             className="border w-[30%] px-2 py-2 rounded-md  text-gray-600 border border-gray-600"
+            required
           >
             <option value="">Select participant</option>;
-            {participantsFromSession?.map((el) => {
-              return (
-                <option key={el._id} value={el._id}>
-                  {el.name}
-                </option>
-              );
+            {partcipantList?.map((pl) => {
+             return participantsFromSession?.map((el) => {
+                if (el.participantId == pl._id) {
+                  return (
+                    <option key={pl._id} value={pl._id}>
+                      {pl.name}
+                    </option>
+                  );
+                }
+              });
             })}
           </select>
         </div>
@@ -217,27 +257,33 @@ export const AddEvaluation = () => {
             value={activity}
             onChange={handleChangeEvaluation}
             className="border w-[50%] px-2 py-2 rounded-md  text-gray-600 border border-gray-600"
+            required
           >
             <option value="">Select activity</option>;
-            {activityFromSession?.map((el) => {
-              return (
-                <option key={el._id} value={el._id}>
-                  {el.name}
-                </option>
-              );
+            {activityList?.map((pl) => {
+             return activityFromSession?.map((el) => {
+                if (el == pl._id) {
+                  return (
+                    <option key={pl._id} value={pl._id}>
+                      {pl.name}
+                    </option>
+                  );
+                }
+              });
             })}
           </select>
-          <select
+          {/* <select
             id=""
             name="domain"
             value={domainCategory} // Assuming domain.name is the identifier for domain object
             onChange={(e) => setDomainCategory(e.target.value)}
             className="border w-[50%] px-2 py-2 rounded-md  text-gray-600 border border-gray-600"
+            required
           >
             <option value="">Select evaluation type</option>;
             <option value="General">General</option>
             <option value="Special Need">Special Need</option>
-          </select>
+          </select> */}
         </div>
         {selectDomainByType?.map((domain, domainIndex) => (
           <Card className="w-[90%] m-auto mt-5" key={domainIndex}>
@@ -261,7 +307,7 @@ export const AddEvaluation = () => {
               //             e.target.value
               //           )
               //         }
-              //         // defaultChecked 
+              //         // defaultChecked
               //       />
               //     </div>
               //     <Typography className="w-[60%] mr-5">
@@ -270,27 +316,29 @@ export const AddEvaluation = () => {
               //   </ListItem>
               // </List>
               // } else {
-               return <List key={questionIndex}>
-                <ListItem>
-                  <Typography className="w-[60%] mr-5">
-                    {questionIndex + 1}. {question.content}
-                  </Typography>
-                  <div className="w-[40%]">
-                    <Input
-                      label="Add score"
-                      value={question.score || ""}
-                      type="number"
-                      onChange={(e) =>
-                        handleScoreChange(
-                          domainIndex,
-                          questionIndex,
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </ListItem>
-              </List>
+              return (
+                <List key={questionIndex}>
+                  <ListItem>
+                    <Typography className="w-[60%] mr-5">
+                      {questionIndex + 1}. {question.content}
+                    </Typography>
+                    <div className="w-[40%]">
+                      <Input
+                        label="Add score"
+                        value={question.score || ""}
+                        type="number"
+                        onChange={(e) =>
+                          handleScoreChange(
+                            domainIndex,
+                            questionIndex,
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                  </ListItem>
+                </List>
+              );
               // }
             })}
 
@@ -312,8 +360,16 @@ export const AddEvaluation = () => {
           
         )} */}
         <div className="w-[90%] text-center mt-5 m-auto">
-          <Button className="bg-maincolor" type="submit">
-            Add Evaluation
+          <Button
+            className="bg-maincolor"
+            type="submit"
+            disabled={isAddEvaluationLoading}
+          >
+            {isAddEvaluationLoading ? (
+              <CgSpinner size={18} className=" m-auto animate-spin" />
+            ) : (
+              "Add Evaluation"
+            )}
           </Button>
         </div>
       </form>

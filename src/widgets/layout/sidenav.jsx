@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, Navigate, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
   RectangleStackIcon,
@@ -12,6 +12,8 @@ import {
   IconButton,
   Typography,
 } from "@material-tailwind/react";
+import axios from "axios";
+axios.defaults.withCredentials = true;
 import { useMaterialTailwindController, setOpenSidenav } from "../../context";
 import { IoIosArrowDown, IoIosArrowForward, IoMdHome } from "react-icons/io";
 import { useEffect, useState } from "react";
@@ -26,10 +28,15 @@ import {
 } from "react-icons/md";
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { TiUser } from "react-icons/ti";
+import { TbReportAnalytics } from "react-icons/tb";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
+import { serverUrl } from "../../api";
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavColor, sidenavType, openSidenav } = controller;
+  const navigate = useNavigate();
   const sidenavTypes = {
     dark: "bg-gradient-to-br from-gray-800 to-gray-900",
     white: "bg-white shadow-sm",
@@ -100,6 +107,24 @@ export function Sidenav({ brandImg, brandName, routes }) {
     className: "w-5 h-5 text-inherit",
   };
 
+  const handleSignOut = () => {
+    axios.post(`${serverUrl}/auth/logout`)
+    .then((res)=>{
+      // saveLocalData("token",res.data.token)
+      if (res.status==200){
+        toast.success("Logout suucessfully", toastConfig);
+
+        navigate("/auth/sign-in")
+      } else {
+
+        toast.error("Something went wrong", toastConfig);
+      }
+    }).catch((err)=>{
+      console.log(err)
+      toast.error(err.response, toastConfig);
+    })
+    // <Navigate to={`/auth/sign-in`} />;
+  };
   return (
     <aside
       className={`${sidenavTypes[sidenavType]} ${
@@ -180,11 +205,11 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     Participant
                   </Typography>
 
-{
-  participantOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
-                  
+                  {participantOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {participantOpen ? (
@@ -274,19 +299,20 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     <div className="text-maincolor2">
                       <GrGroup {...icon} />
                     </div>
-                    Cohort
+                    Center
                   </Typography>
 
-                  {
-  cohortOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
+                  {cohortOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {cohortOpen ? (
                 <>
                   <li>
-                    <NavLink to={`/mainpage/add-cohort`}>
+                    <NavLink to={`/mainpage/add-center`}>
                       {({ isActive }) => (
                         <Button
                           variant={isActive ? "yellow" : "text"}
@@ -311,14 +337,14 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            add cohort
+                            add center
                           </Typography>
                         </Button>
                       )}
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to={`/mainpage/cohorts-list`}>
+                    <NavLink to={`/mainpage/centers-list`}>
                       {({ isActive }) => (
                         <Button
                           variant={isActive ? "yellow" : "text"}
@@ -345,7 +371,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            cohorts list
+                            centers list
                           </Typography>
                         </Button>
                       )}
@@ -366,15 +392,16 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     className="text-[16px] flex justify-between items-center gap-4 font-medium capitalize"
                   >
                     <div className="text-maincolor2">
-                    <MdSportsKabaddi {...icon} />
+                      <MdSportsKabaddi {...icon} />
                     </div>
                     Activity
                   </Typography>
 
-                  {
-  activityOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
+                  {activityOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {activityOpen ? (
@@ -400,9 +427,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             className={`${
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
-                          >
-                            
-                          </span>
+                          ></span>
                           <Typography
                             color="inherit"
                             className="font-medium capitalize"
@@ -461,14 +486,17 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     color="inherit"
                     className="text-[16px] font-medium capitalize  flex justify-between items-center gap-4"
                   >
-                    <div className="text-maincolor2"><MdDomainVerification {...icon} /></div>
+                    <div className="text-maincolor2">
+                      <MdDomainVerification {...icon} />
+                    </div>
                     Evaluation master list
                   </Typography>
 
-                  {
-  domainOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
+                  {domainOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {domainOpen ? (
@@ -494,9 +522,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             className={`${
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
-                          >
-                            
-                          </span>
+                          ></span>
                           <Typography
                             color="inherit"
                             className="font-medium capitalize"
@@ -555,14 +581,18 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     color="inherit"
                     className="text-[16px] flex justify-between items-center gap-4 font-medium capitalize"
                   >
-                    <div className="text-maincolor2"> <AiOutlineFieldTime {...icon} /></div>
+                    <div className="text-maincolor2">
+                      {" "}
+                      <AiOutlineFieldTime {...icon} />
+                    </div>
                     Session
                   </Typography>
 
-                  {
-  sessionOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
+                  {sessionOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {sessionOpen ? (
@@ -588,9 +618,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             className={`${
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
-                          >
-                           
-                          </span>
+                          ></span>
                           <Typography
                             color="inherit"
                             className="font-medium capitalize"
@@ -635,6 +663,40 @@ export function Sidenav({ brandImg, brandName, routes }) {
                       )}
                     </NavLink>
                   </li>
+                  <li>
+                    <NavLink to={`/mainpage/sessions-attendence`}>
+                      {({ isActive }) => (
+                        <Button
+                          variant={isActive ? "yellow" : "text"}
+                          color={
+                            isActive
+                              ? sidenavColor
+                              : sidenavType === "dark"
+                              ? "white"
+                              : "blue-gray"
+                          }
+                          className={`flex items-center gap-4 px-8 capitalize ${
+                            isActive ? "bg-maincolor" : "bg-white"
+                          }`}
+                          fullWidth
+                        >
+                          <span
+                            className={`${
+                              isActive ? "text-white" : "text-maincolor2"
+                            }`}
+                          >
+                            {/* <IoList {...icon} /> */}
+                          </span>
+                          <Typography
+                            color="inherit"
+                            className="font-medium capitalize"
+                          >
+                            sessions attendence
+                          </Typography>
+                        </Button>
+                      )}
+                    </NavLink>
+                  </li>
                 </>
               ) : null}
               <li onClick={() => toggleSection("evaluation")}>
@@ -648,13 +710,17 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     color="inherit"
                     className="text-[16px] flex justify-between items-center gap-4 font-medium capitalize"
                   >
-                    <div className="text-maincolor2"> <MdEditNote {...icon} /></div>
+                    <div className="text-maincolor2">
+                      {" "}
+                      <MdEditNote {...icon} />
+                    </div>
                     Evaluation
                   </Typography>
-                  {
-  evaluationOpen ? <IoIosArrowDown fontSize={15} />
- : <IoIosArrowForward fontSize={15}/>
-}
+                  {evaluationOpen ? (
+                    <IoIosArrowDown fontSize={15} />
+                  ) : (
+                    <IoIosArrowForward fontSize={15} />
+                  )}
                 </Button>
               </li>
               {evaluationOpen ? (
@@ -680,9 +746,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             className={`${
                               isActive ? "text-white" : "text-maincolor2"
                             }`}
-                          >
-                           
-                          </span>
+                          ></span>
                           <Typography
                             color="inherit"
                             className="font-medium capitalize"
@@ -729,6 +793,323 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   </li>
                 </>
               ) : null}
+              <li>
+                <NavLink to={`/mainpage/center-report`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics {...icon} />
+                      </span>
+
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Center report
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to={`/mainpage/participant-report`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics {...icon} />
+                      </span>
+
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Participant report
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to={`/mainpage/oxford-happiness-questionnaire`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics {...icon} />
+                      </span>
+
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Oxford Happiness
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to={`/mainpage/oxford-happiness-questionnaire-list`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics {...icon} />
+                      </span>
+
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Oxford Happiness list
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to={`/mainpage/casp-questionnaire`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics {...icon} />
+                      </span>
+
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        CASP
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to={`/mainpage/casp-questionnaire-list`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics {...icon} />
+                      </span>
+
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        CASP-19 list
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to={`/mainpage/moca`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics {...icon} />
+                      </span>
+
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        MOCA
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to={`/mainpage/moca-list`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics {...icon} />
+                      </span>
+
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        MOCA list
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              {/* <li>
+                <NavLink to={`/mainpage/adminlist`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics  {...icon}/>
+                      </span>
+                      
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                        Admin list
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li> */}
+
+              {/* */}
               {/* evaluation-------------------------------------- */}
               {/* <li>
                 <NavLink to={`/mainpage/add-evaluation`}>
@@ -764,7 +1145,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   )}
                 </NavLink>
               </li> */}
-              <li>
+              {/* <li>
                 <NavLink to={`/auth/sign-in`}>
                   {({ isActive }) => (
                     <Button
@@ -797,9 +1178,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     </Button>
                   )}
                 </NavLink>
-              </li>
-              <li>
-                <NavLink >
+              </li> */}
+              <li onClick={handleSignOut}>
+                <NavLink>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "text" : "text"}
@@ -813,9 +1194,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                       className={`flex items-center gap-4 px-4 capitalize bg-white`}
                       fullWidth
                     >
-                      <span
-                            className={`text-maincolor2`}
-                          >
+                      <span className={`text-maincolor2`}>
                         <RectangleStackIcon {...icon} />
                       </span>
                       <Typography

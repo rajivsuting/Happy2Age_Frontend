@@ -14,19 +14,19 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
             <tbody>
               <tr>
                 <td className="py-2 font-semibold">Participant name</td>
-                <td>{singleEvalustion?.participant.name || "-"}</td>
+                <td>{singleEvalustion?.participant?.name || "-"}</td>
               </tr>
               <tr>
                 <td className="py-2 font-semibold">Cohort</td>
-                <td>{singleEvalustion?.cohort.name || "NA"}</td>
+                <td>{singleEvalustion?.cohort?.name || "NA"}</td>
               </tr>
               <tr>
                 <td className="py-2 font-semibold">Session</td>
-                <td>{singleEvalustion?.session.name || "NA"}</td>
+                <td>{singleEvalustion?.session?.name || "NA"}</td>
               </tr>
               <tr>
                 <td className="py-2 font-semibold">Activity</td>
-                <td>{singleEvalustion?.activity.name || "NA"}</td>
+                <td>{singleEvalustion?.activity?.name || "NA"}</td>
               </tr>
               <tr>
                 <td className="py-2 font-semibold">Domains</td>
@@ -39,7 +39,7 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
                             <td className="py-2 font-semibold">Domain name</td>
                             <td>{el.name || "-"}</td>
                           </tr>
-                          {el.subTopics.map((el, index2) => {
+                          {el.subTopics?.map((el, index2) => {
                             return (
                               <tr key={index2}>
                                 <td className="py-2 font-semibold">
@@ -55,11 +55,11 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
                           })}
                           <tr>
                             <td className="py-2 font-semibold">Average</td>
-                            <td>{el.average.toFixed(2) || "-"}</td>
+                            <td>{el?.average || "-"}</td>
                           </tr>
                           <tr>
                             <td className="py-2 font-semibold">Observation</td>
-                            <td>{el.observation || "-"}</td>
+                            <td>{el?.observation || "-"}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -69,7 +69,7 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
               </tr>
               <tr>
                 <td className="py-2 font-semibold">Grand average</td>
-                <td>{singleEvalustion?.grandAverage.toFixed(2) || "NA"}</td>
+                <td>{singleEvalustion?.grandAverage || "NA"}</td>
               </tr>
             </tbody>
           </table>

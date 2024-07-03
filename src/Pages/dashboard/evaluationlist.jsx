@@ -1,25 +1,42 @@
 import { Card, Typography } from "@material-tailwind/react";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDeatailesEvalution from "../../Componants/SeeDeatailesEvalution";
+import { getLocalData } from "../../Utils/localStorage";
+import { useNavigate } from "react-router-dom";
 
 export const Evaluationlist = () => {
   const [evalutionlist, setEvalutionlist] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
   const [singleEvalustion, setSingleEvaluation] = useState({})
   const toggleModal = (el) => {
      setIsModalOpen(!isModalOpen);
      setSingleEvaluation(el)
    };
- 
 
   useEffect(() => {
-    axios.get(`${serverUrl}/evaluation/all`).then((res) => {
+    axios.get(`${serverUrl}/evaluation/all`,{
+      // headers: {
+      //   Authorization: `${getLocalData("token")}`,
+      // },
+    }).then((res) => {
       setEvalutionlist(res.data.message);
-      console.log(res.data.message);
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
   }, []);
   return (
@@ -133,7 +150,7 @@ export const Evaluationlist = () => {
         </thead>
         <tbody>
           {evalutionlist?.map((el, index) => {
-            const isLast = index === evalutionlist.length - 1;
+            const isLast = index === evalutionlist?.length - 1;
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
 
             return (
@@ -144,7 +161,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.participant.name}
+                    {el.participant?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -153,7 +170,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.session.name}
+                    {el?.session?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -162,7 +179,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.cohort.name}
+                    {el?.cohort?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -171,7 +188,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.activity.name}
+                    {el.activity?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -180,7 +197,7 @@ export const Evaluationlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.grandAverage.toFixed(2) }
+                    {el.grandAverage  || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -192,7 +209,7 @@ export const Evaluationlist = () => {
                     onClick={()=>toggleModal(el)}
                     className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
                   >
-                    See deatails
+                    See details
                   </Typography>
                 </td>
                 {/* <td className={classes}>

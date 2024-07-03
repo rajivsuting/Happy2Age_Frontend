@@ -17,18 +17,29 @@ import {
   Cohortlist,
   ActivityList,
   Participantlist,
-  Domainlist,
   Sessionlist,
   AddEvaluation,
   Editdomain,
   Evaluationlist,
   Adddomain,
+  Cohortreport,
+  Cohortreportdetails,
+  OxfordHappiness,
+  CaspQuestions,
+  ParticipantReport,
+  Moca,
+  SessionAttendence,
+  Casplist,
+  Oxfordlist,
+  Mocalist,
+  Domainlist,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
 import { GrDomain } from "react-icons/gr";
 import { IoListSharp } from "react-icons/io5";
 import Addsession from "./Pages/dashboard/addsession";
+import Sessiondetails from "./Pages/dashboard/sessiondetails";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -63,18 +74,18 @@ export const routes = [
       },
 
       {
-        mainHeading: "cohort",
+        mainHeading: "center",
         allPages: [
           {
             icon_u: <MdGroups {...icon} />,
-            name_u: "add cohort",
-            path_u: "/add-cohort",
+            name_u: "add center",
+            path_u: "/add-center",
             element_u: <AddCohort />,
           },
           {
             icon_u: <IoListSharp {...icon} />,
-            name_u: "cohorts list",
-            path_u: "/cohorts-list",
+            name_u: "centers list",
+            path_u: "/centers-list",
             element_u: <Cohortlist />,
           },
         ],
@@ -136,7 +147,20 @@ export const routes = [
             name_u: "sessions list",
             path_u: "/sessions-list",
             element_u: <Sessionlist />,
-          }
+          },
+
+          {
+            icon_u: <IoListSharp {...icon} />,
+            name_u: "sessions details",
+            path_u: "/session-details/:sessionid",
+            element_u: <Sessiondetails />,
+          },
+          {
+            icon_u: <IoListSharp {...icon} />,
+            name_u: "sessions details",
+            path_u: "/sessions-attendence",
+            element_u: <SessionAttendence />,
+          },
         ],
       },
       //  {
@@ -160,15 +184,69 @@ export const routes = [
             name_u: "evaluation list",
             path_u: "/evaluation-list",
             element_u: <Evaluationlist />,
-          }
+          },
         ],
-      }, 
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "center report",
+        path: "/center-report",
+        element: <Cohortreport />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "participant report",
+        path: "/participant-report",
+        element: <ParticipantReport />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "participant report details",
+        path: "/participant-report-details/:participantid",
+        element: <Cohortreportdetails />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "Oxford Happiness",
+        path: "/oxford-happiness-questionnaire/",
+        element: <OxfordHappiness />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "Oxford Happiness list",
+        path: "/oxford-happiness-questionnaire-list/",
+        element: <Oxfordlist />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "CASP-19 QUESTIONNAIRE",
+        path: "/casp-questionnaire/",
+        element: <CaspQuestions />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "CASP-19 QUESTIONNAIRE list",
+        path: "/casp-questionnaire-list/",
+        element: <Casplist />,
+      },
       // {
       //   icon: <HomeIcon {...icon} />,
-      //   name: "evaluation",
-      //   path: "/add-evaluation",
-      //   element: <AddEvaluation />,
-      // }
+      //   name: "Admin list",
+      //   path: "/adminlist/",
+      //   element: <AdminList/>,
+      // },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "MOCA",
+        path: "/moca/",
+        element: <Moca />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "MOCA list",
+        path: "/moca-list/",
+        element: <Mocalist />,
+      }
     ],
   },
   {
@@ -187,7 +265,6 @@ export const routes = [
       //   path: "/sign-out",
       //   // element: <SignUp />,
       // },
-     
     ],
   },
 ];

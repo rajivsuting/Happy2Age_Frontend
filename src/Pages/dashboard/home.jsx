@@ -28,25 +28,70 @@ import {
 } from "../../data";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
+
 axios.defaults.withCredentials = true;
 import { serverUrl } from "../../api";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { getLocalData } from "../../Utils/localStorage";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 export function Home() {
   const [partcipantsList, setPartcipantList] = useState([]);
   const [cohortsList, setCohortList] = useState([]);
   const [activityList, setActivityList] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
-    axios.get(`${serverUrl}/participant/all/`).then((res) => {
+    axios.get(`${serverUrl}/participant/all/`,{
+        
+      }).then((res) => {
       setPartcipantList(res.data.message);
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
 
-    axios.get(`${serverUrl}/cohort/all/`).then((res) => {
+    axios.get(`${serverUrl}/cohort/all/`,{
+        
+      }).then((res) => {
       setCohortList(res.data.message);
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
 
-    axios.get(`${serverUrl}/activity/all/`).then((res) => {
+    axios.get(`${serverUrl}/activity/all/`,{
+        
+      }).then((res) => {
       setActivityList(res.data.message);
+    }).catch((err) => {
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
     });
   }, []);
   return (
@@ -82,7 +127,7 @@ export function Home() {
         />
 
         <StatisticsCard
-          title={"Total cohorts"}
+          title={"Total centers"}
           icon={React.createElement(MdGroups, {
             className: "w-6 h-6 text-white",
           })}
@@ -135,7 +180,7 @@ export function Home() {
           >
             <div>
               <Typography variant="h6" color="blue-gray" className="mb-1">
-                Cohorts
+                Centers
               </Typography>
               {/* <Typography
                 variant="small"
