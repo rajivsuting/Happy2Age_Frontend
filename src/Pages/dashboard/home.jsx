@@ -36,63 +36,88 @@ import { useNavigate } from "react-router-dom";
 import { getLocalData } from "../../Utils/localStorage";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import { useSelector } from "react-redux";
+import { SiSessionize } from "react-icons/si";
 
 export function Home() {
   const [partcipantsList, setPartcipantList] = useState([]);
   const [cohortsList, setCohortList] = useState([]);
   const [activityList, setActivityList] = useState([]);
+  const [sessionlist, setSessionlist] = useState([]);
+ 
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get(`${serverUrl}/participant/all/`,{
-        
-      }).then((res) => {
-      setPartcipantList(res.data.message);
-    }).catch((err) => {
-      if (err.response && err.response.data && err.response.data.jwtExpired) {
-        toast.error(err.response.data.message, toastConfig);
-        setTimeout(() => {
-          navigate("/auth/sign-in");
-        }, 3000);
-      } else if (err.response && err.response.data) {
-        toast.error(err.response.data.message, toastConfig);
-      } else {
-        toast.error("An unexpected error occurred.", toastConfig);
-      }
-    });
+    axios
+      .get(`${serverUrl}/participant/all/`, {})
+      .then((res) => {
+        setPartcipantList(res.data.message);
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
 
-    axios.get(`${serverUrl}/cohort/all/`,{
-        
-      }).then((res) => {
-      setCohortList(res.data.message);
-    }).catch((err) => {
-      if (err.response && err.response.data && err.response.data.jwtExpired) {
-        toast.error(err.response.data.message, toastConfig);
-        setTimeout(() => {
-          navigate("/auth/sign-in");
-        }, 3000);
-      } else if (err.response && err.response.data) {
-        toast.error(err.response.data.message, toastConfig);
-      } else {
-        toast.error("An unexpected error occurred.", toastConfig);
-      }
-    });
+    axios
+      .get(`${serverUrl}/cohort/all/`, {})
+      .then((res) => {
+        setCohortList(res.data.data);
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
 
-    axios.get(`${serverUrl}/activity/all/`,{
-        
-      }).then((res) => {
-      setActivityList(res.data.message);
-    }).catch((err) => {
-      if (err.response && err.response.data && err.response.data.jwtExpired) {
-        toast.error(err.response.data.message, toastConfig);
-        setTimeout(() => {
-          navigate("/auth/sign-in");
-        }, 3000);
-      } else if (err.response && err.response.data) {
-        toast.error(err.response.data.message, toastConfig);
-      } else {
-        toast.error("An unexpected error occurred.", toastConfig);
-      }
-    });
+    axios
+      .get(`${serverUrl}/activity/all/`, {})
+      .then((res) => {
+        setActivityList(res.data.data);
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
+
+      axios
+      .get(`${serverUrl}/session/all/`, {})
+      .then((res) => {
+        setSessionlist(res.data.message);
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
   }, []);
   return (
     <div className="mt-12 mb-24">
@@ -149,8 +174,20 @@ export function Home() {
             </Typography>
           }
         />
+
+        <StatisticsCard
+          title={"Total sessions"}
+          icon={React.createElement(SiSessionize, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className={"text-gray"}>{sessionlist?.length}</strong>
+            </Typography>
+          }
+        />
       </div>
-      <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+      {/* <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
         {statisticsChartsData.map((props) => (
           <StatisticsChart
             key={props.title}
@@ -169,7 +206,7 @@ export function Home() {
             }
           />
         ))}
-      </div>
+      </div> */}
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
         <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
           <CardHeader
