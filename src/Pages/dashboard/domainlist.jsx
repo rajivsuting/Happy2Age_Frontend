@@ -9,15 +9,20 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { getLocalData } from "../../Utils/localStorage";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
+import { getAllDomains } from "../../Redux/AllListReducer/action";
+import { useDispatch } from "react-redux";
 
 export const Domainlist = () => {
   const [domainList, setDomainList] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "General");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
 
-  useEffect(() => {
-    axios.get(`${serverUrl}/domain/all/?category=${categoryFilter}`,{
+  const getAllDomain = ()=>{
+   return axios.get(`${serverUrl}/domain/all/?category=${categoryFilter}`,{
       // headers: {
       //   Authorization: `${getLocalData("token")}`,
       // },
@@ -34,9 +39,34 @@ export const Domainlist = () => {
       } else {
         toast.error("An unexpected error occurred.", toastConfig);
       }
-    });;
+    });
+
+  }
+
+  useEffect(() => {
+    getAllDomain();
     setSearchParams({ category: categoryFilter });
   }, [categoryFilter]);
+
+  const toggleModalDelete = (id) => {
+    setSearchParams({id})
+    setIsModalOpenDelete(!isModalOpenDelete);
+  };
+
+  const handleDelete = () => {
+    axios.delete(`${serverUrl}/domain/domains/${searchParams.get("id")}`)
+    .then((res)=>{
+      if (res.status==200){
+        toast.success("Domain deleted suucessfully", toastConfig);
+        getAllDomain();
+      } else {
+        toast.error("Something went wrong", toastConfig);
+      }
+    }).catch((err)=>{
+      console.log(err)
+      toast.error(err.response.data.error, toastConfig);
+    })
+  };
 
  
   return (
@@ -151,13 +181,31 @@ export const Domainlist = () => {
                       </Typography>
                     </Link>
                   </td>
+                  <td className={classes}>
+                 <Typography
+                   as="a"
+                   href="#"
+                   variant="small"
+                   color="blue-gray"
+                   className="text-red-500  text-[20px]"
+                   onClick={()=>toggleModalDelete(_id)}
+                 >
+                   <MdOutlineDeleteOutline />
+                 </Typography>
+               </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
       </Card>
+      const [searchParams, setsearchParams] = useSearchParams();
 
+<ConfirmDeleteModal
+        isOpen={isModalOpenDelete}
+        onClose={()=>toggleModalDelete()}
+        handleDelete={handleDelete}
+      />
       
     </div>
   );

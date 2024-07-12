@@ -34,10 +34,12 @@ export const Participantlist = () => {
     "Center",
     "Date of birth",
     "Address",
+    "Mobile no",
     "State",
     "City",
     "Pincode",
     "Emg. name",
+    "Emg. contact no.",
     "Emg. relationship",
     "Created date",
     "",
@@ -76,7 +78,7 @@ export const Participantlist = () => {
           <form className="flex justify-start items-center gap-5" onSubmit={handleSearchSubmit}>
             <div className="w-[50%]">
             <Input
-              label="Search participant name..."
+              label="Search member name..."
               name="password"
               // type="search"
               required
@@ -237,6 +239,15 @@ export const Participantlist = () => {
                    color="blue-gray"
                    className="font-normal"
                  >
+                   {el.phone || "-"}
+                 </Typography>
+               </td>
+               <td className={classes}>
+                 <Typography
+                   variant="small"
+                   color="blue-gray"
+                   className="font-normal"
+                 >
                    {el.address.state || "-"}
                  </Typography>
                </td>
@@ -265,6 +276,15 @@ export const Participantlist = () => {
                    className="font-normal"
                  >
                    {el.emergencyContact.name || "-"}
+                 </Typography>
+               </td>
+               <td className={classes}>
+                 <Typography
+                   variant="small"
+                   color="blue-gray"
+                   className="font-normal"
+                 >
+                   {el.emergencyContact.phone || "-"}
                  </Typography>
                </td>
                <td className={classes}>

@@ -236,7 +236,7 @@ export const AddEvaluation = () => {
             className="border w-[30%] px-2 py-2 rounded-md  text-gray-600 border border-gray-600"
             required
           >
-            <option value="">Select participant</option>;
+            <option value="">Select member</option>;
             {partcipantList?.map((pl) => {
              return participantsFromSession?.map((el) => {
                 if (el.participantId == pl._id) {

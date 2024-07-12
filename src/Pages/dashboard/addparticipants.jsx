@@ -18,6 +18,7 @@ const initialState = {
   dob: "",
   gender: "",
   cohort : "",
+  phone:"",
   briefBackground:"",
   participantType: "",
   address: {
@@ -122,6 +123,7 @@ export const AddParticipant = () => {
             navigate("/auth/sign-in");
           }, 3000);
         } else if (err.response && err.response.data) {
+          console.log(err);
           toast.error(err.response.data.message, toastConfig);
         } else {
           toast.error("An unexpected error occurred.", toastConfig);
@@ -138,7 +140,7 @@ export const AddParticipant = () => {
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10">
           <Input label="Name" name="name" required value={participantData.name} onChange={handleChangeInput} />
-          <Input label="Email" name="email" required value={participantData.email} type="email" onChange={handleChangeInput} />
+          <Input label="Email" name="email" value={participantData.email} type="email" onChange={handleChangeInput} />
           <Input label="Date of Birth" name="dob" required value={participantData.dob} type="date" onChange={handleChangeInput} />
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
@@ -147,7 +149,7 @@ export const AddParticipant = () => {
             <Option value="Female">Female</Option>
             <Option value="Other">Other</Option>
           </Select>
-          <Select label="Participant Type" required name="participantType" value={participantData.participantType} onChange={(value)=>handleChangeGenderAndParticipants("participantType",value)}>
+          <Select label="Member Type" required name="participantType" value={participantData.participantType} onChange={(value)=>handleChangeGenderAndParticipants("participantType",value)}>
             <Option value="General">General</Option>
             <Option value="Special Need">Special Need</Option>
           </Select>
@@ -183,6 +185,7 @@ export const AddParticipant = () => {
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
           <Input label="Address Line" required name="addressLine" value={participantData.address.addressLine} onChange={handleChangeAddress} />
+          <Input required minLength={10} label="Phone" name="phone" value={participantData.phone} onChange={handleChangeInput} />
           <Input label="Pincode" required type="number" name="pincode" value={participantData.address.pincode} onChange={handleChangeAddress} />
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
@@ -200,14 +203,14 @@ export const AddParticipant = () => {
           <Input label="Relationship" required name="relationship" value={participantData.emergencyContact.relationship} onChange={handleChangeEmergencyContact} />
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
-        <Textarea label="About participant" name="briefBackground" required value={participantData.briefBackground} onChange={handleChangeInput} />
+        <Textarea label="About member" name="briefBackground" required value={participantData.briefBackground} onChange={handleChangeInput} />
         </div>
 
         <div className="w-[90%] text-center mt-5 m-auto">
           <Button className="bg-maincolor" type="submit" disabled={isAddParticipantsLoading}>{isAddParticipantsLoading ? (
               <CgSpinner size={18} className=" m-auto animate-spin" />
             ) : (
-              "Add Participant"
+              "Add member"
             )}</Button>
         </div>
       </form>

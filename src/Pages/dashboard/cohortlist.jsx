@@ -106,7 +106,7 @@ const navigate = useNavigate();
           >
             <div className="w-[50%]">
               <Input
-                label="Search cohort name..."
+                label="Search center name..."
                 name="password"
                 // type="search"
                 required
@@ -187,7 +187,7 @@ const navigate = useNavigate();
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Participants name
+                Members name
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">

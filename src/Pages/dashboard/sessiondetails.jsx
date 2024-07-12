@@ -55,7 +55,7 @@ const Sessiondetails = () => {
             <td>{singleSession?.name || "N/A"}</td>
           </tr>
           <tr>
-            <td className="py-2 font-semibold">Cohort name</td>
+            <td className="py-2 font-semibold">Center name</td>
             <td>{singleSession?.cohort?.name || "N/A"}</td>
           </tr>
           <tr>
@@ -63,15 +63,15 @@ const Sessiondetails = () => {
             <td>{singleSession?.date?.split("T")[0] || "N/A"}</td>
           </tr>
           <tr>
-            <td className="py-2 font-semibold">No. of hours</td>
-            <td> {singleSession?.numberOfHours || "N/A"}</td>
+            <td className="py-2 font-semibold">No. of mins</td>
+            <td> {singleSession?.numberOfMins || "N/A"}</td>
           </tr>
           <tr>
             <td className="py-2 font-semibold">Activities</td>
             <td> {renderActivities()}</td>
           </tr>
           <tr>
-            <td className="py-2 font-semibold">All attended participants</td>
+            <td className="py-2 font-semibold">All attended members</td>
             <td> {renderParticipants()}</td>
           </tr>
         </tbody>

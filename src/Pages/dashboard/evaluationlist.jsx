@@ -50,7 +50,7 @@ export const Evaluationlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Participant
+                Member
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -68,7 +68,7 @@ export const Evaluationlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Cohort
+                Center
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">

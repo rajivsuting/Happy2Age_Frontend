@@ -202,7 +202,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     <div className="text-maincolor2">
                       <TiUser {...icon} />
                     </div>
-                    Participant
+                    Member
                   </Typography>
 
                   {participantOpen ? (
@@ -215,7 +215,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
               {participantOpen ? (
                 <>
                   <li>
-                    <NavLink to={`/mainpage/add-participant`}>
+                    <NavLink to={`/mainpage/add-member`}>
                       {({ isActive }) => (
                         <Button
                           variant={isActive ? "yellow" : "text"}
@@ -242,14 +242,14 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            add partcipant
+                            add member
                           </Typography>
                         </Button>
                       )}
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to={`/mainpage/participants-list`}>
+                    <NavLink to={`/mainpage/members-list`}>
                       {({ isActive }) => (
                         <Button
                           variant={isActive ? "yellow" : "text"}
@@ -276,7 +276,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            partcipants list
+                            members list
                           </Typography>
                         </Button>
                       )}
@@ -829,7 +829,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/mainpage/participant-report`}>
+                <NavLink to={`/mainpage/member-report`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -857,7 +857,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                        Participant report
+                        Member report
                       </Typography>
                     </Button>
                   )}
