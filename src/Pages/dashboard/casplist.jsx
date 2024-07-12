@@ -102,7 +102,7 @@ export const Casplist = () => {
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <div className="w-[98%] m-auto mt-10 mb-5 flex justify-center items-center">
-        <div className="w-[17%]">Get participant result</div>
+        <div className="w-[17%]">Get member result</div>
         <hr className="w-[83%] border" />
       </div>
 
@@ -116,7 +116,7 @@ export const Casplist = () => {
           onChange={(e) => setSelectParticipant(e.target.value)}
           required
         >
-          <option value="">Search by Participant</option>
+          <option value="">Search by member</option>
           {allParticipants?.map((el, index) => (
             <option key={index} value={el._id}>
               {el.name}
@@ -139,7 +139,7 @@ export const Casplist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Partcipant name
+                Member name
               </Typography>
             </th>
             

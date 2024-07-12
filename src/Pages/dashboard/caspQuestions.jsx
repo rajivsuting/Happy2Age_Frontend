@@ -218,7 +218,7 @@ export const CaspQuestions = () => {
             onChange={handleParticipantChange}
             required
           >
-            <option value="">Select Participant</option>
+            <option value="">Select member</option>
             {allParticipants?.map((el, index) => (
               <option key={index} value={el._id}>
                 {el.name}

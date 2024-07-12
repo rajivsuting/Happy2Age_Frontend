@@ -11,7 +11,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllActivities } from "../../Redux/AllListReducer/action";
+import { getAllActivities, getAllActivitiesByname } from "../../Redux/AllListReducer/action";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
 import { getLocalData } from "../../Utils/localStorage";
 
@@ -114,13 +114,15 @@ export const ActivityList = () => {
   };
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // dispatch(getParticipantsByName(searchResult))
+    dispatch(getAllActivitiesByname(searchResult))
   };
+
+  console.log(searchResult)
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
-      <div className="flex justify-end items-center gap-5 mt-4 mr-3 ml-3">
-        {/* <div className="w-[50%]">
+      <div className="flex justify-between items-center gap-5 mt-4 mr-3 ml-3 mb-3">
+        <div className="w-[50%]">
           <form
             className="flex justify-start items-center gap-5"
             onSubmit={handleSearchSubmit}
@@ -142,10 +144,10 @@ export const ActivityList = () => {
             <Button
               type="button"
               onClick={() => {
-                //   setSearchResult("")
-                //  return  dispatch(getAllParticipants(currentPage, limit)).then((res) => {
-                //     return true;
-                //   });
+                  setSearchResult("")
+                 return dispatch(getAllActivities(currentPage, limit)).then((res) => {
+                    return true;
+                  });
               }}
               variant=""
               disabled={!searchResult}
@@ -153,7 +155,7 @@ export const ActivityList = () => {
               Clear
             </Button>
           </form>
-        </div> */}
+        </div>
         <div className="flex justify-center items-center">
           <div className="flex justify-center items-center">
             <RiArrowLeftSLine

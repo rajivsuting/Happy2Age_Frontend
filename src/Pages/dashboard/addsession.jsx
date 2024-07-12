@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllActivities, getAllCohorts, getAllSessions } from "../../Redux/AllListReducer/action";
+import { getAllActivities, getAllCohorts, getAllParticipants, getAllSessions } from "../../Redux/AllListReducer/action";
 import { useNavigate } from "react-router-dom";
 import { getLocalData } from "../../Utils/localStorage";
 
@@ -25,7 +25,7 @@ const initialState = {
   activity: [],
   date: "",
   participants: [],
-  numberOfHours:""
+  numberOfMins:""
 };
 
 export const AddSession = () => {
@@ -33,7 +33,7 @@ export const AddSession = () => {
   const [selectedActivity, setSelectedActivity] = useState("");
   const [isAddSessionLoading, setIsSessionLoading] = useState(false);
   const [checkedParticipants, setCheckedParticipants] = useState([]);
-  const { name, cohort, activity, date, participants,numberOfHours } = sessionData;
+  const { name, cohort, activity, date, participants,numberOfMins } = sessionData;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -123,9 +123,10 @@ export const AddSession = () => {
           setIsSessionLoading(false);
           toast.success("Session added successfully", toastConfig);
           dispatch(getAllSessions("","")).then((res) => {
-            // setSessionData(initialState);
-            setCheckedParticipants([]);
-            return true;
+            dispatch(getAllParticipants("", "")).then((re)=>{
+              setCheckedParticipants([]);
+              return true;
+            })
           });
         } else {
           setIsSessionLoading(false);
@@ -174,9 +175,9 @@ export const AddSession = () => {
             onChange={handleChangeInput}
           />
           <Input
-            label="No. of hours"
-            name="numberOfHours"
-            value={numberOfHours}
+            label="No. of mins"
+            name="numberOfMins"
+            value={numberOfMins}
             type="number"
             onChange={handleChangeInput}
           />
@@ -220,7 +221,7 @@ export const AddSession = () => {
         <div className="w-[100%] flex justify-between m-auto gap-10 mt-5 px-8">
           {cohort && (
             <div className="w-[50%]">
-              <h3>Select Participants:</h3>
+              <h3>Select members:</h3>
               <div className="max-h-[30vh] overflow-y-auto">
                 <List>
                   {cohortList

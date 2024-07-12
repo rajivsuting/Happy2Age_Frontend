@@ -56,18 +56,18 @@ export const routes = [
         element: <Home />,
       },
       {
-        mainHeading: "participant",
+        mainHeading: "member",
         allPages: [
           {
             icon_u: <UserCircleIcon {...icon} />,
             name_u: "add partcipants",
-            path_u: "/add-participant",
+            path_u: "/add-member",
             element_u: <AddParticipant />,
           },
           {
             icon_u: <IoListSharp {...icon} />,
-            name_u: "participants list",
-            path_u: "/participants-list",
+            name_u: "members list",
+            path_u: "/members-list",
             element_u: <Participantlist />,
           },
         ],
@@ -195,14 +195,14 @@ export const routes = [
       },
       {
         icon: <HomeIcon {...icon} />,
-        name: "participant report",
-        path: "/participant-report",
+        name: "member report",
+        path: "/member-report",
         element: <ParticipantReport />,
       },
       {
         icon: <HomeIcon {...icon} />,
-        name: "participant report details",
-        path: "/participant-report-details/:participantid",
+        name: "member report details",
+        path: "/member-report-details/:participantid",
         element: <Cohortreportdetails />,
       },
       {

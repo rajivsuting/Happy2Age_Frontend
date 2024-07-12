@@ -6,6 +6,7 @@ import { toastConfig } from "../App";
 import { toast } from "react-toastify";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
+import { AiOutlineClose } from "react-icons/ai";
 import { getLocalData } from "../Utils/localStorage";
 
 const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
@@ -92,9 +93,14 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
-      <div className="relative m-4 w-2/5 min-w-[30%] max-w-[30%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-4">
-        <div className="flex items-center p-4 font-sans text-2xl font-semibold text-blue-gray-900">
-          Edit Cohort
+      <div className="relative m-4 w-2/5 min-w-[40%] max-w-[30%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-4">
+        <div className="flex items-center justify-between p-4 font-sans text-2xl font-semibold text-blue-gray-900">
+          Edit center
+          <AiOutlineClose
+            className="cursor-pointer"
+            size={24}
+            onClick={onClose}
+          />
         </div>
         <div className="px-4">
           <form className="m-auto rounded-xl" onSubmit={handleSubmitCohort}>
@@ -109,9 +115,9 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
 
             {/* Display list of participants */}
             <div className="w-[100%] m-auto mt-5 max-h-[40vh] overflow-hidden">
-              <h3>Select Participants:</h3>
+              <h3>Select members:</h3>
               <div className="max-h-[30vh] overflow-y-auto">
-                <List className="grid grid-cols-4 gap-4">
+                <List className="grid grid-cols-3 gap-4">
                   {allParticipants?.map((participant) => (
                     <div key={participant._id} className="relative group">
                       <ListItem className="flex justify-between items-center">
@@ -127,7 +133,7 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
                             : participant.name}
                         </label>
                       </ListItem>
-                      <ul className="w-[200px] mt-[-10px] ml-[10px] shadow absolute hidden bg-white border rounded p-2 text-gray-700 group-hover:block z-50">
+                      <ul className="w-[170px] mt-[-10px] ml-[-10px] shadow absolute hidden bg-white border rounded p-2 text-gray-700 group-hover:block z-50">
                         <li className="w-full text-xs font-semibold">
                           {participant.name}
                         </li>
@@ -142,15 +148,9 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500">
-              <button
-                onClick={onClose}
-                className="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg hover:bg-red-500/10 active:bg-red-500/30 border border-red-300"
-              >
-                Close
-              </button>
               <Button className="bg-maincolor" type="submit">
                 {isEditCohortLoading ? (
-                  <CgSpinner size={18} className=" m-auto animate-spin" />
+                  <CgSpinner size={18} className="m-auto animate-spin" />
                 ) : (
                   "Edit cohort"
                 )}

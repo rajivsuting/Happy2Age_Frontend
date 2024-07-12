@@ -140,7 +140,7 @@ export function Home() {
         ))} */}
 
         <StatisticsCard
-          title={"Total participants"}
+          title={"Total members"}
           icon={React.createElement(UserCircleIcon, {
             className: "w-6 h-6 text-white",
           })}
@@ -251,7 +251,7 @@ export function Home() {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["Cohorts", "Total partcipants", "Names"].map((el) => (
+                  {["Centers", "Total members", "Names"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-6 text-left"
@@ -367,7 +367,7 @@ export function Home() {
             className="m-0 p-6"
           >
             <Typography variant="h6" color="blue-gray" className="mb-2">
-              Participant list
+              Member list
             </Typography>
             {/* <Typography
               variant="small"

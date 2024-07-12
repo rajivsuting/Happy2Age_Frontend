@@ -9,7 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import SeeDetailesSession from "../../Componants/SeeDetailesSession";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
-import { getAllActivities, getAllSessions } from "../../Redux/AllListReducer/action";
+import {
+  getAllActivities,
+  getAllSessions,
+  getAllSessionsBydate,
+} from "../../Redux/AllListReducer/action";
 
 export const Sessionlist = () => {
   const dispatch = useDispatch();
@@ -18,7 +22,8 @@ export const Sessionlist = () => {
   const [searchParams, setsearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(searchParams.get("page") || 1);
   const [limit, setLimit] = useState(searchParams.get("limit") || 10); // default limit
-  const [searchResult, setSearchResult] = useState("")
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const navigate = useNavigate();
   const toggleModal = (el) => {
     setIsModalOpen(!isModalOpen);
@@ -36,12 +41,12 @@ export const Sessionlist = () => {
     navigate(`/mainpage/session-details/${el._id}`);
   };
 
-  useEffect(()=>{
-    dispatch(getAllActivities("",""))
-  },[])
+  useEffect(() => {
+    dispatch(getAllActivities("", ""));
+  }, []);
 
- useEffect(() => {
-  setsearchParams({ page: currentPage, limit: limit });
+  useEffect(() => {
+    setsearchParams({ page: currentPage, limit: limit });
     dispatch(getAllSessions(currentPage, limit)).then((res) => {
       return true;
     });
@@ -50,37 +55,58 @@ export const Sessionlist = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
- const handleSearchSubmit = (e)=>{
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // dispatch(getParticipantsByName(searchResult))
-      }  
+    dispatch(getAllSessionsBydate(startDate,endDate));
+  };
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
-      <div className="flex justify-end items-center gap-5 mt-4 mr-3 ml-3">
-        {/* <div className="w-[50%]">
-          <form className="flex justify-start items-center gap-5" onSubmit={handleSearchSubmit}>
-            <div className="w-[50%]">
-            <Input
-              label="Search session name..."
-              name="password"
-              // type="search"
-              required
-              value={searchResult}
-              // type={showPassword ? "text" : "password"}
-              onChange={(e) => setSearchResult(e.target.value)}
-            />
-
+      <div className="flex justify-between items-center gap-5 mt-4 mr-3 ml-3">
+        <div className="w-[70%]">
+          <form
+            className="flex justify-start items-center gap-5"
+            onSubmit={handleSearchSubmit}
+          >
+            <div className="w-[30%]">
+              <Input
+                label="Select start date"
+                type="date"
+                required
+                value={startDate}
+                // type={showPassword ? "text" : "password"}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
             </div>
-            <Button type="submit" variant="">Search</Button>
-            <Button type="button" onClick={()=>{
-            //   setSearchResult("")
-            //  return  dispatch(getAllParticipants(currentPage, limit)).then((res) => {
-            //     return true;
-            //   });
-            }} variant="" disabled={!searchResult}>Clear</Button>
+            <div className="w-[30%]">
+              <Input
+                label="Select end date"
+                required
+                value={endDate}
+                type="date"
+                // type={showPassword ? "text" : "password"}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+            <Button type="submit" variant="">
+              Search
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                  setStartDate("")
+                  setEndDate("")
+                 return dispatch(getAllSessions(currentPage, limit)).then((res) => {
+                    return true;
+                  });
+              }}
+              variant=""
+              disabled={!startDate && !endDate}
+            >
+              Clear
+            </Button>
           </form>
-        </div> */}
+        </div>
         <div className="flex justify-center items-center">
           <div className="flex justify-center items-center">
             <RiArrowLeftSLine
@@ -136,7 +162,7 @@ export const Sessionlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Cohort name
+                Center name
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -163,7 +189,7 @@ export const Sessionlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                No. of hours
+                No. of mins
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
@@ -248,7 +274,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el?.numberOfHours || "-"}
+                    {el?.numberOfMins || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -257,7 +283,7 @@ export const Sessionlist = () => {
                     href="#"
                     variant="small"
                     color="blue-gray"
-                    onClick={()=>handleSessionDetails(el)}
+                    onClick={() => handleSessionDetails(el)}
                     className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
                   >
                     See details
@@ -311,6 +337,3 @@ export const Sessionlist = () => {
 };
 
 export default Sessionlist;
-
-
-

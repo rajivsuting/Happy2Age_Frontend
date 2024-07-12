@@ -170,7 +170,7 @@ export const Cohortreport = () => {
 
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
-    documentTitle: "Cohort report",
+    documentTitle: "Center report",
     onAfterPrint: () =>
       toast.success("PDF file download successfully", toastConfig),
   });
@@ -247,7 +247,7 @@ export const Cohortreport = () => {
               {/* <b>{filterParticipant?.name}</b> */}
             </div>
             <div className="w-[50%] font-normal">
-              No. of participant :{" "}
+              No. of member :{" "}
               <b>
                 {cohortList?.filter((el) => el._id == cohortSelect)[0]
                   ?.participants?.length || "0"}
@@ -299,7 +299,7 @@ export const Cohortreport = () => {
           </BarChart>
         </div>
         <div className="w-[100%] font-normal text-end">
-              Cohort average : <b>{resultnlist?.averageForCohort}</b>
+              Center average : <b>{resultnlist?.averageForCohort}</b>
             </div>
         <Heatmap arr={resultnlist?.detailedScores}/>
         <div className="mt-5">

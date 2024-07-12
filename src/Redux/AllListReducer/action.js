@@ -136,6 +136,29 @@ export const getAllActivities =
       });
   };
 
+  // activity name ----------------
+  
+  export const getAllActivitiesByname =
+  (name = "") =>
+  (dispatch) => {
+    dispatch({ type: types.GET_ACTIVITIES_REQUEST });
+    return axios
+      .get(`${serverUrl}/activity/activities/search/?name=${name}`, {
+        
+      })
+      .then((res) => {
+        return dispatch({
+          type: types.GET_ACTIVITIES_SUCCESS,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return dispatch({ type: types.GET_ACTIVITIES_FAILURE });
+      });
+  };
+
+
 // domains --------------
 
 export const getAllDomains =
@@ -173,6 +196,28 @@ export const getAllSessions =
         return dispatch({
           type: types.GET_SESSIONS_SUCCESS,
           payload: res.data.message,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return dispatch({ type: types.GET_DOMAINS_FAILURE });
+      });
+  };
+
+  // session name --------------------
+
+  export const getAllSessionsBydate =
+  (startDate = "", endDate = "") =>
+  (dispatch) => {
+    dispatch({ type: types.GET_SESSIONS_REQUEST });
+    return axios
+      .get(`${serverUrl}/session/sessions/search/?startDate=${startDate}&endDate=${endDate}`, {
+        
+      })
+      .then((res) => {
+        return dispatch({
+          type: types.GET_SESSIONS_SUCCESS,
+          payload: res.data,
         });
       })
       .catch((err) => {

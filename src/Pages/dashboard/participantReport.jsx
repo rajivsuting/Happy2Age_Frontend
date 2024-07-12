@@ -292,7 +292,7 @@ const navigate = useNavigate();
             onChange={(e) => setSingleParticipant(e.target.value)}
             required
           >
-            <option value="">Select Participant</option>
+            <option value="">Select member</option>
             {allParticipants?.map((el, index) => (
               <option key={index} value={el._id}>
                 {el.name}
