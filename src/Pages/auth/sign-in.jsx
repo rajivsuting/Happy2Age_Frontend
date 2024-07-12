@@ -51,12 +51,12 @@ export function SignIn() {
 
   return (
     <section className="m-8 flex gap-4">
-      <div
+      {/* <div
               className="w-[70px] border-b cursor-pointer hover:border-b-blue text-blue-500"
               onClick={() => window.history.back()}
             >
               Go back
-            </div>
+            </div> */}
       <div className="w-full lg:w-3/5 mt-24">
         <div className="text-center">
           <Typography variant="h2" className="font-bold mb-4">
