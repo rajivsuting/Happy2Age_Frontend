@@ -208,7 +208,7 @@ export const CaspQuestions = () => {
       <form onSubmit={handleSubmitCohort}>
         {/* Basic details */}
         <div className="w-[100%] m-auto mb-5 flex justify-center items-center">
-          <div className="w-[25%]">Oxford Happiness Questionnaire</div>
+          <div className="w-[25%]"> CASP-19 Questionnaire</div>
           <hr className="w-[75%] border" />
         </div>
         <div className="flex justify-start items-center m-auto gap-10 mt-5">

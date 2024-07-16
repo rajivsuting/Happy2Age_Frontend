@@ -69,7 +69,7 @@ const darkColors = [
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const barData = payload.find((p) => p.dataKey === "average");
-    const lineData = payload.find((p) => p.dataKey === "cohortAverage");
+    const lineData = payload.find((p) => p.dataKey === "centerAverage");
 
     return (
       <div
@@ -206,7 +206,7 @@ const navigate = useNavigate();
 
   let filteredData = resultnlist?.graphDetails?.map((el) => ({
     "Domain name": el.domainName,
-    "Cohort average": el.cohortAverage,
+    "Cohort average": el.centerAverage,
     "No. of sessions": el.numberOfSessions,
     "Average": el.average,
   }));
@@ -337,7 +337,7 @@ const navigate = useNavigate();
         </div>
         <div className="text-center">
           <div className="font-bold mb-5 mt-5 text-[20px]">
-            Report 1: Individual Member Observations
+             Individual Member Observations
           </div>
           <div className="font-bold mb-5 mt-5 text-[20px]">
             Our Journey Together
@@ -413,9 +413,9 @@ const navigate = useNavigate();
           </div>
         </div>
 
-        <div className="mb-5 mt-5 ">
+        {/* <div className="mb-5 mt-5 ">
           <b className="text-[18px]">Oxford happiness score: {(happinessScore[0]?.happinessScore)?.toFixed(2)}</b>
-        </div>
+        </div> */}
         <div className="mb-5 mt-5 ">
           <b className="text-[18px]">Brief Background:</b>{" "}
           {resultnlist?.participantDetails?.briefBackground}
@@ -448,7 +448,7 @@ const navigate = useNavigate();
 
               <Line
                 type="monotone"
-                dataKey="cohortAverage"
+                dataKey="centerAverage"
                 stroke="green"
                 activeDot={{ r: 8 }}
               />
@@ -475,7 +475,7 @@ const navigate = useNavigate();
       
               <Line
                 type="monotone"
-                dataKey="cohortaverage"
+                dataKey="centerAverage"
                 stroke="green"
                 activeDot={{ r: 8 }}
               />

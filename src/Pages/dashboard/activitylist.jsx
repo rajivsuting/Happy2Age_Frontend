@@ -117,7 +117,7 @@ export const ActivityList = () => {
     dispatch(getAllActivitiesByname(searchResult))
   };
 
-  console.log(searchResult)
+  // console.log(searchResult)
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">

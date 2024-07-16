@@ -45,7 +45,7 @@ const initialState = {
     },
     { section: "NAMING", subtopic: "", name: "Lion", score: "" },
     { section: "NAMING", subtopic: "", name: "Rhino", score: "" },
-    { section: "NAMING", subtopic: "", name: "Camal", score: "" },
+    { section: "NAMING", subtopic: "", name: "Camel", score: "" },
     {
       section: "ATTENTION",
       subtopic: "Read list of digits (1 digit/ sec.).",

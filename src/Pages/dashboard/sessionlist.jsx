@@ -14,6 +14,7 @@ import {
   getAllSessions,
   getAllSessionsBydate,
 } from "../../Redux/AllListReducer/action";
+import EditSeesion from "../../Componants/EditSeesion";
 
 export const Sessionlist = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ export const Sessionlist = () => {
   const [currentPage, setCurrentPage] = useState(searchParams.get("page") || 1);
   const [limit, setLimit] = useState(searchParams.get("limit") || 10); // default limit
   const [startDate, setStartDate] = useState("");
+  const [isEditModalOPen, setIsEditModalOpen] = useState(false);
   const [endDate, setEndDate] = useState("");
   const navigate = useNavigate();
   const toggleModal = (el) => {
@@ -59,6 +61,15 @@ export const Sessionlist = () => {
     e.preventDefault();
     dispatch(getAllSessionsBydate(startDate,endDate));
   };
+
+  const handleOpenEditSessionEditModal = (el)=>{
+    setIsEditModalOpen(true);
+    setSingleSession(el);
+  }
+
+  const closeEditSessionEditModal = ()=>{
+    setIsEditModalOpen(false);
+  }
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -300,7 +311,7 @@ export const Sessionlist = () => {
                     See details
                   </Typography>
                 </td> */}
-                {/* <td className={classes}>
+                <td className={classes} onClick={()=>handleOpenEditSessionEditModal(el)}>
                   <Typography
                     as="a"
                     href="#"
@@ -310,7 +321,7 @@ export const Sessionlist = () => {
                   >
                     <CiEdit />
                   </Typography>
-                </td> */}
+                </td>
                 {/* <td className={classes}>
                   <Typography
                     as="a"
@@ -327,6 +338,7 @@ export const Sessionlist = () => {
           })}
         </tbody>
       </table>
+      <EditSeesion isOpen={isEditModalOPen} onClose={closeEditSessionEditModal} singleSession={singleSession}/>
       <SeeDetailesSession
         isOpen={isModalOpen}
         onClose={toggleModal}

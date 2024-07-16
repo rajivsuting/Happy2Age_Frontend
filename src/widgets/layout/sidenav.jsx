@@ -112,7 +112,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
     .then((res)=>{
       // saveLocalData("token",res.data.token)
       if (res.status==200){
-        toast.success("Logout suucessfully", toastConfig);
+        toast.success("Logout successfully", toastConfig);
 
         navigate("/auth/sign-in")
       } else {
@@ -962,7 +962,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                        CASP
+                        CASP - 19
                       </Typography>
                     </Button>
                   )}
