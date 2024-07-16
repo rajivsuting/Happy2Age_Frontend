@@ -7,7 +7,7 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
       <div className="relative m-4 w-2/5 min-w-[80%] max-w-[80%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-8">
-      <div className="flex items-center justify-between p-4 font-sans text-2xl font-semibold text-blue-gray-900">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-4 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
           Evalution details
           <AiOutlineClose
             className="cursor-pointer"
@@ -37,9 +37,12 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
               <tr>
                 <td className="py-2 font-semibold">Domains</td>
                 <td>
-                  {singleEvalustion.domain?.map((el, index1) => {
+                  {singleEvalustion?.domain?.map((el, index1) => {
                     return (
-                      <table key={index1} className="min-w-full divide-y divide-gray-200 mb-5 border-b border-t border-b-gray-300 border-t-gray-300">
+                      <table
+                        key={index1}
+                        className="min-w-full divide-y divide-gray-200 mb-5 border-b border-t border-b-gray-300 border-t-gray-300"
+                      >
                         <tbody>
                           <tr>
                             <td className="py-2 font-semibold">Domain name</td>
@@ -49,12 +52,10 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
                             return (
                               <tr key={index2}>
                                 <td className="py-2 font-semibold">
-                                  Quesion:{index2+1}
+                                  Question: {index2 + 1}
                                 </td>
                                 <td>{el.content || "-"}</td>
-                                <td className="py-2 font-semibold">
-                                  Score
-                                </td>
+                                <td className="py-2 font-semibold">Score</td>
                                 <td>{el.score || "-"}</td>
                               </tr>
                             );

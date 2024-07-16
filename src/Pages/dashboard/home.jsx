@@ -231,7 +231,7 @@ export function Home() {
               </Typography> */}
             </div>
             <Menu placement="left-start">
-              <MenuHandler>
+              {/* <MenuHandler>
                 <IconButton size="sm" variant="text" color="blue-gray">
                   <EllipsisVerticalIcon
                     strokeWidth={3}
@@ -244,7 +244,7 @@ export function Home() {
                 <MenuItem>Action</MenuItem>
                 <MenuItem>Another Action</MenuItem>
                 <MenuItem>Something else here</MenuItem>
-              </MenuList>
+              </MenuList> */}
             </Menu>
           </CardHeader>
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">

@@ -45,7 +45,7 @@ export function SignIn() {
     }).catch((err)=>{
       setIsLoginLoading(false);
       console.log(err)
-      toast.error(err.response, toastConfig);
+      toast.error(err.response.data.message, toastConfig);
     })
   };
 

@@ -18,7 +18,13 @@ import { toastConfig } from "../../App";
 import { toast } from "react-toastify";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllActivities, getAllCohorts, getAllDomains, getAllEvaluations, getAllSessions } from "../../Redux/AllListReducer/action";
+import {
+  getAllActivities,
+  getAllCohorts,
+  getAllDomains,
+  getAllEvaluations,
+  getAllSessions,
+} from "../../Redux/AllListReducer/action";
 import { getLocalData } from "../../Utils/localStorage";
 import { useNavigate } from "react-router-dom";
 
@@ -79,12 +85,12 @@ export const AddEvaluation = () => {
     };
   });
 
-  useEffect(()=>{
-    dispatch(getAllCohorts("",""))
-    dispatch(getAllSessions("",""));
-    dispatch(getAllActivities("",""))
-    dispatch(getAllDomains("All"))
-  },[])
+  useEffect(() => {
+    dispatch(getAllCohorts("", ""));
+    dispatch(getAllSessions("", ""));
+    dispatch(getAllActivities("", ""));
+    dispatch(getAllDomains("All"));
+  }, []);
 
   useEffect(() => {
     setsessionFromCohort(
@@ -100,11 +106,9 @@ export const AddEvaluation = () => {
 
   useEffect(() => {
     setDomainCategory(
-      partcipantList?.filter((el) => el._id == participant)[0]
-        ?.participantType
+      partcipantList?.filter((el) => el._id == participant)[0]?.participantType
     );
   }, [participant]);
-
 
   useEffect(() => {
     setActivityFromSession(
@@ -116,11 +120,11 @@ export const AddEvaluation = () => {
     setSelectDomainByType(
       domainList?.filter((el) => el.category === domainCategory)
     );
-  }, [domainCategory,participant]);
+  }, [domainCategory, participant]);
 
-  console.log(domainCategory)
-  console.log(selectDomainByType)
-  console.log(domainList)
+  console.log(domainCategory);
+  console.log(selectDomainByType);
+  console.log(domainList);
   const handleScoreChange = (domainIndex, questionIndex, newScore) => {
     const updatedDomains = [...selectDomainByType];
     updatedDomains[domainIndex].subTopics[questionIndex].score = newScore;
@@ -148,16 +152,11 @@ export const AddEvaluation = () => {
     e.preventDefault();
     setIsAddEvaluationLoading(true);
     axios
-      .post(`${serverUrl}/evaluation/create`, evaluationData,{
-        
-      })
+      .post(`${serverUrl}/evaluation/create`, evaluationData, {})
       .then((res) => {
         if (res.status == 201) {
           toast.success("Evaluation added suucessfully", toastConfig);
-          setEvaluationData(initialState);
-          dispatch(getAllEvaluations).then((res) => {
-            return true;
-          });
+          window.location.reload();
           setIsAddEvaluationLoading(false);
         } else {
           toast.error("Something went wrong", toastConfig);
@@ -238,7 +237,7 @@ export const AddEvaluation = () => {
           >
             <option value="">Select member</option>;
             {partcipantList?.map((pl) => {
-             return participantsFromSession?.map((el) => {
+              return participantsFromSession?.map((el) => {
                 if (el.participantId == pl._id) {
                   return (
                     <option key={pl._id} value={pl._id}>
@@ -261,7 +260,7 @@ export const AddEvaluation = () => {
           >
             <option value="">Select activity</option>;
             {activityList?.map((pl) => {
-             return activityFromSession?.map((el) => {
+              return activityFromSession?.map((el) => {
                 if (el == pl._id) {
                   return (
                     <option key={pl._id} value={pl._id}>

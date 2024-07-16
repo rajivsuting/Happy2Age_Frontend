@@ -7,20 +7,31 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDeatailesEvalution from "../../Componants/SeeDeatailesEvalution";
 import { getLocalData } from "../../Utils/localStorage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 export const Evaluationlist = () => {
   const [evalutionlist, setEvalutionlist] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [singleEvalustion, setSingleEvaluation] = useState({})
+  const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
+  const [searchParams, setsearchParams] = useSearchParams();
+  
   const toggleModal = (el) => {
      setIsModalOpen(!isModalOpen);
      setSingleEvaluation(el)
    };
 
-  useEffect(() => {
-    axios.get(`${serverUrl}/evaluation/all`,{
+  const toggleModalDelete = (id) => {
+     setsearchParams({ id });
+     setIsModalOpenDelete(!isModalOpenDelete);
+   };
+
+   const getAllData = ()=>{
+    return axios.get(`${serverUrl}/evaluation/all`,{
       // headers: {
       //   Authorization: `${getLocalData("token")}`,
       // },
@@ -38,7 +49,40 @@ export const Evaluationlist = () => {
         toast.error("An unexpected error occurred.", toastConfig);
       }
     });
+   }
+
+  useEffect(() => {
+    getAllData()
   }, []);
+
+
+  const handleDelete = () => {
+    axios
+      .delete(`${serverUrl}/evaluation/${searchParams.get("id")}`, {
+        
+      })
+      .then((res) => {
+        if (res.status == 200) {
+          toast.success("Evaluation deleted suucessfully", toastConfig);
+          getAllData();
+        } else {
+          toast.error("Something went wrong", toastConfig);
+        }
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
+  };
+
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <table className="w-full min-w-max table-auto text-left">
@@ -212,7 +256,7 @@ export const Evaluationlist = () => {
                     See details
                   </Typography>
                 </td>
-                {/* <td className={classes}>
+                <td className={classes}>
                   <Typography
                     as="a"
                     href="#"
@@ -222,25 +266,30 @@ export const Evaluationlist = () => {
                   >
                     <CiEdit />
                   </Typography>
-                </td> */}
-                {/* <td className={classes}>
+                </td> 
+                <td className={classes}>
                   <Typography
                     as="a"
                     href="#"
                     variant="small"
                     color="blue-gray"
-                    className="text-maincolor2 text-[20px]"
+                    onClick={() => toggleModalDelete(el._id)}
+                    className="text-red-500  text-[20px]"
                   >
                     <MdOutlineDeleteOutline />
                   </Typography>
-                </td> */}
+                </td>
               </tr>
             );
           })}
         </tbody>
       </table>
 
-      {/* Modal Component */}
+      <ConfirmDeleteModal
+        isOpen={isModalOpenDelete}
+        onClose={() => toggleModalDelete()}
+        handleDelete={handleDelete}
+      />
       <SeeDeatailesEvalution isOpen={isModalOpen} onClose={toggleModal} singleEvalustion={singleEvalustion}/>
     </Card>
   );

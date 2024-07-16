@@ -148,7 +148,7 @@ export const Cohortreport = () => {
 
   let filteredData = resultnlist?.graphDetails?.map((el) => ({
     "Domain name": el.domainName,
-    "Cohort average": el.cohortAverage,
+    "Cohort average": el.centerAverage,
     "No. of sessions": el.numberOfSessions,
     Average: el.average,
   }));
@@ -258,7 +258,10 @@ export const Cohortreport = () => {
               Total sessions : <b>{resultnlist?.totalNumberOfSessions}</b>
             </div>
             <div className="w-[50%] font-normal">
-              Attendence : <b>{resultnlist?.totalAttendance}</b>
+              Attendence : <b>{resultnlist?.attendance}</b>
+            </div>
+            <div className="w-[50%] font-normal">
+              Total attendence : <b>{resultnlist?.totalAttendance}</b>
             </div>
             
           </div>
@@ -289,7 +292,7 @@ export const Cohortreport = () => {
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Bar
-              dataKey="cohortAverage"
+              dataKey="centerAverage"
               fill="#4A3AFF"
               barSize={20}
               radius={[5, 5, 0, 0]}
@@ -301,7 +304,7 @@ export const Cohortreport = () => {
         <div className="w-[100%] font-normal text-end">
               Center average : <b>{resultnlist?.averageForCohort}</b>
             </div>
-        <Heatmap arr={resultnlist?.detailedScores}/>
+        <Heatmap arr={resultnlist?.participantDomainScores}/>
         <div className="mt-5">
           <i>Remarks : {remarks}</i>
         </div>
