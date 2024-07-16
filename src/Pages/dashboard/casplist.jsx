@@ -2,7 +2,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 import React, { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
-import { getLocalData } from "../../Utils/localStorage";
+import { convertDateFormat, getLocalData } from "../../Utils/localStorage";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
@@ -188,7 +188,7 @@ export const Casplist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el?.date?.split("T")[0] || "-"}
+                    {convertDateFormat(el?.date?.split("T")[0]) || "-"}
                   </Typography>
                 </td>
        

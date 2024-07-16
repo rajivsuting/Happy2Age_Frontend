@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { convertDateFormat } from "../../Utils/localStorage";
 
 const Sessiondetails = () => {
   const { sessionid } = useParams();
@@ -59,7 +60,7 @@ const Sessiondetails = () => {
           </tr>
           <tr className="border-b-2 p-2">
             <td className="py-2 px-2 font-semibold">Date of session</td>
-            <td>{singleSession?.date?.split("T")[0] || "N/A"}</td>
+            <td>{convertDateFormat(singleSession?.date?.split("T")[0]) || "N/A"}</td>
           </tr>
           <tr className="border-b-2 p-2">
             <td className="py-2 px-2 font-semibold">No. of mins</td>

@@ -2,6 +2,7 @@ import { Card, List, ListItem, Typography } from "@material-tailwind/react";
 import React, { useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useSelector } from "react-redux";
+import { convertDateFormat } from "../Utils/localStorage";
 
 const SeeDeatailsSessionAttendence = ({ isOpen, onClose, singleSession }) => {
   if (!isOpen) return null;
@@ -91,7 +92,7 @@ const SeeDeatailsSessionAttendence = ({ isOpen, onClose, singleSession }) => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.date.split("T")[0] || "-"}
+                    {convertDateFormat(el.date.split("T")[0]) || "-"}
                   </Typography>
                 </td>
               </tr>

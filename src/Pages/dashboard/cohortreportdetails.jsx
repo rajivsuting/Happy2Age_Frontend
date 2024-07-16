@@ -24,7 +24,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { getLocalData } from "../../Utils/localStorage";
+import { convertDateFormat, getLocalData } from "../../Utils/localStorage";
 
 const darkColors = [
   "#17a589",
@@ -175,7 +175,7 @@ export const Cohortreportdetails = () => {
               </b>
             </div>
             <div className="w-[50%] font-normal">
-              DOB : <b>{filterParticipant?.dob.split("T")[0]}</b>
+              DOB : <b>{convertDateFormat(filterParticipant?.dob.split("T")[0])}</b>
             </div>
           </div>
           <div className="flex justify-between m-auto mt-2 gap-10">

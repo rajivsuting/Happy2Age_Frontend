@@ -15,6 +15,7 @@ import {
   getAllSessionsBydate,
 } from "../../Redux/AllListReducer/action";
 import EditSeesion from "../../Componants/EditSeesion";
+import { convertDateFormat } from "../../Utils/localStorage";
 
 export const Sessionlist = () => {
   const dispatch = useDispatch();
@@ -276,7 +277,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el?.date.split("T")[0] || "-"}
+                    {convertDateFormat(el?.date.split("T")[0]) || "-"}
                   </Typography>
                 </td>
                 <td className={classes}>
