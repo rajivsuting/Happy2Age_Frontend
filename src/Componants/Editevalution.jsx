@@ -17,6 +17,7 @@ const EditEvaluation = ({ evaluation, onSave, isOpen, onClose }) => {
   };
 
   const handleSave = () => {
+    console.log(evaluation)
     // axios
     //   .delete(`${serverUrl}/evaluation/${searchParams.get("id")}`)
     //   .then((res) => {

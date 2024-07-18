@@ -27,7 +27,7 @@ import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { getAllParticipants } from "../../Redux/AllListReducer/action";
 import * as XLSX from "xlsx";
-import { getLocalData } from "../../Utils/localStorage";
+import { convertDateFormat, getLocalData } from "../../Utils/localStorage";
 
 // import {
 //   ComposedChart,
@@ -76,16 +76,14 @@ const CustomTooltip = ({ active, payload, label }) => {
         className="custom-tooltip"
         style={{
           backgroundColor: "#fff",
-          padding: "10px",
+          padding: "20px",
           border: "1px solid #ccc",
         }}
       >
         <p className="label">{`Domain: ${label}`}</p>
         {barData && <p className="intro">{`Average: ${barData.value}`}</p>}
         {lineData && (
-          <p className="desc">{`Chort Average: ${lineData.value.toFixed(
-            2
-          )}`}</p>
+          <p className="desc">{`Center Average: ${lineData?.value}`}</p>
         )}
         {barData && (
           <p className="desc">{`Number of Sessions: ${barData.payload.numberOfSessions}`}</p>
@@ -188,7 +186,7 @@ export const ParticipantReport = () => {
       )
       .then((res) => {
         console.log(res);
-        setResultlist(res.data.report);
+        setResultlist(res.data.data);
       })
       .catch((err) => {
         if (err.response && err.response.data && err.response.data.jwtExpired) {
@@ -360,14 +358,14 @@ export const ParticipantReport = () => {
           <div className="mb-3">
             Name :
             <input
-              value={resultnlist?.participantDetails?.name || ""}
+              value={resultnlist?.participant?.name || ""}
               className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
           </div>
           <div>
             Age :
             <input
-              value={calculateAge(resultnlist?.participantDetails?.dob || "")}
+              value={calculateAge(resultnlist?.participant?.dob || "")}
               className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
           </div>
@@ -375,10 +373,10 @@ export const ParticipantReport = () => {
             Address :
             <input
               value={`${
-                resultnlist?.participantDetails?.address?.addressLine || ""
-              }, ${resultnlist?.participantDetails?.address?.city || ""}, ${
-                resultnlist?.participantDetails?.address?.state || ""
-              }, ${resultnlist?.participantDetails?.address?.pincode || ""}`}
+                resultnlist?.participant?.address?.addressLine || ""
+              }, ${resultnlist?.participant?.address?.city || ""}, ${
+                resultnlist?.participant?.address?.state || ""
+              }, ${resultnlist?.participant?.address?.pincode || ""}`}
               className="border-b w-[330px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
           </div>
@@ -386,7 +384,7 @@ export const ParticipantReport = () => {
             Mobile No :
             <input
               value={
-                resultnlist?.participantDetails?.emergencyContact?.phone || ""
+                resultnlist?.participant?.emergencyContact?.phone || ""
               }
               className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
@@ -394,12 +392,12 @@ export const ParticipantReport = () => {
           <div className="mb-3">
             Date From :
             <input
-              value={startDate || ""}
+              value={convertDateFormat(startDate) || ""}
               className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
             To :
             <input
-              value={endDate || ""}
+              value={convertDateFormat(endDate) || ""}
               className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
           </div>
@@ -411,7 +409,7 @@ export const ParticipantReport = () => {
             />
             out of :
             <input
-              value={resultnlist?.attendedSessions || 0}
+              value={resultnlist?.totalNumberOfSessions || 0}
               className="border-b w-[50px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
           </div>
@@ -422,7 +420,7 @@ export const ParticipantReport = () => {
         </div> */}
         <div className="mb-5 mt-5 ">
           <b className="text-[18px]">Brief Background:</b>{" "}
-          {resultnlist?.participantDetails?.briefBackground}
+          {resultnlist?.participant?.briefBackground}
         </div>
         <div>
           <b className="text-[18px]">Graph (Bar):</b> On various Domains ratings
@@ -454,7 +452,7 @@ export const ParticipantReport = () => {
                 type="monotone"
                 dataKey="centerAverage"
                 stroke="green"
-                activeDot={{ r: 8 }}
+                activeDot={{ r: 10 }}
               />
             </ComposedChart>
           </ResponsiveContainer>
