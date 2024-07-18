@@ -16,74 +16,78 @@ const initialState = {
   questions: [
     {
       question: "My age prevents me from doing the things I would like to do.",
+      code:"C1",
       score: "",
     },
     {
       question: "I feel that what happens to me is out of my control.",
+      code:"C2",
       score: "",
     },
     {
       question: "I feel free to plan for the future.",
+      code:"C3",
       score: "",
     },
-    // { question: "I feel left out of things.", score: "" },
+    { question: "I feel left out of things.", score: "", code:"C4",},
     {
       question: "I can do the things I want to do.",
+      code:"A1",
       score: "",
     },
     {
-      question: "I am not particularly optimistic about the future.",
+      question: "Family responsibilities prevent me from doing the things I want to do",
+      code:"A2",
       score: "",
     },
     {
       question:
-        "Family responsibilities prevent me from doing the things I want to do.",
-      score: "",
-    },
-    {
-      question: "I feel that I can please myself what I do.",
+        "I feel that I can please myself what I do",
+        code:"A3",
       score: "",
     },
     {
       question: "My health stops me from doing the things I want to do.",
+      code:"A4",
       score: "",
     },
     {
       question: "Shortage of money stops me from doing things I want to do.",
+      code:"A5",
       score: "",
     },
-    { question: "I look forward to each day.", score: "" },
+    { question: "I look forward to each day.", score: "" ,code:"P1"},
     {
       question: "I feel that my life has meaning.",
-      score: "",
+      score: "",code:"P2"
     },
-    { question: "I enjoy the things that I do.", score: "" },
+    { question: "I enjoy the things that I do.", score: "" ,code:"P3"},
     {
-      question: "I enjoy being in the company of others.",
-      score: "",
-    },
-    {
-      question: "On balance, I look back on my life with a sense of happiness.",
+      question: "I enjoy being in the company of others.",code:"P4",
       score: "",
     },
     {
-      question: "I feel full of energy these days.",
+      question: "On balance, I look back on my life with a sense of happiness.",code:"P5",
       score: "",
     },
     {
-      question: "I choose to do things that I have never done before.",
+      question: "I feel full of energy these days.",code:"SR1",
       score: "",
     },
     {
-      question: "I feel satisfied with the way my life has turned out.",
+      question: "I choose to do things that I have never done before.",code:"SR2",
       score: "",
     },
     {
-      question: "I feel that life is full of opportunities.",
+      question: "I feel satisfied with the way my life has turned out.",code:"SR3",
       score: "",
     },
     {
-      question: "I feel that the future looks good for me.",
+      question: "I feel that life is full of opportunities.",code:"SR4",
+      score: "",
+    },
+    {
+      question: "I feel that the future looks good for me.",code:"SR5",
       score: "",
     },
   ],
@@ -98,15 +102,15 @@ export const CaspQuestions = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate()
 
-  const { participant, questions,date } = questionData;
+  const { participant, questions, date } = questionData;
 
   useEffect(() => {
     axios
-      .get(`${serverUrl}/participant/all`,{
-      // headers: {
-      //   Authorization: `${getLocalData("token")}`,
-      // },
-    })
+      .get(`${serverUrl}/participant/all`, {
+        // headers: {
+        //   Authorization: `${getLocalData("token")}`,
+        // },
+      })
       .then((res) => {
         setAllParticipants(res.data.message);
       })
@@ -125,11 +129,11 @@ export const CaspQuestions = () => {
   }, []);
 
   const handleParticipantChange = (e) => {
-    setQuestionData({ ...questionData, participant: e.target.value, });
+    setQuestionData({ ...questionData, participant: e.target.value });
   };
 
   const handleDateChange = (e) => {
-    setQuestionData({ ...questionData, date: e.target.value, });
+    setQuestionData({ ...questionData, date: e.target.value });
   };
 
   const handleSubmitCohort = (e) => {
@@ -152,14 +156,47 @@ export const CaspQuestions = () => {
 
     setQuestionData({ ...questionData, questions: updatedQuestions });
 
+    // Calculate the score
+    let totalScore = 0;
+    updatedQuestions.forEach((q) => {
+      const scoreValue =
+        q.score === "Often"
+          ? 3
+          : q.score === "Sometimes"
+          ? 2
+          : q.score === "Not often"
+          ? 1
+          : 0;
+
+      // Adjust score for negative items
+      const negativeItems = [
+        "C1",
+        "C2",
+        "C4",
+        "A2",
+        "A4",
+        "A5",
+      ];
+
+      totalScore += negativeItems.includes(q.code)
+        ? 3 - scoreValue
+        : scoreValue;
+    });
+
+    const finalData = { ...questionData, questions: updatedQuestions, totalScore };
+
+
     axios
-      .post(`${serverUrl}/casp/add`, questionData,{
-      // headers: {
-      //   Authorization: `${getLocalData("token")}`,
-      // },
-    })
+      .post(`${serverUrl}/casp/add`, finalData, {
+        // headers: {
+        //   Authorization: `${getLocalData("token")}`,
+        // },
+      })
       .then((res) => {
         toast.success(res.data.message, toastConfig);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       })
       .catch((err) => {
         if (err.response && err.response.data && err.response.data.jwtExpired) {
@@ -178,11 +215,11 @@ export const CaspQuestions = () => {
   const handleSubmitOxfordResult = (e) => {
     e.preventDefault();
     axios
-      .get(`${serverUrl}/casp/${selectParticipant}`,{
-      // headers: {
-      //   Authorization: `${getLocalData("token")}`,
-      // },
-    })
+      .get(`${serverUrl}/casp/${selectParticipant}`, {
+        // headers: {
+        //   Authorization: `${getLocalData("token")}`,
+        // },
+      })
       .then((res) => {
         console.log(res);
         setParticipantResult(res.data.message[res.data.message.length - 1]);
@@ -200,8 +237,6 @@ export const CaspQuestions = () => {
         }
       });
   };
-
-  // console.log(participantResult);
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24 p-8">
@@ -226,7 +261,14 @@ export const CaspQuestions = () => {
             ))}
           </select>
           <div className="w-[20%]">
-          <Input type="date" label="Date" required name="date" value={date} onChange={handleDateChange}/>
+            <Input
+              type="date"
+              label="Date"
+              required
+              name="date"
+              value={date}
+              onChange={handleDateChange}
+            />
           </div>
         </div>
 
@@ -346,8 +388,6 @@ export const CaspQuestions = () => {
           </Button>
         </div>
       </form>
-
-
     </Card>
   );
 };

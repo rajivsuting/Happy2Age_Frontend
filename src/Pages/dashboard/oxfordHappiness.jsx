@@ -189,6 +189,9 @@ export const OxfordHappiness = () => {
       })
       .then((res) => {
         toast.success(res.data.message, toastConfig);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       })
       .catch((err) => {
         if (err.response && err.response.data && err.response.data.jwtExpired) {

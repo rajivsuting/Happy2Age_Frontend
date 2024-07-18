@@ -311,6 +311,7 @@ setisEditModal(true);
           evaluation={selectedEvaluation}
           onSave={handleSave}
           isOpen={isEditModal} onClose={closeEditModal}
+          getAllData = {getAllData}
         />
       )}
       <ConfirmDeleteModal

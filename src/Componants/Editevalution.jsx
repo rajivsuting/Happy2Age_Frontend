@@ -3,9 +3,13 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { serverUrl } from "../api";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { toastConfig } from "../App";
 
-const EditEvaluation = ({ evaluation, onSave, isOpen, onClose }) => {
+const EditEvaluation = ({ evaluation,getAllData, onSave, isOpen, onClose }) => {
   const [domains, setDomains] = useState(evaluation?.domain);
+  const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     setDomains(evaluation?.domain);
   }, [evaluation?.domain]);
@@ -17,29 +21,30 @@ const EditEvaluation = ({ evaluation, onSave, isOpen, onClose }) => {
   };
 
   const handleSave = () => {
-    console.log(evaluation)
-    // axios
-    //   .delete(`${serverUrl}/evaluation/${searchParams.get("id")}`)
-    //   .then((res) => {
-    //     if (res.status == 200) {
-    //       toast.success("Evaluation edited suucessfully", toastConfig);
-    //       getAllData();
-    //     } else {
-    //       toast.error("Something went wrong", toastConfig);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     if (err.response && err.response.data && err.response.data.jwtExpired) {
-    //       toast.error(err.response.data.message, toastConfig);
-    //       setTimeout(() => {
-    //         navigate("/auth/sign-in");
-    //       }, 3000);
-    //     } else if (err.response && err.response.data) {
-    //       toast.error(err.response.data.message, toastConfig);
-    //     } else {
-    //       toast.error("An unexpected error occurred.", toastConfig);
-    //     }
-    //   });
+    // console.log(evaluation)
+    axios
+      .patch(`${serverUrl}/evaluation/${evaluation?._id}`,evaluation)
+      .then((res) => {
+        if (res.status == 200) {
+          toast.success("Evaluation edited suucessfully", toastConfig);
+          getAllData();
+          onClose();
+        } else {
+          toast.error("Something went wrong", toastConfig);
+        }
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
   };
 
   if (!isOpen) return null;
