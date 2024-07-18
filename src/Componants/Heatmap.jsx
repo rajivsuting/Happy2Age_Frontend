@@ -39,15 +39,15 @@ const Heatmap = ({ arr }) => {
               name: 'Low'
             },
             {
-                from: 4,
-                to: 5.99,
-                color: '#faff72', // Light yellow for scores 6-7
+              from: 4,
+              to: 5.99,
+              color: '#faff72', // Light yellow for scores 6-7
               name: 'Medium'
             },
             {
-                from: 6,
-                to: 7,
-                color: '#90ee90', // Light green for scores 4-5.99
+              from: 6,
+              to: 7,
+              color: '#90ee90', // Light green for scores 4-5.99
               name: 'High'
             }
           ]
@@ -62,9 +62,6 @@ const Heatmap = ({ arr }) => {
       type: 'category',
       categories: domains
     },
-    title: {
-      text: 'HeatMap Chart with Conditional Coloring'
-    },
     grid: {
       padding: {
         right: 20
@@ -74,7 +71,7 @@ const Heatmap = ({ arr }) => {
 
   return (
     <div className='mt-[30px]'>
-      <ReactApexChart options={options} series={heatmapData} type="heatmap"  height={450} />
+      <ReactApexChart options={options} series={heatmapData} type="heatmap" height={450} />
     </div>
   );
 };

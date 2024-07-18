@@ -24,7 +24,7 @@ import {
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { getAllCohorts } from "../../Redux/AllListReducer/action";
-import { getLocalData } from "../../Utils/localStorage";
+import { convertDateFormat, getLocalData } from "../../Utils/localStorage";
 import { useNavigate } from "react-router-dom";
 import ReactApexChart from "react-apexcharts";
 import Heatmap from "../../Componants/Heatmap";
@@ -277,12 +277,12 @@ export const Cohortreport = () => {
           <div className="mb-3">
             Date From :
             <input
-              value={startDate || ""}
+              value={convertDateFormat(startDate) || ""}
               className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
             To :
             <input
-              value={endDate || ""}
+              value={convertDateFormat(endDate) || ""}
               className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
           </div>

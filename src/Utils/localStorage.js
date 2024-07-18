@@ -13,6 +13,9 @@ const saveLocalData=(key,value)=>{
 }
 
 function convertDateFormat(inputDate) {
+    if (!inputDate){
+        return
+    }
     // Split the input date string by the hyphen
     const [year, month, day] = inputDate.split('-');
     
