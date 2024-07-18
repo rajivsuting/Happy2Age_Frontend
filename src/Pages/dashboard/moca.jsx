@@ -131,9 +131,73 @@ const initialState = {
     { section: "ORIENTATION", subtopic: "", name: "Day", score: "" },
     { section: "ORIENTATION", subtopic: "", name: "Place", score: "" },
     { section: "ORIENTATION", subtopic: "", name: "City", score: "" },
+
+    // Adding MEMORY questions
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "FACE",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "VELVET",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "CHURCH",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "DAISY",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "RED",
+      score: "",
+    },
+
+    // Adding DELAYED RECALL questions
+    {
+      section: "DELAYED RECALL",
+      subtopic: "Recall the words after 5 minutes",
+      name: "FACE",
+      score: "",
+    },
+    {
+      section: "DELAYED RECALL",
+      subtopic: "Recall the words after 5 minutes",
+      name: "VELVET",
+      score: "",
+    },
+    {
+      section: "DELAYED RECALL",
+      subtopic: "Recall the words after 5 minutes",
+      name: "CHURCH",
+      score: "",
+    },
+    {
+      section: "DELAYED RECALL",
+      subtopic: "Recall the words after 5 minutes",
+      name: "DAISY",
+      score: "",
+    },
+    {
+      section: "DELAYED RECALL",
+      subtopic: "Recall the words after 5 minutes",
+      name: "RED",
+      score: "",
+    },
   ],
   totalScore: "",
-  date:""
+  date: "",
 };
 
 export const Moca = () => {
@@ -141,7 +205,7 @@ export const Moca = () => {
   const [allParticipants, setAllParticipants] = useState([]);
   const [selectParticipant, setSelectParticipant] = useState("");
   const [participantResult, setParticipantResult] = useState({});
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleScoreChange = (index, value) => {
     const newQuestions = [...state.questions];
     newQuestions[index].score = value;
@@ -153,15 +217,12 @@ const navigate = useNavigate();
   };
 
   const handleDateChange = (e) => {
-    setState({ ...state, date: e.target.value, });
+    setState({ ...state, date: e.target.value });
   };
-
 
   useEffect(() => {
     axios
-      .get(`${serverUrl}/participant/all`,{
-        
-      })
+      .get(`${serverUrl}/participant/all`, {})
       .then((res) => {
         setAllParticipants(res.data.message);
       })
@@ -181,12 +242,13 @@ const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(state);
-    axios.post(`${serverUrl}/moca/create`,state,{
-        
-      })
+    // console.log(state);
+    axios.post(`${serverUrl}/moca/create`,state)
     .then((res)=>{
       toast.success(res.data.message, toastConfig);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     }).catch((err) => {
       if (err.response && err.response.data && err.response.data.jwtExpired) {
         toast.error(err.response.data.message, toastConfig);
@@ -201,14 +263,11 @@ const navigate = useNavigate();
     });
   };
 
-  
   const handleSubmitOxfordResult = (e) => {
     // console.log(e)
     // e.preventDefault();
     axios
-      .get(`${serverUrl}/moca/${selectParticipant}`,{
-        
-      })
+      .get(`${serverUrl}/moca/${selectParticipant}`, {})
       .then((res) => {
         console.log(res);
         setParticipantResult(res.data.message[res.data.message.length - 1]);
@@ -235,7 +294,10 @@ const navigate = useNavigate();
       <div key={section} className="mb-6">
         <h2 className=" font-bold mt-10 mb-4">{section}</h2>
         {sectionQuestions.map((question, index) => (
-          <div key={index} className="flex justify-between items-center gap-[50px] mb-4">
+          <div
+            key={index}
+            className="flex justify-between items-center gap-[50px] mb-4"
+          >
             <div className=" mb-2">
               {question.subtopic
                 ? `${question.subtopic} - ${question.name}`
@@ -271,15 +333,16 @@ const navigate = useNavigate();
       <div key={section} className="mb-6">
         <h2 className=" font-bold mt-10 mb-4">{section}</h2>
         {sectionQuestions.map((question, index) => (
-          <div key={index} className="w-[90%] m-auto flex justify-between items-center gap-[20px] mb-4">
+          <div
+            key={index}
+            className="w-[90%] m-auto flex justify-between items-center gap-[20px] mb-4"
+          >
             <div className=" mb-2 w-[80%]">
               {question.subtopic
                 ? `${question.subtopic} - ${question.name}`
                 : question.name}
             </div>
-            <div className="">
-            {question.score || "0"}
-            </div>
+            <div className="">{question.score || "0"}</div>
           </div>
         ))}
       </div>
@@ -288,13 +351,16 @@ const navigate = useNavigate();
 
   const uniqueSections = [...new Set(state.questions.map((q) => q.section))];
 
-  const uniqueSectionsForsingle = [...new Set(participantResult?.questions?.map((q) => q.section))];
-
+  const uniqueSectionsForsingle = [
+    ...new Set(participantResult?.questions?.map((q) => q.section)),
+  ];
 
   return (
     <form className="p-6">
       <div className="w-[100%] m-auto mb-5 flex justify-center items-center">
-        <div className="w-[45%] font-bold text-lg">MONTREAL COGNITIVE ASSESSMENT (MOCA)</div>
+        <div className="w-[45%] font-bold text-lg">
+          MONTREAL COGNITIVE ASSESSMENT (MOCA)
+        </div>
         <hr className="w-[75%] border" />
       </div>
       <div className="flex justify-start items-center m-auto gap-10 mt-5">
@@ -311,9 +377,16 @@ const navigate = useNavigate();
             </option>
           ))}
         </select>
-          <div className="w-[20%]">
-          <Input type="date" label="Date" required name="date" value={state.date} onChange={handleDateChange}/>
-          </div>
+        <div className="w-[20%]">
+          <Input
+            type="date"
+            label="Date"
+            required
+            name="date"
+            value={state.date}
+            onChange={handleDateChange}
+          />
+        </div>
       </div>
       {uniqueSections.map((section) => renderSection(section))}
       <div className="mt-6">
@@ -328,8 +401,6 @@ const navigate = useNavigate();
           {/* )} */}
         </Button>
       </div>
-
-      
     </form>
   );
 };

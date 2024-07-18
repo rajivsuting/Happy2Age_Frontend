@@ -97,7 +97,6 @@ export const Casplist = () => {
       });
   };
 
-  console.log(allResult)
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -142,7 +141,15 @@ export const Casplist = () => {
                 Member name
               </Typography>
             </th>
-            
+            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-normal leading-none opacity-70"
+              >
+                Total score
+              </Typography>
+            </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
               <Typography
                 variant="small"
@@ -152,15 +159,7 @@ export const Casplist = () => {
                 Date
               </Typography>
             </th>
-            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="font-normal leading-none opacity-70"
-              >
-                
-              </Typography>
-            </th>
+            
           </tr>
         </thead>
         <tbody>
@@ -181,7 +180,18 @@ export const Casplist = () => {
                     )[0]?.name || "-"}
                   </Typography>
                 </td>
-                
+                <td className={classes}>
+                  <Typography
+                    as="a"
+                    href="#"
+                    variant="small"
+                    color="blue-gray"
+                    onClick={()=>handleSessionDetails(el)}
+                    className="font-medium"
+                  >
+                    {el.totalScore || ""}
+                  </Typography>
+                </td>
                 <td className={classes}>
                   <Typography
                     variant="small"
@@ -192,18 +202,7 @@ export const Casplist = () => {
                   </Typography>
                 </td>
        
-<td className={classes}>
-                  <Typography
-                    as="a"
-                    href="#"
-                    variant="small"
-                    color="blue-gray"
-                    onClick={()=>handleSessionDetails(el)}
-                    className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
-                  >
-                    See details
-                  </Typography>
-                </td>
+
               </tr>
             );
           })}
