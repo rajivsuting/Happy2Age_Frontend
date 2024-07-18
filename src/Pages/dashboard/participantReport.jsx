@@ -83,7 +83,9 @@ const CustomTooltip = ({ active, payload, label }) => {
         <p className="label">{`Domain: ${label}`}</p>
         {barData && <p className="intro">{`Average: ${barData.value}`}</p>}
         {lineData && (
-          <p className="desc">{`Chort Average: ${lineData.value.toFixed(2)}`}</p>
+          <p className="desc">{`Chort Average: ${lineData.value.toFixed(
+            2
+          )}`}</p>
         )}
         {barData && (
           <p className="desc">{`Number of Sessions: ${barData.payload.numberOfSessions}`}</p>
@@ -115,14 +117,14 @@ export const ParticipantReport = () => {
   const [allParticipants, setAllParticipants] = useState([]);
   const [singleParticipant, setSingleParticipant] = useState("");
   const [startDate, setStartdate] = useState("");
-  const [happinessScore,setHappinessScore] = useState([])
+  const [happinessScore, setHappinessScore] = useState([]);
   const [endDate, setEnddate] = useState("");
   const [sessionSelect, setSessionSelect] = useState("");
   const [getReportData, setGetReportData] = useState([]);
   const [remarks, setRemarks] = useState("");
   const [resultnlist, setResultlist] = useState({});
-const dispatch = useDispatch();
-const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const componantPDF = useRef();
 
   const [singleEvalustion, setSingleEvaluation] = useState({});
@@ -139,51 +141,50 @@ const navigate = useNavigate();
   });
 
   useEffect(() => {
-      dispatch(getAllParticipants("",""));
-    axios.get(`${serverUrl}/evaluation/all`,{
-        
-      }).then((res) => {
-      setEvalutionlist(res.data.message);
-    }).catch((err) => {
-      if (err.response && err.response.data && err.response.data.jwtExpired) {
-        toast.error(err.response.data.message, toastConfig);
-        setTimeout(() => {
-          navigate("/auth/sign-in");
-        }, 3000);
-      } else if (err.response && err.response.data) {
-        toast.error(err.response.data.message, toastConfig);
-      } else {
-        toast.error("An unexpected error occurred.", toastConfig);
-      }
-    });
+    dispatch(getAllParticipants("", ""));
+    axios
+      .get(`${serverUrl}/evaluation/all`, {})
+      .then((res) => {
+        setEvalutionlist(res.data.message);
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.get(`${serverUrl}/oxford/${singleParticipant}`,{
-        
+    axios
+      .get(`${serverUrl}/oxford/${singleParticipant}`, {})
+      .then((res) => {
+        // console.log(res)
+        setHappinessScore(res.data.message);
       })
-    .then((res) => {
-      // console.log(res)
-      setHappinessScore(res.data.message);
-    })
-    .catch((err) => {
-      if (err.response && err.response.data && err.response.data.jwtExpired) {
-        toast.error(err.response.data.message, toastConfig);
-        setTimeout(() => {
-          navigate("/auth/sign-in");
-        }, 3000);
-      } else if (err.response && err.response.data) {
-        toast.error(err.response.data.message, toastConfig);
-      } else {
-        toast.error("An unexpected error occurred.", toastConfig);
-      }
-    });
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
     axios
       .get(
-        `${serverUrl}/report/${singleParticipant}/?&start=${startDate}&end=${endDate}`,{
-        
-      }
+        `${serverUrl}/report/${singleParticipant}/?&start=${startDate}&end=${endDate}`,
+        {}
       )
       .then((res) => {
         console.log(res);
@@ -208,10 +209,12 @@ const navigate = useNavigate();
     "Domain name": el.domainName,
     "Cohort average": el.centerAverage,
     "No. of sessions": el.numberOfSessions,
-    "Average": el.average,
+    Average: el.average,
   }));
 
-  let participantNameforExcel = allParticipants?.filter((el) =>el._id == singleParticipant)[0]?.name
+  let participantNameforExcel = allParticipants?.filter(
+    (el) => el._id == singleParticipant
+  )[0]?.name;
 
   const handleExportToExcel = () => {
     const wb = XLSX.utils.book_new();
@@ -219,21 +222,23 @@ const navigate = useNavigate();
 
     XLSX.utils.book_append_sheet(wb, ws, "Participant report");
 
-    XLSX.writeFile(wb, `${participantNameforExcel}-${startDate}-${endDate}.xlsx`);
-    toast.success("Excel file download successfully",toastConfig);
+    XLSX.writeFile(
+      wb,
+      `${participantNameforExcel}-${startDate}-${endDate}.xlsx`
+    );
+    toast.success("Excel file download successfully", toastConfig);
   };
 
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
     documentTitle: "Cohort report",
-    onAfterPrint: () => toast.success("PDF file download successfully",toastConfig),
+    onAfterPrint: () =>
+      toast.success("PDF file download successfully", toastConfig),
   });
 
   useEffect(() => {
     axios
-      .get(`${serverUrl}/participant/all`,{
-        
-      })
+      .get(`${serverUrl}/participant/all`, {})
       .then((res) => {
         setAllParticipants(res.data.message);
       })
@@ -250,7 +255,6 @@ const navigate = useNavigate();
         }
       });
   }, []);
-
 
   function calculateAge(birthdateStr) {
     const birthdate = new Date(birthdateStr);
@@ -337,7 +341,7 @@ const navigate = useNavigate();
         </div>
         <div className="text-center">
           <div className="font-bold mb-5 mt-5 text-[20px]">
-             Individual Member Observations
+            Individual Member Observations
           </div>
           <div className="font-bold mb-5 mt-5 text-[20px]">
             Our Journey Together
@@ -434,7 +438,7 @@ const navigate = useNavigate();
                 dataKey="domainName"
                 tick={{ fontSize: 12 }}
               />
-              <YAxis tick={{ fontSize: 12 }} domain={[0, 7]}/>
+              <YAxis tick={{ fontSize: 12 }} domain={[0, 7]} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               <Bar

@@ -11,14 +11,18 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
+import EditEvaluation from "../../Componants/Editevalution";
 
 export const Evaluationlist = () => {
   const [evalutionlist, setEvalutionlist] = useState([]);
+  const [selectedEvaluation, setSelectedEvaluation] = useState({}); 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [singleEvalustion, setSingleEvaluation] = useState({})
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [searchParams, setsearchParams] = useSearchParams();
+const [isEditModal, setisEditModal] = useState(false);
+  
   
   const toggleModal = (el) => {
      setIsModalOpen(!isModalOpen);
@@ -82,6 +86,23 @@ export const Evaluationlist = () => {
         }
       });
   };
+
+  const handleSave = (updatedEvaluation) => {
+    const updatedList = evalutionlist.map((ev) =>
+      ev._id === updatedEvaluation._id ? updatedEvaluation : ev
+    );
+    // setEvaluationList(updatedList);
+    console.log('Updated Evaluation List:', updatedList);
+  };
+
+  const openEditModal = (el)=>{
+    setSelectedEvaluation(el)
+setisEditModal(true);
+  }
+
+  const closeEditModal = ()=>{
+    setisEditModal(false);
+  }
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -263,6 +284,7 @@ export const Evaluationlist = () => {
                     variant="small"
                     color="blue-gray"
                     className="text-maincolor2 text-[20px]"
+                    onClick={() =>openEditModal(el)}
                   >
                     <CiEdit />
                   </Typography>
@@ -284,7 +306,13 @@ export const Evaluationlist = () => {
           })}
         </tbody>
       </table>
-
+      {selectedEvaluation && (
+        <EditEvaluation
+          evaluation={selectedEvaluation}
+          onSave={handleSave}
+          isOpen={isEditModal} onClose={closeEditModal}
+        />
+      )}
       <ConfirmDeleteModal
         isOpen={isModalOpenDelete}
         onClose={() => toggleModalDelete()}

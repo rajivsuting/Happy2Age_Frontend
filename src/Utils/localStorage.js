@@ -12,4 +12,12 @@ const saveLocalData=(key,value)=>{
     localStorage.setItem(key,JSON.stringify(value))
 }
 
-export {getLocalData, saveLocalData}
+function convertDateFormat(inputDate) {
+    // Split the input date string by the hyphen
+    const [year, month, day] = inputDate.split('-');
+    
+    // Return the date in the dd/mm/yyyy format
+    return `${day}/${month}/${year}`;
+  }
+
+export {getLocalData, saveLocalData,convertDateFormat}

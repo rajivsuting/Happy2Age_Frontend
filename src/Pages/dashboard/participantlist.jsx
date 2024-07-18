@@ -10,6 +10,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllParticipants, getParticipantsByName } from "../../Redux/AllListReducer/action";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
+import { convertDateFormat } from "../../Utils/localStorage";
 
 export const Participantlist = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -219,7 +220,7 @@ export const Participantlist = () => {
                    color="blue-gray"
                    className="font-normal"
                  >
-                   {el.dob.split("T")[0] || "-"}
+                   {convertDateFormat(el.dob.split("T")[0]) || "-"}
                  </Typography>
                </td>
                <td className={classes}>
@@ -302,7 +303,7 @@ export const Participantlist = () => {
                    color="blue-gray"
                    className="font-normal"
                  >
-                   {el.createdAt.split("T")[0] || "-"}
+                   {convertDateFormat(el.createdAt.split("T")[0]) || "-"}
                  </Typography>
                </td>
                {/* <td className={classes}>
