@@ -149,7 +149,7 @@ export const Cohortreport = () => {
 
   let filteredData = resultnlist?.graphDetails?.map((el) => ({
     "Domain name": el.domainName,
-    "Cohort average": el.centerAverage,
+    "Centre average": el.centerAverage,
     "No. of sessions": el.numberOfSessions,
   }));
 
@@ -160,7 +160,7 @@ export const Cohortreport = () => {
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(filteredData);
 
-    XLSX.utils.book_append_sheet(wb, ws, "Center report");
+    XLSX.utils.book_append_sheet(wb, ws, "Centre report");
 
     XLSX.writeFile(wb, `${cohortNameforExcel}-${startDate}-${endDate}.xlsx`);
     toast.success("Excel file download successfully", toastConfig);
@@ -170,7 +170,7 @@ export const Cohortreport = () => {
 
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
-    documentTitle: "Center report",
+    documentTitle: "Centre report",
     onAfterPrint: () =>
       toast.success("PDF file download successfully", toastConfig),
   });
@@ -194,7 +194,7 @@ export const Cohortreport = () => {
             onChange={(e) => setCohortSelect(e.target.value)}
             required
           >
-            <option value="">Select a center</option>
+            <option value="">Select a centre</option>
             {cohortList?.map((el) => {
               return <option value={el._id}>{el.name}</option>;
             })}
@@ -327,7 +327,7 @@ export const Cohortreport = () => {
           </BarChart>
         </div>
         <div className="w-[100%] font-normal text-end">
-          Center average : <b>{resultnlist?.averageForCohort}</b>
+          Centre average : <b>{resultnlist?.averageForCohort}</b>
         </div>
 
         <div>

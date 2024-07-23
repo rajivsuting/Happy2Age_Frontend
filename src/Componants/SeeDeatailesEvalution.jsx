@@ -23,7 +23,7 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
                 <td>{singleEvalustion?.participant?.name || "-"}</td>
               </tr>
               <tr>
-                <td className="py-2 font-semibold">Center</td>
+                <td className="py-2 font-semibold">Centre</td>
                 <td>{singleEvalustion?.cohort?.name || "NA"}</td>
               </tr>
               <tr>

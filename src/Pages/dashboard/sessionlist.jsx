@@ -174,7 +174,7 @@ export const Sessionlist = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Center name
+                Centre name
               </Typography>
             </th>
             <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">

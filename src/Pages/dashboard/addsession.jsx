@@ -189,7 +189,7 @@ export const AddSession = () => {
               onChange={handleChangeInput}
               className="border border-gray-400 w-[100%] px-2 py-2 rounded-md"
             >
-              <option value="">Select center</option>
+              <option value="">Select centre</option>
               {cohortList?.map((el) => {
                 return <option key={el._id} value={el._id}>{el.name}</option>;
               })}

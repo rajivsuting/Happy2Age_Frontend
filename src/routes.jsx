@@ -74,18 +74,18 @@ export const routes = [
       },
 
       {
-        mainHeading: "center",
+        mainHeading: "centre",
         allPages: [
           {
             icon_u: <MdGroups {...icon} />,
-            name_u: "add center",
-            path_u: "/add-center",
+            name_u: "add centre",
+            path_u: "/add-centre",
             element_u: <AddCohort />,
           },
           {
             icon_u: <IoListSharp {...icon} />,
-            name_u: "centers list",
-            path_u: "/centers-list",
+            name_u: "centres list",
+            path_u: "/centres-list",
             element_u: <Cohortlist />,
           },
         ],
@@ -189,8 +189,8 @@ export const routes = [
       },
       {
         icon: <HomeIcon {...icon} />,
-        name: "center report",
-        path: "/center-report",
+        name: "centre report",
+        path: "/centre-report",
         element: <Cohortreport />,
       },
       {

@@ -32,7 +32,7 @@ export const Participantlist = () => {
     "Email",
     "Type",
     "Gender",
-    "Center",
+    "Centre",
     "Date of birth",
     "Address",
     "Mobile no",

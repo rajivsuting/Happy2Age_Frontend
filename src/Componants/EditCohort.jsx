@@ -95,7 +95,7 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
       <div className="relative m-4 w-2/5 min-w-[40%] max-w-[30%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-4">
         <div className="flex items-center justify-between p-4 font-sans text-2xl font-semibold text-blue-gray-900">
-          Edit center
+          Edit centre
           <AiOutlineClose
             className="cursor-pointer"
             size={24}

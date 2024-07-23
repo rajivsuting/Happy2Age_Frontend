@@ -247,10 +247,8 @@ export const Moca = () => {
       .post(`${serverUrl}/moca/create`, state)
       .then((res) => {
         toast.success(res.data.message, toastConfig);
-        // setState(initialState)
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        setState(initialState);
+        setSelectParticipant("");
       })
       .catch((err) => {
         if (err.response && err.response.data && err.response.data.jwtExpired) {

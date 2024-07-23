@@ -83,7 +83,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         <p className="label">{`Domain: ${label}`}</p>
         {barData && <p className="intro">{`Average: ${barData.value}`}</p>}
         {lineData && (
-          <p className="desc">{`Center Average: ${lineData?.value}`}</p>
+          <p className="desc">{`Centre Average: ${lineData?.value}`}</p>
         )}
         {barData && (
           <p className="desc">{`Number of Sessions: ${barData.payload.numberOfSessions}`}</p>
@@ -205,7 +205,7 @@ export const ParticipantReport = () => {
 
   let filteredData = resultnlist?.graphDetails?.map((el) => ({
     "Domain name": el.domainName,
-    "Cohort average": el.centerAverage,
+    "Centre average": el.centerAverage,
     "No. of sessions": el.numberOfSessions,
     Average: el.average,
   }));

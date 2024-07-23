@@ -61,7 +61,7 @@ const Sessiondetails = () => {
             <td>{singleSession?.name || "N/A"}</td>
           </tr>
           <tr className="border-b-2 p-2">
-            <td className="py-2 px-2 font-semibold">Center name</td>
+            <td className="py-2 px-2 font-semibold">Centre name</td>
             <td>{singleSession?.cohort?.name || "N/A"}</td>
           </tr>
           <tr className="border-b-2 p-2">

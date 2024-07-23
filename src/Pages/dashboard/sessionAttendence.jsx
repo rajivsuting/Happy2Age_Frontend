@@ -134,7 +134,7 @@ export const SessionAttendence = () => {
             className="borderm w-[100%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
             required
           >
-            <option value="">Select center</option>;
+            <option value="">Select centre</option>;
             {cohortList.map((el) => {
               return (
                 <option key={el._id} value={el._id}>
