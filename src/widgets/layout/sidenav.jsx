@@ -864,7 +864,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/mainpage/oxford-happiness-questionnaire`}>
+                <NavLink to={`/mainpage/add-oxford-happiness-questionnaire`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -934,7 +934,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/mainpage/casp-questionnaire`}>
+                <NavLink to={`/mainpage/add-casp-19-questionnaire`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -962,14 +962,14 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                        CASP - 19
+                       Add CASP-19
                       </Typography>
                     </Button>
                   )}
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/mainpage/casp-questionnaire-list`}>
+                <NavLink to={`/mainpage/casp-19-questionnaire-list`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -1004,7 +1004,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/mainpage/moca`}>
+                <NavLink to={`/mainpage/add-montreal-congitive-assessment`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -1032,14 +1032,14 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                        MOCA
+                        Add MOCA
                       </Typography>
                     </Button>
                   )}
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/mainpage/moca-list`}>
+                <NavLink to={`/mainpage/montreal-congitive-assessment-list`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}

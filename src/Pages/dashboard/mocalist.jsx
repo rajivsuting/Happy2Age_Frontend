@@ -3,39 +3,51 @@ axios.defaults.withCredentials = true;
 import React, { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import { convertDateFormat, getLocalData } from "../../Utils/localStorage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { Button, Card, Typography } from "@material-tailwind/react";
+import { CiEdit } from "react-icons/ci";
+import { MdOutlineDeleteOutline } from "react-icons/md";
+import EditMoCA from "../../Componants/EditMOCA";
+import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
 
 export const Mocalist = () => {
   const [allResult, setallResult] = useState([]);
   const navigate = useNavigate();
   const [allParticipants, setAllParticipants] = useState([]);
   const [selectParticipant, setSelectParticipant] = useState("");
-  const [clickClear, setClickClear] = useState(false)
+  const [clickClear, setClickClear] = useState(false);
+  const [singleMOCA, setSingleMOCA] = useState({});
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isMOCAEditModal, setIsMOCAEditModal] = useState(false);
+  const [isMOCADeleteModal, setIsMOCADeleteModal] = useState(false);
+
+  const getAllMoca = ()=>{
+    axios
+    .get(`${serverUrl}/moca/all/`, {
+      
+    })
+    .then((res) => {
+      setallResult(res.data.message);
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.response && err.response.data && err.response.data.jwtExpired) {
+        toast.error(err.response.data.message, toastConfig);
+        setTimeout(() => {
+          navigate("/auth/sign-in");
+        }, 3000);
+      } else if (err.response && err.response.data) {
+        toast.error(err.response.data.message, toastConfig);
+      } else {
+        toast.error("An unexpected error occurred.", toastConfig);
+      }
+    });
+  }
 
   useEffect(() => {
-    axios
-      .get(`${serverUrl}/moca/all/`, {
-        
-      })
-      .then((res) => {
-        setallResult(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
+    getAllMoca();
   }, [clickClear]);
 
   useEffect(() => {
@@ -71,6 +83,47 @@ export const Mocalist = () => {
         setallResult(res.data.message);
       })
       .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
+  };
+
+  const toggleModal = (el)=>{
+    setSingleMOCA(el);
+    setIsMOCAEditModal(true);
+  }
+
+  const closeEditMOCAModal = ()=>{
+    setIsMOCAEditModal(false);
+  }
+
+  const openMOCADeleteModal = (id)=>{
+    setIsMOCADeleteModal(true);
+    setSearchParams({id})
+  }
+
+  const closeMOCADeleteModal = ()=>{
+    setIsMOCADeleteModal(false);
+  }
+
+  const handleSubmitMOCADelete = () => {
+    axios
+      .delete(`${serverUrl}/moca/delete/${searchParams.get("id")}`)
+      .then((res) => {
+        console.log(res)
+        toast.success(res.data.message, toastConfig);
+        getAllMoca();
+      })
+      .catch((err) => {
+        console.log(err);
         if (err.response && err.response.data && err.response.data.jwtExpired) {
           toast.error(err.response.data.message, toastConfig);
           setTimeout(() => {
@@ -145,6 +198,25 @@ export const Mocalist = () => {
                 Date
               </Typography>
             </th>
+            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-normal leading-none opacity-70"
+              >
+                
+              </Typography>
+            </th>
+            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-normal leading-none opacity-70"
+              >
+                
+              </Typography>
+            </th>
+            
           </tr>
         </thead>
         <tbody>
@@ -185,11 +257,37 @@ export const Mocalist = () => {
                     {convertDateFormat(el?.date?.split("T")[0]) || "-"}
                   </Typography>
                 </td>
+                <td className={classes}>
+                 <Typography
+                   as="a"
+                   href="#"
+                   variant="small"
+                   color="blue-gray"
+                   onClick={() => toggleModal(el)}
+                   className="text-maincolor2 text-[20px]"
+                 >
+                   <CiEdit />
+                 </Typography>
+               </td>
+               <td className={classes}>
+                 <Typography
+                   as="a"
+                   href="#"
+                   variant="small"
+                   color="blue-gray"
+                   onClick={()=>openMOCADeleteModal(el._id)}
+                   className="text-red-500  text-[20px]"
+                 >
+                   <MdOutlineDeleteOutline />
+                 </Typography>
+               </td>
               </tr>
             );
           })}
         </tbody>
       </table>
+      <ConfirmDeleteModal isOpen={isMOCADeleteModal} onClose={closeMOCADeleteModal} handleDelete={handleSubmitMOCADelete}/>
+      <EditMoCA isOpen={isMOCAEditModal} onClose={closeEditMOCAModal} singleMOCA={singleMOCA} getAllMoca = {getAllMoca}/>
     </Card>
   );
 };

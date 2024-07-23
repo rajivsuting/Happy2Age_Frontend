@@ -332,7 +332,7 @@ import React from 'react'
 
 export const Configurator = () => {
   return (
-    <div>configurator</div>
+    <div></div>
   )
 }
 

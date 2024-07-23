@@ -339,15 +339,6 @@ export const Participantlist = () => {
                  >
                    <MdOutlineDeleteOutline />
                  </Typography>
-                 {/* <Typography
-                 as="a"
-                 href="#"
-                 variant="small"
-                 color="blue-gray"
-                 className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
-               >
-                 See deatails
-               </Typography> */}
                </td>
              </tr>
            );

@@ -208,7 +208,7 @@ export const routes = [
       {
         icon: <HomeIcon {...icon} />,
         name: "Oxford Happiness",
-        path: "/oxford-happiness-questionnaire/",
+        path: "/add-oxford-happiness-questionnaire/",
         element: <OxfordHappiness />,
       },
       {
@@ -220,13 +220,13 @@ export const routes = [
       {
         icon: <HomeIcon {...icon} />,
         name: "CASP-19 QUESTIONNAIRE",
-        path: "/casp-questionnaire/",
+        path: "/add-casp-19-questionnaire/",
         element: <CaspQuestions />,
       },
       {
         icon: <HomeIcon {...icon} />,
         name: "CASP-19 QUESTIONNAIRE list",
-        path: "/casp-questionnaire-list/",
+        path: "/casp-19-questionnaire-list/",
         element: <Casplist />,
       },
       // {
@@ -238,13 +238,13 @@ export const routes = [
       {
         icon: <HomeIcon {...icon} />,
         name: "MOCA",
-        path: "/moca/",
+        path: "/add-montreal-congitive-assessment/",
         element: <Moca />,
       },
       {
         icon: <HomeIcon {...icon} />,
         name: "MOCA list",
-        path: "/moca-list/",
+        path: "/montreal-congitive-assessment-list/",
         element: <Mocalist />,
       }
     ],

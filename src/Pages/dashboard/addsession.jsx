@@ -112,6 +112,7 @@ export const AddSession = () => {
 
   const handleSubmitSession = (e) => {
     e.preventDefault();
+    // console.log(sessionData);
     setIsSessionLoading(true);
     axios.post(`${serverUrl}/session/create`, sessionData,{
       // headers: {

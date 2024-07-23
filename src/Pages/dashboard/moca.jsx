@@ -46,6 +46,37 @@ const initialState = {
     { section: "NAMING", subtopic: "", name: "Lion", score: "" },
     { section: "NAMING", subtopic: "", name: "Rhino", score: "" },
     { section: "NAMING", subtopic: "", name: "Camel", score: "" },
+    // Adding MEMORY questions
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "FACE",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "VELVET",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "CHURCH",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "DAISY",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "RED",
+      score: "",
+    },
     {
       section: "ATTENTION",
       subtopic: "Read list of digits (1 digit/ sec.).",
@@ -125,44 +156,7 @@ const initialState = {
       name: "watch - ruler",
       score: "",
     },
-    { section: "ORIENTATION", subtopic: "", name: "Date", score: "" },
-    { section: "ORIENTATION", subtopic: "", name: "Month", score: "" },
-    { section: "ORIENTATION", subtopic: "", name: "Year", score: "" },
-    { section: "ORIENTATION", subtopic: "", name: "Day", score: "" },
-    { section: "ORIENTATION", subtopic: "", name: "Place", score: "" },
-    { section: "ORIENTATION", subtopic: "", name: "City", score: "" },
-
-    // Adding MEMORY questions
-    {
-      section: "MEMORY",
-      subtopic: "Read list of words, subject has to recall them in two trials",
-      name: "FACE",
-      score: "",
-    },
-    {
-      section: "MEMORY",
-      subtopic: "Read list of words, subject has to recall them in two trials",
-      name: "VELVET",
-      score: "",
-    },
-    {
-      section: "MEMORY",
-      subtopic: "Read list of words, subject has to recall them in two trials",
-      name: "CHURCH",
-      score: "",
-    },
-    {
-      section: "MEMORY",
-      subtopic: "Read list of words, subject has to recall them in two trials",
-      name: "DAISY",
-      score: "",
-    },
-    {
-      section: "MEMORY",
-      subtopic: "Read list of words, subject has to recall them in two trials",
-      name: "RED",
-      score: "",
-    },
+  
 
     // Adding DELAYED RECALL questions
     {
@@ -195,6 +189,13 @@ const initialState = {
       name: "RED",
       score: "",
     },
+
+    { section: "ORIENTATION", subtopic: "", name: "Date", score: "" },
+    { section: "ORIENTATION", subtopic: "", name: "Month", score: "" },
+    { section: "ORIENTATION", subtopic: "", name: "Year", score: "" },
+    { section: "ORIENTATION", subtopic: "", name: "Day", score: "" },
+    { section: "ORIENTATION", subtopic: "", name: "Place", score: "" },
+    { section: "ORIENTATION", subtopic: "", name: "City", score: "" },
   ],
   totalScore: "",
   date: "",
@@ -303,6 +304,8 @@ export const Moca = () => {
                 ? `${question.subtopic} - ${question.name}`
                 : question.name}
             </div>
+            {
+              section == "MEMORY" ? null : 
             <div className="w-[200px]">
               <Input
                 type="number"
@@ -318,6 +321,7 @@ export const Moca = () => {
                 className="border rounded px-2 py-1"
               />
             </div>
+            }
           </div>
         ))}
       </div>
@@ -354,6 +358,7 @@ export const Moca = () => {
   const uniqueSectionsForsingle = [
     ...new Set(participantResult?.questions?.map((q) => q.section)),
   ];
+
 
   return (
     <form className="p-6">
