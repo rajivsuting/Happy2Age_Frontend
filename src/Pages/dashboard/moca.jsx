@@ -156,7 +156,6 @@ const initialState = {
       name: "watch - ruler",
       score: "",
     },
-  
 
     // Adding DELAYED RECALL questions
     {
@@ -244,24 +243,27 @@ export const Moca = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // console.log(state);
-    axios.post(`${serverUrl}/moca/create`,state)
-    .then((res)=>{
-      toast.success(res.data.message, toastConfig);
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    }).catch((err) => {
-      if (err.response && err.response.data && err.response.data.jwtExpired) {
-        toast.error(err.response.data.message, toastConfig);
+    axios
+      .post(`${serverUrl}/moca/create`, state)
+      .then((res) => {
+        toast.success(res.data.message, toastConfig);
+        // setState(initialState)
         setTimeout(() => {
-          navigate("/auth/sign-in");
-        }, 3000);
-      } else if (err.response && err.response.data) {
-        toast.error(err.response.data.message, toastConfig);
-      } else {
-        toast.error("An unexpected error occurred.", toastConfig);
-      }
-    });
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
   };
 
   const handleSubmitOxfordResult = (e) => {
@@ -304,24 +306,23 @@ export const Moca = () => {
                 ? `${question.subtopic} - ${question.name}`
                 : question.name}
             </div>
-            {
-              section == "MEMORY" ? null : 
-            <div className="w-[200px]">
-              <Input
-                type="number"
-                label="Score"
-                required
-                value={question.score}
-                onChange={(e) =>
-                  handleScoreChange(
-                    state.questions.indexOf(question),
-                    parseInt(e.target.value) || 0
-                  )
-                }
-                className="border rounded px-2 py-1"
-              />
-            </div>
-            }
+            {section == "MEMORY" ? null : (
+              <div className="w-[200px]">
+                <Input
+                  type="number"
+                  label="Score"
+                  required
+                  value={question.score}
+                  onChange={(e) =>
+                    handleScoreChange(
+                      state.questions.indexOf(question),
+                      parseInt(e.target.value) || 0
+                    )
+                  }
+                  className="border rounded px-2 py-1"
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -358,7 +359,6 @@ export const Moca = () => {
   const uniqueSectionsForsingle = [
     ...new Set(participantResult?.questions?.map((q) => q.section)),
   ];
-
 
   return (
     <form className="p-6">
