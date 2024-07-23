@@ -310,7 +310,6 @@ export const Casplist = () => {
       </table>
       <EditCASP editOrView={editOrView} isOpen={isCASPEditModal} onClose={closeEditCASPModal} singleCASP={singleCASP} getAllCASP={getAllCASP}/>
       <ConfirmDeleteModal isOpen={isCASPDeleteModal} onClose={closeCASPDeleteModal} handleDelete={handleSubmitCASPDelete}/>
-
     </Card>
   );
 };

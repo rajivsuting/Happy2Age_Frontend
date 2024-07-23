@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { AiOutlineClose } from "react-icons/ai";
 import { CgSpinner } from "react-icons/cg";
 
-const EditMoCA = ({ isOpen, onClose, singleMOCA, getAllMoca }) => {
+const EditMoCA = ({ isOpen, onClose, singleMOCA, getAllMoca, editOrView }) => {
   const [questionData, setQuestionData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,7 +47,7 @@ console.log(updatedData);
     axios
       .patch(`${serverUrl}/moca/edit/${singleMOCA._id}`, updatedData)
       .then((res) => {
-        toast.success(res.data.message, toastConfig);
+        toast.success("MOCA edited successfully", toastConfig);
         getAllMoca(); // Refresh the list
         onClose(); // Close the modal
       })
@@ -67,7 +67,7 @@ console.log(updatedData);
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
       <div className="relative m-4 w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
         <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
-          Edit MoCA Scores
+        {editOrView == "View" ? "MOCA score details" : "Edit MoCA Scores"}  
           <AiOutlineClose
             className="cursor-pointer"
             size={24}
@@ -91,6 +91,7 @@ console.log(updatedData);
                       type="number"
                       min="0"
                       max="3"
+                      disabled={editOrView == "View"}
                       value={question.score}
                       onChange={(e) => handleChange(index, e)}
                       className="border w-[25%] px-2 py-1 rounded-md text-gray-600 border border-gray-600"
@@ -98,11 +99,14 @@ console.log(updatedData);
                 }
               </div>
             ))}
+            {
+                editOrView == "View" ? null :
             <div className="text-center sticky bottom-0 z-10 pb-5">
               <Button type="submit" className="bg-maincolor" disabled={isLoading}>
                 {isLoading ? <CgSpinner size={18} className="m-auto animate-spin" /> : "Save"}
               </Button>
             </div>
+            }
           </form>
         </div>
       </div>

@@ -114,11 +114,7 @@ export const AddSession = () => {
     e.preventDefault();
     // console.log(sessionData);
     setIsSessionLoading(true);
-    axios.post(`${serverUrl}/session/create`, sessionData,{
-      // headers: {
-      //   Authorization: `${getLocalData("token")}`,
-      // },
-    })
+    axios.post(`${serverUrl}/session/create`, sessionData)
       .then((res) => {
         if (res.status === 201) {
           setIsSessionLoading(false);
@@ -126,6 +122,7 @@ export const AddSession = () => {
           dispatch(getAllSessions("","")).then((res) => {
             dispatch(getAllParticipants("", "")).then((re)=>{
               setCheckedParticipants([]);
+              setSessionData(initialState);
               return true;
             })
           });

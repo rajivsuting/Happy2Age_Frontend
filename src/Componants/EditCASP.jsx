@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { AiOutlineClose } from "react-icons/ai";
 import { CgSpinner } from "react-icons/cg";
 
-const EditCASP = ({ isOpen, onClose, singleCASP, getAllOxfords,editOrView }) => {
+const EditCASP = ({ isOpen, onClose, singleCASP, getAllCASP,editOrView }) => {
   const [questionData, setQuestionData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,7 +61,7 @@ const EditCASP = ({ isOpen, onClose, singleCASP, getAllOxfords,editOrView }) => 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // setIsLoading(true);
+    setIsLoading(true);
     const { updatedQuestions, totalScore } = calculateTotalScore();
     const updatedData = { ...questionData, questions: updatedQuestions, totalScore };
 // console.log(updatedData);

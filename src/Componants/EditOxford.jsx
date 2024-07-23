@@ -62,8 +62,8 @@ const EditOxford = ({
   if (!isOpen || !singleOxford) return null;
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
-      <div className="relative m-4 w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-4">
-        <div className="sticky top-0 z-10 flex items-center justify-between p-4 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
+      <div className="relative m-4 w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
+      <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
           {editOrView == "View"
             ? "Oxford Happiness Score details"
             : "Edit member Oxford Happiness Score"}
@@ -115,9 +115,9 @@ const EditOxford = ({
                 ))}
               </div>
             </div>
-
+ 
             {editOrView == "View" ? null : (
-              <div className="w-[90%] text-center mt-5 m-auto">
+              <div className="w-[90%] text-center mt-5 m-auto sticky bottom-0 z-10 pb-5">
                 <Button
                   className="bg-maincolor"
                   type="submit"

@@ -22,6 +22,8 @@ export const Mocalist = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isMOCAEditModal, setIsMOCAEditModal] = useState(false);
   const [isMOCADeleteModal, setIsMOCADeleteModal] = useState(false);
+  const [editOrView, setEditorView] = useState("")
+  
 
   const getAllMoca = ()=>{
     axios
@@ -216,7 +218,15 @@ export const Mocalist = () => {
                 
               </Typography>
             </th>
-            
+            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-normal leading-none opacity-70"
+              >
+                
+              </Typography>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -258,12 +268,24 @@ export const Mocalist = () => {
                   </Typography>
                 </td>
                 <td className={classes}>
+                   <Typography
+                     as="a"
+                     href="#"
+                     variant="small"
+                     color="blue-gray"
+                     onClick={() => {toggleModal(el);setEditorView("View")}}
+                     className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
+                   >
+                     See details
+                   </Typography>
+                 </td>
+                <td className={classes}>
                  <Typography
                    as="a"
                    href="#"
                    variant="small"
                    color="blue-gray"
-                   onClick={() => toggleModal(el)}
+                   onClick={() => {toggleModal(el);setEditorView("Edit")}}
                    className="text-maincolor2 text-[20px]"
                  >
                    <CiEdit />
@@ -287,7 +309,7 @@ export const Mocalist = () => {
         </tbody>
       </table>
       <ConfirmDeleteModal isOpen={isMOCADeleteModal} onClose={closeMOCADeleteModal} handleDelete={handleSubmitMOCADelete}/>
-      <EditMoCA isOpen={isMOCAEditModal} onClose={closeEditMOCAModal} singleMOCA={singleMOCA} getAllMoca = {getAllMoca}/>
+      <EditMoCA editOrView={editOrView} isOpen={isMOCAEditModal} onClose={closeEditMOCAModal} singleMOCA={singleMOCA} getAllMoca = {getAllMoca}/>
     </Card>
   );
 };
