@@ -46,6 +46,37 @@ const initialState = {
     { section: "NAMING", subtopic: "", name: "Lion", score: "" },
     { section: "NAMING", subtopic: "", name: "Rhino", score: "" },
     { section: "NAMING", subtopic: "", name: "Camel", score: "" },
+    // Adding MEMORY questions
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "FACE",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "VELVET",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "CHURCH",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "DAISY",
+      score: "",
+    },
+    {
+      section: "MEMORY",
+      subtopic: "Read list of words, subject has to recall them in two trials",
+      name: "RED",
+      score: "",
+    },
     {
       section: "ATTENTION",
       subtopic: "Read list of digits (1 digit/ sec.).",
@@ -125,44 +156,6 @@ const initialState = {
       name: "watch - ruler",
       score: "",
     },
-    { section: "ORIENTATION", subtopic: "", name: "Date", score: "" },
-    { section: "ORIENTATION", subtopic: "", name: "Month", score: "" },
-    { section: "ORIENTATION", subtopic: "", name: "Year", score: "" },
-    { section: "ORIENTATION", subtopic: "", name: "Day", score: "" },
-    { section: "ORIENTATION", subtopic: "", name: "Place", score: "" },
-    { section: "ORIENTATION", subtopic: "", name: "City", score: "" },
-
-    // Adding MEMORY questions
-    {
-      section: "MEMORY",
-      subtopic: "Read list of words, subject has to recall them in two trials",
-      name: "FACE",
-      score: "",
-    },
-    {
-      section: "MEMORY",
-      subtopic: "Read list of words, subject has to recall them in two trials",
-      name: "VELVET",
-      score: "",
-    },
-    {
-      section: "MEMORY",
-      subtopic: "Read list of words, subject has to recall them in two trials",
-      name: "CHURCH",
-      score: "",
-    },
-    {
-      section: "MEMORY",
-      subtopic: "Read list of words, subject has to recall them in two trials",
-      name: "DAISY",
-      score: "",
-    },
-    {
-      section: "MEMORY",
-      subtopic: "Read list of words, subject has to recall them in two trials",
-      name: "RED",
-      score: "",
-    },
 
     // Adding DELAYED RECALL questions
     {
@@ -195,6 +188,13 @@ const initialState = {
       name: "RED",
       score: "",
     },
+
+    { section: "ORIENTATION", subtopic: "", name: "Date", score: "" },
+    { section: "ORIENTATION", subtopic: "", name: "Month", score: "" },
+    { section: "ORIENTATION", subtopic: "", name: "Year", score: "" },
+    { section: "ORIENTATION", subtopic: "", name: "Day", score: "" },
+    { section: "ORIENTATION", subtopic: "", name: "Place", score: "" },
+    { section: "ORIENTATION", subtopic: "", name: "City", score: "" },
   ],
   totalScore: "",
   date: "",
@@ -243,24 +243,25 @@ export const Moca = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // console.log(state);
-    axios.post(`${serverUrl}/moca/create`,state)
-    .then((res)=>{
-      toast.success(res.data.message, toastConfig);
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    }).catch((err) => {
-      if (err.response && err.response.data && err.response.data.jwtExpired) {
-        toast.error(err.response.data.message, toastConfig);
-        setTimeout(() => {
-          navigate("/auth/sign-in");
-        }, 3000);
-      } else if (err.response && err.response.data) {
-        toast.error(err.response.data.message, toastConfig);
-      } else {
-        toast.error("An unexpected error occurred.", toastConfig);
-      }
-    });
+    axios
+      .post(`${serverUrl}/moca/create`, state)
+      .then((res) => {
+        toast.success(res.data.message, toastConfig);
+        setState(initialState);
+        setSelectParticipant("");
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
   };
 
   const handleSubmitOxfordResult = (e) => {
@@ -303,21 +304,23 @@ export const Moca = () => {
                 ? `${question.subtopic} - ${question.name}`
                 : question.name}
             </div>
-            <div className="w-[200px]">
-              <Input
-                type="number"
-                label="Score"
-                required
-                value={question.score}
-                onChange={(e) =>
-                  handleScoreChange(
-                    state.questions.indexOf(question),
-                    parseInt(e.target.value) || 0
-                  )
-                }
-                className="border rounded px-2 py-1"
-              />
-            </div>
+            {section == "MEMORY" ? null : (
+              <div className="w-[200px]">
+                <Input
+                  type="number"
+                  label="Score"
+                  required
+                  value={question.score}
+                  onChange={(e) =>
+                    handleScoreChange(
+                      state.questions.indexOf(question),
+                      parseInt(e.target.value) || 0
+                    )
+                  }
+                  className="border rounded px-2 py-1"
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>

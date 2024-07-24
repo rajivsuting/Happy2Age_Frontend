@@ -299,7 +299,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     <div className="text-maincolor2">
                       <GrGroup {...icon} />
                     </div>
-                    Center
+                    Centre
                   </Typography>
 
                   {cohortOpen ? (
@@ -312,7 +312,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
               {cohortOpen ? (
                 <>
                   <li>
-                    <NavLink to={`/mainpage/add-center`}>
+                    <NavLink to={`/mainpage/add-centre`}>
                       {({ isActive }) => (
                         <Button
                           variant={isActive ? "yellow" : "text"}
@@ -337,14 +337,14 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            add center
+                            add centre
                           </Typography>
                         </Button>
                       )}
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to={`/mainpage/centers-list`}>
+                    <NavLink to={`/mainpage/centres-list`}>
                       {({ isActive }) => (
                         <Button
                           variant={isActive ? "yellow" : "text"}
@@ -371,7 +371,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            centers list
+                            centres list
                           </Typography>
                         </Button>
                       )}
@@ -794,7 +794,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </>
               ) : null}
               <li>
-                <NavLink to={`/mainpage/center-report`}>
+                <NavLink to={`/mainpage/centre-report`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -822,7 +822,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                        Center report
+                        Centre report
                       </Typography>
                     </Button>
                   )}
@@ -864,7 +864,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/mainpage/oxford-happiness-questionnaire`}>
+                <NavLink to={`/mainpage/add-oxford-happiness-questionnaire`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -934,7 +934,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/mainpage/casp-questionnaire`}>
+                <NavLink to={`/mainpage/add-casp-19-questionnaire`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -962,14 +962,14 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                        CASP - 19
+                       Add CASP-19
                       </Typography>
                     </Button>
                   )}
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/mainpage/casp-questionnaire-list`}>
+                <NavLink to={`/mainpage/casp-19-questionnaire-list`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -1004,7 +1004,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/mainpage/moca`}>
+                <NavLink to={`/mainpage/add-montreal-congitive-assessment`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -1032,14 +1032,14 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                        MOCA
+                        Add MOCA
                       </Typography>
                     </Button>
                   )}
                 </NavLink>
               </li>
               <li>
-                <NavLink to={`/mainpage/moca-list`}>
+                <NavLink to={`/mainpage/montreal-congitive-assessment-list`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}

@@ -104,6 +104,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
         }
       })
       .catch((err) => {
+        console.log(err);
         setIsEditParticipantLoading(false);
         if (err.response && err.response.data && err.response.data.jwtExpired) {
           toast.error(err.response.data.message, toastConfig);
@@ -179,7 +180,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 <Option value="Special Need">Special Need</Option>
               </Select>
               <Select
-                label="Select center"
+                label="Select centre"
                 name="cohort"
                 value={participantData.cohort}
                 onChange={(value) => handleChangeGenderAndParticipants("cohort", value)}

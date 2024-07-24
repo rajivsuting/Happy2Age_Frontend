@@ -74,18 +74,18 @@ export const routes = [
       },
 
       {
-        mainHeading: "center",
+        mainHeading: "centre",
         allPages: [
           {
             icon_u: <MdGroups {...icon} />,
-            name_u: "add center",
-            path_u: "/add-center",
+            name_u: "add centre",
+            path_u: "/add-centre",
             element_u: <AddCohort />,
           },
           {
             icon_u: <IoListSharp {...icon} />,
-            name_u: "centers list",
-            path_u: "/centers-list",
+            name_u: "centres list",
+            path_u: "/centres-list",
             element_u: <Cohortlist />,
           },
         ],
@@ -189,8 +189,8 @@ export const routes = [
       },
       {
         icon: <HomeIcon {...icon} />,
-        name: "center report",
-        path: "/center-report",
+        name: "centre report",
+        path: "/centre-report",
         element: <Cohortreport />,
       },
       {
@@ -208,7 +208,7 @@ export const routes = [
       {
         icon: <HomeIcon {...icon} />,
         name: "Oxford Happiness",
-        path: "/oxford-happiness-questionnaire/",
+        path: "/add-oxford-happiness-questionnaire/",
         element: <OxfordHappiness />,
       },
       {
@@ -220,13 +220,13 @@ export const routes = [
       {
         icon: <HomeIcon {...icon} />,
         name: "CASP-19 QUESTIONNAIRE",
-        path: "/casp-questionnaire/",
+        path: "/add-casp-19-questionnaire/",
         element: <CaspQuestions />,
       },
       {
         icon: <HomeIcon {...icon} />,
         name: "CASP-19 QUESTIONNAIRE list",
-        path: "/casp-questionnaire-list/",
+        path: "/casp-19-questionnaire-list/",
         element: <Casplist />,
       },
       // {
@@ -238,13 +238,13 @@ export const routes = [
       {
         icon: <HomeIcon {...icon} />,
         name: "MOCA",
-        path: "/moca/",
+        path: "/add-montreal-congitive-assessment/",
         element: <Moca />,
       },
       {
         icon: <HomeIcon {...icon} />,
         name: "MOCA list",
-        path: "/moca-list/",
+        path: "/montreal-congitive-assessment-list/",
         element: <Mocalist />,
       }
     ],

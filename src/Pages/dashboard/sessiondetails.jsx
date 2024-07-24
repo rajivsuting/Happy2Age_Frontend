@@ -48,6 +48,12 @@ const Sessiondetails = () => {
 
   return (
     <div className="mt-5">
+      <div
+              className="w-[70px] border-b cursor-pointer hover:border-b-blue text-maincolor2 mb-5"
+              onClick={() => window.history.back()}
+            >
+              Go back
+            </div>
       <table className="min-w-full divide-y divide-gray-200 border">
         <tbody>
           <tr className="border-b-2 p-2">
@@ -55,7 +61,7 @@ const Sessiondetails = () => {
             <td>{singleSession?.name || "N/A"}</td>
           </tr>
           <tr className="border-b-2 p-2">
-            <td className="py-2 px-2 font-semibold">Center name</td>
+            <td className="py-2 px-2 font-semibold">Centre name</td>
             <td>{singleSession?.cohort?.name || "N/A"}</td>
           </tr>
           <tr className="border-b-2 p-2">

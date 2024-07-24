@@ -112,12 +112,9 @@ export const AddSession = () => {
 
   const handleSubmitSession = (e) => {
     e.preventDefault();
+    // console.log(sessionData);
     setIsSessionLoading(true);
-    axios.post(`${serverUrl}/session/create`, sessionData,{
-      // headers: {
-      //   Authorization: `${getLocalData("token")}`,
-      // },
-    })
+    axios.post(`${serverUrl}/session/create`, sessionData)
       .then((res) => {
         if (res.status === 201) {
           setIsSessionLoading(false);
@@ -125,6 +122,7 @@ export const AddSession = () => {
           dispatch(getAllSessions("","")).then((res) => {
             dispatch(getAllParticipants("", "")).then((re)=>{
               setCheckedParticipants([]);
+              setSessionData(initialState);
               return true;
             })
           });
@@ -191,7 +189,7 @@ export const AddSession = () => {
               onChange={handleChangeInput}
               className="border border-gray-400 w-[100%] px-2 py-2 rounded-md"
             >
-              <option value="">Select center</option>
+              <option value="">Select centre</option>
               {cohortList?.map((el) => {
                 return <option key={el._id} value={el._id}>{el.name}</option>;
               })}

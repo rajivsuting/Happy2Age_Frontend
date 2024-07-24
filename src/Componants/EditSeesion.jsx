@@ -149,7 +149,8 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
       <div className="relative m-4  min-w-[30%] max-w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-8">
-        <div className="flex items-center justify-between p-4 font-sans text-2xl font-semibold text-blue-gray-900">
+      <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
+     
           Edit Session
           <AiOutlineClose
             className="cursor-pointer"
@@ -194,7 +195,7 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
                   onChange={(e) => {setSelectedCohort(e.target.value)}}
                   className="border border-gray-400 w-[100%] px-2 py-2 rounded-md"
                 >
-                  <option value="">Select center</option>
+                  <option value="">Select centre</option>
                   {cohortList?.map((el) => (
                     <option key={el._id} value={el._id}>
                       {el.name}

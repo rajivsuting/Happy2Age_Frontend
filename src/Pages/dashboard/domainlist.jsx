@@ -199,7 +199,7 @@ export const Domainlist = () => {
           </tbody>
         </table>
       </Card>
-      const [searchParams, setsearchParams] = useSearchParams();
+      {/* const [searchParams, setsearchParams] = useSearchParams(); */}
 
 <ConfirmDeleteModal
         isOpen={isModalOpenDelete}

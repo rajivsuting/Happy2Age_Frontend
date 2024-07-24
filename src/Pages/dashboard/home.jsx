@@ -152,7 +152,7 @@ export function Home() {
         />
 
         <StatisticsCard
-          title={"Total centers"}
+          title={"Total centres"}
           icon={React.createElement(MdGroups, {
             className: "w-6 h-6 text-white",
           })}
@@ -217,7 +217,7 @@ export function Home() {
           >
             <div>
               <Typography variant="h6" color="blue-gray" className="mb-1">
-                Centers
+                Centres
               </Typography>
               {/* <Typography
                 variant="small"
@@ -251,7 +251,7 @@ export function Home() {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["Centers", "Total members", "Names"].map((el) => (
+                  {["Centres", "Total members", "Names"].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-6 text-left"
