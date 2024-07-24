@@ -119,6 +119,7 @@ export const ParticipantReport = () => {
   const [endDate, setEnddate] = useState("");
   const [sessionSelect, setSessionSelect] = useState("");
   const [getReportData, setGetReportData] = useState([]);
+  const [entireEvaluation, setEntireEvaluation] = useState([]);
   const [remarks, setRemarks] = useState("");
   const [resultnlist, setResultlist] = useState({});
   const dispatch = useDispatch();
@@ -161,24 +162,7 @@ export const ParticipantReport = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .get(`${serverUrl}/oxford/${singleParticipant}`, {})
-      .then((res) => {
-        // console.log(res)
-        setHappinessScore(res.data.message);
-      })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
+    
     axios
       .get(
         `${serverUrl}/report/${singleParticipant}/?&start=${startDate}&end=${endDate}`,
@@ -187,6 +171,7 @@ export const ParticipantReport = () => {
       .then((res) => {
         console.log(res);
         setResultlist(res.data.data);
+        setEntireEvaluation(res.data.participantEvaluations);
       })
       .catch((err) => {
         if (err.response && err.response.data && err.response.data.jwtExpired) {
@@ -214,19 +199,7 @@ export const ParticipantReport = () => {
     (el) => el._id == singleParticipant
   )[0]?.name;
 
-  const handleExportToExcel = () => {
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(filteredData);
-
-    XLSX.utils.book_append_sheet(wb, ws, "Participant report");
-
-    XLSX.writeFile(
-      wb,
-      `${participantNameforExcel}-${startDate}-${endDate}.xlsx`
-    );
-    toast.success("Excel file download successfully", toastConfig);
-  };
-
+  
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
     documentTitle: "Cohort report",
@@ -280,6 +253,91 @@ export const ParticipantReport = () => {
 
     return `${years} years, ${months} months, ${days} days`;
   }
+
+
+// excel showing ----------
+
+const transformData = entireEvaluation?.map((item) => {
+  const domains = item.domain.map((domainItem) => ({
+    domainName: domainItem.name,
+    subTopics: domainItem.subTopics,
+  }));
+
+  return {
+    cohort: item.cohort.name,
+    participant: item.participant.name,
+    participantType: item.participant.participantType,
+    activity: item.activity.name,
+    session: item.session.name,
+    sessionDate: convertDateFormat(item.session.date.split("T")[0]),
+    sessionTime: item.session.numberOfMins,
+    domains: domains,
+    grandAverage: item.grandAverage,
+  };
+});
+
+console.log(transformData);
+
+const transformMainData = (data) => {
+  let result = [];
+
+  data.forEach((item) => {
+    const { cohort, participant, participantType, activity, session, sessionDate, sessionTime, domains, grandAverage } = item;
+
+    domains.forEach((domain) => {
+      domain.subTopics.forEach((subtopic) => {
+        result.push({
+          "Cohort name" :cohort,
+          "Participant name":participant,
+          "Participant type":participantType,
+          "Activity name":activity,
+          "Session name":session,
+          "Session date":sessionDate,
+          "Session time(In minute)":sessionTime,
+          "Domain name": domain.domainName,
+          "Subtopic content": subtopic.content,
+          "Score": subtopic.score,
+          "Grand average":grandAverage,
+        });
+      });
+    });
+  });
+
+  return result;
+};
+
+const transformGraphDetails = (graphDetails) => {
+  return graphDetails.map((item) => ({
+    domainName: item.domainName,
+    average: item.average,
+    centerAverage: item.centerAverage,
+    numberOfSessions: item.numberOfSessions,
+  }));
+};
+
+  const handleExportToExcel = () => {
+    const transformedMainData = transformMainData(transformData);
+    const transformedGraphDetails = transformGraphDetails(resultnlist?.graphDetails);
+  
+    // Create worksheets
+    const mainWorksheet = XLSX.utils.json_to_sheet(transformedMainData);
+    const graphDetailsWorksheet = XLSX.utils.json_to_sheet(transformedGraphDetails);
+  
+    // Create a workbook
+    const workbook = XLSX.utils.book_new();
+    
+    // Add worksheets to the workbook
+    XLSX.utils.book_append_sheet(workbook, mainWorksheet, "Main Data");
+    XLSX.utils.book_append_sheet(workbook, graphDetailsWorksheet, "Graph Details");
+  
+
+    XLSX.writeFile(
+      workbook,
+      `${participantNameforExcel}-${startDate}-${endDate}.xlsx`
+    );
+    toast.success("Excel file download successfully", toastConfig);
+  };
+
 
   return (
     <div className="mb-24">
