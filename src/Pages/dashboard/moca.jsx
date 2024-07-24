@@ -51,31 +51,26 @@ const initialState = {
       section: "MEMORY",
       subtopic: "Read list of words, subject has to recall them in two trials",
       name: "FACE",
-      score: "",
     },
     {
       section: "MEMORY",
       subtopic: "Read list of words, subject has to recall them in two trials",
       name: "VELVET",
-      score: "",
     },
     {
       section: "MEMORY",
       subtopic: "Read list of words, subject has to recall them in two trials",
       name: "CHURCH",
-      score: "",
     },
     {
       section: "MEMORY",
       subtopic: "Read list of words, subject has to recall them in two trials",
       name: "DAISY",
-      score: "",
     },
     {
       section: "MEMORY",
       subtopic: "Read list of words, subject has to recall them in two trials",
       name: "RED",
-      score: "",
     },
     {
       section: "ATTENTION",
@@ -206,6 +201,7 @@ export const Moca = () => {
   const [selectParticipant, setSelectParticipant] = useState("");
   const [participantResult, setParticipantResult] = useState({});
   const navigate = useNavigate();
+
   const handleScoreChange = (index, value) => {
     const newQuestions = [...state.questions];
     newQuestions[index].score = value;
@@ -240,38 +236,34 @@ export const Moca = () => {
       });
   }, []);
 
+  const validateForm = () => {
+    // Check if all questions have scores
+    const allQuestionsFilled = state.questions.every(
+      (q) => q.score !== "" && q.score !== null
+    );
+
+    // Check if the participant and date are selected
+    const participantSelected = state.participant !== "";
+    const dateSelected = state.date !== "";
+
+    return allQuestionsFilled && participantSelected && dateSelected;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(state);
+
+    if (!validateForm()) {
+      toast.error("Please fill out all fields before submitting.", toastConfig);
+      return;
+    }
+
     axios
       .post(`${serverUrl}/moca/create`, state)
       .then((res) => {
         toast.success(res.data.message, toastConfig);
-        setState(initialState);
-        setSelectParticipant("");
-      })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
-  };
-
-  const handleSubmitOxfordResult = (e) => {
-    // console.log(e)
-    // e.preventDefault();
-    axios
-      .get(`${serverUrl}/moca/${selectParticipant}`, {})
-      .then((res) => {
-        console.log(res);
-        setParticipantResult(res.data.message[res.data.message.length - 1]);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       })
       .catch((err) => {
         if (err.response && err.response.data && err.response.data.jwtExpired) {
@@ -293,18 +285,18 @@ export const Moca = () => {
     );
     return (
       <div key={section} className="mb-6">
-        <h2 className=" font-bold mt-10 mb-4">{section}</h2>
+        <h2 className="font-bold mt-10 mb-4">{section}</h2>
         {sectionQuestions.map((question, index) => (
           <div
             key={index}
             className="flex justify-between items-center gap-[50px] mb-4"
           >
-            <div className=" mb-2">
+            <div className="mb-2">
               {question.subtopic
                 ? `${question.subtopic} - ${question.name}`
                 : question.name}
             </div>
-            {section == "MEMORY" ? null : (
+            {section === "MEMORY" ? null : (
               <div className="w-[200px]">
                 <Input
                   type="number"
@@ -334,13 +326,13 @@ export const Moca = () => {
 
     return (
       <div key={section} className="mb-6">
-        <h2 className=" font-bold mt-10 mb-4">{section}</h2>
+        <h2 className="font-bold mt-10 mb-4">{section}</h2>
         {sectionQuestions.map((question, index) => (
           <div
             key={index}
             className="w-[90%] m-auto flex justify-between items-center gap-[20px] mb-4"
           >
-            <div className=" mb-2 w-[80%]">
+            <div className="mb-2 w-[80%]">
               {question.subtopic
                 ? `${question.subtopic} - ${question.name}`
                 : question.name}
@@ -390,18 +382,15 @@ export const Moca = () => {
             onChange={handleDateChange}
           />
         </div>
+        {/* <div className="">
+          <h2 className="text-xl font-bold">Total Score: {state.totalScore}</h2>
+        </div> */}
       </div>
       {uniqueSections.map((section) => renderSection(section))}
-      <div className="mt-6">
-        <h2 className="text-xl font-bold">Total Score: {state.totalScore}</h2>
-      </div>
+
       <div className="w-[90%] text-center mt-5 m-auto">
         <Button className="bg-maincolor" type="submit" onClick={handleSubmit}>
-          {/* {isAddQuestionLoading ? ( */}
-          {/* <CgSpinner size={18} className="m-auto animate-spin" />
-            ) : ( */}
           Add
-          {/* )} */}
         </Button>
       </div>
     </form>

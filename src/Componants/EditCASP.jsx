@@ -10,9 +10,14 @@ import { CgSpinner } from "react-icons/cg";
 const EditCASP = ({ isOpen, onClose, singleCASP, getAllCASP, editOrView }) => {
   const [questionData, setQuestionData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [totalScore, setTotalScore] = useState(0);
 
   useEffect(() => {
-    setQuestionData(singleCASP);
+    if (singleCASP) {
+      setQuestionData(singleCASP);
+      const { totalScore } = calculateTotalScore(singleCASP.questions);
+      setTotalScore(totalScore);
+    }
   }, [singleCASP]);
 
   const handleChange = (index, e) => {
@@ -20,10 +25,13 @@ const EditCASP = ({ isOpen, onClose, singleCASP, getAllCASP, editOrView }) => {
     const updatedQuestions = [...questionData.questions];
     updatedQuestions[index].score = value;
     setQuestionData({ ...questionData, questions: updatedQuestions });
+    const { totalScore } = calculateTotalScore(updatedQuestions);
+    setTotalScore(totalScore);
   };
 
-  const calculateTotalScore = () => {
-    const updatedQuestions = questionData.questions.map((question) => {
+  const calculateTotalScore = (questions) => {
+    let totalScore = 0;
+    const updatedQuestions = questions?.map((question) => {
       const scoreValue =
         question.score === "Often"
           ? 3
@@ -36,17 +44,11 @@ const EditCASP = ({ isOpen, onClose, singleCASP, getAllCASP, editOrView }) => {
       // Adjust score for negative items
       const negativeItems = ["C1", "C2", "C4", "A2", "A4", "A5"];
 
-      return {
-        ...question,
-        score: negativeItems.includes(question.code)
-          ? 3 - scoreValue
-          : scoreValue,
-      };
-    });
+      totalScore += negativeItems.includes(question.code)
+        ? 3 - scoreValue
+        : scoreValue;
 
-    let totalScore = 0;
-    updatedQuestions.forEach((q) => {
-      totalScore += q.score;
+      return question;
     });
 
     return { updatedQuestions, totalScore };
@@ -54,14 +56,14 @@ const EditCASP = ({ isOpen, onClose, singleCASP, getAllCASP, editOrView }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // setIsLoading(true);
-    const { updatedQuestions, totalScore } = calculateTotalScore();
+    setIsLoading(true);
+    const { updatedQuestions, totalScore } = calculateTotalScore(questionData.questions);
     const updatedData = {
       ...questionData,
       questions: updatedQuestions,
       totalScore,
     };
-    // console.log(updatedData);
+
     axios
       .patch(`${serverUrl}/casp/edit/${singleCASP._id}`, updatedData)
       .then((res) => {
@@ -85,9 +87,9 @@ const EditCASP = ({ isOpen, onClose, singleCASP, getAllCASP, editOrView }) => {
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
       <div className="relative m-4 w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
         <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
-          {editOrView == "View"
-            ? "CASP-19 Questionnaire Score details"
-            : "Edit CASP-19 Questionnaire Scores"}
+          {editOrView === "View"
+            ? `CASP-19 Questionnaire Score details - Total Score: ${totalScore}`
+            : `Edit CASP-19 Questionnaire Scores`}
           <AiOutlineClose
             className="cursor-pointer"
             size={24}
@@ -116,7 +118,7 @@ const EditCASP = ({ isOpen, onClose, singleCASP, getAllCASP, editOrView }) => {
                           type="radio"
                           name={`score${index}`}
                           value={option}
-                          disabled={editOrView == "View"}
+                          disabled={editOrView === "View"}
                           checked={question.score === option}
                           onChange={(e) => handleChange(index, e)}
                           className="mr-2 p-2 text-center"
@@ -128,7 +130,7 @@ const EditCASP = ({ isOpen, onClose, singleCASP, getAllCASP, editOrView }) => {
                 </div>
               </div>
             ))}
-            {editOrView == "View" ? null : (
+            {editOrView === "View" ? null : (
               <div className="text-center sticky bottom-0 z-10 pb-5">
                 <Button
                   type="submit"

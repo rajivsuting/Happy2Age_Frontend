@@ -183,10 +183,19 @@ export const OxfordHappiness = () => {
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
+  
+    // Check if all scores are filled
+    const allScoresFilled = questions.every((question) => question.score !== 0);
+  
+    if (!allScoresFilled) {
+      toast.error("Please fill all the scores before submitting.", toastConfig);
+      return;
+    }
+  
+    setIsAddQuestionLoading(true);
+  
     axios
-      .post(`${serverUrl}/oxford/add`, questionData,{
-        
-      })
+      .post(`${serverUrl}/oxford/add`, questionData, {})
       .then((res) => {
         toast.success(res.data.message, toastConfig);
         setTimeout(() => {
@@ -204,6 +213,9 @@ export const OxfordHappiness = () => {
         } else {
           toast.error("An unexpected error occurred.", toastConfig);
         }
+      })
+      .finally(() => {
+        setIsAddQuestionLoading(false);
       });
   };
 

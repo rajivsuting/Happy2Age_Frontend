@@ -32,6 +32,8 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { serverUrl } from "../../api";
+import { PiGraphDuotone } from "react-icons/pi";
+import { BsListTask } from "react-icons/bs";
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -885,7 +887,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics {...icon} />
+                        <PiGraphDuotone {...icon} />
                       </span>
 
                       <Typography
@@ -920,7 +922,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics {...icon} />
+                        <BsListTask {...icon} />
                       </span>
 
                       <Typography
@@ -955,7 +957,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics {...icon} />
+                        <PiGraphDuotone {...icon} />
                       </span>
 
                       <Typography
@@ -990,7 +992,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics {...icon} />
+                        <BsListTask {...icon} />
                       </span>
 
                       <Typography
@@ -1025,7 +1027,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics {...icon} />
+                        <PiGraphDuotone {...icon} />
                       </span>
 
                       <Typography
@@ -1060,7 +1062,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           isActive ? "text-white" : "text-maincolor2"
                         }`}
                       >
-                        <TbReportAnalytics {...icon} />
+                        <BsListTask {...icon} />
                       </span>
 
                       <Typography
