@@ -52,7 +52,23 @@ const EditOxford = ({
       });
   };
 
-  console.log(questionData);
+  // dumyyy---------------------------------
+
+
+ 
+  
+
+
+
+
+
+
+
+
+
+
+
+  //dummy--------------------------------------------
 
   if (!isOpen || !singleOxford) return null;
   return (

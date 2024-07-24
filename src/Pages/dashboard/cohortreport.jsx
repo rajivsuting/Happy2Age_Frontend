@@ -91,6 +91,7 @@ export const Cohortreport = () => {
   const [getReportData, setGetReportData] = useState([]);
   const [remarks, setRemarks] = useState("");
   const [observation, setObservation] = useState("");
+  const [entireEvaluation, setEntireEvaluation] = useState([]);
   const componantPDF = useRef();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -121,8 +122,10 @@ export const Cohortreport = () => {
       .then((res) => {
         console.log(res);
         setResultlist(res.data.message);
+        setEntireEvaluation(res.data.evaluations);
       })
       .catch((err) => {
+        console.log(err)
         if (err.response && err.response.data && err.response.data.jwtExpired) {
           toast.error(err.response.data.message, toastConfig);
           setTimeout(() => {
@@ -156,16 +159,6 @@ export const Cohortreport = () => {
   let cohortNameforExcel = cohortList?.filter((el) => el._id == cohortSelect)[0]
     ?.name;
 
-  const handleExportToExcel = () => {
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(filteredData);
-
-    XLSX.utils.book_append_sheet(wb, ws, "Centre report");
-
-    XLSX.writeFile(wb, `${cohortNameforExcel}-${startDate}-${endDate}.xlsx`);
-    toast.success("Excel file download successfully", toastConfig);
-  };
-
   // console.log(cohortList?.filter((el) =>el._id == cohortSelect)[0]?.name);
 
   const generatePDF = useReactToPrint({
@@ -177,7 +170,121 @@ export const Cohortreport = () => {
 
   // heat map----------------------
 
-  // console.log(resultnlist?.detailedScores);
+  const transformData = entireEvaluation?.map((item) => {
+    const domains = item.domain.map((domainItem) => ({
+      domainName: domainItem.name,
+      subTopics: domainItem.subTopics,
+    }));
+
+    return {
+      cohort: item.cohort.name,
+      participant: item.participant.name,
+      participantType: item.participant.participantType,
+      activity: item.activity.name,
+      session: item.session.name,
+      sessionDate: convertDateFormat(item.session.date.split("T")[0]),
+      sessionTime: item.session.numberOfMins,
+      domains: domains,
+      grandAverage: item.grandAverage,
+    };
+  });
+
+  const transformMainData = (data) => {
+    let result = [];
+
+    data.forEach((item) => {
+      const {
+        cohort,
+        participant,
+        participantType,
+        sessionDate,
+        sessionTime,
+        activity,
+        session,
+        domains,
+        grandAverage,
+      } = item;
+
+      domains.forEach((domain) => {
+        domain.subTopics.forEach((subtopic) => {
+          result.push({
+            "Cohort name" :cohort,
+            "Participant name":participant,
+            "Participant type":participantType,
+            "Activity name":activity,
+            "Session name":session,
+            "Session date":sessionDate,
+            "Session time(In minute)":sessionTime,
+            "Domain name": domain.domainName,
+            "Subtopic content": subtopic.content,
+            "Score": subtopic.score,
+            "Grand average":grandAverage,
+          });
+        });
+      });
+    });
+
+    return result;
+  };
+
+  const transformGraphDetails = (graphDetails) => {
+    return graphDetails.map((item) => ({
+      "Domain name": item.domainName,
+      "Centre average": item.centerAverage,
+      "Number of session": item.numberOfSessions,
+    }));
+  };
+
+  const transformParticipantDomainScores = (participantDomainScores) => {
+    return participantDomainScores.map((item) => ({
+      "Domain name": item.domain,
+      "Participant name": item.participant,
+      "Score": item.score,
+    }));
+  };
+
+  const handleExportToExcel = () => {
+    // Transform data
+    const transformedMainData = transformMainData(transformData);
+    const transformedGraphDetails = transformGraphDetails(
+      resultnlist?.graphDetails
+    );
+    const transformedParticipantDomainScores = transformParticipantDomainScores(
+      resultnlist?.participantDomainScores
+    );
+
+    // Create worksheets
+    const mainWorksheet = XLSX.utils.json_to_sheet(transformedMainData);
+    const graphDetailsWorksheet = XLSX.utils.json_to_sheet(
+      transformedGraphDetails
+    );
+    const participantDomainScoresWorksheet = XLSX.utils.json_to_sheet(
+      transformedParticipantDomainScores
+    );
+
+    // Create a workbook
+    const workbook = XLSX.utils.book_new();
+
+    // Add worksheets to the workbook
+    XLSX.utils.book_append_sheet(workbook, mainWorksheet, "Main Data");
+    XLSX.utils.book_append_sheet(
+      workbook,
+      graphDetailsWorksheet,
+      "Graph Details"
+    );
+    XLSX.utils.book_append_sheet(
+      workbook,
+      participantDomainScoresWorksheet,
+      "Participant Domain Scores"
+    );
+
+    // Export the workbook to an Excel file
+    XLSX.writeFile(
+      workbook,
+      `${cohortNameforExcel}-${startDate}-${endDate}.xlsx`
+    );
+    toast.success("Excel file downloaded successfully", toastConfig);
+  };
 
   return (
     <div className="mb-24">
@@ -258,8 +365,10 @@ export const Cohortreport = () => {
           <div className="mb-3">
             Name of the Centre:
             <input
-              value={cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
-                "Unknown"}
+              value={
+                cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
+                "Unknown"
+              }
               className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
           </div>
