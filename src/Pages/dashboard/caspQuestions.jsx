@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Input, Radio, Typography } from "@material-tailwind/react";
+import { Button, Card, Input, Typography } from "@material-tailwind/react";
 import { CgSpinner } from "react-icons/cg";
 import axios from "axios";
 axios.defaults.withCredentials = true;
@@ -12,95 +12,44 @@ import { useNavigate } from "react-router-dom";
 
 const initialState = {
   participant: "",
-  date:"",
+  date: "",
   questions: [
-    {
-      question: "My age prevents me from doing the things I would like to do.",
-      code:"C1",
-      score: "",
-    },
-    {
-      question: "I feel that what happens to me is out of my control.",
-      code:"C2",
-      score: "",
-    },
-    {
-      question: "I feel free to plan for the future.",
-      code:"C3",
-      score: "",
-    },
-    { question: "I feel left out of things.", score: "", code:"C4",},
-    {
-      question: "I can do the things I want to do.",
-      code:"A1",
-      score: "",
-    },
-    {
-      question: "Family responsibilities prevent me from doing the things I want to do",
-      code:"A2",
-      score: "",
-    },
-    {
-      question:
-        "I feel that I can please myself what I do",
-        code:"A3",
-      score: "",
-    },
-    {
-      question: "My health stops me from doing the things I want to do.",
-      code:"A4",
-      score: "",
-    },
-    {
-      question: "Shortage of money stops me from doing things I want to do.",
-      code:"A5",
-      score: "",
-    },
-    { question: "I look forward to each day.", score: "" ,code:"P1"},
-    {
-      question: "I feel that my life has meaning.",
-      score: "",code:"P2"
-    },
-    { question: "I enjoy the things that I do.", score: "" ,code:"P3"},
-    {
-      question: "I enjoy being in the company of others.",code:"P4",
-      score: "",
-    },
-    {
-      question: "On balance, I look back on my life with a sense of happiness.",code:"P5",
-      score: "",
-    },
-    {
-      question: "I feel full of energy these days.",code:"SR1",
-      score: "",
-    },
-    {
-      question: "I choose to do things that I have never done before.",code:"SR2",
-      score: "",
-    },
-    {
-      question: "I feel satisfied with the way my life has turned out.",code:"SR3",
-      score: "",
-    },
-    {
-      question: "I feel that life is full of opportunities.",code:"SR4",
-      score: "",
-    },
-    {
-      question: "I feel that the future looks good for me.",code:"SR5",
-      score: "",
-    },
+    { question: "My age prevents me from doing the things I would like to do.", code: "C1", score: "" },
+    { question: "I feel that what happens to me is out of my control.", code: "C2", score: "" },
+    { question: "I feel free to plan for the future.", code: "C3", score: "" },
+    { question: "I feel left out of things.", code: "C4", score: "" },
+    { question: "I can do the things I want to do.", code: "A1", score: "" },
+    { question: "Family responsibilities prevent me from doing the things I want to do", code: "A2", score: "" },
+    { question: "I feel that I can please myself what I do", code: "A3", score: "" },
+    { question: "My health stops me from doing the things I want to do.", code: "A4", score: "" },
+    { question: "Shortage of money stops me from doing things I want to do.", code: "A5", score: "" },
+    { question: "I look forward to each day.", code: "P1", score: "" },
+    { question: "I feel that my life has meaning.", code: "P2", score: "" },
+    { question: "I enjoy the things that I do.", code: "P3", score: "" },
+    { question: "I enjoy being in the company of others.", code: "P4", score: "" },
+    { question: "On balance, I look back on my life with a sense of happiness.", code: "P5", score: "" },
+    { question: "I feel full of energy these days.", code: "SR1", score: "" },
+    { question: "I choose to do things that I have never done before.", code: "SR2", score: "" },
+    { question: "I feel satisfied with the way my life has turned out.", code: "SR3", score: "" },
+    { question: "I feel that life is full of opportunities.", code: "SR4", score: "" },
+    { question: "I feel that the future looks good for me.", code: "SR5", score: "" },
   ],
+};
+
+const scoreMapping = {
+  Often: 3,
+  Sometimes: 2,
+  "Not often": 1,
+  Never: 0,
 };
 
 export const CaspQuestions = () => {
   const [questionData, setQuestionData] = useState(initialState);
   const [allParticipants, setAllParticipants] = useState([]);
   const [isAddQuestionLoading, setIsAddQuestionLoading] = useState(false);
-  const [selectParticipant, setSelectParticipant] = useState("");
-  const [participantResult, setParticipantResult] = useState({});
+  const [totalScore, setTotalScore] = useState(0);
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { participant, questions, date } = questionData;
 
@@ -136,55 +85,38 @@ export const CaspQuestions = () => {
     setQuestionData({ ...questionData, date: e.target.value });
   };
 
+  const handleRadioChange = (index, value) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[index].score = value;
+    setQuestionData({ ...questionData, questions: updatedQuestions });
+
+    // Update the total score
+    calculateTotalScore(updatedQuestions);
+  };
+
+  const calculateTotalScore = (questions) => {
+    const negativeItems = ["C1", "C2", "C4", "A2", "A4", "A5"];
+
+    const total = questions.reduce((acc, question) => {
+      const scoreValue = scoreMapping[question.score] || 0;
+      return acc + (negativeItems.includes(question.code) ? 3 - scoreValue : scoreValue);
+    }, 0);
+
+    setTotalScore(total);
+  };
+
   const handleSubmitCohort = (e) => {
     e.preventDefault();
 
-    const updatedQuestions = questionData.questions.map((question, index) => {
-      const selectedValue = document.querySelector(
-        `input[name="color${index}"]:checked`
-      );
+    // Check if all questions have been answered
+    const allAnswered = questions.every(q => q.score !== "");
 
-      if (selectedValue) {
-        return {
-          ...question,
-          score: selectedValue.value,
-        };
-      }
+    if (!allAnswered) {
+      toast.error("Please answer all questions before submitting.", toastConfig);
+      return;
+    }
 
-      return question;
-    });
-
-    setQuestionData({ ...questionData, questions: updatedQuestions });
-
-    // Calculate the score
-    let totalScore = 0;
-    updatedQuestions.forEach((q) => {
-      const scoreValue =
-        q.score === "Often"
-          ? 3
-          : q.score === "Sometimes"
-          ? 2
-          : q.score === "Not often"
-          ? 1
-          : 0;
-
-      // Adjust score for negative items
-      const negativeItems = [
-        "C1",
-        "C2",
-        "C4",
-        "A2",
-        "A4",
-        "A5",
-      ];
-
-      totalScore += negativeItems.includes(q.code)
-        ? 3 - scoreValue
-        : scoreValue;
-    });
-
-    const finalData = { ...questionData, questions: updatedQuestions, totalScore };
-
+    const finalData = { ...questionData, totalScore };
 
     axios
       .post(`${serverUrl}/casp/add`, finalData, {
@@ -197,32 +129,6 @@ export const CaspQuestions = () => {
         setTimeout(() => {
           window.location.reload();
         }, 2000);
-      })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
-  };
-
-  const handleSubmitOxfordResult = (e) => {
-    e.preventDefault();
-    axios
-      .get(`${serverUrl}/casp/${selectParticipant}`, {
-        // headers: {
-        //   Authorization: `${getLocalData("token")}`,
-        // },
-      })
-      .then((res) => {
-        console.log(res);
-        setParticipantResult(res.data.message[res.data.message.length - 1]);
       })
       .catch((err) => {
         if (err.response && err.response.data && err.response.data.jwtExpired) {
@@ -260,7 +166,7 @@ export const CaspQuestions = () => {
               </option>
             ))}
           </select>
-          <div className="w-[20%]">
+          <div className="w-[20%] flex items-center gap-2">
             <Input
               type="date"
               label="Date"
@@ -269,6 +175,9 @@ export const CaspQuestions = () => {
               value={date}
               onChange={handleDateChange}
             />
+            {/* <Typography variant="small" color="blue-gray" className="font-normal">
+              Total Score: {totalScore}
+            </Typography> */}
           </div>
         </div>
 
@@ -326,49 +235,55 @@ export const CaspQuestions = () => {
                 </tr>
               </thead>
               <tbody>
-                {questions.map((el, index) => {
-                  return (
-                    <tr key={index}>
-                      <td className={`w-[700px] m-2`}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {index + 1}. {el.question || "-"}
-                        </Typography>
-                      </td>
-                      <td className={`p-2 text-center`}>
-                        <input
-                          type="radio"
-                          value={"Often"}
-                          name={`color${index}`}
-                        />
-                      </td>
-                      <td className={`p-2 text-center`}>
-                        <input
-                          type="radio"
-                          value={"Sometimes"}
-                          name={`color${index}`}
-                        />
-                      </td>
-                      <td className={`p-2 text-center`}>
-                        <input
-                          type="radio"
-                          value={"Not often"}
-                          name={`color${index}`}
-                        />
-                      </td>
-                      <td className={`p-2 text-center`}>
-                        <input
-                          type="radio"
-                          value={"Never"}
-                          name={`color${index}`}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
+                {questions.map((el, index) => (
+                  <tr key={index}>
+                    <td className={`w-[700px] m-2`}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {index + 1}. {el.question || "-"}
+                      </Typography>
+                    </td>
+                    <td className={`p-2 text-center`}>
+                      <input
+                        type="radio"
+                        value={"Often"}
+                        name={`color${index}`}
+                        checked={el.score === "Often"}
+                        onChange={() => handleRadioChange(index, "Often")}
+                      />
+                    </td>
+                    <td className={`p-2 text-center`}>
+                      <input
+                        type="radio"
+                        value={"Sometimes"}
+                        name={`color${index}`}
+                        checked={el.score === "Sometimes"}
+                        onChange={() => handleRadioChange(index, "Sometimes")}
+                      />
+                    </td>
+                    <td className={`p-2 text-center`}>
+                      <input
+                        type="radio"
+                        value={"Not often"}
+                        name={`color${index}`}
+                        checked={el.score === "Not often"}
+                        onChange={() => handleRadioChange(index, "Not often")}
+                      />
+                    </td>
+                    <td className={`p-2 text-center`}>
+                      <input
+                        type="radio"
+                        value={"Never"}
+                        name={`color${index}`}
+                        checked={el.score === "Never"}
+                        onChange={() => handleRadioChange(index, "Never")}
+                      />
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

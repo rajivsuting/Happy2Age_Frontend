@@ -35,29 +35,24 @@ const EditOxford = ({
     e.preventDefault();
     setIsLoading(true);
     axios
-      .put(`${serverUrl}/oxford/update/${participantId}`, questionData)
+      .put(`${serverUrl}/oxford/edit/${singleOxford._id}`, questionData)
       .then((res) => {
-        toast.success(res.data.message, toastConfig);
-        setTimeout(() => {
-          navigate("/oxford-list");
-        }, 2000);
+        toast.success("Oxford Happiness edited successfully", toastConfig);
+        getAllOxfords(); // Refresh the list
+        onClose(); // Close the modal
       })
       .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
+        toast.error(
+          err.response?.data?.message || "An error occurred.",
+          toastConfig
+        );
       })
       .finally(() => {
         setIsLoading(false);
       });
   };
+
+  console.log(questionData);
 
   if (!isOpen || !singleOxford) return null;
   return (
@@ -65,7 +60,7 @@ const EditOxford = ({
       <div className="relative m-4 w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
       <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
           {editOrView == "View"
-            ? "Oxford Happiness Score details"
+            ?  `Oxford Happiness Score details - Total score: ${(questionData?.happinessScore).toFixed(2)}`
             : "Edit member Oxford Happiness Score"}
           <AiOutlineClose
             className="cursor-pointer"

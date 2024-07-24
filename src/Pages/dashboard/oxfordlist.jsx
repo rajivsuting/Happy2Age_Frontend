@@ -10,6 +10,7 @@ import { Button, Card, Typography } from "@material-tailwind/react";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import EditOxford from "../../Componants/EditOxford";
+import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
 
 export const Oxfordlist = () => {
   const [allResult, setallResult] = useState([]);
@@ -137,6 +138,7 @@ export const Oxfordlist = () => {
         }
       });
   };
+
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -295,15 +297,17 @@ onClick={() => {toggleModal(el);setEditorView("Edit")}}
                    variant="small"
                    color="blue-gray"
                    className="text-red-500  text-[20px]"
+                   onClick={()=>openOxfordDeleteModal(el._id)}
                  >
                    <MdOutlineDeleteOutline />
                  </Typography>
-               </td>
+               </td>  
               </tr>
             );
           })}
         </tbody>
       </table>
+      <ConfirmDeleteModal isOpen={isOxfordDeleteModal} onClose={closeOxfordDeleteModal} handleDelete={handleSubmitOxfordDelete}/>
       <EditOxford editOrView={editOrView} isOpen={isOxfordEditModal} onClose={closeEditOxfordModal} singleOxford={singleOxford} getAllOxfords={getAllOxfords}/>
     </Card>
   );
