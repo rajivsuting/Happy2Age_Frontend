@@ -261,10 +261,10 @@ const transformData = entireEvaluation?.map((item) => {
   const domains = item.domain.map((domainItem) => ({
     domainName: domainItem.name,
     subTopics: domainItem.subTopics,
+    average : domainItem.average,
   }));
 
   return {
-    cohort: item.cohort.name,
     participant: item.participant.name,
     participantType: item.participant.participantType,
     activity: item.activity.name,
@@ -276,29 +276,54 @@ const transformData = entireEvaluation?.map((item) => {
   };
 });
 
-console.log(transformData);
-
 const transformMainData = (data) => {
   let result = [];
 
   data.forEach((item) => {
-    const { cohort, participant, participantType, activity, session, sessionDate, sessionTime, domains, grandAverage } = item;
+    const {
+      participant,
+      participantType,
+      activity,
+      session,
+      sessionDate,
+      sessionTime,
+      domains,
+      grandAverage,
+    } = item;
 
     domains.forEach((domain) => {
+      let domainHeader = true;
       domain.subTopics.forEach((subtopic) => {
-        result.push({
-          "Cohort name" :cohort,
-          "Participant name":participant,
-          "Participant type":participantType,
-          "Activity name":activity,
-          "Session name":session,
-          "Session date":sessionDate,
-          "Session time(In minute)":sessionTime,
-          "Domain name": domain.domainName,
-          "Subtopic content": subtopic.content,
-          "Score": subtopic.score,
-          "Grand average":grandAverage,
-        });
+        if (domainHeader) {
+          result.push([
+            participant,
+            participantType,
+            activity,
+            session,
+            sessionDate,
+            sessionTime,
+            domain.domainName,
+            domain.average,
+            subtopic.content,
+            subtopic.score,
+            grandAverage,
+          ]);
+          domainHeader = false;
+        } else {
+          result.push([
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            subtopic.content,
+            subtopic.score,
+            "",
+          ]);
+        }
       });
     });
   });
@@ -307,36 +332,41 @@ const transformMainData = (data) => {
 };
 
 const transformGraphDetails = (graphDetails) => {
-  return graphDetails.map((item) => ({
-    domainName: item.domainName,
-    average: item.average,
-    centerAverage: item.centerAverage,
-    numberOfSessions: item.numberOfSessions,
-  }));
+  return graphDetails.map((item) => [
+    item.domainName,
+    item.average,
+    item.centerAverage,
+    item.numberOfSessions,
+  ]);
 };
 
-  const handleExportToExcel = () => {
-    const transformedMainData = transformMainData(transformData);
-    const transformedGraphDetails = transformGraphDetails(resultnlist?.graphDetails);
-  
-    // Create worksheets
-    const mainWorksheet = XLSX.utils.json_to_sheet(transformedMainData);
-    const graphDetailsWorksheet = XLSX.utils.json_to_sheet(transformedGraphDetails);
-  
-    // Create a workbook
-    const workbook = XLSX.utils.book_new();
-    
-    // Add worksheets to the workbook
-    XLSX.utils.book_append_sheet(workbook, mainWorksheet, "Main Data");
-    XLSX.utils.book_append_sheet(workbook, graphDetailsWorksheet, "Graph Details");
-  
+const handleExportToExcel = () => {
+  // Transform data
+  const transformedMainData = transformMainData(transformData);
+  const transformedGraphDetails = transformGraphDetails(resultnlist?.graphDetails);
 
-    XLSX.writeFile(
-      workbook,
-      `${participantNameforExcel}-${startDate}-${endDate}.xlsx`
-    );
-    toast.success("Excel file download successfully", toastConfig);
-  };
+  // Create worksheets using AoA
+  const mainWorksheet = XLSX.utils.aoa_to_sheet([
+    ["Participant Name", "Participant Type", "Activity Name", "Session Name", "Session Date", "Session Time", "Domain Name","Domain Average", "Subtopic Content", "Score", "Grand Average"],
+    ...transformedMainData,
+  ]);
+  
+  const graphDetailsWorksheet = XLSX.utils.aoa_to_sheet([
+    ["Domain Name", "Average", "Centre Average", "Number of Sessions"],
+    ...transformedGraphDetails,
+  ]);
+
+  // Create a workbook
+  const workbook = XLSX.utils.book_new();
+
+  // Add worksheets to the workbook
+  XLSX.utils.book_append_sheet(workbook, mainWorksheet, "Main Data");
+  XLSX.utils.book_append_sheet(workbook, graphDetailsWorksheet, "Graph Details");
+
+  // Export the workbook to an Excel file
+  XLSX.writeFile(workbook, `${participantNameforExcel}-${startDate}-${endDate}.xlsx`);
+  toast.success("Excel file downloaded successfully", toastConfig);
+};
 
 
   return (

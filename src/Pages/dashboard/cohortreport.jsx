@@ -169,15 +169,14 @@ export const Cohortreport = () => {
   });
 
   // heat map----------------------
-
   const transformData = entireEvaluation?.map((item) => {
     const domains = item.domain.map((domainItem) => ({
       domainName: domainItem.name,
       subTopics: domainItem.subTopics,
+      average : domainItem.average,
     }));
-
+  
     return {
-      cohort: item.cohort.name,
       participant: item.participant.name,
       participantType: item.participant.participantType,
       activity: item.activity.name,
@@ -188,13 +187,11 @@ export const Cohortreport = () => {
       grandAverage: item.grandAverage,
     };
   });
-
+  
   const transformMainData = (data) => {
     let result = [];
-
     data.forEach((item) => {
       const {
-        cohort,
         participant,
         participantType,
         sessionDate,
@@ -204,87 +201,98 @@ export const Cohortreport = () => {
         domains,
         grandAverage,
       } = item;
-
+  
       domains.forEach((domain) => {
+        let domainHeader = true;
         domain.subTopics.forEach((subtopic) => {
-          result.push({
-            "Cohort name" :cohort,
-            "Participant name":participant,
-            "Participant type":participantType,
-            "Activity name":activity,
-            "Session name":session,
-            "Session date":sessionDate,
-            "Session time(In minute)":sessionTime,
-            "Domain name": domain.domainName,
-            "Subtopic content": subtopic.content,
-            "Score": subtopic.score,
-            "Grand average":grandAverage,
-          });
+          if (domainHeader) {
+            result.push([
+              participant,
+              participantType,
+              activity,
+              session,
+              sessionDate,
+              sessionTime,
+              domain.domainName,
+              domain.average,
+              subtopic.content,
+              subtopic.score,
+              grandAverage,
+            ]);
+            domainHeader = false;
+          } else {
+            result.push([
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              subtopic.content,
+              subtopic.score,
+              "",
+            ]);
+          }
         });
       });
     });
-
+  
     return result;
   };
-
+  
   const transformGraphDetails = (graphDetails) => {
-    return graphDetails.map((item) => ({
-      "Domain name": item.domainName,
-      "Centre average": item.centerAverage,
-      "Number of session": item.numberOfSessions,
-    }));
+    return graphDetails.map((item) => [
+      item.domainName,
+      item.centerAverage,
+      item.numberOfSessions,
+    ]);
   };
-
+  
   const transformParticipantDomainScores = (participantDomainScores) => {
-    return participantDomainScores.map((item) => ({
-      "Domain name": item.domain,
-      "Participant name": item.participant,
-      "Score": item.score,
-    }));
+    return participantDomainScores.map((item) => [
+      item.domain,
+      item.participant,
+      item.score,
+    ]);
   };
-
+  
   const handleExportToExcel = () => {
     // Transform data
     const transformedMainData = transformMainData(transformData);
-    const transformedGraphDetails = transformGraphDetails(
-      resultnlist?.graphDetails
-    );
-    const transformedParticipantDomainScores = transformParticipantDomainScores(
-      resultnlist?.participantDomainScores
-    );
-
-    // Create worksheets
-    const mainWorksheet = XLSX.utils.json_to_sheet(transformedMainData);
-    const graphDetailsWorksheet = XLSX.utils.json_to_sheet(
-      transformedGraphDetails
-    );
-    const participantDomainScoresWorksheet = XLSX.utils.json_to_sheet(
-      transformedParticipantDomainScores
-    );
-
+    const transformedGraphDetails = transformGraphDetails(resultnlist?.graphDetails);
+    const transformedParticipantDomainScores = transformParticipantDomainScores(resultnlist?.participantDomainScores);
+  
+    // Create worksheets using AoA
+    const mainWorksheet = XLSX.utils.aoa_to_sheet([
+      [ "Participant Name", "Participant Type", "Activity Name", "Session Name", "Session Date", "Session Time", "Domain Name","Domain Average", "Subtopic Content", "Score", "Grand Average"],
+      ...transformedMainData,
+    ]);
+    
+    const graphDetailsWorksheet = XLSX.utils.aoa_to_sheet([
+      ["Domain Name", "Centre Average", "Number of Sessions"],
+      ...transformedGraphDetails,
+    ]);
+  
+    const participantDomainScoresWorksheet = XLSX.utils.aoa_to_sheet([
+      ["Domain Name", "Participant Name", "Score"],
+      ...transformedParticipantDomainScores,
+    ]);
+  
     // Create a workbook
     const workbook = XLSX.utils.book_new();
-
+  
     // Add worksheets to the workbook
     XLSX.utils.book_append_sheet(workbook, mainWorksheet, "Main Data");
-    XLSX.utils.book_append_sheet(
-      workbook,
-      graphDetailsWorksheet,
-      "Graph Details"
-    );
-    XLSX.utils.book_append_sheet(
-      workbook,
-      participantDomainScoresWorksheet,
-      "Participant Domain Scores"
-    );
-
+    XLSX.utils.book_append_sheet(workbook, graphDetailsWorksheet, "Graph Details");
+    XLSX.utils.book_append_sheet(workbook, participantDomainScoresWorksheet, "Participant Domain Scores");
+  
     // Export the workbook to an Excel file
-    XLSX.writeFile(
-      workbook,
-      `${cohortNameforExcel}-${startDate}-${endDate}.xlsx`
-    );
+    XLSX.writeFile(workbook, `${cohortNameforExcel}-${startDate}-${endDate}.xlsx`);
     toast.success("Excel file downloaded successfully", toastConfig);
   };
+  
 
   return (
     <div className="mb-24">
