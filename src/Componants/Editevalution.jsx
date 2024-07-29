@@ -3,27 +3,68 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { serverUrl } from "../api";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../App";
 
-const EditEvaluation = ({ evaluation,getAllData, onSave, isOpen, onClose }) => {
+const EditEvaluation = ({
+  evaluation,
+  getAllData,
+  onSave,
+  isOpen,
+  onClose,
+}) => {
   const [domains, setDomains] = useState(evaluation?.domain);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [domainList, setDomainList] = useState([]);
+  const [finalArray, setFinalArray] = useState([]);
+  const [finalObject, setFinalObject] = useState(evaluation);
+  const navigate = useNavigate();
+// console.log(evaluation);
+  useEffect(() => {
+    axios
+      .get(
+        `${serverUrl}/domain/all/?category=${evaluation?.participant?.participantType}`,
+        {
+          // headers: {
+          //   Authorization: `${getLocalData("token")}`,
+          // },
+        }
+      )
+      .then((res) => {
+        setDomainList(res.data.message);
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
+  }, [evaluation?.participant?.participantType]);
+
+  // console.log(domainList)
+
   useEffect(() => {
     setDomains(evaluation?.domain);
+    setFinalObject(evaluation)
   }, [evaluation?.domain]);
 
-  const handleScoreChange = (domainIndex, subTopicIndex, newScore) => {
-    const updatedDomains = [...domains];
-    updatedDomains[domainIndex].subTopics[subTopicIndex].score = newScore;
-    setDomains(updatedDomains);
-  };
+
+
 
   const handleSave = () => {
-    // console.log(evaluation)
+    setFinalObject((prevObj) => ({
+      ...prevObj,
+      domain: finalArray,
+    }))
     axios
-      .patch(`${serverUrl}/evaluation/${evaluation?._id}`,evaluation)
+      .patch(`${serverUrl}/evaluation/${evaluation?._id}`, finalObject)
       .then((res) => {
         if (res.status == 200) {
           toast.success("Evaluation edited suucessfully", toastConfig);
@@ -47,6 +88,38 @@ const EditEvaluation = ({ evaluation,getAllData, onSave, isOpen, onClose }) => {
       });
   };
 
+  useEffect(()=>{
+    const combinedArray = domainList?.map(item => {
+      const match = domains?.find(el => el._id === item._id);
+      if (match) {
+        item.subTopics = item.subTopics.map(subTopic => {
+          const matchSubTopic = match.subTopics.find(el => el._id === subTopic._id);
+          if (matchSubTopic) {
+            subTopic.score = matchSubTopic.score;
+          }
+          return subTopic;
+        });
+      }
+      return item;
+    });
+
+    setFinalArray(combinedArray);
+  },[domainList, domains])
+  
+  
+  // console.log(finalArray);
+  
+  const handleScoreChange = (domainIndex, subTopicIndex, newScore) => {
+    // console.log(domainIndex, subTopicIndex);
+    const updatedDomains = [...finalArray];
+    updatedDomains[domainIndex].subTopics[subTopicIndex].score = newScore;
+    setFinalArray(updatedDomains);
+    setFinalObject((prevObj) => ({
+      ...prevObj,
+      domain: finalArray,
+    }))
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -60,7 +133,7 @@ const EditEvaluation = ({ evaluation,getAllData, onSave, isOpen, onClose }) => {
             onClick={onClose}
           />
         </div>
-        {domains?.map((domain, domainIndex) => (
+        {finalArray?.map((domain, domainIndex) => (
           <div key={domain._id}>
             <h3 className="mt-3 mb-3 text-[20px]">{domain.name}</h3>
             {domain.subTopics.map((subTopic, subTopicIndex) => (
@@ -70,16 +143,18 @@ const EditEvaluation = ({ evaluation,getAllData, onSave, isOpen, onClose }) => {
               >
                 <div className="">{subTopic.content}:</div>
                 <div className="w-[40%]">
-                <Input
-                  label="Add score"
-                  type="number"
-                  value={subTopic.score}
-                  onChange={(e) =>
-                    handleScoreChange(domainIndex, subTopicIndex, e.target.value)
-                  }
-                  
-                />
-
+                  <Input
+                    label="Add score"
+                    type="number"
+                    value={subTopic.score}
+                    onChange={(e) =>
+                      handleScoreChange(
+                        domainIndex,
+                        subTopicIndex,
+                        e.target.value
+                      )
+                    }
+                  />
                 </div>
               </div>
             ))}

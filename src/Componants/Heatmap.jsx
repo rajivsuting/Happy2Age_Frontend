@@ -22,7 +22,7 @@ const Heatmap = ({ arr }) => {
 
   const options = {
     chart: {
-      height: 450,
+      // height: 450,
       type: 'heatmap',
     },
     dataLabels: {
@@ -70,8 +70,8 @@ const Heatmap = ({ arr }) => {
   };
 
   return (
-    <div className='mt-[30px]'>
-      <ReactApexChart options={options} series={heatmapData} type="heatmap" height={450} />
+    <div className='flex justify-center items-center m-auto mt-[30px]'>
+      <ReactApexChart options={options} series={heatmapData} type="heatmap" width={700} height={400} />
     </div>
   );
 };
