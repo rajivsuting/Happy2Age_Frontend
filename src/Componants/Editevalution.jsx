@@ -20,7 +20,14 @@ const EditEvaluation = ({
   const [finalArray, setFinalArray] = useState([]);
   const [finalObject, setFinalObject] = useState(evaluation);
   const navigate = useNavigate();
-// console.log(evaluation);
+
+  useEffect(()=>{
+    setFinalArray([]);
+    setFinalObject({});
+    setDomainList([]);
+    setDomains([]);
+  },[])
+
   useEffect(() => {
     axios
       .get(
@@ -124,13 +131,13 @@ const EditEvaluation = ({
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
-      <div className="relative m-4 w-2/5 min-w-[40%] max-w-[30%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-4">
-        <div className="sticky top-0 z-10 flex items-center justify-between p-4 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
+    <div className="relative m-4 w-[40%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
+    <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
           Edit evaluation
           <AiOutlineClose
             className="cursor-pointer"
             size={24}
-            onClick={onClose}
+            onClick={()=>{onClose();window.location.reload()}}
           />
         </div>
         {finalArray?.map((domain, domainIndex) => (
@@ -161,7 +168,7 @@ const EditEvaluation = ({
           </div>
         ))}
         <div
-          className="flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500"
+          className=" sticky bottom-0 z-10 flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500"
           onClick={handleSave}
         >
           <Button className="bg-maincolor" type="submit">

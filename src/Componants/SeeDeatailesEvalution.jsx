@@ -6,8 +6,8 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
-      <div className="relative m-4 w-2/5 min-w-[80%] max-w-[80%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-8">
-        <div className="sticky top-0 z-10 flex items-center justify-between p-4 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
+        <div className="relative m-4 w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
           Evalution details
           <AiOutlineClose
             className="cursor-pointer"
@@ -81,7 +81,7 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
             </tbody>
           </table>
         </div>
-        <div className="flex flex-wrap items-center justify-center p-4 text-blue-gray-500">
+        <div className=" sticky bottom-0 z-10 flex flex-wrap items-center justify-center p-4 text-blue-gray-500">
           {/* <button
             onClick={onClose}
             className="px-6 py-3 mr-1 font-sans text-xs font-bold text-red-500 uppercase transition-all rounded-lg hover:bg-red-500/10 active:bg-red-500/30  border border-red-300"
