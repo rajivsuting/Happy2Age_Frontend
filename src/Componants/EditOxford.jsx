@@ -76,7 +76,7 @@ const EditOxford = ({
       <div className="relative m-4 w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
       <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
           {editOrView == "View"
-            ?  `Oxford Happiness Score details - Total score: ${(questionData?.happinessScore).toFixed(2)}`
+            ?  `Oxford Happiness Score details - Total score: ${(questionData?.happinessScore)?.toFixed(2)}`
             : "Edit member Oxford Happiness Score"}
           <AiOutlineClose
             className="cursor-pointer"

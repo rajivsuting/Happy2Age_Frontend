@@ -125,7 +125,7 @@ export const Cohortreport = () => {
         setEntireEvaluation(res.data.evaluations);
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
         if (err.response && err.response.data && err.response.data.jwtExpired) {
           toast.error(err.response.data.message, toastConfig);
           setTimeout(() => {
@@ -173,9 +173,9 @@ export const Cohortreport = () => {
     const domains = item.domain.map((domainItem) => ({
       domainName: domainItem.name,
       subTopics: domainItem.subTopics,
-      average : domainItem.average,
+      average: domainItem.average,
     }));
-  
+
     return {
       participant: item.participant.name,
       participantType: item.participant.participantType,
@@ -187,7 +187,7 @@ export const Cohortreport = () => {
       grandAverage: item.grandAverage,
     };
   });
-  
+
   const transformMainData = (data) => {
     let result = [];
     data.forEach((item) => {
@@ -201,7 +201,7 @@ export const Cohortreport = () => {
         domains,
         grandAverage,
       } = item;
-  
+
       domains.forEach((domain) => {
         let domainHeader = true;
         domain.subTopics.forEach((subtopic) => {
@@ -238,10 +238,10 @@ export const Cohortreport = () => {
         });
       });
     });
-  
+
     return result;
   };
-  
+
   const transformGraphDetails = (graphDetails) => {
     return graphDetails.map((item) => [
       item.domainName,
@@ -249,7 +249,7 @@ export const Cohortreport = () => {
       item.numberOfSessions,
     ]);
   };
-  
+
   const transformParticipantDomainScores = (participantDomainScores) => {
     return participantDomainScores.map((item) => [
       item.domain,
@@ -257,42 +257,68 @@ export const Cohortreport = () => {
       item.score,
     ]);
   };
-  
+
   const handleExportToExcel = () => {
     // Transform data
     const transformedMainData = transformMainData(transformData);
-    const transformedGraphDetails = transformGraphDetails(resultnlist?.graphDetails);
-    const transformedParticipantDomainScores = transformParticipantDomainScores(resultnlist?.participantDomainScores);
-  
+    const transformedGraphDetails = transformGraphDetails(
+      resultnlist?.graphDetails
+    );
+    const transformedParticipantDomainScores = transformParticipantDomainScores(
+      resultnlist?.participantDomainScores
+    );
+
     // Create worksheets using AoA
     const mainWorksheet = XLSX.utils.aoa_to_sheet([
-      [ "Participant Name", "Participant Type", "Activity Name", "Session Name", "Session Date", "Session Time", "Domain Name","Domain Average", "Subtopic Content", "Score", "Grand Average"],
+      [
+        "Participant Name",
+        "Participant Type",
+        "Activity Name",
+        "Session Name",
+        "Session Date",
+        "Session Time",
+        "Domain Name",
+        "Domain Average",
+        "Subtopic Content",
+        "Score",
+        "Grand Average",
+      ],
       ...transformedMainData,
     ]);
-    
+
     const graphDetailsWorksheet = XLSX.utils.aoa_to_sheet([
       ["Domain Name", "Centre Average", "Number of Sessions"],
       ...transformedGraphDetails,
     ]);
-  
+
     const participantDomainScoresWorksheet = XLSX.utils.aoa_to_sheet([
       ["Domain Name", "Participant Name", "Score"],
       ...transformedParticipantDomainScores,
     ]);
-  
+
     // Create a workbook
     const workbook = XLSX.utils.book_new();
-  
+
     // Add worksheets to the workbook
     XLSX.utils.book_append_sheet(workbook, mainWorksheet, "Main Data");
-    XLSX.utils.book_append_sheet(workbook, graphDetailsWorksheet, "Graph Details");
-    XLSX.utils.book_append_sheet(workbook, participantDomainScoresWorksheet, "Participant Domain Scores");
-  
+    XLSX.utils.book_append_sheet(
+      workbook,
+      graphDetailsWorksheet,
+      "Graph Details"
+    );
+    XLSX.utils.book_append_sheet(
+      workbook,
+      participantDomainScoresWorksheet,
+      "Participant Domain Scores"
+    );
+
     // Export the workbook to an Excel file
-    XLSX.writeFile(workbook, `${cohortNameforExcel}-${startDate}-${endDate}.xlsx`);
+    XLSX.writeFile(
+      workbook,
+      `${cohortNameforExcel}-${startDate}-${endDate}.xlsx`
+    );
     toast.success("Excel file downloaded successfully", toastConfig);
   };
-  
 
   return (
     <div className="mb-24">
@@ -369,7 +395,8 @@ export const Cohortreport = () => {
             domains that we have chosen while designing activities.)
           </div>
         </div>
-        <div className="w-[100%] m-auto grid grid-cols-2 border rounded-xl p-8 mt-5">
+        <div className="w-[100%] m-auto border rounded-xl p-8 mt-5">
+          <div className="flex justify-between items-center ">
           <div className="mb-3">
             Name of the Centre:
             <input
@@ -377,7 +404,7 @@ export const Cohortreport = () => {
                 cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
                 "Unknown"
               }
-              className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              className="border-b w-[150px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
           </div>
           <div>
@@ -387,20 +414,21 @@ export const Cohortreport = () => {
                 cohortList?.filter((el) => el._id == cohortSelect)[0]
                   ?.participants?.length || "0"
               }
-              className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              className="border-b w-[150px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
+          </div>
           </div>
 
           <div className="mb-3">
             Date From :
             <input
               value={convertDateFormat(startDate) || ""}
-              className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              className="border-b w-[180px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
             To :
             <input
               value={convertDateFormat(endDate) || ""}
-              className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              className="border-b w-[180px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
           </div>
         </div>
@@ -411,19 +439,8 @@ export const Cohortreport = () => {
           <b className="text-[18px]">Graph of Score </b> (Individual Score
           against the Group aggregate Score for each Domain)
         </div>
-        {/* <div>
-          <div id="chart">
-            <ReactApexChart
-              options={options}
-              series={series}
-              type="heatmap"
-              height={450}
-            />
-          </div>
-          <div id="html-dist"></div>
-        </div> */}
         <div className="w-[100%] flex justify-center items-center m-auto mt-12">
-          <BarChart width={1100} height={500} data={resultnlist?.graphDetails}>
+          <BarChart width={900} height={500} data={resultnlist?.graphDetails}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               minTickGap={1}
