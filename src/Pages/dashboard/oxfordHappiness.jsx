@@ -290,12 +290,12 @@ export const OxfordHappiness = () => {
                     required
                   >
                     <option value={0}>Select Score</option>
-                    <option value={1}>1</option>
-                    <option value={2}>2</option>
-                    <option value={3}>3</option>
-                    <option value={4}>4</option>
-                    <option value={5}>5</option>
-                    <option value={6}>6</option>
+                        <option value={1}>1 (strongly disagree)</option>
+                        <option value={2}>2 (moderately disagree)</option>
+                        <option value={3}>3 (slightly disagree)</option>
+                        <option value={4}>4 (slightly agree)</option>
+                        <option value={5}>5 (moderately agree)</option>
+                        <option value={6}>6 (strongly agree)</option>
                   </select>
                 </div>
               </div>
