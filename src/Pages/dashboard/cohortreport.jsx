@@ -439,7 +439,7 @@ export const Cohortreport = () => {
           <b className="text-[18px]">Graph of Score </b> (Individual Score
           against the Group aggregate Score for each Domain)
         </div>
-        <div className="w-[100%] flex justify-center items-center m-auto mt-12">
+        <div className="w-[100%] flex justify-center items-center m-auto mt-12 mb-[80px]">
           <BarChart width={900} height={500} data={resultnlist?.graphDetails}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
@@ -460,7 +460,7 @@ export const Cohortreport = () => {
             </Bar>
           </BarChart>
         </div>
-        <div className="w-[100%] font-normal text-end">
+        <div className="w-[100%] font-normal text-end  mb-[80px]">
           Centre average : <b>{resultnlist?.averageForCohort}</b>
         </div>
 

@@ -17,7 +17,7 @@ export function Footer({ brandName, brandLink, routes }) {
             rel="noopener noreferrer"
             className="transition-colors hover:text-blue-500 font-bold"
           > */}
-            Brafony
+            Branofy
           {/* </a>{" "} */}
         </Typography>
         {/* <ul className="flex items-center gap-4">
