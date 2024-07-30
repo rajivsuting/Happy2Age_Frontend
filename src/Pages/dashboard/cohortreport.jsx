@@ -1,5 +1,16 @@
 import React, { useRef } from "react";
-import { Button, Card, Typography } from "@material-tailwind/react";
+import {
+  Button,
+  Card,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@material-tailwind/react";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 import { useEffect, useState } from "react";
@@ -20,6 +31,7 @@ import {
   YAxis,
   Line,
   LabelList,
+  Label,
 } from "recharts";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
@@ -67,19 +79,15 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const CustomBar = (props) => {
-  const { x, y, width, height, fill } = props;
+
+const CustomLabel = ({ x, y, width, value }) => {
   return (
-    <rect
-      x={x}
-      y={y}
-      width={width}
-      height={height}
-      className="custom-bar" // Add your custom CSS class here
-      fill={fill}
-    />
+    <text x={x + width / 2} y={y + 20} fill="#FFF" textAnchor="middle">
+      {value}
+    </text>
   );
 };
+
 
 export const Cohortreport = () => {
   const [resultnlist, setResultlist] = useState({});
@@ -166,6 +174,12 @@ export const Cohortreport = () => {
     documentTitle: "Centre report",
     onAfterPrint: () =>
       toast.success("PDF file download successfully", toastConfig),
+    pageStyle: `
+    .custom-header {
+      padding: 10px; /* Add padding for better readability */
+      border: 1px solid #ccc; /* Add border to header and footer */
+    }
+  `,
   });
 
   // heat map----------------------
@@ -367,7 +381,7 @@ export const Cohortreport = () => {
       <div
         ref={componantPDF}
         style={{ width: "90%", margin: "auto", marginTop: "20px" }}
-        className="border border-black rounded-xl p-8 bg-white"
+        className="custom-header shadow rounded-xl p-8 bg-white"
       >
         <div className="flex justify-center items-center">
           <img
@@ -397,26 +411,26 @@ export const Cohortreport = () => {
         </div>
         <div className="w-[100%] m-auto border rounded-xl p-8 mt-5">
           <div className="flex justify-between items-center ">
-          <div className="mb-3">
-            Name of the Centre:
-            <input
-              value={
-                cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
-                "Unknown"
-              }
-              className="border-b w-[150px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
-            />
-          </div>
-          <div>
-            Total Participants:
-            <input
-              value={
-                cohortList?.filter((el) => el._id == cohortSelect)[0]
-                  ?.participants?.length || "0"
-              }
-              className="border-b w-[150px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
-            />
-          </div>
+            <div className="mb-3">
+              Name of the Centre:
+              <input
+                value={
+                  cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
+                  "Unknown"
+                }
+                className="border-b w-[150px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              />
+            </div>
+            <div>
+              Total Participants:
+              <input
+                value={
+                  cohortList?.filter((el) => el._id == cohortSelect)[0]
+                    ?.participants?.length || "0"
+                }
+                className="border-b w-[150px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              />
+            </div>
           </div>
 
           <div className="mb-3">
@@ -440,14 +454,14 @@ export const Cohortreport = () => {
           against the Group aggregate Score for each Domain)
         </div>
         <div className="w-[100%] flex justify-center items-center m-auto mt-12 mb-[80px]">
-          <BarChart width={900} height={500} data={resultnlist?.graphDetails}>
+          {/* <BarChart width={900} height={500} data={}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               minTickGap={1}
               dataKey="domainName"
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 15,fontWeight:"bold" }} 
             />
-            <YAxis tick={{ fontSize: 12 }} domain={[0, 7]} />
+            <YAxis tick={{ fontSize: 15,fontWeight:"bold" }} domain={[0, 7]} />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Bar
@@ -458,17 +472,92 @@ export const Cohortreport = () => {
             >
               <LabelList dataKey="numberOfSessions" position="top" />
             </Bar>
-          </BarChart>
+          </BarChart> */}
+
+
+
+<BarChart
+      width={900}
+      height={500}
+      data={resultnlist?.graphDetails}
+      margin={{ top: 20, right: 30, left: 20, bottom: 50 }} // Adjust the bottom margin here
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis
+        dataKey="domainName"
+        tick={{ fontSize: 15, fontWeight: "bold" }}
+      >
+        <Label value="Domain name" offset={0} position="insideBottom" />
+      </XAxis>
+      <YAxis
+        tick={{ fontSize: 15, fontWeight: "bold" }}
+        domain={[0, 7]}
+      >
+        <Label
+          value="Average"
+          angle={-90}
+          position="insideLeft"
+          style={{ textAnchor: 'middle' }}
+        />
+      </YAxis>
+      <Tooltip content={<CustomTooltip />} />
+      <Legend />
+      <Bar
+        dataKey="centerAverage"
+        fill="#4A3AFF"
+        barSize={20}
+        radius={[5, 5, 0, 0]}
+      >
+       <LabelList dataKey="numberOfSessions" position="bottom" content={<CustomLabel />} />
+      </Bar>
+    </BarChart>
         </div>
-        <div className="w-[100%] font-normal text-end  mb-[80px]">
+        <div className="container mx-auto my-4">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50 text-center">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                  Domain Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                  Center Average
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                  Number Of Sessions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {resultnlist?.graphDetails?.map((item, index) => (
+                <tr key={index}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {item.domainName}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {item.centerAverage}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {item.numberOfSessions}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+        </div>
+        
+
+        <div className=" flex justify-between items-center  mb-[80px] mt-[80px]">
+          <div>
+          <b className="text-[18px]">Graph of Score </b> (overall score for each
+            member across Domains)</div><div>
           Centre average : <b>{resultnlist?.averageForCohort}</b>
         </div>
-
-        <div>
-          <b className="text-[18px]">Graph of Score </b> (overall score for each
-          member across Domains)
         </div>
         <Heatmap arr={resultnlist?.participantDomainScores} />
+
+       
+
         <div className="mt-5">
           <i>Overall Observations: {observation}</i>
         </div>

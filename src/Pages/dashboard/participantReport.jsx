@@ -21,6 +21,7 @@ import {
   LabelList,
   ResponsiveContainer,
   ComposedChart,
+  Label,
 } from "recharts";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -95,17 +96,11 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const CustomBar = (props) => {
-  const { x, y, width, height, fill } = props;
+const CustomLabel = ({ x, y, width, value }) => {
   return (
-    <rect
-      x={x}
-      y={y}
-      width={width}
-      height={height}
-      className="custom-bar" // Add your custom CSS class here
-      fill={fill}
-    />
+    <text x={x + width / 2} y={y + 20} fill="#FFF" textAnchor="middle">
+      {value}
+    </text>
   );
 };
 
@@ -162,10 +157,10 @@ export const ParticipantReport = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     axios
       .get(
-        `${serverUrl}/report/${singleParticipant}/?&start=${startDate}&end=${endDate}`,
+        `${serverUrl}/report/${singleParticipant}/?start=${startDate}&end=${endDate}`,
         {}
       )
       .then((res) => {
@@ -199,7 +194,6 @@ export const ParticipantReport = () => {
     (el) => el._id == singleParticipant
   )[0]?.name;
 
-  
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
     documentTitle: "Cohort report",
@@ -254,120 +248,139 @@ export const ParticipantReport = () => {
     return `${years} years, ${months} months, ${days} days`;
   }
 
+  // excel showing ----------
 
-// excel showing ----------
+  const transformData = entireEvaluation?.map((item) => {
+    const domains = item.domain.map((domainItem) => ({
+      domainName: domainItem.name,
+      subTopics: domainItem.subTopics,
+      average: domainItem.average,
+    }));
 
-const transformData = entireEvaluation?.map((item) => {
-  const domains = item.domain.map((domainItem) => ({
-    domainName: domainItem.name,
-    subTopics: domainItem.subTopics,
-    average : domainItem.average,
-  }));
-
-  return {
-    participant: item.participant.name,
-    participantType: item.participant.participantType,
-    activity: item.activity.name,
-    session: item.session.name,
-    sessionDate: convertDateFormat(item.session.date.split("T")[0]),
-    sessionTime: item.session.numberOfMins,
-    domains: domains,
-    grandAverage: item.grandAverage,
-  };
-});
-
-const transformMainData = (data) => {
-  let result = [];
-
-  data.forEach((item) => {
-    const {
-      participant,
-      participantType,
-      activity,
-      session,
-      sessionDate,
-      sessionTime,
-      domains,
-      grandAverage,
-    } = item;
-
-    domains.forEach((domain) => {
-      let domainHeader = true;
-      domain.subTopics.forEach((subtopic) => {
-        if (domainHeader) {
-          result.push([
-            participant,
-            participantType,
-            activity,
-            session,
-            sessionDate,
-            sessionTime,
-            domain.domainName,
-            domain.average,
-            subtopic.content,
-            subtopic.score,
-            grandAverage,
-          ]);
-          domainHeader = false;
-        } else {
-          result.push([
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            subtopic.content,
-            subtopic.score,
-            "",
-          ]);
-        }
-      });
-    });
+    return {
+      participant: item.participant.name,
+      participantType: item.participant.participantType,
+      activity: item.activity.name,
+      session: item.session.name,
+      sessionDate: convertDateFormat(item.session.date.split("T")[0]),
+      sessionTime: item.session.numberOfMins,
+      domains: domains,
+      grandAverage: item.grandAverage,
+    };
   });
 
-  return result;
-};
+  const transformMainData = (data) => {
+    let result = [];
 
-const transformGraphDetails = (graphDetails) => {
-  return graphDetails.map((item) => [
-    item.domainName,
-    item.average,
-    item.centerAverage,
-    item.numberOfSessions,
-  ]);
-};
+    data.forEach((item) => {
+      const {
+        participant,
+        participantType,
+        activity,
+        session,
+        sessionDate,
+        sessionTime,
+        domains,
+        grandAverage,
+      } = item;
 
-const handleExportToExcel = () => {
-  // Transform data
-  const transformedMainData = transformMainData(transformData);
-  const transformedGraphDetails = transformGraphDetails(resultnlist?.graphDetails);
+      domains.forEach((domain) => {
+        let domainHeader = true;
+        domain.subTopics.forEach((subtopic) => {
+          if (domainHeader) {
+            result.push([
+              participant,
+              participantType,
+              activity,
+              session,
+              sessionDate,
+              sessionTime,
+              domain.domainName,
+              domain.average,
+              subtopic.content,
+              subtopic.score,
+              grandAverage,
+            ]);
+            domainHeader = false;
+          } else {
+            result.push([
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              subtopic.content,
+              subtopic.score,
+              "",
+            ]);
+          }
+        });
+      });
+    });
 
-  // Create worksheets using AoA
-  const mainWorksheet = XLSX.utils.aoa_to_sheet([
-    ["Participant Name", "Participant Type", "Activity Name", "Session Name", "Session Date", "Session Time", "Domain Name","Domain Average", "Subtopic Content", "Score", "Grand Average"],
-    ...transformedMainData,
-  ]);
-  
-  const graphDetailsWorksheet = XLSX.utils.aoa_to_sheet([
-    ["Domain Name", "Average", "Centre Average", "Number of Sessions"],
-    ...transformedGraphDetails,
-  ]);
+    return result;
+  };
 
-  // Create a workbook
-  const workbook = XLSX.utils.book_new();
+  const transformGraphDetails = (graphDetails) => {
+    return graphDetails.map((item) => [
+      item.domainName,
+      item.average,
+      item.centerAverage,
+      item.numberOfSessions,
+    ]);
+  };
 
-  // Add worksheets to the workbook
-  XLSX.utils.book_append_sheet(workbook, mainWorksheet, "Main Data");
-  XLSX.utils.book_append_sheet(workbook, graphDetailsWorksheet, "Graph Details");
+  const handleExportToExcel = () => {
+    // Transform data
+    const transformedMainData = transformMainData(transformData);
+    const transformedGraphDetails = transformGraphDetails(
+      resultnlist?.graphDetails
+    );
 
-  // Export the workbook to an Excel file
-  XLSX.writeFile(workbook, `${participantNameforExcel}-${startDate}-${endDate}.xlsx`);
-  toast.success("Excel file downloaded successfully", toastConfig);
-};
+    // Create worksheets using AoA
+    const mainWorksheet = XLSX.utils.aoa_to_sheet([
+      [
+        "Participant Name",
+        "Participant Type",
+        "Activity Name",
+        "Session Name",
+        "Session Date",
+        "Session Time",
+        "Domain Name",
+        "Domain Average",
+        "Subtopic Content",
+        "Score",
+        "Grand Average",
+      ],
+      ...transformedMainData,
+    ]);
 
+    const graphDetailsWorksheet = XLSX.utils.aoa_to_sheet([
+      ["Domain Name", "Average", "Centre Average", "Number of Sessions"],
+      ...transformedGraphDetails,
+    ]);
+
+    // Create a workbook
+    const workbook = XLSX.utils.book_new();
+
+    // Add worksheets to the workbook
+    XLSX.utils.book_append_sheet(workbook, mainWorksheet, "Main Data");
+    XLSX.utils.book_append_sheet(
+      workbook,
+      graphDetailsWorksheet,
+      "Graph Details"
+    );
+
+    // Export the workbook to an Excel file
+    XLSX.writeFile(
+      workbook,
+      `${participantNameforExcel}-${startDate}-${endDate}.xlsx`
+    );
+    toast.success("Excel file downloaded successfully", toastConfig);
+  };
 
   return (
     <div className="mb-24">
@@ -471,9 +484,7 @@ const handleExportToExcel = () => {
           <div>
             Mobile No :
             <input
-              value={
-                resultnlist?.participant?.emergencyContact?.phone || ""
-              }
+              value={resultnlist?.participant?.emergencyContact?.phone || ""}
               className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
           </div>
@@ -516,15 +527,27 @@ const handleExportToExcel = () => {
         </div>
 
         <div className="w-[100%] flex justify-center items-center m-auto mt-12">
-          <ResponsiveContainer width="100%" height={400}>
+          <ResponsiveContainer width={900} height={500}>
             <ComposedChart data={resultnlist?.graphDetails}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 minTickGap={1}
                 dataKey="domainName"
-                tick={{ fontSize: 12 }}
-              />
-              <YAxis tick={{ fontSize: 12 }} domain={[0, 7]} />
+                tick={{ fontSize: 15, fontWeight: "bold" }}
+              >
+                <Label value="Domain name" offset={0} position="insideBottom" />
+              </XAxis>
+              <YAxis
+                tick={{ fontSize: 15, fontWeight: "bold" }}
+                domain={[0, 7]}
+              >
+                <Label
+                  value="Average"
+                  angle={-90}
+                  position="insideLeft"
+                  style={{ textAnchor: "middle" }}
+                />
+              </YAxis>
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               <Bar
@@ -533,7 +556,7 @@ const handleExportToExcel = () => {
                 barSize={20}
                 radius={[5, 5, 0, 0]}
               >
-                <LabelList dataKey="numberOfSessions" position="top" />
+                <LabelList dataKey="numberOfSessions" position="bottom"  content={<CustomLabel />} />
               </Bar>
 
               <Line
@@ -544,33 +567,44 @@ const handleExportToExcel = () => {
               />
             </ComposedChart>
           </ResponsiveContainer>
-          {/* <BarChart width={1100} height={500} data={resultnlist.graphDetails}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              minTickGap={1}
-              dataKey="domainName"
-              tick={{ fontSize: 12 }}
-            />
-            <YAxis tick={{ fontSize: 12 }} />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend />
-            <Bar
-              dataKey="average"
-              fill="#4A3AFF"
-              barSize={20}
-              radius={[5, 5, 0, 0]}
-            >
-              <LabelList dataKey="numberOfSessions" position="top" />
-            </Bar>
-      
-              <Line
-                type="monotone"
-                dataKey="centerAverage"
-                stroke="green"
-                activeDot={{ r: 8 }}
-              />
-   
-          </BarChart> */}
+        </div>
+        <div className="container mx-auto my-4 mt-[80px] mb-[40px]">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50 text-center">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                  Domain Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                  Average
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                  Center Average
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
+                  Number Of Sessions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {resultnlist?.graphDetails?.map((item, index) => (
+                <tr key={index}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {item.domainName}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {item.average}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {item.centerAverage}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {item.numberOfSessions}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
         <div className="mb-5 mt-5">
           <b className=" text-[18px]">Overall Observations:</b> {remarks}
