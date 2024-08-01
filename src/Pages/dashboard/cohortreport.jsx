@@ -694,8 +694,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 const CustomLabel = ({ x, y, width, value }) => {
   return (
-    <text x={x + width / 2} y={y + 20} fill="#FFF" textAnchor="middle">
-      {value}
+    <text x={x + width / 2} y={y + 20} fill="black" textAnchor="middle">
+      {value + " "+"session"}
     </text>
   );
 };
@@ -992,8 +992,8 @@ export const Cohortreport = () => {
       </div>
       <div
         ref={componantPDF}
-        style={{ width: "90%", margin: "auto", marginTop: "20px" }}
-        className="custom-header shadow rounded-xl p-8 bg-white"
+        style={{ width: "90%", margin: "auto", marginTop: "20px",boxShadow: "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px" }}
+        className="custom-header p-8 bg-white"
       >
         <div className="flex justify-center items-center">
           <img
@@ -1089,40 +1089,41 @@ export const Cohortreport = () => {
 
 
 <BarChart
-      width={900}
-      height={500}
-      data={resultnlist?.graphDetails}
-      margin={{ top: 20, right: 30, left: 20, bottom: 50 }} // Adjust the bottom margin here
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis
-        dataKey="domainName"
-        tick={{ fontSize: 15, fontWeight: "bold" }}
-      >
-        <Label value="Domain name" offset={0} position="insideBottom" />
-      </XAxis>
-      <YAxis
-        tick={{ fontSize: 15, fontWeight: "bold" }}
-        domain={[0, 7]}
-      >
-        <Label
-          value="Average"
-          angle={-90}
-          position="insideLeft"
-          style={{ textAnchor: 'middle' }}
-        />
-      </YAxis>
-      <Tooltip content={<CustomTooltip />} />
-      <Legend />
-      <Bar
-        dataKey="centerAverage"
-        fill="#4A3AFF"
-        barSize={20}
-        radius={[5, 5, 0, 0]}
-      >
-       <LabelList dataKey="numberOfSessions" position="bottom" content={<CustomLabel />} />
-      </Bar>
-    </BarChart>
+  width={900}
+  height={500}
+  data={resultnlist?.graphDetails}
+  margin={{ top: 20, right: 30, left: 20, bottom: 50 }} // Adjust the bottom margin here
+>
+  <CartesianGrid strokeDasharray="3 3" />
+  <XAxis
+    dataKey="domainName"
+    tick={{ fontSize: 15, fontWeight: "bold" }}
+  >
+    <Label value="Domain name" offset={0} position="insideBottom" dy={50} /> {/* Adjust dy as needed */}
+  </XAxis>
+  <YAxis
+    tick={{ fontSize: 15, fontWeight: "bold" }}
+    domain={[0, 7]}
+  >
+    <Label
+      value="Average"
+      angle={-90}
+      position="insideLeft"
+      style={{ textAnchor: 'middle' }}
+    />
+  </YAxis>
+  <Tooltip content={<CustomTooltip />} />
+  <Legend />
+  <Bar
+    dataKey="centerAverage"
+    fill="#4A3AFF"
+    barSize={20}
+    radius={[5, 5, 0, 0]}
+  >
+    <LabelList dataKey="numberOfSessions" position="bottom" content={<CustomLabel />} />
+  </Bar>
+</BarChart>
+
         </div>
         <div className="container mx-auto my-4">
           <table className="min-w-full divide-y divide-gray-200">

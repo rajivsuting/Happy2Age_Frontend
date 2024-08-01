@@ -98,12 +98,11 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 const CustomLabel = ({ x, y, width, value }) => {
   return (
-    <text x={x + width / 2} y={y + 20} fill="#FFF" textAnchor="middle">
-      {value}
+    <text x={x + width / 2} y={y + 20} fill="black" textAnchor="middle">
+      {value + " "+"session"}
     </text>
   );
 };
-
 export const ParticipantReport = () => {
   const [evalutionlist, setEvalutionlist] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -428,8 +427,8 @@ export const ParticipantReport = () => {
       </div>
       <div
         ref={componantPDF}
-        style={{ width: "90%", margin: "auto", marginTop: "20px" }}
-        className="border border-black rounded-xl p-8 bg-white"
+        style={{ width: "90%", margin: "auto", marginTop: "20px",boxShadow: "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px" }}
+        className="custom-header p-8 bg-white"
       >
         <div className="flex justify-center items-center">
           <img
@@ -535,7 +534,7 @@ export const ParticipantReport = () => {
                 dataKey="domainName"
                 tick={{ fontSize: 15, fontWeight: "bold" }}
               >
-                <Label value="Domain name" offset={0} position="insideBottom" />
+                <Label value="Domain name" offset={0} position="insideBottom" dy={30} />
               </XAxis>
               <YAxis
                 tick={{ fontSize: 15, fontWeight: "bold" }}
