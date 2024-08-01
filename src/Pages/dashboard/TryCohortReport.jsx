@@ -1,5 +1,16 @@
 import React, { useRef } from "react";
-import { Button, Card, Typography } from "@material-tailwind/react";
+import {
+  Button,
+  Card,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@material-tailwind/react";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 import { useEffect, useState } from "react";
@@ -9,6 +20,7 @@ import { CiEdit } from "react-icons/ci";
 import SeeDeatailesEvalution from "../../Componants/SeeDeatailesEvalution";
 import { useReactToPrint } from "react-to-print";
 import { useDispatch, useSelector } from "react-redux";
+import * as XLSX from "xlsx";
 import {
   Bar,
   BarChart,
@@ -19,38 +31,17 @@ import {
   YAxis,
   Line,
   LabelList,
-  ResponsiveContainer,
-  ComposedChart,
   Label,
 } from "recharts";
-import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
-import { getAllParticipants } from "../../Redux/AllListReducer/action";
-import * as XLSX from "xlsx";
+import { getAllCohorts } from "../../Redux/AllListReducer/action";
 import { convertDateFormat, getLocalData } from "../../Utils/localStorage";
-
-// import {
-//   ComposedChart,
-//   Bar,
-//   Line,
-//   XAxis,
-//   YAxis,
-//   CartesianGrid,
-//   Tooltip,
-//   Legend,
-//   ResponsiveContainer,
-// } from 'recharts';
-
-// const data = [
-//   { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
-//   { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
-//   { name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
-//   { name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
-//   { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
-//   { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
-//   { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
-// ];
+import { useNavigate } from "react-router-dom";
+import ReactApexChart from "react-apexcharts";
+import Heatmap from "../../Componants/Heatmap";
+// import { Link } from "react-router-dom";
+// import { resultnlist } from "./dummy";
 
 const darkColors = [
   "#17a589",
@@ -69,26 +60,18 @@ const darkColors = [
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
-    const barData = payload.find((p) => p.dataKey === "average");
-    const lineData = payload.find((p) => p.dataKey === "centerAverage");
-
     return (
       <div
         className="custom-tooltip"
         style={{
           backgroundColor: "#fff",
-          padding: "20px",
+          padding: "10px",
           border: "1px solid #ccc",
         }}
       >
         <p className="label">{`Domain: ${label}`}</p>
-        {barData && <p className="intro">{`Average: ${barData.value}`}</p>}
-        {lineData && (
-          <p className="desc">{`Centre Average: ${lineData?.value}`}</p>
-        )}
-        {barData && (
-          <p className="desc">{`Number of Sessions: ${barData.payload.numberOfSessions}`}</p>
-        )}
+        <p className="intro">{`Average: ${payload[0].value}`}</p>
+        <p className="desc">{`Number of Sessions: ${payload[0].payload.numberOfSessions}`}</p>
       </div>
     );
   }
@@ -96,29 +79,30 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+
 const CustomLabel = ({ x, y, width, value }) => {
   return (
-    <text x={x + width / 2} y={y + 20} fill="black" textAnchor="middle">
-      {value + " "+"session"}
+    <text x={x + width / 2} y={y + 20} fill="#FFF" textAnchor="middle">
+      {value}
     </text>
   );
 };
-export const ParticipantReport = () => {
-  const [evalutionlist, setEvalutionlist] = useState([]);
+
+
+export const Cohortreport = () => {
+  const [resultnlist, setResultlist] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [allParticipants, setAllParticipants] = useState([]);
-  const [singleParticipant, setSingleParticipant] = useState("");
+  const [cohortSelect, setCohortSelect] = useState("");
   const [startDate, setStartdate] = useState("");
-  const [happinessScore, setHappinessScore] = useState([]);
   const [endDate, setEnddate] = useState("");
   const [sessionSelect, setSessionSelect] = useState("");
   const [getReportData, setGetReportData] = useState([]);
-  const [entireEvaluation, setEntireEvaluation] = useState([]);
   const [remarks, setRemarks] = useState("");
-  const [resultnlist, setResultlist] = useState({});
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [observation, setObservation] = useState("");
+  const [entireEvaluation, setEntireEvaluation] = useState([]);
   const componantPDF = useRef();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [singleEvalustion, setSingleEvaluation] = useState({});
   const toggleModal = (el) => {
@@ -134,40 +118,22 @@ export const ParticipantReport = () => {
   });
 
   useEffect(() => {
-    dispatch(getAllParticipants("", ""));
-    axios
-      .get(`${serverUrl}/evaluation/all`, {})
-      .then((res) => {
-        setEvalutionlist(res.data.message);
-      })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
+    dispatch(getAllCohorts("", ""));
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     axios
       .get(
-        `${serverUrl}/report/${singleParticipant}/?start=${startDate}&end=${endDate}`,
-        {}
+        `${serverUrl}/report/get/?cohort=${cohortSelect}&start=${startDate}&end=${endDate}`
       )
       .then((res) => {
         console.log(res);
-        setResultlist(res.data.data);
-        setEntireEvaluation(res.data.participantEvaluations);
+        setResultlist(res.data.message);
+        setEntireEvaluation(res.data.evaluations);
       })
       .catch((err) => {
+        console.log(err);
         if (err.response && err.response.data && err.response.data.jwtExpired) {
           toast.error(err.response.data.message, toastConfig);
           setTimeout(() => {
@@ -180,75 +146,43 @@ export const ParticipantReport = () => {
         }
       });
   };
-  // console.log(resultnlist?.graphDetails);
+
+  // let arr = [];
+
+  // evalutionlist?.map((el) => {
+  //   return arr.push({
+  //     name: el.participant.name,
+  //     score: Number(el.grandAverage.toFixed(2)),
+  //   });
+  // });
+
+  // console.log(resultnlist);
 
   let filteredData = resultnlist?.graphDetails?.map((el) => ({
     "Domain name": el.domainName,
     "Centre average": el.centerAverage,
     "No. of sessions": el.numberOfSessions,
-    Average: el.average,
   }));
 
-  let participantNameforExcel = allParticipants?.filter(
-    (el) => el._id == singleParticipant
-  )[0]?.name;
+  let cohortNameforExcel = cohortList?.filter((el) => el._id == cohortSelect)[0]
+    ?.name;
+
+  // console.log(cohortList?.filter((el) =>el._id == cohortSelect)[0]?.name);
 
   const generatePDF = useReactToPrint({
     content: () => componantPDF.current,
-    documentTitle: "Cohort report",
+    documentTitle: "Centre report",
     onAfterPrint: () =>
       toast.success("PDF file download successfully", toastConfig),
+    pageStyle: `
+    .custom-header {
+      padding: 10px; /* Add padding for better readability */
+      border: 1px solid #ccc; /* Add border to header and footer */
+    }
+  `,
   });
 
-  useEffect(() => {
-    axios
-      .get(`${serverUrl}/participant/all`, {})
-      .then((res) => {
-        setAllParticipants(res.data.message);
-      })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
-  }, []);
-
-  function calculateAge(birthdateStr) {
-    const birthdate = new Date(birthdateStr);
-    const today = new Date();
-
-    let years = today.getFullYear() - birthdate.getFullYear();
-    let months = today.getMonth() - birthdate.getMonth();
-    let days = today.getDate() - birthdate.getDate();
-
-    // Adjust for negative days and months
-    if (days < 0) {
-      months--;
-      const prevMonth = new Date(
-        today.getFullYear(),
-        today.getMonth() - 1,
-        birthdate.getDate()
-      );
-      days = Math.floor((today - prevMonth) / (1000 * 60 * 60 * 24));
-    }
-
-    if (months < 0) {
-      years--;
-      months += 12;
-    }
-
-    return `${years} years, ${months} months, ${days} days`;
-  }
-
-  // excel showing ----------
-
+  // heat map----------------------
   const transformData = entireEvaluation?.map((item) => {
     const domains = item.domain.map((domainItem) => ({
       domainName: domainItem.name,
@@ -270,15 +204,14 @@ export const ParticipantReport = () => {
 
   const transformMainData = (data) => {
     let result = [];
-
     data.forEach((item) => {
       const {
         participant,
         participantType,
-        activity,
-        session,
         sessionDate,
         sessionTime,
+        activity,
+        session,
         domains,
         grandAverage,
       } = item;
@@ -326,9 +259,16 @@ export const ParticipantReport = () => {
   const transformGraphDetails = (graphDetails) => {
     return graphDetails.map((item) => [
       item.domainName,
-      item.average,
       item.centerAverage,
       item.numberOfSessions,
+    ]);
+  };
+
+  const transformParticipantDomainScores = (participantDomainScores) => {
+    return participantDomainScores.map((item) => [
+      item.domain,
+      item.participant,
+      item.score,
     ]);
   };
 
@@ -337,6 +277,9 @@ export const ParticipantReport = () => {
     const transformedMainData = transformMainData(transformData);
     const transformedGraphDetails = transformGraphDetails(
       resultnlist?.graphDetails
+    );
+    const transformedParticipantDomainScores = transformParticipantDomainScores(
+      resultnlist?.participantDomainScores
     );
 
     // Create worksheets using AoA
@@ -358,8 +301,13 @@ export const ParticipantReport = () => {
     ]);
 
     const graphDetailsWorksheet = XLSX.utils.aoa_to_sheet([
-      ["Domain Name", "Average", "Centre Average", "Number of Sessions"],
+      ["Domain Name", "Centre Average", "Number of Sessions"],
       ...transformedGraphDetails,
+    ]);
+
+    const participantDomainScoresWorksheet = XLSX.utils.aoa_to_sheet([
+      ["Domain Name", "Participant Name", "Score"],
+      ...transformedParticipantDomainScores,
     ]);
 
     // Create a workbook
@@ -372,11 +320,16 @@ export const ParticipantReport = () => {
       graphDetailsWorksheet,
       "Graph Details"
     );
+    XLSX.utils.book_append_sheet(
+      workbook,
+      participantDomainScoresWorksheet,
+      "Participant Domain Scores"
+    );
 
     // Export the workbook to an Excel file
     XLSX.writeFile(
       workbook,
-      `${participantNameforExcel}-${startDate}-${endDate}.xlsx`
+      `${cohortNameforExcel}-${startDate}-${endDate}.xlsx`
     );
     toast.success("Excel file downloaded successfully", toastConfig);
   };
@@ -389,17 +342,17 @@ export const ParticipantReport = () => {
           className="flex justify-center items-center gap-3"
         >
           <select
-            className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
-            value={singleParticipant}
-            onChange={(e) => setSingleParticipant(e.target.value)}
+            name=""
+            id=""
+            value={cohortSelect}
+            className="border px-2 py-3 rounded-md mt-3 mb-3"
+            onChange={(e) => setCohortSelect(e.target.value)}
             required
           >
-            <option value="">Select member</option>
-            {allParticipants?.map((el, index) => (
-              <option key={index} value={el._id}>
-                {el.name}
-              </option>
-            ))}
+            <option value="">Select a centre</option>
+            {cohortList?.map((el) => {
+              return <option value={el._id}>{el.name}</option>;
+            })}
           </select>
           <div className="ml-10">From</div>
           <input
@@ -427,8 +380,8 @@ export const ParticipantReport = () => {
       </div>
       <div
         ref={componantPDF}
-        style={{ width: "90%", margin: "auto", marginTop: "20px",boxShadow: "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px" }}
-        className="custom-header p-8 bg-white"
+        style={{ width: "90%", margin: "auto", marginTop: "20px" }}
+        className="custom-header shadow rounded-xl p-8 bg-white"
       >
         <div className="flex justify-center items-center">
           <img
@@ -439,13 +392,15 @@ export const ParticipantReport = () => {
         </div>
         <div className="text-center">
           <div className="font-bold mb-5 mt-5 text-[20px]">
-            Individual Member Observations
+            Centre Report{" "}
+            {cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
+              "Unknown"}
           </div>
           <div className="font-bold mb-5 mt-5 text-[20px]">
-            Our Journey Together
+            Journey Together
           </div>
           <div className="w-[70%] m-auto mt-5">
-            (This document is based on our basic observations about your
+            (This document is based on our basic observations about member’s
             participation and engagements made in our sessions which is held
             <input className="border-b w-[50px] ml-2 mr-2 text-center border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />{" "}
             in a week for{" "}
@@ -454,128 +409,115 @@ export const ParticipantReport = () => {
             domains that we have chosen while designing activities.)
           </div>
         </div>
-        <div className="w-[100%] m-auto grid grid-cols-2 border rounded-xl p-8 mt-5">
-          <div className="mb-3">
-            Name :
-            <input
-              value={resultnlist?.participant?.name || ""}
-              className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
-            />
+        <div className="w-[100%] m-auto border rounded-xl p-8 mt-5">
+          <div className="flex justify-between items-center ">
+            <div className="mb-3">
+              Name of the Centre:
+              <input
+                value={
+                  cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
+                  "Unknown"
+                }
+                className="border-b w-[150px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              />
+            </div>
+            <div>
+              Total Participants:
+              <input
+                value={
+                  cohortList?.filter((el) => el._id == cohortSelect)[0]
+                    ?.participants?.length || "0"
+                }
+                className="border-b w-[150px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              />
+            </div>
           </div>
-          <div>
-            Age :
-            <input
-              value={calculateAge(resultnlist?.participant?.dob || "")}
-              className="border-b w-[250px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
-            />
-          </div>
-          <div className="mb-3">
-            Address :
-            <input
-              value={`${
-                resultnlist?.participant?.address?.addressLine || ""
-              }, ${resultnlist?.participant?.address?.city || ""}, ${
-                resultnlist?.participant?.address?.state || ""
-              }, ${resultnlist?.participant?.address?.pincode || ""}`}
-              className="border-b w-[330px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
-            />
-          </div>
-          <div>
-            Mobile No :
-            <input
-              value={resultnlist?.participant?.emergencyContact?.phone || ""}
-              className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
-            />
-          </div>
+
           <div className="mb-3">
             Date From :
             <input
               value={convertDateFormat(startDate) || ""}
-              className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              className="border-b w-[180px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
             To :
             <input
               value={convertDateFormat(endDate) || ""}
-              className="border-b w-[100px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
-            />
-          </div>
-          <div>
-            Attendance :
-            <input
-              value={resultnlist?.attendance || 0}
-              className="border-b w-[50px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
-            />
-            out of :
-            <input
-              value={resultnlist?.totalNumberOfSessions || 0}
-              className="border-b w-[50px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              className="border-b w-[180px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             />
           </div>
         </div>
-
-        {/* <div className="mb-5 mt-5 ">
-          <b className="text-[18px]">Oxford happiness score: {(happinessScore[0]?.happinessScore)?.toFixed(2)}</b>
-        </div> */}
         <div className="mb-5 mt-5 ">
-          <b className="text-[18px]">Brief Background:</b>{" "}
-          {resultnlist?.participant?.briefBackground}
+          <b className="text-[18px]">Overall Remark:{remarks}</b>{" "}
         </div>
         <div>
-          <b className="text-[18px]">Graph (Bar):</b> On various Domains ratings
-          against the aggregate rating of the Cohort (Centre)
+          <b className="text-[18px]">Graph of Score </b> (Individual Score
+          against the Group aggregate Score for each Domain)
         </div>
+        <div className="w-[100%] flex justify-center items-center m-auto mt-12 mb-[80px]">
+          {/* <BarChart width={900} height={500} data={}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              minTickGap={1}
+              dataKey="domainName"
+              tick={{ fontSize: 15,fontWeight:"bold" }} 
+            />
+            <YAxis tick={{ fontSize: 15,fontWeight:"bold" }} domain={[0, 7]} />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
+            <Bar
+              dataKey="centerAverage"
+              fill="#4A3AFF"
+              barSize={20}
+              radius={[5, 5, 0, 0]}
+            >
+              <LabelList dataKey="numberOfSessions" position="top" />
+            </Bar>
+          </BarChart> */}
 
-        <div className="w-[100%] flex justify-center items-center m-auto mt-12">
-          <ResponsiveContainer width={900} height={500}>
-            <ComposedChart data={resultnlist?.graphDetails}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                minTickGap={1}
-                dataKey="domainName"
-                tick={{ fontSize: 15, fontWeight: "bold" }}
-              >
-                <Label value="Domain name" offset={0} position="insideBottom" dy={30} />
-              </XAxis>
-              <YAxis
-                tick={{ fontSize: 15, fontWeight: "bold" }}
-                domain={[0, 7]}
-              >
-                <Label
-                  value="Average"
-                  angle={-90}
-                  position="insideLeft"
-                  style={{ textAnchor: "middle" }}
-                />
-              </YAxis>
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              <Bar
-                dataKey="average"
-                fill="#4A3AFF"
-                barSize={20}
-                radius={[5, 5, 0, 0]}
-              >
-                <LabelList dataKey="numberOfSessions" position="bottom"  content={<CustomLabel />} />
-              </Bar>
 
-              <Line
-                type="monotone"
-                dataKey="centerAverage"
-                stroke="green"
-                activeDot={{ r: 10 }}
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
+
+<BarChart
+      width={900}
+      height={500}
+      data={resultnlist?.graphDetails}
+      margin={{ top: 20, right: 30, left: 20, bottom: 50 }} // Adjust the bottom margin here
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis
+        dataKey="domainName"
+        tick={{ fontSize: 15, fontWeight: "bold" }}
+      >
+        <Label value="Domain name" offset={0} position="insideBottom" />
+      </XAxis>
+      <YAxis
+        tick={{ fontSize: 15, fontWeight: "bold" }}
+        domain={[0, 7]}
+      >
+        <Label
+          value="Average"
+          angle={-90}
+          position="insideLeft"
+          style={{ textAnchor: 'middle' }}
+        />
+      </YAxis>
+      <Tooltip content={<CustomTooltip />} />
+      <Legend />
+      <Bar
+        dataKey="centerAverage"
+        fill="#4A3AFF"
+        barSize={20}
+        radius={[5, 5, 0, 0]}
+      >
+       <LabelList dataKey="numberOfSessions" position="bottom" content={<CustomLabel />} />
+      </Bar>
+    </BarChart>
         </div>
-        <div className="container mx-auto my-4 mt-[80px] mb-[40px]">
+        <div className="container mx-auto my-4">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50 text-center">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
                   Domain Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
-                  Average
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
                   Center Average
@@ -592,9 +534,6 @@ export const ParticipantReport = () => {
                     {item.domainName}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {item.average}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
                     {item.centerAverage}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -604,18 +543,28 @@ export const ParticipantReport = () => {
               ))}
             </tbody>
           </table>
+
         </div>
-        <div className="mb-5 mt-5">
-          <b className=" text-[18px]">Overall Observations:</b> {remarks}
+        
+
+        <div className=" flex justify-between items-center  mb-[80px] mt-[80px]">
+          <div>
+          <b className="text-[18px]">Graph of Score </b> (overall score for each
+            member across Domains)</div><div>
+          Centre average : <b>{resultnlist?.averageForCohort}</b>
         </div>
-        <div className="mb-5 mt-5">
-          <b className=" text-[18px]">Joint Plan:</b>
-          <br />{" "}
-          <textarea
-            className=" p-2 pt-2 placeholder:pl-2 placeholder:pt-2 mt-5 border-2 rounded-md w-[100%] border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
-            name=""
-            id=""
-          ></textarea>
+        </div>
+        <Heatmap arr={resultnlist?.participantDomainScores} />
+
+       
+
+        <div className="mt-5">
+          <i>Overall Observations: {observation}</i>
+        </div>
+        <div className="mt-10">
+          We are happy to have collaborated with you and look forward to
+          continuing our engagements with your Society’s Senior Citizen Members
+          in spreading joy and providing meaningful involvement.
         </div>
         <div className="mb-5 mt-5">
           <b>Date:</b>{" "}
@@ -635,12 +584,8 @@ export const ParticipantReport = () => {
           <input className="border-b w-[120px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none" />
         </div>
         <div className="mt-10">
-          We are here to engage with you to spread joy and provide meaningful
-          involvement.{" "}
-        </div>
-        <div className="mt-5">
           We stand for Trust, Building Positive Relationship & Spreading Joy and
-          Going that Extra Mile.{" "}
+          Going that Extra Mile.
         </div>
       </div>
       <div className="w-[90%] m-auto">
@@ -652,6 +597,14 @@ export const ParticipantReport = () => {
           value={remarks}
           onChange={(e) => setRemarks(e.target.value)}
         />
+        <textarea
+          className="w-[100%] h-[80px] mt-5 shadow rounded-xl p-2 pt-4 outline-none placeholder:pl-2 placeholder:pt-2"
+          placeholder="Write observation..."
+          name=""
+          id=""
+          value={observation}
+          onChange={(e) => setObservation(e.target.value)}
+        />
         <div className="flex justify-end gap-5 mt-5">
           <Button onClick={handleExportToExcel}>Export to excel</Button>
           <Button onClick={generatePDF}>Generate PDF</Button>
@@ -661,4 +614,4 @@ export const ParticipantReport = () => {
   );
 };
 
-export default ParticipantReport;
+export default Cohortreport;

@@ -22,11 +22,15 @@ const Heatmap = ({ arr }) => {
 
   const options = {
     chart: {
-      // height: 450,
       type: 'heatmap',
     },
     dataLabels: {
-      enabled: true
+      enabled: true,
+      style: {
+        fontSize: '14px', // Adjust font size here
+        fontWeight: 'bold', // Set font weight to bold
+        colors: ['#000'] // Set font color to black
+      }
     },
     plotOptions: {
       heatmap: {
@@ -56,11 +60,23 @@ const Heatmap = ({ arr }) => {
     },
     xaxis: {
       type: 'category',
-      categories: participants
+      categories: participants,
+      labels: {
+        style: {
+          fontSize: '14px', // Adjust font size for participants here
+          fontWeight: 'bold' // Set font weight to bold for participants
+        }
+      }
     },
     yaxis: {
       type: 'category',
-      categories: domains
+      categories: domains,
+      labels: {
+        style: {
+          fontSize: '14px', // Adjust font size for domains here
+          fontWeight: 'bold' // Set font weight to bold for domains
+        }
+      }
     },
     grid: {
       padding: {
@@ -70,9 +86,9 @@ const Heatmap = ({ arr }) => {
   };
 
   return (
-    <div className='flex justify-center items-center m-auto mt-[30px]'>
       <ReactApexChart options={options} series={heatmapData} type="heatmap" width={700} height={400} />
-    </div>
+    // <div className='flex justify-center items-center m-auto mt-[30px]'>
+    // </div>
   );
 };
 

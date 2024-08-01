@@ -22,7 +22,7 @@ export const Participantlist = () => {
   const dispatch = useDispatch();
 
   const toggleModal = (el) => {
-    setSearchParams({ id: el._id });
+    // setSearchParams({ id: el._id });
     setIsModalOpen(!isModalOpen);
     setSinglePartcipant(el);
   };
