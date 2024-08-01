@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AllRoutes from "./Routes/AllRoutes";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,6 +13,8 @@ import { getAllDomains } from "./Redux/AllListReducer/action";
 import { getAllSessions } from "./Redux/AllListReducer/action";
 import { getAllEvaluations } from "./Redux/AllListReducer/action";
 import { useNavigate } from "react-router-dom";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import AdminList from "./Pages/dashboard/AdminList";
 
 export const toastConfig = {
   position: "top-center",
@@ -29,6 +31,9 @@ export const toastConfig = {
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [chartImage, setChartImage] = useState('');
+
+
   useEffect(() => {
     dispatch(getAllParticipants("", ""))
       .then((res) => {
@@ -133,8 +138,15 @@ const App = () => {
     <div>
       <AllRoutes />
       <ToastContainer />
+      {/* <ChartComponent setChartImage={setChartImage} />
+      {chartImage && (
+        <PDFDownloadLink document={<PDFDocument chartImage={chartImage} />} fileName="chart.pdf">
+          {({ loading }) => (loading ? 'Loading document...' : 'Download PDF')}
+        </PDFDownloadLink>
+      )} */}
     </div>
   );
 };
+
 
 export default App;

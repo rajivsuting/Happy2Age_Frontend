@@ -86,9 +86,9 @@ const Heatmap = ({ arr }) => {
   };
 
   return (
-    <div className='flex justify-center items-center m-auto mt-[30px]'>
       <ReactApexChart options={options} series={heatmapData} type="heatmap" width={700} height={400} />
-    </div>
+    // <div className='flex justify-center items-center m-auto mt-[30px]'>
+    // </div>
   );
 };
 

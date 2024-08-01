@@ -87,8 +87,9 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
   const handleSubmitParticipant = (e) => {
     e.preventDefault();
     setIsEditParticipantLoading(true);
+    console.log(participantData._id);
     axios
-      .patch(`${serverUrl}/participant/edit/${searchParams.get("id")}`, participantData)
+      .patch(`${serverUrl}/participant/edit/${participantData._id}`, participantData)
       .then((res) => {
         if (res.status === 200) {
           dispatch(getAllParticipants(searchParams.get("page"), searchParams.get("limit"))).then(() => {
