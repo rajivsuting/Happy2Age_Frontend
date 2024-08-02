@@ -283,6 +283,9 @@ const navigate = useNavigate();
           })}
         </tbody>
       </table>
+      {
+            cohortList?.length == 0 ? <div className="text-center m-5">No result found!!</div> : null
+          }
       <SeeDetailsCohort
         isOpen={isModalOpen}
         onClose={toggleModal}

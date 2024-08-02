@@ -330,6 +330,9 @@ export const ActivityList = () => {
           })}
         </tbody>
       </table>
+      {
+            activityList?.length == 0 ? <div className="text-center m-5">No result found!!</div> : null
+          }
       <EditActivity
         isOpen={isModalOpen}
         onClose={toggleModal}

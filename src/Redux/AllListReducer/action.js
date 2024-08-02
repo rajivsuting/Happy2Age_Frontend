@@ -217,7 +217,7 @@ export const getAllSessions =
       .then((res) => {
         return dispatch({
           type: types.GET_SESSIONS_SUCCESS,
-          payload: res.data,
+          payload: res.data.message,
         });
       })
       .catch((err) => {

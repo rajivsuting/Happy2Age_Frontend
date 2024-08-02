@@ -138,7 +138,7 @@ export const Sessionlist = () => {
                 );
               }}
               variant=""
-              disabled={!startDate && !endDate}
+              disabled={!startDate && !endDate && !searchname}
             >
               Clear
             </Button>
@@ -254,6 +254,7 @@ export const Sessionlist = () => {
             </th> */}
           </tr>
         </thead>
+          
         <tbody>
           {sessionlist?.map((el, index) => {
             const isLast = index === Sessionlist?.length - 1;
@@ -365,6 +366,9 @@ export const Sessionlist = () => {
           })}
         </tbody>
       </table>
+      {
+            sessionlist?.length == 0 ? <div className="text-center m-5">No result found!!</div> : null
+          }
       <EditSeesion
         isOpen={isEditModalOPen}
         onClose={closeEditSessionEditModal}
