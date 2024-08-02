@@ -13,6 +13,7 @@ import {
   getAllActivities,
   getAllSessions,
   getAllSessionsBydate,
+  getAllSessionsByname,
 } from "../../Redux/AllListReducer/action";
 import EditSeesion from "../../Componants/EditSeesion";
 import { convertDateFormat } from "../../Utils/localStorage";
@@ -27,6 +28,7 @@ export const Sessionlist = () => {
   const [startDate, setStartDate] = useState("");
   const [isEditModalOPen, setIsEditModalOpen] = useState(false);
   const [endDate, setEndDate] = useState("");
+  const [searchname, setsearchname] = useState("");
   const navigate = useNavigate();
   const toggleModal = (el) => {
     setIsModalOpen(!isModalOpen);
@@ -60,24 +62,45 @@ export const Sessionlist = () => {
   };
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    dispatch(getAllSessionsBydate(startDate,endDate));
+    dispatch(getAllSessionsBydate(startDate, endDate));
   };
 
-  const handleOpenEditSessionEditModal = (el)=>{
+  const handleOpenEditSessionEditModal = (el) => {
     setIsEditModalOpen(true);
     setSingleSession(el);
-  }
+  };
 
-  const closeEditSessionEditModal = ()=>{
+  const closeEditSessionEditModal = () => {
     setIsEditModalOpen(false);
-  }
+  };
+
+  const handleSearchSubmitname = (e) => {
+    e.preventDefault();
+    dispatch(getAllSessionsByname(searchname));
+  };
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <div className="flex justify-between items-center gap-5 mt-4 mr-3 ml-3">
-        <div className="w-[70%]">
+        <div className="w-[70%] flex justify-start ">
           <form
-            className="flex justify-start items-center gap-5"
+            className="w-[100%] flex justify-start items-center gap-4"
+            onSubmit={handleSearchSubmitname}
+          >
+            <div className="w-[60%]">
+              <Input
+                label="Search by name"
+                required
+                value={searchname}
+                onChange={(e) => setsearchname(e.target.value)}
+              />
+            </div>
+            <Button type="submit" variant="">
+              Search
+            </Button>
+          </form>
+          <form
+            className="flex justify-start items-center gap-4"
             onSubmit={handleSearchSubmit}
           >
             <div className="w-[30%]">
@@ -86,7 +109,6 @@ export const Sessionlist = () => {
                 type="date"
                 required
                 value={startDate}
-                // type={showPassword ? "text" : "password"}
                 onChange={(e) => setStartDate(e.target.value)}
               />
             </div>
@@ -106,11 +128,14 @@ export const Sessionlist = () => {
             <Button
               type="button"
               onClick={() => {
-                  setStartDate("")
-                  setEndDate("")
-                 return dispatch(getAllSessions(currentPage, limit)).then((res) => {
+                setStartDate("");
+                setEndDate("");
+                setsearchname("");
+                return dispatch(getAllSessions(currentPage, limit)).then(
+                  (res) => {
                     return true;
-                  });
+                  }
+                );
               }}
               variant=""
               disabled={!startDate && !endDate}
@@ -216,9 +241,7 @@ export const Sessionlist = () => {
                 variant="small"
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
-              >
-                
-              </Typography>
+              ></Typography>
             </th>
             {/* <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
               <Typography
@@ -312,7 +335,10 @@ export const Sessionlist = () => {
                     See details
                   </Typography>
                 </td> */}
-                <td className={classes} onClick={()=>handleOpenEditSessionEditModal(el)}>
+                <td
+                  className={classes}
+                  onClick={() => handleOpenEditSessionEditModal(el)}
+                >
                   <Typography
                     as="a"
                     href="#"
@@ -339,7 +365,11 @@ export const Sessionlist = () => {
           })}
         </tbody>
       </table>
-      <EditSeesion isOpen={isEditModalOPen} onClose={closeEditSessionEditModal} singleSession={singleSession}/>
+      <EditSeesion
+        isOpen={isEditModalOPen}
+        onClose={closeEditSessionEditModal}
+        singleSession={singleSession}
+      />
       <SeeDetailesSession
         isOpen={isModalOpen}
         onClose={toggleModal}

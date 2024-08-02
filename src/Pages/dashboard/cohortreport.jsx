@@ -901,7 +901,7 @@ export const Cohortreport = () => {
           />
           <Button type="submit">Search</Button>
         </form>
-        <Button onClick={generatePDF}>Download pdf</Button>
+        
       </div>
       <div
         ref={componantPDF}
@@ -1172,10 +1172,10 @@ export const Cohortreport = () => {
                 des2={des2}
               />
             }
-            fileName="dynamic.pdf"
+            fileName={`${cohortNameforExcel}-${startDate}-${endDate}.pdf`}
           >
             {({ blob, url, loading, error }) =>
-              loading ? <Button>Generate PDF</Button> : <Button>Generate PDF</Button>
+              loading ? <Button>...Loading</Button> : <Button>Generate PDF</Button>
             }
           </PDFDownloadLink>
         </div>

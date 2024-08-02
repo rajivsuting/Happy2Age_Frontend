@@ -204,6 +204,27 @@ export const getAllSessions =
       });
   };
 
+  // session by name -------
+
+  export const getAllSessionsByname =
+  (name="") =>
+  (dispatch) => {
+    dispatch({ type: types.GET_SESSIONS_REQUEST });
+    return axios
+      .get(`${serverUrl}/session/name/?name=${name}`, {
+        
+      })
+      .then((res) => {
+        return dispatch({
+          type: types.GET_SESSIONS_SUCCESS,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return dispatch({ type: types.GET_SESSIONS_FAILURE });
+      });
+  };
   // session name --------------------
 
   export const getAllSessionsBydate =
@@ -222,7 +243,7 @@ export const getAllSessions =
       })
       .catch((err) => {
         console.log(err);
-        return dispatch({ type: types.GET_DOMAINS_FAILURE });
+        return dispatch({ type: types.GET_SESSIONS_FAILURE });
       });
   };
 

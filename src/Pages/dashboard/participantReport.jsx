@@ -117,7 +117,7 @@ const CustomLabel = ({ x, y, width, value }) => {
 const BarChartComponent = ({ data, onRendered }) => {
   return (
     <div id="chart-container">
-      <ResponsiveContainer width={900} height={500}>
+      <ResponsiveContainer width={900} height={450}>
         <ComposedChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
@@ -154,7 +154,6 @@ const BarChartComponent = ({ data, onRendered }) => {
               content={<CustomLabel />}
             />
           </Bar>
-
           <Line
             type="monotone"
             dataKey="centerAverage"
@@ -271,7 +270,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRightWidth: 0,
     borderBottomWidth: 0,
-    marginTop: "40px",
+    marginTop: "20px",
   },
   tableRow: {
     flexDirection: "row",
@@ -347,7 +346,7 @@ const styles = StyleSheet.create({
     border: "1px solid black",
     borderRadius: "10px",
     padding: "20px",
-    marginTop: "40px",
+    marginTop: "20px",
     fontSize: "14px",
   },
   row: {
@@ -383,7 +382,7 @@ const MyDocument = ({
   name,
   signature,
   mobile,
-  jointPlan
+  jointPlan,
 }) => (
   <Document>
     <Page size="A4" style={styles.page}>
@@ -534,7 +533,7 @@ const MyDocument = ({
         </View>
 
         {/* Overall Remark */}
-        <View style={{ marginBottom: "20px" }}>
+        <View style={{ marginBottom: "20px", marginTop: "10px" }}>
           <Text style={{ fontSize: "14px" }}>
             Graph (Bar): On various Domains ratings against the aggregate rating
             of the Cohort (Centre)
@@ -550,7 +549,6 @@ const MyDocument = ({
 
         {/* Table */}
         <View style={styles.table}>
-        
           <View style={styles.tableRow}>
             <View style={styles.tableCol}>
               <Text style={styles.tableCellHeader}>Domain</Text>
@@ -701,7 +699,7 @@ export const ParticipantReport = () => {
   const [des1, setDes1] = useState();
   const [des2, setDes2] = useState();
   const [singleEvalustion, setSingleEvaluation] = useState({});
-  const [jointPlan, setJoinplan] = useState("")
+  const [jointPlan, setJoinplan] = useState("");
 
   const handleCapture = (imgData) => {
     setChartImage(imgData);
@@ -805,8 +803,6 @@ export const ParticipantReport = () => {
         }
       });
   }, []);
-
-  
 
   // excel showing ----------
 
@@ -1191,8 +1187,8 @@ export const ParticipantReport = () => {
           <b className=" text-[18px]">Joint Plan:</b>
           <br />{" "}
           <textarea
-          value={jointPlan}
-          onChange={(e)=>setJoinplan(e.target.value)}
+            value={jointPlan}
+            onChange={(e) => setJoinplan(e.target.value)}
             className=" p-2 pt-2 placeholder:pl-2 placeholder:pt-2 mt-5 border-2 rounded-md w-[100%] border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
             name=""
             id=""
@@ -1250,11 +1246,11 @@ export const ParticipantReport = () => {
         />
         <div className="flex justify-end gap-5 mt-5">
           <Button onClick={handleExportToExcel}>Export to excel</Button>
-          
+
           <PDFDownloadLink
             document={
               <MyDocument
-              chartImage={chartImage}
+                chartImage={chartImage}
                 des1={des1}
                 des2={des2}
                 startDate={startDate}
@@ -1268,32 +1264,29 @@ export const ParticipantReport = () => {
                 jointPlan={jointPlan}
               />
             }
-            fileName="dynamic.pdf"
+            fileName={`${participantNameforExcel}-${startDate}-${endDate}.pdf`}
           >
             {({ blob, url, loading, error }) =>
-              loading ? (
-                <Button>Generate PDF</Button>
-              ) : (
-                <Button>Generate PDF</Button>
-              )
+              loading ? <Button>...Loading</Button> : <Button>Generate PDF</Button>
             }
           </PDFDownloadLink>
-          
         </div>
-        <PDFViewer><MyDocument
-              chartImage={chartImage}
-                des1={des1}
-                des2={des2}
-                startDate={startDate}
-                endDate={endDate}
-                resultnlist={resultnlist}
-                remarks={remarks}
-                date={date}
-                name={name}
-                signature={signature}
-                mobile={mobile}
-                jointPlan={jointPlan}
-              /></PDFViewer>
+        {/* <PDFViewer>
+          <MyDocument
+            chartImage={chartImage}
+            des1={des1}
+            des2={des2}
+            startDate={startDate}
+            endDate={endDate}
+            resultnlist={resultnlist}
+            remarks={remarks}
+            date={date}
+            name={name}
+            signature={signature}
+            mobile={mobile}
+            jointPlan={jointPlan}
+          />
+        </PDFViewer> */}
       </div>
     </div>
   );
