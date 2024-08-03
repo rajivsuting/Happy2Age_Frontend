@@ -106,10 +106,11 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const CustomLabel = ({ x, y, width, value }) => {
+const CustomLabel = ({ x, width, value, chartHeight }) => {
+  const yPosition = chartHeight + 20; // Fixed position below the x-axis
   return (
-    <text x={x + width / 2} y={y + 20} fill="black" textAnchor="middle">
-      {value + " " + "session"}
+    <text x={x + width / 2} y={yPosition} fill="black" textAnchor="middle">
+      {value + " session"}
     </text>
   );
 };
@@ -119,7 +120,7 @@ const BarChartComponent = ({ data, onRendered }) => {
     <div id="chart-container">
       <ResponsiveContainer width={900} height={450}>
         <ComposedChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" padding={{bottom:50}} margin={{ top: 20, right: 30, bottom: 50, left: 20 }}/>
           <XAxis
             minTickGap={1}
             dataKey="domainName"
@@ -129,7 +130,8 @@ const BarChartComponent = ({ data, onRendered }) => {
               value="Domain name"
               offset={0}
               position="insideBottom"
-              dy={30}
+              dy={20}
+              dx={150}
             />
           </XAxis>
           <YAxis tick={{ fontSize: 15, fontWeight: "bold" }} domain={[0, 7]}>
@@ -145,13 +147,12 @@ const BarChartComponent = ({ data, onRendered }) => {
           <Bar
             dataKey="average"
             fill="#4A3AFF"
-            barSize={20}
-            radius={[5, 5, 0, 0]}
+            barSize={15} radius={[20, 0, 20, 0]}
           >
             <LabelList
               dataKey="numberOfSessions"
               position="bottom"
-              content={<CustomLabel />}
+              content={<CustomLabel chartHeight={460}/>}
             />
           </Bar>
           <Line
@@ -223,7 +224,7 @@ const styles = StyleSheet.create({
   page: {
     padding: "20px",
     border: "1px solid black",
-    // borderRadius:"10px",
+    backgroundColor: "#ffeaf2",
     // marginRight:"20px",
     // Remove margin to avoid overlap issues
     position: "relative", // Ensure position for absolute elements
@@ -299,19 +300,21 @@ const styles = StyleSheet.create({
     marginTop: "40px",
   },
   boldText: {
-    fontSize: "14px",
+    fontSize: "12px",
   },
   text: {
-    fontSize: "14px",
+    fontSize: "12px",
     marginTop: "20px",
   },
   marginTop5: {
     marginTop: "20px",
-    fontSize: "14px",
+    fontSize: "12px",
+    lineHeight: "1.5px",
   },
   marginTop10: {
     marginTop: "20px",
-    fontSize: "14px",
+    fontSize: "12px",
+    lineHeight: "1.5px",
   },
   italicText: {
     fontStyle: "italic",
@@ -347,7 +350,8 @@ const styles = StyleSheet.create({
     borderRadius: "10px",
     padding: "20px",
     marginTop: "20px",
-    fontSize: "14px",
+    fontSize: "12px",
+   
   },
   row: {
     flexDirection: "row",
@@ -397,7 +401,7 @@ const MyDocument = ({
         >
           <Image
             src="/img/Happy-2age-logo-1-1.png"
-            style={{ width: "150px", borderRadius: "10px" }}
+            style={{ width: "200px", borderRadius: "10px" }}
           />
         </View>
 
@@ -436,6 +440,7 @@ const MyDocument = ({
               margin: "auto",
               marginTop: "5px",
               fontSize: "14px",
+              lineHeight:"1.5px"
             }}
           >
             (This document is based on our basic observations about your
@@ -478,13 +483,13 @@ const MyDocument = ({
         <View style={styles.container}>
           <View style={styles.row}>
             <Text>
-              Name:
+              Name :{" "}
               <Text style={[styles.input, styles.nameInput]}>
                 {resultnlist?.participant?.name || ""}
               </Text>
             </Text>
             <Text>
-              Age:
+              Age :{" "}
               <Text style={[styles.input, styles.nameInput]}>
                 {calculateAge(resultnlist?.participant?.dob || "")}
               </Text>
@@ -492,7 +497,7 @@ const MyDocument = ({
           </View>
           <View style={styles.row}>
             <Text>
-              Address:
+              Address :{" "}
               <Text style={[styles.input, styles.nameInput]}>
                 {`${resultnlist?.participant?.address?.addressLine || ""}, ${
                   resultnlist?.participant?.address?.city || ""
@@ -502,7 +507,7 @@ const MyDocument = ({
               </Text>
             </Text>
             <Text>
-              Mobile No:
+              Mobile No :{" "}
               <Text style={[styles.input, styles.nameInput]}>
                 {resultnlist?.participant?.emergencyContact?.phone || ""}
               </Text>
@@ -510,21 +515,21 @@ const MyDocument = ({
           </View>
           <View style={styles.row}>
             <Text>
-              Date From:
+              Date From :{" "}
               <Text style={[styles.input, styles.dateInput]}>
                 {convertDateFormat(startDate) || ""}
               </Text>{" "}
-              To:
+              To :{" "}
               <Text style={[styles.input, styles.dateInput]}>
                 {convertDateFormat(endDate) || ""}
               </Text>
             </Text>
             <Text>
-              Attendance:
+              Attendance :{" "}
               <Text style={[styles.input, styles.dateInput]}>
                 {resultnlist?.attendance || 0}
               </Text>{" "}
-              out of:
+              out of :{" "}
               <Text style={[styles.input, styles.dateInput]}>
                 {resultnlist?.totalNumberOfSessions || 0}
               </Text>
@@ -534,9 +539,9 @@ const MyDocument = ({
 
         {/* Overall Remark */}
         <View style={{ marginBottom: "20px", marginTop: "10px" }}>
-          <Text style={{ fontSize: "14px" }}>
-            Graph (Bar): On various Domains ratings against the aggregate rating
-            of the Cohort (Centre)
+          <Text style={{ fontSize: "12px" }}>
+            Graph (Bar) : On various Domains ratings against the aggregate
+            rating of the Cohort (Centre)
           </Text>
         </View>
 
@@ -607,15 +612,15 @@ const MyDocument = ({
         <View>
           <View style={styles.marginTop5}>
             <Text>
-              Brief Background:{resultnlist?.participant?.briefBackground}
+              Brief Background : {resultnlist?.participant?.briefBackground}
             </Text>
           </View>
 
           <View style={styles.marginTop5}>
-            <Text>Overall Observations: {remarks}</Text>
+            <Text>Overall Observations : {remarks}</Text>
           </View>
           <View style={styles.marginTop5}>
-            <Text>Joint Plan: {jointPlan}</Text>
+            <Text>Joint Plan : {jointPlan}</Text>
           </View>
           {/* <View style={styles.marginTop10}>
             <Text>
@@ -627,37 +632,37 @@ const MyDocument = ({
         </View>
 
         <View>
-          <View style={{ fontSize: "14px", marginTop: "15px" }}>
+          <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Date:</Text>
+              <Text>Date : </Text>
               <Text style={[styles.input]}>{date}</Text>
             </Text>
           </View>
-          <View style={{ fontSize: "14px", marginTop: "15px" }}>
+          <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Name:</Text>
+              <Text>Name : </Text>
               <Text style={[styles.input, styles.longInput]}>{name}</Text>
             </Text>
           </View>
-          <View style={{ fontSize: "14px", marginTop: "15px" }}>
+          <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Signature(with Stamp):</Text>
+              <Text>Signature(with Stamp) : </Text>
               <Text style={[styles.input, styles.longInput]}>{signature}</Text>
             </Text>
           </View>
-          <View style={{ fontSize: "14px", marginTop: "15px" }}>
+          <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Mobile:</Text>
+              <Text>Mobile : </Text>
               <Text style={[styles.input, styles.shortInput]}>{mobile}</Text>
             </Text>
           </View>
-          <View style={{ fontSize: "14px", marginTop: "15px" }}>
+          <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
               We are here to engage with you to spread joy and provide
               meaningful involvement.{" "}
             </Text>
           </View>
-          <View style={{ fontSize: "14px", marginTop: "15px" }}>
+          <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
               We stand for Trust, Building Positive Relationship & Spreading Joy
               and Going that Extra Mile.{" "}
@@ -1267,27 +1272,31 @@ export const ParticipantReport = () => {
             fileName={`${participantNameforExcel}-${startDate}-${endDate}.pdf`}
           >
             {({ blob, url, loading, error }) =>
-              loading ? <Button>...Loading</Button> : <Button>Generate PDF</Button>
+              loading ? (
+                <Button>...Loading</Button>
+              ) : (
+                <Button>Generate PDF</Button>
+              )
             }
           </PDFDownloadLink>
         </div>
-        {/* <PDFViewer>
-          <MyDocument
-            chartImage={chartImage}
-            des1={des1}
-            des2={des2}
-            startDate={startDate}
-            endDate={endDate}
-            resultnlist={resultnlist}
-            remarks={remarks}
-            date={date}
-            name={name}
-            signature={signature}
-            mobile={mobile}
-            jointPlan={jointPlan}
-          />
-        </PDFViewer> */}
       </div>
+      {/* <PDFViewer>
+        <MyDocument
+          chartImage={chartImage}
+          des1={des1}
+          des2={des2}
+          startDate={startDate}
+          endDate={endDate}
+          resultnlist={resultnlist}
+          remarks={remarks}
+          date={date}
+          name={name}
+          signature={signature}
+          mobile={mobile}
+          jointPlan={jointPlan}
+        />
+      </PDFViewer> */}
     </div>
   );
 };

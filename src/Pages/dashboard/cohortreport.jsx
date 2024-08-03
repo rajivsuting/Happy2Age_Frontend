@@ -87,53 +87,57 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const CustomLabel = ({ x, y, width, value }) => {
+const CustomLabel = ({ x, width, value, chartHeight }) => {
+  const yPosition = chartHeight + 20; // Fixed position below the x-axis
   return (
-    <text x={x + width / 2} y={y + 20} fill="black" textAnchor="middle">
-      {value + " " + "session"}
+    <text x={x + width / 2} y={yPosition} fill="black" textAnchor="middle">
+      {value + " session"}
     </text>
   );
 };
 
+// const CustomLegend = (props) => {
+//   const { payload } = props;
+//   return (
+//     <div className="custom-legend">
+//       {payload.filter(entry => entry.value !== 'centerAverage').map((entry, index) => (
+//         <div key={`item-${index}`} style={{ color: entry.color }}>
+//           {entry.value}
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
+
+
 const BarChartComponent = ({ data, onRendered }) => {
   return (
     <div id="chart-container">
-      <BarChart
+       <BarChart
         width={900}
         height={500}
         data={data}
-        margin={{ top: 20, right: 30, left: 20, bottom: 50 }} // Adjust the bottom margin here
+        margin={{ top: 20, right: 30, left: 20, bottom: 30 }} // Adjust the bottom margin here
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="domainName" tick={{ fontSize: 15, fontWeight: "bold" }}>
-          <Label
-            value="Domain name"
-            offset={0}
-            position="insideBottom"
-            dy={50}
-          />{" "}
-          {/* Adjust dy as needed */}
+        <XAxis dataKey="domainName" tick={{ fontSize: 15, fontWeight: 'bold' }}>
+          <Label value="Domain name" offset={0} position="insideBottom" dy={20}
+              dx={140}/>
         </XAxis>
-        <YAxis tick={{ fontSize: 15, fontWeight: "bold" }} domain={[0, 7]}>
+        <YAxis tick={{ fontSize: 15, fontWeight: 'bold' }} domain={[0, 7]}>
           <Label
             value="Average"
             angle={-90}
             position="insideLeft"
-            style={{ textAnchor: "middle" }}
+            style={{ textAnchor: 'middle' }}
           />
         </YAxis>
         <Tooltip content={<CustomTooltip />} />
-        <Legend />
-        <Bar
-          dataKey="centerAverage"
-          fill="#4A3AFF"
-          barSize={20}
-          radius={[5, 5, 0, 0]}
-        >
+        <Legend  /> {/* Use the custom legend */}
+        <Bar dataKey="centerAverage" fill="#4A3AFF" barSize={15} radius={[20, 0, 20, 0]}>
           <LabelList
             dataKey="numberOfSessions"
-            position="bottom"
-            content={<CustomLabel />}
+            content={<CustomLabel chartHeight={470} />}
           />
         </Bar>
       </BarChart>
@@ -192,8 +196,11 @@ const CaptureHeatmap = ({ arr, onCapture }) => {
 };
 
 const styles = StyleSheet.create({
+  document:{
+  },
   page: {
     padding: "20px",
+    backgroundColor:"#ffeaf2",
     border: "1px solid black",
     // borderRadius:"10px",
     // marginRight:"20px",
@@ -231,7 +238,7 @@ const styles = StyleSheet.create({
   },
   image2: {
     width: "100%",
-    height: "300px",
+    // height: "300px",
     borderRadius: "10px",
     //  border: "1px solid black",
   },
@@ -242,7 +249,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRightWidth: 0,
     borderBottomWidth: 0,
-    marginTop: "40px",
+    marginTop: "30px",
   },
   tableRow: {
     flexDirection: "row",
@@ -256,7 +263,7 @@ const styles = StyleSheet.create({
   },
   tableCellHeader: {
     margin: 5,
-    fontSize: 12,
+    fontSize: "12px",
     fontWeight: "bold",
     textAlign: "center",
     // backgroundColor: "#ffe0ec",
@@ -271,19 +278,21 @@ const styles = StyleSheet.create({
     marginTop: "40px",
   },
   boldText: {
-    fontSize: "14px",
+    fontSize: "12px",
   },
   text: {
-    fontSize: "14px",
+    fontSize: "12px",
     marginTop: "20px",
   },
   marginTop5: {
     marginTop: "20px",
-    fontSize: "14px",
+    fontSize: "12px",
+    lineHeight:"1.5px"
   },
   marginTop10: {
     marginTop: "20px",
-    fontSize: "14px",
+    fontSize: "12px",
+    lineHeight:"1.5px"
   },
   italicText: {
     fontStyle: "italic",
@@ -317,9 +326,10 @@ const styles = StyleSheet.create({
     margin: "auto",
     border: "1px solid black",
     borderRadius: "10px",
-    padding: "20px",
-    marginTop: "40px",
+    padding: "30px",
+    marginTop: "20px",
     fontSize: "14px",
+   
   },
   row: {
     flexDirection: "row",
@@ -359,7 +369,7 @@ const MyDocument = ({
   des1,
   des2,
 }) => (
-  <Document>
+  <Document  style={styles.document}>
     <Page size="A4" style={styles.page}>
       <View style={styles.customHeader}>
         {/* Header Logo */}
@@ -372,7 +382,7 @@ const MyDocument = ({
         >
           <Image
             src="/img/Happy-2age-logo-1-1.png"
-            style={{ width: "150px", borderRadius: "10px" }}
+            style={{ width: "200px", borderRadius: "10px" }}
           />
         </View>
 
@@ -413,6 +423,7 @@ const MyDocument = ({
               margin: "auto",
               marginTop: "5px",
               fontSize: "14px",
+              lineHeight:"1.5px"
             }}
           >
             (This document is based on our basic observations about member’s
@@ -455,14 +466,14 @@ const MyDocument = ({
         <View style={styles.container}>
           <View style={styles.row}>
             <Text>
-              Name of the Centre:
+              Name of the Centre :{" "}
               <Text style={[styles.input, styles.nameInput]}>
                 {cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
                   "Unknown"}
               </Text>
             </Text>
             <Text>
-              Total Participants:
+              Total Participants :{" "}
               <Text style={[styles.input, styles.nameInput]}>
                 {cohortList?.filter((el) => el._id == cohortSelect)[0]
                   ?.participants?.length || "0"}
@@ -470,11 +481,11 @@ const MyDocument = ({
             </Text>
           </View>
           <Text>
-            Date From:
+            Date From :{" "}
             <Text style={[styles.input, styles.dateInput]}>
               {convertDateFormat(startDate) || ""}
-            </Text>
-            {" "} To:
+            </Text>{" "}
+            To :{" "}
             <Text style={[styles.input, styles.dateInput]}>
               {convertDateFormat(endDate) || ""}
             </Text>
@@ -483,7 +494,7 @@ const MyDocument = ({
 
         {/* Overall Remark */}
         <View style={{ marginBottom: "20px", marginTop: "20px" }}>
-          <Text style={{ fontSize: "14px" }}>
+          <Text style={{ fontSize: "12px" }}>
             Graph of Score : (Individual Score against the Group aggregate Score
             for each Domain)
           </Text>
@@ -530,12 +541,12 @@ const MyDocument = ({
         <View style={styles.flexContainer}>
           <View>
             <Text style={styles.boldText}>
-              Graph of Score: (overall score for each member across Domains)
+              Graph of Score : (overall score for each member across Domains)
             </Text>
           </View>
           <View>
             <Text style={styles.text}>
-              Centre average:{" "}
+              Centre average :{" "}
               <Text style={styles.boldText}>
                 {resultnlist?.averageForCohort}
               </Text>
@@ -551,11 +562,11 @@ const MyDocument = ({
 
         <View>
           <View style={styles.marginTop5}>
-            <Text>Overall Remark:{remarks}</Text>
+            <Text>Overall Remark :{" "}{remarks}</Text>
           </View>
 
           <View style={styles.marginTop5}>
-            <Text>Overall Observations: {observation}</Text>
+            <Text>Overall Observations :{" "}{observation}</Text>
           </View>
           <View style={styles.marginTop10}>
             <Text>
@@ -567,31 +578,31 @@ const MyDocument = ({
         </View>
 
         <View>
-          <View style={{ fontSize: "14px", marginTop: "15px" }}>
+          <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Date:</Text>
-              <Text style={[styles.input]}>{date}</Text>
+              <Text>Date{" "}:</Text>
+              <Text style={[styles.input]}>{" "}{date}</Text>
             </Text>
           </View>
-          <View style={{ fontSize: "14px", marginTop: "15px" }}>
+          <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Name:</Text>
-              <Text style={[styles.input, styles.longInput]}>{name}</Text>
+              <Text>Name{" "}:</Text>
+              <Text style={[styles.input, styles.longInput]}>{" "}{name}</Text>
             </Text>
           </View>
-          <View style={{ fontSize: "14px", marginTop: "15px" }}>
+          <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Signature(with Stamp):</Text>
+              <Text>Signature(with Stamp){" "}:{" "}</Text>
               <Text style={[styles.input, styles.longInput]}>{signature}</Text>
             </Text>
           </View>
-          <View style={{ fontSize: "14px", marginTop: "15px" }}>
+          <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Mobile:</Text>
+              <Text>Mobile{" "}:{" "}</Text>
               <Text style={[styles.input, styles.shortInput]}>{mobile}</Text>
             </Text>
           </View>
-          <View style={{ fontSize: "14px", marginTop: "15px" }}>
+          <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
               We stand for Trust, Building Positive Relationship & Spreading Joy
               and Going that Extra Mile.
@@ -901,7 +912,6 @@ export const Cohortreport = () => {
           />
           <Button type="submit">Search</Button>
         </form>
-        
       </div>
       <div
         ref={componantPDF}
@@ -1175,7 +1185,11 @@ export const Cohortreport = () => {
             fileName={`${cohortNameforExcel}-${startDate}-${endDate}.pdf`}
           >
             {({ blob, url, loading, error }) =>
-              loading ? <Button>...Loading</Button> : <Button>Generate PDF</Button>
+              loading ? (
+                <Button>...Loading</Button>
+              ) : (
+                <Button>Generate PDF</Button>
+              )
             }
           </PDFDownloadLink>
         </div>
@@ -1195,7 +1209,7 @@ export const Cohortreport = () => {
             signature={signature}
             mobile={mobile}
             des1={des1}
-                des2={des2}
+            des2={des2}
           />
         </PDFViewer> */}
       </div>
