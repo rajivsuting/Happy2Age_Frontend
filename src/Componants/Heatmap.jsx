@@ -14,7 +14,7 @@ const Heatmap = ({ arr }) => {
         const item = arr.find(el => el.domain === domain && el.participant === participant);
         return {
           x: participant,
-          y: item ? item.score : 0 // Default to 0 if no score is found
+          y: item ? item.score : null // Default to 0 if no score is found
         };
       })
     };
@@ -26,32 +26,49 @@ const Heatmap = ({ arr }) => {
     },
     dataLabels: {
       enabled: true,
+      formatter: function(val, opts) {
+        if (val === null) {
+          return 'No score';
+        }
+        return val;
+      },
       style: {
         fontSize: '14px', // Adjust font size here
         fontWeight: 'bold', // Set font weight to bold
         colors: ['#000'] // Set font color to black
       }
     },
+    tooltip: {
+      y: {
+        formatter: function(val) {
+          if (val === null) {
+            return 'No score';
+          }
+          return val;
+        }
+      }
+    },
     plotOptions: {
       heatmap: {
+        shadeIntensity: 0, // Disable shading intensity
         colorScale: {
           ranges: [
             {
               from: 0,
-              to: 3.99,
-              color: '#FF7F7F', // Light red for scores 0-3.99
+              to: 3,
+              color: '#FF0000', // Solid red for scores 0-3
               name: 'Low'
             },
             {
-              from: 4,
-              to: 5.99,
-              color: '#faff72', // Light yellow for scores 6-7
+              from: 3.01,
+              to: 5,
+              color: '#FFFF00', // Solid yellow for scores 3.01-5
               name: 'Medium'
             },
             {
-              from: 6,
+              from: 5.01,
               to: 7,
-              color: '#90ee90', // Light green for scores 4-5.99
+              color: '#008000', // Solid green for scores 5.01-7
               name: 'High'
             }
           ]
@@ -86,9 +103,9 @@ const Heatmap = ({ arr }) => {
   };
 
   return (
+    <div className='w-[100%] flex justify-center items-center m-auto mt-[30px]'>
       <ReactApexChart options={options} series={heatmapData} type="heatmap" width={700} height={400} />
-    // <div className='flex justify-center items-center m-auto mt-[30px]'>
-    // </div>
+    </div>
   );
 };
 
