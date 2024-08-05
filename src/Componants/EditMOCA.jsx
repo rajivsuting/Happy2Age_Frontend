@@ -6,8 +6,10 @@ import { toastConfig } from "../App";
 import { toast } from "react-toastify";
 import { AiOutlineClose } from "react-icons/ai";
 import { CgSpinner } from "react-icons/cg";
+import usePreventScrollOnNumberInput from "./CustomHook";
 
 const EditMoCA = ({ isOpen, onClose, singleMOCA, getAllMoca, editOrView }) => {
+  usePreventScrollOnNumberInput();
   const [questionData, setQuestionData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -96,12 +98,13 @@ const EditMoCA = ({ isOpen, onClose, singleMOCA, getAllMoca, editOrView }) => {
                     question.section === "MEMORY" ? null :
                     <input
                       type="number"
+                      
                       min="0"
                       max="3"
                       disabled={editOrView === "View"}
                       value={question.score}
                       onChange={(e) => handleChange(index, e)}
-                      className="border w-[25%] px-2 py-1 rounded-md text-gray-600 border border-gray-600"
+                      className="noscroll border w-[25%] px-2 py-1 rounded-md text-gray-600 border border-gray-600"
                     />
                 }
               </div>

@@ -6,6 +6,7 @@ import { serverUrl } from "../api";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../App";
+import usePreventScrollOnNumberInput from "./CustomHook";
 
 const EditEvaluation = ({
   evaluation,
@@ -14,6 +15,7 @@ const EditEvaluation = ({
   isOpen,
   onClose,
 }) => {
+  usePreventScrollOnNumberInput();
   const [domains, setDomains] = useState(evaluation?.domain);
   const [searchParams, setSearchParams] = useSearchParams();
   const [domainList, setDomainList] = useState([]);
@@ -153,6 +155,7 @@ const EditEvaluation = ({
                   <Input
                     label="Add score"
                     type="number"
+                    className="noscroll"
                     value={subTopic.score}
                     onChange={(e) =>
                       handleScoreChange(

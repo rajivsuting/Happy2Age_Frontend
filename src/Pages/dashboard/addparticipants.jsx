@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllCohorts } from "../../Redux/AllListReducer/action";
 import { getLocalData } from "../../Utils/localStorage";
 import { useNavigate } from "react-router-dom";
+import usePreventScrollOnNumberInput from "../../Componants/CustomHook";
 
 
 const initialState = {
@@ -34,6 +35,7 @@ const initialState = {
   },
 }
 export const AddParticipant = () => {
+  usePreventScrollOnNumberInput();
     const [participantData, setParticipantData] = useState(initialState);
     const [isAddParticipantsLoading, setIsAddParticipantsLoading] = useState(false);
     const dispatch = useDispatch();
@@ -47,7 +49,8 @@ export const AddParticipant = () => {
     useEffect(()=>{
       dispatch(getAllCohorts("",""))
     },[])
-  
+
+   
 
     const handleChangeInput = (e) => {
       const { name, value } = e.target;
@@ -186,7 +189,7 @@ export const AddParticipant = () => {
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
           <Input label="Address Line" required name="addressLine" value={participantData.address.addressLine} onChange={handleChangeAddress} />
           <Input required minLength={10} label="Phone" name="phone" value={participantData.phone} onChange={handleChangeInput} />
-          <Input label="Pincode" required type="number" name="pincode" value={participantData.address.pincode} onChange={handleChangeAddress} />
+          <Input label="Pincode" required type="number" name="pincode" className="noscroll" value={participantData.address.pincode} onChange={handleChangeAddress} />
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
           <Input label="State" required name="state" value={participantData.address.state}  onChange={handleChangeStateAndCity}/>

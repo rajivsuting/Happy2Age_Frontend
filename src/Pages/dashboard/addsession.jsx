@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllActivities, getAllCohorts, getAllParticipants, getAllSessions } from "../../Redux/AllListReducer/action";
 import { useNavigate } from "react-router-dom";
 import { getLocalData } from "../../Utils/localStorage";
+import usePreventScrollOnNumberInput from "../../Componants/CustomHook";
 
 const initialState = {
   name: "",
@@ -29,6 +30,7 @@ const initialState = {
 };
 
 export const AddSession = () => {
+  usePreventScrollOnNumberInput();
   const [sessionData, setSessionData] = useState(initialState);
   const [selectedActivity, setSelectedActivity] = useState("");
   const [isAddSessionLoading, setIsSessionLoading] = useState(false);
@@ -177,6 +179,7 @@ export const AddSession = () => {
             name="numberOfMins"
             value={numberOfMins}
             type="number"
+            className="noscroll"
             onChange={handleChangeInput}
           />
         </div>

@@ -10,8 +10,10 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCohorts, getAllParticipants } from "../Redux/AllListReducer/action";
 import { getLocalData } from "../Utils/localStorage";
+import usePreventScrollOnNumberInput from "./CustomHook";
 
 const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
+  usePreventScrollOnNumberInput()
   const [participantData, setParticipantData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -216,6 +218,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 label="Pincode"
                 type="number"
                 name="pincode"
+                className="noscroll"
                 value={participantData?.address?.pincode}
                 onChange={handleChangeAddress}
               />

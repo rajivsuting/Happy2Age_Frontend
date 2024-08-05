@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { getLocalData } from "../../Utils/localStorage";
 import { useNavigate } from "react-router-dom";
+import usePreventScrollOnNumberInput from "../../Componants/CustomHook";
 
 const initialState = {
   participant: "",
@@ -196,6 +197,7 @@ const initialState = {
 };
 
 export const Moca = () => {
+  usePreventScrollOnNumberInput();
   const [state, setState] = useState(initialState);
   const [allParticipants, setAllParticipants] = useState([]);
   const [selectParticipant, setSelectParticipant] = useState("");
@@ -309,7 +311,7 @@ export const Moca = () => {
                       parseInt(e.target.value) || 0
                     )
                   }
-                  className="border rounded px-2 py-1"
+                  className="border rounded px-2 py-1 noscroll"
                 />
               </div>
             )}

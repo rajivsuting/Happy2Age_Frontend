@@ -199,8 +199,8 @@ const styles = StyleSheet.create({
   document:{
   },
   page: {
-    padding: "20px",
-    backgroundColor:"#ffeaf2",
+    padding: "30px",
+    // backgroundColor:"#ffeaf2",
     border: "1px solid black",
     // borderRadius:"10px",
     // marginRight:"20px",
@@ -224,10 +224,12 @@ const styles = StyleSheet.create({
     marginTop: "0px",
     boxShadow:
       "0px 6px 24px 0px rgba(0, 0, 0, 0.05), 0px 0px 0px 1px rgba(0, 0, 0, 0.08)",
-    padding: "20px",
+    padding: "30px",
   },
   section: {
-    marginBottom: 20,
+    width: "100%",
+    marginBottom: 10,
+    marginTop: 20,
   },
   image: {
     width: "100%",
@@ -300,16 +302,13 @@ const styles = StyleSheet.create({
   normalText: {
     fontSize: 12,
   },
-  section: {
-    width: "100%",
-    marginBottom: 20,
-    marginTop: 20,
-  },
+
   input: {
     borderBottom: "2px solid rgba(0, 0, 0, 0.5)",
     width: "100px",
     marginLeft: "20px",
     outline: "none",
+    transition: "border-color 200ms",
   },
   longInput: {
     width: "250px",
@@ -337,11 +336,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: "12px",
   },
-  input: {
-    borderBottom: "2px solid rgba(0, 0, 0, 0.5)",
-    outline: "none",
-    transition: "border-color 200ms",
-  },
+
   nameInput: {
     width: "150px",
     marginLeft: "20px",
@@ -396,7 +391,6 @@ const MyDocument = ({
         >
           <Text
             style={{
-              fontWeight: "bold",
               marginBottom: "5px",
               marginTop: "20px",
               fontSize: "18px",
@@ -493,7 +487,7 @@ const MyDocument = ({
         </View>
 
         {/* Overall Remark */}
-        <View style={{ marginBottom: "20px", marginTop: "20px" }}>
+        <View style={{ marginBottom: "5px", marginTop: "10px" }}>
           <Text style={{ fontSize: "12px" }}>
             Graph of Score : (Individual Score against the Group aggregate Score
             for each Domain)
@@ -1193,7 +1187,7 @@ export const Cohortreport = () => {
             }
           </PDFDownloadLink>
         </div>
-        {/* <PDFViewer width={600} height={800}>
+        <PDFViewer width={600} height={800}>
           <MyDocument
             cohortList={cohortList}
             cohortSelect={cohortSelect}
@@ -1211,7 +1205,7 @@ export const Cohortreport = () => {
             des1={des1}
             des2={des2}
           />
-        </PDFViewer> */}
+        </PDFViewer>
       </div>
     </div>
   );
