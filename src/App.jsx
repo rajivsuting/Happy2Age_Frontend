@@ -16,7 +16,9 @@ import { useNavigate } from "react-router-dom";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import AdminList from "./Pages/dashboard/AdminList";
 
-export const toastConfig = {
+
+//change part to rename
+export const taostConfig = {
   position: "top-center",
   autoClose: 2000,
   hideProgressBar: false,
