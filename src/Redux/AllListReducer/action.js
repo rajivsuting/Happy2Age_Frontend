@@ -2,7 +2,6 @@ import { getLocalData } from "../../Utils/localStorage";
 import { serverUrl } from "../../api";
 import * as types from "./actionTypes";
 import axios from "axios";
-axios.defaults.withCredentials = true;
 
 // partcipants ---------------------------
 
