@@ -34,14 +34,7 @@ const App = () => {
 
   return (
     <div>
-      <AllRoutes />
-      <ToastContainer />
-      {/* <ChartComponent setChartImage={setChartImage} />
-      {chartImage && (
-        <PDFDownloadLink document={<PDFDocument chartImage={chartImage} />} fileName="chart.pdf">
-          {({ loading }) => (loading ? 'Loading document...' : 'Download PDF')}
-        </PDFDownloadLink>
-      )} */}
+      404 not found
     </div>
   );
 };
