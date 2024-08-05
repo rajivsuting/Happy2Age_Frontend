@@ -54,7 +54,7 @@ export function MaterialTailwindControllerProvider({ children }) {
 }
 
 export function useMaterialTailwindController() {
-  const context = React.useContext(MaterialTailwind);
+  const context = React.useContext(NotingToUse);
 
   if (!context) {
     throw new Error(
