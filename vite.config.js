@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     legacy({
-      targets: ['false', 'not IE 11'],
+      targets: ['defaults', 'not IE 11'],
     }),
   ],
   optimizeDeps: {
