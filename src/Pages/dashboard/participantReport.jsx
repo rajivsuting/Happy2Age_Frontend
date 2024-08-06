@@ -7,7 +7,7 @@ import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDeatailesEvalution from "../../Componants/SeeDeatailesEvalution";
-import { useReactToPrint } from "react-to-print";
+// import { useReactToPrint } from "react-to-print";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Bar,
@@ -776,12 +776,12 @@ export const ParticipantReport = () => {
     (el) => el._id == singleParticipant
   )[0]?.name;
 
-  const generatePDF = useReactToPrint({
-    content: () => componantPDF.current,
-    documentTitle: "Cohort report",
-    onAfterPrint: () =>
-      toast.success("PDF file download successfully", toastConfig),
-  });
+  // const generatePDF = useReactToPrint({
+  //   content: () => componantPDF.current,
+  //   documentTitle: "Cohort report",
+  //   onAfterPrint: () =>
+  //     toast.success("PDF file download successfully", toastConfig),
+  // });
 
   useEffect(() => {
     axios
@@ -1275,7 +1275,7 @@ export const ParticipantReport = () => {
           </PDFDownloadLink>
         </div>
       </div>
-      <PDFViewer>
+      {/* <PDFViewer>
         <MyDocument
           chartImage={chartImage}
           des1={des1}
@@ -1290,7 +1290,7 @@ export const ParticipantReport = () => {
           mobile={mobile}
           jointPlan={jointPlan}
         />
-      </PDFViewer>
+      </PDFViewer> */}
     </div>
   );
 };

@@ -18,7 +18,7 @@ import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDeatailesEvalution from "../../Componants/SeeDeatailesEvalution";
-import { useReactToPrint } from "react-to-print";
+// import { useReactToPrint } from "react-to-print";
 import { useDispatch, useSelector } from "react-redux";
 import * as XLSX from "xlsx";
 import {
@@ -38,7 +38,6 @@ import { toastConfig } from "../../App";
 import { getAllCohorts } from "../../Redux/AllListReducer/action";
 import { convertDateFormat, getLocalData } from "../../Utils/localStorage";
 import { useNavigate } from "react-router-dom";
-import ReactApexChart from "react-apexcharts";
 import Heatmap from "../../Componants/Heatmap";
 import {
   Document,
@@ -699,18 +698,18 @@ export const Cohortreport = () => {
 
   // console.log(cohortList?.filter((el) =>el._id == cohortSelect)[0]?.name);
 
-  const generatePDF = useReactToPrint({
-    content: () => componantPDF.current,
-    documentTitle: "Centre report",
-    onAfterPrint: () =>
-      toast.success("PDF file download successfully", toastConfig),
-    pageStyle: `
-    .custom-header {
-      padding: 10px; /* Add padding for better readability */
-      border: 1px solid #ccc; /* Add border to header and footer */
-    }
-  `,
-  });
+  // const generatePDF = useReactToPrint({
+  //   content: () => componantPDF.current,
+  //   documentTitle: "Centre report",
+  //   onAfterPrint: () =>
+  //     toast.success("PDF file download successfully", toastConfig),
+  //   pageStyle: `
+  //   .custom-header {
+  //     padding: 10px; /* Add padding for better readability */
+  //     border: 1px solid #ccc; /* Add border to header and footer */
+  //   }
+  // `,
+  // });
 
   // heat map----------------------
   const transformData = entireEvaluation?.map((item) => {

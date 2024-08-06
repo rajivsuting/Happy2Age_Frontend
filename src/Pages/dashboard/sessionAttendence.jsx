@@ -377,7 +377,6 @@ export const SessionAttendence = () => {
 export default SessionAttendence;
 
 // import React, { useState } from 'react';
-// import ReactApexChart from 'react-apexcharts';
 
 // export const Sessionlist = () => {
 //   const arr = [

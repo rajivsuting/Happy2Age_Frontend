@@ -626,7 +626,7 @@ import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDeatailesEvalution from "../../Componants/SeeDeatailesEvalution";
-import { useReactToPrint } from "react-to-print";
+// import { useReactToPrint } from "react-to-print";
 import { useDispatch, useSelector } from "react-redux";
 import * as XLSX from "xlsx";
 import {
@@ -775,18 +775,18 @@ export const Cohortreport = () => {
 
   // console.log(cohortList?.filter((el) =>el._id == cohortSelect)[0]?.name);
 
-  const generatePDF = useReactToPrint({
-    content: () => componantPDF.current,
-    documentTitle: "Centre report",
-    onAfterPrint: () =>
-      toast.success("PDF file download successfully", toastConfig),
-    pageStyle: `
-    .custom-header {
-      padding: 10px; /* Add padding for better readability */
-      border: 1px solid #ccc; /* Add border to header and footer */
-    }
-  `,
-  });
+  // const generatePDF = useReactToPrint({
+  //   content: () => componantPDF.current,
+  //   documentTitle: "Centre report",
+  //   onAfterPrint: () =>
+  //     toast.success("PDF file download successfully", toastConfig),
+  //   pageStyle: `
+  //   .custom-header {
+  //     padding: 10px; /* Add padding for better readability */
+  //     border: 1px solid #ccc; /* Add border to header and footer */
+  //   }
+  // `,
+  // });
 
   // heat map----------------------
   const transformData = entireEvaluation?.map((item) => {
@@ -982,7 +982,7 @@ export const Cohortreport = () => {
           />
           <Button type="submit">Search</Button>
         </form>
-        <Button onClick={generatePDF}>Download pdf</Button>
+        {/* <Button onClick={generatePDF}>Download pdf</Button> */}
       </div>
       <div
         ref={componantPDF}
@@ -1222,7 +1222,7 @@ export const Cohortreport = () => {
         />
         <div className="flex justify-end gap-5 mt-5">
           <Button onClick={handleExportToExcel}>Export to excel</Button>
-          <Button onClick={generatePDF}>Generate PDF</Button>
+          {/* <Button onClick={generatePDF}>Generate PDF</Button> */}
         </div>
       </div>
     </div>
