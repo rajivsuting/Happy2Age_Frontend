@@ -156,7 +156,7 @@ const CaptureChart = ({ data, onCapture }) => {
           const canvas = await html2canvas(chartRef.current);
           const imgData = canvas.toDataURL("image/png");
           onCapture(imgData);
-          console.log(imgData);
+          
         }
       };
       captureChartAsImage();
@@ -180,7 +180,7 @@ const CaptureHeatmap = ({ arr, onCapture }) => {
           const canvas = await html2canvas(chartheatRef.current);
           const imgData = canvas.toDataURL("image/png");
           onCapture(imgData);
-          console.log(imgData);
+          
         }
       };
       captureChartAsImage();
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   document:{
   },
   page: {
-    padding: "30px",
+    padding: "35px",
     // backgroundColor:"#ffeaf2",
     border: "1px solid black",
     // borderRadius:"10px",
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     marginTop: "0px",
     boxShadow:
       "0px 6px 24px 0px rgba(0, 0, 0, 0.05), 0px 0px 0px 1px rgba(0, 0, 0, 0.08)",
-    padding: "30px",
+    padding: "35px",
   },
   section: {
     width: "100%",
@@ -232,14 +232,14 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: "300px",
+    height: "280px",
     marginBottom: "20px",
     borderRadius: "10px",
     // border: "1px solid black",
   },
   image2: {
     width: "100%",
-    // height: "300px",
+    height: "300px",
     borderRadius: "10px",
     //  border: "1px solid black",
   },
@@ -486,7 +486,7 @@ const MyDocument = ({
         </View>
 
         {/* Overall Remark */}
-        <View style={{ marginBottom: "5px", marginTop: "10px" }}>
+        <View style={{ marginBottom: "5px", marginTop: "20px" }}>
           <Text style={{ fontSize: "12px" }}>
             Graph of Score : (Individual Score against the Group aggregate Score
             for each Domain)
@@ -1186,7 +1186,7 @@ export const Cohortreport = () => {
             }
           </PDFDownloadLink>
         </div>
-        <PDFViewer width={600} height={800}>
+        {/* <PDFViewer width={600} height={800}>
           <MyDocument
             cohortList={cohortList}
             cohortSelect={cohortSelect}
@@ -1204,7 +1204,7 @@ export const Cohortreport = () => {
             des1={des1}
             des2={des2}
           />
-        </PDFViewer>
+        </PDFViewer> */}
       </div>
     </div>
   );
