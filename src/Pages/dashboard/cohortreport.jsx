@@ -113,33 +113,33 @@ const BarChartComponent = ({ data, onRendered }) => {
   return (
     <div id="chart-container">
        <BarChart
-        width={900}
-        height={500}
-        data={data}
-        margin={{ top: 20, right: 30, left: 20, bottom: 30 }} // Adjust the bottom margin here
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="domainName" tick={{ fontSize: 15, fontWeight: 'bold' }}>
-          <Label value="Domain name" offset={0} position="insideBottom" dy={20}
-              dx={140}/>
-        </XAxis>
-        <YAxis tick={{ fontSize: 15, fontWeight: 'bold' }} domain={[0, 7]}>
-          <Label
-            value="Average"
-            angle={-90}
-            position="insideLeft"
-            style={{ textAnchor: 'middle' }}
-          />
-        </YAxis>
-        <Tooltip content={<CustomTooltip />} />
-        <Legend  /> {/* Use the custom legend */}
-        <Bar dataKey="centerAverage" fill="#4A3AFF" barSize={15} radius={[20, 0, 20, 0]}>
-          <LabelList
-            dataKey="numberOfSessions"
-            content={<CustomLabel chartHeight={470} />}
-          />
-        </Bar>
-      </BarChart>
+  width={900}
+  height={500}
+  data={data}
+  margin={{ top: 20, right: 30, left: 20, bottom: 30 }} // Adjust the bottom margin here
+>
+  <CartesianGrid strokeDasharray="3 3" />
+  <XAxis dataKey="domainName" tick={{ fontSize: 15, fontWeight: 'bold' }}>
+    <Label value="Domain name" offset={0} position="insideBottom" dy={30}  />
+  </XAxis>
+  <YAxis tick={{ fontSize: 15, fontWeight: 'bold' }} domain={[0, 7]}>
+    <Label
+      value="Average"
+      angle={-90}
+      position="insideLeft"
+      style={{ textAnchor: 'middle' }}
+    />
+  </YAxis>
+  <Tooltip content={<CustomTooltip />} />
+  <Legend layout="horizontal" verticalAlign="top" align="center" wrapperStyle={{ paddingBottom: 20 }} />
+  <Bar dataKey="centerAverage" fill="#4A3AFF" barSize={15} radius={[20, 0, 20, 0]}>
+    <LabelList
+      dataKey="numberOfSessions"
+      content={<CustomLabel chartHeight={460} />}
+    />
+  </Bar>
+</BarChart>
+
     </div>
   );
 };

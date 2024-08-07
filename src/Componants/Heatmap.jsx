@@ -57,19 +57,19 @@ const Heatmap = ({ arr }) => {
               from: 0,
               to: 3,
               color: '#FF0000', // Solid red for scores 0-3
-              name: 'Low'
+              name: '0-3'
             },
             {
               from: 3.01,
               to: 5,
               color: '#FFFF00', // Solid yellow for scores 3.01-5
-              name: 'Medium'
+              name: '4-5'
             },
             {
               from: 5.01,
               to: 7,
               color: '#008000', // Solid green for scores 5.01-7
-              name: 'High'
+              name: '6-7'
             }
           ]
         }

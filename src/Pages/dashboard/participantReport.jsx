@@ -118,9 +118,9 @@ const CustomLabel = ({ x, width, value, chartHeight }) => {
 const BarChartComponent = ({ data, onRendered }) => {
   return (
     <div id="chart-container">
-      <ResponsiveContainer width={900} height={450}>
-        <ComposedChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" padding={{bottom:50}} margin={{ top: 20, right: 30, bottom: 50, left: 20 }}/>
+        <ResponsiveContainer width={900} height={550}> {/* Increase height */}
+        <ComposedChart data={data} margin={{ top: 20, right: 30, bottom: 90, left: 20 }}> 
+          <CartesianGrid strokeDasharray="3 3" padding={{bottom:50}}/>
           <XAxis
             minTickGap={1}
             dataKey="domainName"
@@ -130,8 +130,8 @@ const BarChartComponent = ({ data, onRendered }) => {
               value="Domain name"
               offset={0}
               position="insideBottom"
-              dy={20}
-              dx={150}
+              dy={50}
+        
             />
           </XAxis>
           <YAxis tick={{ fontSize: 15, fontWeight: "bold" }} domain={[0, 7]}>
@@ -143,16 +143,16 @@ const BarChartComponent = ({ data, onRendered }) => {
             />
           </YAxis>
           <Tooltip content={<CustomTooltip />} />
-          <Legend />
+          <Legend layout="horizontal" verticalAlign="top" align="center" wrapperStyle={{ paddingBottom: 20 }} />
           <Bar
             dataKey="average"
             fill="#4A3AFF"
             barSize={15} radius={[20, 0, 20, 0]}
           >
-            <LabelList
+             <LabelList
               dataKey="numberOfSessions"
-              position="bottom"
-              content={<CustomLabel chartHeight={460}/>}
+              position="top" // Change to "top" or "insideTop"
+              content={<CustomLabel chartHeight={460} />}
             />
           </Bar>
           <Line
