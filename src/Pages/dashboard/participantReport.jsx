@@ -206,7 +206,7 @@ const CaptureChart = ({ data, onCapture }) => {
           const canvas = await html2canvas(chartRef.current);
           const imgData = canvas.toDataURL("image/png");
           onCapture(imgData);
-          console.log(imgData);
+         
         }
       };
       captureChartAsImage();
@@ -222,7 +222,7 @@ const CaptureChart = ({ data, onCapture }) => {
 
 const styles = StyleSheet.create({
   page: {
-    padding: "30px",
+    padding: "35px",
     border: "1px solid black",
     // backgroundColor: "#ffeaf2",
     // marginRight:"20px",
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     marginTop: "0px",
     boxShadow:
       "0px 6px 24px 0px rgba(0, 0, 0, 0.05), 0px 0px 0px 1px rgba(0, 0, 0, 0.08)",
-    padding: "30px",
+    padding: "35px",
   },
   section: {
     width: "100%",
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: "250px",
+    // height: "250px",
     marginBottom: "20px",
     borderRadius: "10px",
     // border: "1px solid black",
