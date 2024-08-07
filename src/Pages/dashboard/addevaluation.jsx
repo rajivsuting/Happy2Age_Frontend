@@ -27,6 +27,7 @@ import {
 } from "../../Redux/AllListReducer/action";
 import { getLocalData } from "../../Utils/localStorage";
 import { useNavigate } from "react-router-dom";
+import usePreventScrollOnNumberInput from "../../Componants/CustomHook";
 
 const initialState = {
   session: "",
@@ -37,6 +38,7 @@ const initialState = {
 };
 
 export const AddEvaluation = () => {
+  usePreventScrollOnNumberInput();
   const [evaluationData, setEvaluationData] = useState(initialState);
   const [participantList, setParticipantList] = useState([]);
   // const [domainList, setDomainList] = useState([]);
@@ -326,6 +328,7 @@ export const AddEvaluation = () => {
                         label="Add score"
                         value={question.score || ""}
                         type="number"
+                        className="noscroll"
                         onChange={(e) =>
                           handleScoreChange(
                             domainIndex,

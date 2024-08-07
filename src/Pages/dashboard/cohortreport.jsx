@@ -18,7 +18,7 @@ import { serverUrl } from "../../api";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDeatailesEvalution from "../../Componants/SeeDeatailesEvalution";
-import { useReactToPrint } from "react-to-print";
+// import { useReactToPrint } from "react-to-print";
 import { useDispatch, useSelector } from "react-redux";
 import * as XLSX from "xlsx";
 import {
@@ -38,7 +38,6 @@ import { toastConfig } from "../../App";
 import { getAllCohorts } from "../../Redux/AllListReducer/action";
 import { convertDateFormat, getLocalData } from "../../Utils/localStorage";
 import { useNavigate } from "react-router-dom";
-import ReactApexChart from "react-apexcharts";
 import Heatmap from "../../Componants/Heatmap";
 import {
   Document,
@@ -114,33 +113,33 @@ const BarChartComponent = ({ data, onRendered }) => {
   return (
     <div id="chart-container">
        <BarChart
-        width={900}
-        height={500}
-        data={data}
-        margin={{ top: 20, right: 30, left: 20, bottom: 30 }} // Adjust the bottom margin here
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="domainName" tick={{ fontSize: 15, fontWeight: 'bold' }}>
-          <Label value="Domain name" offset={0} position="insideBottom" dy={20}
-              dx={140}/>
-        </XAxis>
-        <YAxis tick={{ fontSize: 15, fontWeight: 'bold' }} domain={[0, 7]}>
-          <Label
-            value="Average"
-            angle={-90}
-            position="insideLeft"
-            style={{ textAnchor: 'middle' }}
-          />
-        </YAxis>
-        <Tooltip content={<CustomTooltip />} />
-        <Legend  /> {/* Use the custom legend */}
-        <Bar dataKey="centerAverage" fill="#4A3AFF" barSize={15} radius={[20, 0, 20, 0]}>
-          <LabelList
-            dataKey="numberOfSessions"
-            content={<CustomLabel chartHeight={470} />}
-          />
-        </Bar>
-      </BarChart>
+  width={900}
+  height={500}
+  data={data}
+  margin={{ top: 20, right: 30, left: 20, bottom: 30 }} // Adjust the bottom margin here
+>
+  <CartesianGrid strokeDasharray="3 3" />
+  <XAxis dataKey="domainName" tick={{ fontSize: 15, fontWeight: 'bold' }}>
+    <Label value="Domain name" offset={0} position="insideBottom" dy={30}  />
+  </XAxis>
+  <YAxis tick={{ fontSize: 15, fontWeight: 'bold' }} domain={[0, 7]}>
+    <Label
+      value="Average"
+      angle={-90}
+      position="insideLeft"
+      style={{ textAnchor: 'middle' }}
+    />
+  </YAxis>
+  <Tooltip content={<CustomTooltip />} />
+  <Legend layout="horizontal" verticalAlign="top" align="center" wrapperStyle={{ paddingBottom: 20 }} />
+  <Bar dataKey="centerAverage" fill="#4A3AFF" barSize={15} radius={[20, 0, 20, 0]}>
+    <LabelList
+      dataKey="numberOfSessions"
+      content={<CustomLabel chartHeight={460} />}
+    />
+  </Bar>
+</BarChart>
+
     </div>
   );
 };
@@ -199,8 +198,8 @@ const styles = StyleSheet.create({
   document:{
   },
   page: {
-    padding: "20px",
-    backgroundColor:"#ffeaf2",
+    padding: "30px",
+    // backgroundColor:"#ffeaf2",
     border: "1px solid black",
     // borderRadius:"10px",
     // marginRight:"20px",
@@ -224,10 +223,12 @@ const styles = StyleSheet.create({
     marginTop: "0px",
     boxShadow:
       "0px 6px 24px 0px rgba(0, 0, 0, 0.05), 0px 0px 0px 1px rgba(0, 0, 0, 0.08)",
-    padding: "20px",
+    padding: "30px",
   },
   section: {
-    marginBottom: 20,
+    width: "100%",
+    marginBottom: 10,
+    marginTop: 20,
   },
   image: {
     width: "100%",
@@ -300,16 +301,13 @@ const styles = StyleSheet.create({
   normalText: {
     fontSize: 12,
   },
-  section: {
-    width: "100%",
-    marginBottom: 20,
-    marginTop: 20,
-  },
+
   input: {
     borderBottom: "2px solid rgba(0, 0, 0, 0.5)",
     width: "100px",
     marginLeft: "20px",
     outline: "none",
+    transition: "border-color 200ms",
   },
   longInput: {
     width: "250px",
@@ -337,11 +335,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: "12px",
   },
-  input: {
-    borderBottom: "2px solid rgba(0, 0, 0, 0.5)",
-    outline: "none",
-    transition: "border-color 200ms",
-  },
+
   nameInput: {
     width: "150px",
     marginLeft: "20px",
@@ -396,7 +390,6 @@ const MyDocument = ({
         >
           <Text
             style={{
-              fontWeight: "bold",
               marginBottom: "5px",
               marginTop: "20px",
               fontSize: "18px",
@@ -493,7 +486,7 @@ const MyDocument = ({
         </View>
 
         {/* Overall Remark */}
-        <View style={{ marginBottom: "20px", marginTop: "20px" }}>
+        <View style={{ marginBottom: "5px", marginTop: "10px" }}>
           <Text style={{ fontSize: "12px" }}>
             Graph of Score : (Individual Score against the Group aggregate Score
             for each Domain)
@@ -705,18 +698,18 @@ export const Cohortreport = () => {
 
   // console.log(cohortList?.filter((el) =>el._id == cohortSelect)[0]?.name);
 
-  const generatePDF = useReactToPrint({
-    content: () => componantPDF.current,
-    documentTitle: "Centre report",
-    onAfterPrint: () =>
-      toast.success("PDF file download successfully", toastConfig),
-    pageStyle: `
-    .custom-header {
-      padding: 10px; /* Add padding for better readability */
-      border: 1px solid #ccc; /* Add border to header and footer */
-    }
-  `,
-  });
+  // const generatePDF = useReactToPrint({
+  //   content: () => componantPDF.current,
+  //   documentTitle: "Centre report",
+  //   onAfterPrint: () =>
+  //     toast.success("PDF file download successfully", toastConfig),
+  //   pageStyle: `
+  //   .custom-header {
+  //     padding: 10px; /* Add padding for better readability */
+  //     border: 1px solid #ccc; /* Add border to header and footer */
+  //   }
+  // `,
+  // });
 
   // heat map----------------------
   const transformData = entireEvaluation?.map((item) => {
@@ -1193,7 +1186,7 @@ export const Cohortreport = () => {
             }
           </PDFDownloadLink>
         </div>
-        {/* <PDFViewer width={600} height={800}>
+        <PDFViewer width={600} height={800}>
           <MyDocument
             cohortList={cohortList}
             cohortSelect={cohortSelect}
@@ -1211,7 +1204,7 @@ export const Cohortreport = () => {
             des1={des1}
             des2={des2}
           />
-        </PDFViewer> */}
+        </PDFViewer>
       </div>
     </div>
   );

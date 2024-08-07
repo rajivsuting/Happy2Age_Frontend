@@ -13,7 +13,6 @@ import { getAllDomains } from "./Redux/AllListReducer/action";
 import { getAllSessions } from "./Redux/AllListReducer/action";
 import { getAllEvaluations } from "./Redux/AllListReducer/action";
 import { useNavigate } from "react-router-dom";
-import { PDFDownloadLink } from "@react-pdf/renderer";
 import AdminList from "./Pages/dashboard/AdminList";
 
 export const toastConfig = {

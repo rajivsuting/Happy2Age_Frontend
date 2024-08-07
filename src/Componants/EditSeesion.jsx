@@ -14,8 +14,10 @@ import {
   getAllParticipants,
   getAllSessions,
 } from "../Redux/AllListReducer/action";
+import usePreventScrollOnNumberInput from "./CustomHook";
 
 const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
+  usePreventScrollOnNumberInput();
   const [sessionData, setSessionData] = useState(null);
   const [selectedActivity, setSelectedActivity] = useState("");
   const [selectedCohort, setSelectedCohort] = useState("");
@@ -182,6 +184,7 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
                 label="No. of mins"
                 name="numberOfMins"
                 value={numberOfMins || 0}
+                className="noscroll"
                 type="number"
                 onChange={handleChangeInput}
               />

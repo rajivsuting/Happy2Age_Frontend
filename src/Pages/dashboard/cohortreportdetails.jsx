@@ -14,7 +14,7 @@ import { Button, Card, Typography } from "@material-tailwind/react";
 //   YAxis,
 // } from "recharts";
 import { useSelector } from "react-redux";
-import { useReactToPrint } from "react-to-print";
+// import { useReactToPrint } from "react-to-print";
 import {
   CartesianGrid,
   Legend,
@@ -76,11 +76,11 @@ export const Cohortreportdetails = () => {
 
   let filterParticipant = partcipantList?.find((el) => el._id == participantid);
 
-  const generatePDF = useReactToPrint({
-    content: () => componantPDF.current,
-    documentTitle: `${filterParticipant?.name} report`,
-    onAfterPrint: () => toast.success("PDF file download successfully"),
-  });
+  // const generatePDF = useReactToPrint({
+  //   content: () => componantPDF.current,
+  //   documentTitle: `${filterParticipant?.name} report`,
+  //   onAfterPrint: () => toast.success("PDF file download successfully"),
+  // });
 
   const resultArray = partcipantReportdata?.map((item) => {
     const total = item.list.reduce(
@@ -409,7 +409,7 @@ export const Cohortreportdetails = () => {
         />
        <div className="flex justify-end gap-5 mt-5">
         <Button >Export to excel</Button>
-          <Button onClick={generatePDF}>Generate PDF</Button>
+          {/* <Button onClick={generatePDF}>Generate PDF</Button> */}
         </div>
       </div>
     </div>
