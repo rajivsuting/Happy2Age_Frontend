@@ -13,4 +13,10 @@ export default defineConfig({
   optimizeDeps: {
     include: ['redux-thunk'],
   },
+  build: {
+    outDir: 'dist',
+    rollupOptions: {
+      input: 'index.html',
+    }
+  }
 })
