@@ -80,7 +80,7 @@ const Heatmap = ({ arr }) => {
       categories: participants,
       labels: {
         style: {
-          fontSize: '14px', // Adjust font size for participants here
+          fontSize: '18px', // Adjust font size for participants here
           fontWeight: 'bold' // Set font weight to bold for participants
         }
       }
@@ -90,7 +90,7 @@ const Heatmap = ({ arr }) => {
       categories: domains,
       labels: {
         style: {
-          fontSize: '14px', // Adjust font size for domains here
+          fontSize: '18px', // Adjust font size for domains here
           fontWeight: 'bold' // Set font weight to bold for domains
         }
       }

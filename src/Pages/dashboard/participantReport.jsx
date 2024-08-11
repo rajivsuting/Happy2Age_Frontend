@@ -131,7 +131,7 @@ const BarChartComponent = ({ data, onRendered }) => {
               offset={0}
               position="insideBottom"
               dy={50}
-              style={{ fontWeight: "bold" }} 
+              style={{ fontWeight: "bold",fontSize:"20px",fill: "black" }} 
             />
           </XAxis>
           <YAxis tick={{ fontSize: 15, fontWeight: "bold" }} domain={[0, 7]}>
@@ -139,7 +139,7 @@ const BarChartComponent = ({ data, onRendered }) => {
               value="Average"
               angle={-90}
               position="insideLeft"
-              style={{ textAnchor: "middle", fontWeight: "bold" }}
+              style={{ textAnchor: "middle", fontWeight: "bold" ,fontSize:"20px",fill: "black"}}
             />
           </YAxis>
           <Tooltip content={<CustomTooltip />} />

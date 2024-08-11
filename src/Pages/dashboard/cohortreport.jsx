@@ -118,21 +118,21 @@ const BarChartComponent = ({ data, onRendered }) => {
         margin={{ top: 20, right: 30, left: 20, bottom: 30 }} // Adjust the bottom margin here
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="domainName" tick={{ fontSize: 15, fontWeight: "bold" }}>
+        <XAxis dataKey="domainName" tick={{ fontSize: 15, fontWeight: "bold",fill: "black" }}>
           <Label
             value="Domain name"
             offset={0}
             position="insideBottom"
             dy={25}
-            style={{ fontWeight: "bold" }} 
+            style={{ fontWeight: "bold",fontSize:"20px" ,fill: "black"}} 
           />
         </XAxis>
-        <YAxis tick={{ fontSize: 15, fontWeight: "bold" }} domain={[0, 7]}>
+        <YAxis tick={{ fontSize: 15, fontWeight: "bold",fill: "black" }} domain={[0, 7]}>
           <Label
             value="Average"
             angle={-90}
             position="insideLeft"
-            style={{ textAnchor: "middle" ,fontWeight: "bold"}}
+            style={{ textAnchor: "middle" ,fontWeight: "bold",fontSize:"20px",fill: "black"}}
           />
         </YAxis>
         <Tooltip content={<CustomTooltip />} />
