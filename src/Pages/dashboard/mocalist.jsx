@@ -11,10 +11,13 @@ import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import EditMoCA from "../../Componants/EditMOCA";
 import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
+import { getAllCohorts } from "../../Redux/AllListReducer/action";
+import { useDispatch, useSelector } from "react-redux";
 
 export const Mocalist = () => {
   const [allResult, setallResult] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [allParticipants, setAllParticipants] = useState([]);
   const [selectParticipant, setSelectParticipant] = useState("");
   const [clickClear, setClickClear] = useState(false);
@@ -23,7 +26,14 @@ export const Mocalist = () => {
   const [isMOCAEditModal, setIsMOCAEditModal] = useState(false);
   const [isMOCADeleteModal, setIsMOCADeleteModal] = useState(false);
   const [editOrView, setEditorView] = useState("")
-  
+  const [singleCohort, setSingleCohort] = useState({});
+  const [selectedCohort, setSelectedCohort] = useState("");
+
+  const { cohortList } = useSelector((state) => {
+    return {
+      cohortList: state.AllListReducer.cohortList,
+    };
+  });
 
   const getAllMoca = ()=>{
     axios
@@ -53,6 +63,9 @@ export const Mocalist = () => {
   }, [clickClear]);
 
   useEffect(() => {
+    dispatch(getAllCohorts("", "")).then((res) => {
+      return true;
+    });
     axios
       .get(`${serverUrl}/participant/all`, {
         
@@ -139,6 +152,12 @@ export const Mocalist = () => {
       });
   };
 
+  useEffect(()=>{
+    let el = cohortList?.find((el)=>el._id == selectedCohort)
+    setSingleCohort(el) 
+  },[selectedCohort])
+  
+
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <div className="w-[98%] m-auto mt-10 mb-5 flex justify-center items-center">
@@ -150,6 +169,19 @@ export const Mocalist = () => {
         onSubmit={handleSubmitOxfordResult}
         className="w-[98%] m-auto flex justify-start items-center gap-10 mt-3 mb-3"
       >
+         <select
+          className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
+          value={selectedCohort}
+          onChange={(e) => setSelectedCohort(e.target.value)}
+          required
+        >
+          <option value="">Search by cohort</option>
+          {cohortList?.map((el, index) => (
+            <option key={index} value={el._id}>
+              {el.name}
+            </option>
+          ))}
+        </select>
         <select
           className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
           value={selectParticipant}
@@ -157,7 +189,7 @@ export const Mocalist = () => {
           required
         >
           <option value="">Search by member</option>
-          {allParticipants?.map((el, index) => (
+          {singleCohort?.participants?.map((el, index) => (
             <option key={index} value={el._id}>
               {el.name}
             </option>

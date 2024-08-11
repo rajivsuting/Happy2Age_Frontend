@@ -11,10 +11,13 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import EditOxford from "../../Componants/EditOxford";
 import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCohorts } from "../../Redux/AllListReducer/action";
 
 export const Oxfordlist = () => {
   const [allResult, setallResult] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [allParticipants, setAllParticipants] = useState([]);
   const [selectParticipant, setSelectParticipant] = useState("");
   const [singleOxford, setSingleOxford] = useState({});
@@ -22,8 +25,15 @@ export const Oxfordlist = () => {
   const [clickClear, setClickClear] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isOxfordDeleteModal, setIsOxfordDeleteModal] = useState(false);
-  const [editOrView, setEditorView] = useState("")
+  const [editOrView, setEditorView] = useState("");
+  const [singleCohort, setSingleCohort] = useState({});
+  const [selectedCohort, setSelectedCohort] = useState("");
 
+  const { cohortList } = useSelector((state) => {
+    return {
+      cohortList: state.AllListReducer.cohortList,
+    };
+  });
 
   const getAllOxfords = ()=>{
     axios
@@ -53,6 +63,10 @@ export const Oxfordlist = () => {
   }, [clickClear]);
 
   useEffect(() => {
+    
+  dispatch(getAllCohorts("", "")).then((res) => {
+        return true;
+      });
     axios
       .get(`${serverUrl}/participant/all`, {
         
@@ -73,6 +87,9 @@ export const Oxfordlist = () => {
         }
       });
   }, []);
+
+  // console.log(cohortList);
+  
 
   const handleSubmitOxfordResult = (e) => {
     e.preventDefault();
@@ -139,6 +156,11 @@ export const Oxfordlist = () => {
       });
   };
 
+  useEffect(()=>{
+    let el = cohortList?.find((el)=>el._id == selectedCohort)
+    setSingleCohort(el) 
+  },[selectedCohort])
+  
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -153,12 +175,25 @@ export const Oxfordlist = () => {
       >
         <select
           className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
+          value={selectedCohort}
+          onChange={(e) => setSelectedCohort(e.target.value)}
+          required
+        >
+          <option value="">Search by cohort</option>
+          {cohortList?.map((el, index) => (
+            <option key={index} value={el._id}>
+              {el.name}
+            </option>
+          ))}
+        </select>
+        <select
+          className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
           value={selectParticipant}
           onChange={(e) => setSelectParticipant(e.target.value)}
           required
         >
           <option value="">Search by member</option>
-          {allParticipants?.map((el, index) => (
+          {singleCohort?.participants?.map((el, index) => (
             <option key={index} value={el._id}>
               {el.name}
             </option>

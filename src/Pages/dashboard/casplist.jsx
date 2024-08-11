@@ -11,6 +11,8 @@ import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import EditCASP from "../../Componants/EditCASP";
 import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCohorts } from "../../Redux/AllListReducer/action";
 
 export const Casplist = () => {
   const [allResult, setallResult] = useState([]);
@@ -23,6 +25,15 @@ export const Casplist = () => {
   const [isCASPDeleteModal, setIsCASPDeleteModal] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [editOrView, setEditorView] = useState("")
+  const dispatch = useDispatch();
+const [singleCohort, setSingleCohort] = useState({});
+  const [selectedCohort, setSelectedCohort] = useState("");
+
+  const { cohortList } = useSelector((state) => {
+    return {
+      cohortList: state.AllListReducer.cohortList,
+    };
+  });
 
   const toggleModal = (el)=>{
     setSingleCASP(el);
@@ -59,6 +70,9 @@ export const Casplist = () => {
   }, []);
 
   useEffect(() => {
+    dispatch(getAllCohorts("", "")).then((res) => {
+      return true;
+    });
     axios
       .get(`${serverUrl}/participant/all`, {
         
@@ -136,6 +150,11 @@ export const Casplist = () => {
        });
    };
 
+   useEffect(()=>{
+    let el = cohortList?.find((el)=>el._id == selectedCohort)
+    setSingleCohort(el) 
+  },[selectedCohort])
+  
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -148,6 +167,19 @@ export const Casplist = () => {
         onSubmit={handleSubmitOxfordResult}
         className="w-[98%] m-auto flex justify-start items-center gap-10 mt-3 mb-3"
       >
+          <select
+          className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
+          value={selectedCohort}
+          onChange={(e) => setSelectedCohort(e.target.value)}
+          required
+        >
+          <option value="">Search by cohort</option>
+          {cohortList?.map((el, index) => (
+            <option key={index} value={el._id}>
+              {el.name}
+            </option>
+          ))}
+        </select>
         <select
           className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
           value={selectParticipant}
@@ -155,7 +187,7 @@ export const Casplist = () => {
           required
         >
           <option value="">Search by member</option>
-          {allParticipants?.map((el, index) => (
+          {singleCohort?.participants?.map((el, index) => (
             <option key={index} value={el._id}>
               {el.name}
             </option>

@@ -108,38 +108,52 @@ const CustomLabel = ({ x, width, value, chartHeight }) => {
 //   );
 // };
 
-
 const BarChartComponent = ({ data, onRendered }) => {
   return (
     <div id="chart-container">
-       <BarChart
-  width={900}
-  height={500}
-  data={data}
-  margin={{ top: 20, right: 30, left: 20, bottom: 30 }} // Adjust the bottom margin here
->
-  <CartesianGrid strokeDasharray="3 3" />
-  <XAxis dataKey="domainName" tick={{ fontSize: 15, fontWeight: 'bold' }}>
-    <Label value="Domain name" offset={0} position="insideBottom" dy={30}  />
-  </XAxis>
-  <YAxis tick={{ fontSize: 15, fontWeight: 'bold' }} domain={[0, 7]}>
-    <Label
-      value="Average"
-      angle={-90}
-      position="insideLeft"
-      style={{ textAnchor: 'middle' }}
-    />
-  </YAxis>
-  <Tooltip content={<CustomTooltip />} />
-  <Legend layout="horizontal" verticalAlign="top" align="center" wrapperStyle={{ paddingBottom: 20 }} />
-  <Bar dataKey="centerAverage" fill="#4A3AFF" barSize={15} radius={[20, 0, 20, 0]}>
-    <LabelList
-      dataKey="numberOfSessions"
-      content={<CustomLabel chartHeight={460} />}
-    />
-  </Bar>
-</BarChart>
-
+      <BarChart
+        width={900}
+        height={500}
+        data={data}
+        margin={{ top: 20, right: 30, left: 20, bottom: 30 }} // Adjust the bottom margin here
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="domainName" tick={{ fontSize: 15, fontWeight: "bold",fill: "black" }}>
+          <Label
+            value="Domain name"
+            offset={0}
+            position="insideBottom"
+            dy={25}
+            style={{ fontWeight: "bold",fontSize:"20px" ,fill: "black"}} 
+          />
+        </XAxis>
+        <YAxis tick={{ fontSize: 15, fontWeight: "bold",fill: "black" }} domain={[0, 7]}>
+          <Label
+            value="Average"
+            angle={-90}
+            position="insideLeft"
+            style={{ textAnchor: "middle" ,fontWeight: "bold",fontSize:"20px",fill: "black"}}
+          />
+        </YAxis>
+        <Tooltip content={<CustomTooltip />} />
+        <Legend
+          layout="horizontal"
+          verticalAlign="top"
+          align="center"
+          wrapperStyle={{ paddingBottom: 20 }}
+        />
+        <Bar
+          dataKey="centerAverage"
+          fill="#4A3AFF"
+          barSize={15}
+          radius={[20, 0, 20, 0]}
+        >
+          <LabelList
+            dataKey="numberOfSessions"
+            content={<CustomLabel chartHeight={460} />}
+          />
+        </Bar>
+      </BarChart>
     </div>
   );
 };
@@ -156,7 +170,6 @@ const CaptureChart = ({ data, onCapture }) => {
           const canvas = await html2canvas(chartRef.current);
           const imgData = canvas.toDataURL("image/png");
           onCapture(imgData);
-          
         }
       };
       captureChartAsImage();
@@ -180,7 +193,6 @@ const CaptureHeatmap = ({ arr, onCapture }) => {
           const canvas = await html2canvas(chartheatRef.current);
           const imgData = canvas.toDataURL("image/png");
           onCapture(imgData);
-          
         }
       };
       captureChartAsImage();
@@ -195,8 +207,7 @@ const CaptureHeatmap = ({ arr, onCapture }) => {
 };
 
 const styles = StyleSheet.create({
-  document:{
-  },
+  document: {},
   page: {
     padding: "35px",
     // backgroundColor:"#ffeaf2",
@@ -232,14 +243,14 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: "280px",
+    // height: "280px",
     marginBottom: "20px",
     borderRadius: "10px",
     // border: "1px solid black",
   },
   image2: {
     width: "100%",
-    height: "300px",
+    // height: "300px",
     borderRadius: "10px",
     //  border: "1px solid black",
   },
@@ -250,7 +261,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRightWidth: 0,
     borderBottomWidth: 0,
-    marginTop: "30px",
+    marginTop: "40px",
   },
   tableRow: {
     flexDirection: "row",
@@ -288,12 +299,12 @@ const styles = StyleSheet.create({
   marginTop5: {
     marginTop: "20px",
     fontSize: "12px",
-    lineHeight:"1.5px"
+    lineHeight: "1.5px",
   },
   marginTop10: {
     marginTop: "20px",
     fontSize: "12px",
-    lineHeight:"1.5px"
+    lineHeight: "1.5px",
   },
   italicText: {
     fontStyle: "italic",
@@ -327,7 +338,6 @@ const styles = StyleSheet.create({
     padding: "30px",
     marginTop: "20px",
     fontSize: "14px",
-   
   },
   row: {
     flexDirection: "row",
@@ -363,7 +373,7 @@ const MyDocument = ({
   des1,
   des2,
 }) => (
-  <Document  style={styles.document}>
+  <Document style={styles.document}>
     <Page size="A4" style={styles.page}>
       <View style={styles.customHeader}>
         {/* Header Logo */}
@@ -416,7 +426,7 @@ const MyDocument = ({
               margin: "auto",
               marginTop: "5px",
               fontSize: "14px",
-              lineHeight:"1.5px"
+              lineHeight: "1.5px",
             }}
           >
             (This document is based on our basic observations about member’s
@@ -555,11 +565,11 @@ const MyDocument = ({
 
         <View>
           <View style={styles.marginTop5}>
-            <Text>Overall Remark :{" "}{remarks}</Text>
+            <Text>Overall Remark : {remarks}</Text>
           </View>
 
           <View style={styles.marginTop5}>
-            <Text>Overall Observations :{" "}{observation}</Text>
+            <Text>Overall Observations : {observation}</Text>
           </View>
           <View style={styles.marginTop10}>
             <Text>
@@ -573,25 +583,25 @@ const MyDocument = ({
         <View>
           <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Date{" "}:</Text>
-              <Text style={[styles.input]}>{" "}{date}</Text>
+              <Text>Date :</Text>
+              <Text style={[styles.input]}> {date}</Text>
             </Text>
           </View>
           <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Name{" "}:</Text>
-              <Text style={[styles.input, styles.longInput]}>{" "}{name}</Text>
+              <Text>Name :</Text>
+              <Text style={[styles.input, styles.longInput]}> {name}</Text>
             </Text>
           </View>
           <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Signature(with Stamp){" "}:{" "}</Text>
+              <Text>Signature(with Stamp) : </Text>
               <Text style={[styles.input, styles.longInput]}>{signature}</Text>
             </Text>
           </View>
           <View style={{ fontSize: "12px", marginTop: "15px" }}>
             <Text>
-              <Text>Mobile{" "}:{" "}</Text>
+              <Text>Mobile : </Text>
               <Text style={[styles.input, styles.shortInput]}>{mobile}</Text>
             </Text>
           </View>
