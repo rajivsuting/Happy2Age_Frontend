@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AllRoutes from "./Routes/AllRoutes";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 import { useDispatch } from "react-redux";
 import {
   getAllAdmins,
@@ -13,7 +14,7 @@ import { getAllDomains } from "./Redux/AllListReducer/action";
 import { getAllSessions } from "./Redux/AllListReducer/action";
 import { getAllEvaluations } from "./Redux/AllListReducer/action";
 import { useNavigate } from "react-router-dom";
-import AdminList from "./Pages/dashboard/AdminList";
+axios.defaults.withCredentials = true;
 
 export const toastConfig = {
   position: "top-center",
