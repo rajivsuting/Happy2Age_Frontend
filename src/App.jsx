@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AllRoutes from "./Routes/AllRoutes";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 import { useDispatch } from "react-redux";
 import {
   getAllAdmins,
