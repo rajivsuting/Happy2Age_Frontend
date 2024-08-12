@@ -16,69 +16,85 @@ const EditEvaluation = ({
   onClose,
 }) => {
   usePreventScrollOnNumberInput();
-  const [domains, setDomains] = useState(evaluation?.domain);
-  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [domains, setDomains] = useState([]);
   const [domainList, setDomainList] = useState([]);
   const [finalArray, setFinalArray] = useState([]);
-  const [finalObject, setFinalObject] = useState(evaluation);
+  const [finalObject, setFinalObject] = useState({});
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    setFinalArray([]);
-    setFinalObject({});
-    setDomainList([]);
-    setDomains([]);
-  },[])
+  // Reset state whenever the modal opens or the evaluation changes
+  useEffect(() => {
+    if (isOpen && evaluation) {
+      // Reset state variables when the modal opens
+      setDomains(evaluation.domain || []);
+      setFinalObject(evaluation);
+      setFinalArray([]);
+    }
+  }, [isOpen, evaluation]);
 
   useEffect(() => {
-    axios
-      .get(
-        `${serverUrl}/domain/all/?category=${evaluation?.participant?.participantType}`,
-        {
-          // headers: {
-          //   Authorization: `${getLocalData("token")}`,
-          // },
-        }
-      )
-      .then((res) => {
-        setDomainList(res.data.message);
-      })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
+    if (evaluation?.participant?.participantType) {
+      axios
+        .get(
+          `${serverUrl}/domain/all/?category=${evaluation.participant.participantType}`
+        )
+        .then((res) => {
+          setDomainList(res.data.message);
+        })
+        .catch((err) => {
+          if (err.response && err.response.data && err.response.data.jwtExpired) {
+            toast.error(err.response.data.message, toastConfig);
+            setTimeout(() => {
+              navigate("/auth/sign-in");
+            }, 3000);
+          } else if (err.response && err.response.data) {
+            toast.error(err.response.data.message, toastConfig);
+          } else {
+            toast.error("An unexpected error occurred.", toastConfig);
+          }
+        });
+    }
   }, [evaluation?.participant?.participantType]);
 
-  // console.log(domainList)
-
   useEffect(() => {
-    setDomains(evaluation?.domain);
-    setFinalObject(evaluation)
-  }, [evaluation?.domain]);
+    const combinedArray = domainList?.map((item) => {
+      const match = domains?.find((el) => el._id === item._id);
+      if (match) {
+        item.subTopics = item.subTopics.map((subTopic) => {
+          const matchSubTopic = match.subTopics.find(
+            (el) => el._id === subTopic._id
+          );
+          if (matchSubTopic) {
+            subTopic.score = matchSubTopic.score;
+          }
+          return subTopic;
+        });
+      }
+      return item;
+    });
 
+    setFinalArray(combinedArray);
+  }, [domainList, domains]);
 
-
-
-  const handleSave = () => {
+  const handleScoreChange = (domainIndex, subTopicIndex, newScore) => {
+    const updatedDomains = [...finalArray];
+    updatedDomains[domainIndex].subTopics[subTopicIndex].score = newScore;
+    setFinalArray(updatedDomains);
     setFinalObject((prevObj) => ({
       ...prevObj,
-      domain: finalArray,
-    }))
+      domain: updatedDomains,
+    }));
+  };
+
+  const handleSave = () => {
     axios
       .patch(`${serverUrl}/evaluation/${evaluation?._id}`, finalObject)
       .then((res) => {
-        if (res.status == 200) {
-          toast.success("Evaluation edited suucessfully", toastConfig);
+        if (res.status === 200) {
+          toast.success("Evaluation edited successfully", toastConfig);
           getAllData();
-          onClose();
+          onClose(); // Close the modal after successful save
         } else {
           toast.error("Something went wrong", toastConfig);
         }
@@ -97,49 +113,22 @@ const EditEvaluation = ({
       });
   };
 
-  useEffect(()=>{
-    const combinedArray = domainList?.map(item => {
-      const match = domains?.find(el => el._id === item._id);
-      if (match) {
-        item.subTopics = item.subTopics.map(subTopic => {
-          const matchSubTopic = match.subTopics.find(el => el._id === subTopic._id);
-          if (matchSubTopic) {
-            subTopic.score = matchSubTopic.score;
-          }
-          return subTopic;
-        });
-      }
-      return item;
-    });
-
-    setFinalArray(combinedArray);
-  },[domainList, domains])
-  
-  
-  // console.log(finalArray);
-  
-  const handleScoreChange = (domainIndex, subTopicIndex, newScore) => {
-    // console.log(domainIndex, subTopicIndex);
-    const updatedDomains = [...finalArray];
-    updatedDomains[domainIndex].subTopics[subTopicIndex].score = newScore;
-    setFinalArray(updatedDomains);
-    setFinalObject((prevObj) => ({
-      ...prevObj,
-      domain: finalArray,
-    }))
+  const handleCloseModal = () => {
+    setDomains([]);
+    onClose();
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
-    <div className="relative m-4 w-[40%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
-    <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
+      <div className="relative m-4 w-[40%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
           Edit evaluation
           <AiOutlineClose
             className="cursor-pointer"
             size={24}
-            onClick={()=>{onClose();window.location.reload()}}
+            onClick={handleCloseModal}
           />
         </div>
         {finalArray?.map((domain, domainIndex) => (
@@ -156,7 +145,7 @@ const EditEvaluation = ({
                     label="Add score"
                     type="number"
                     className="noscroll"
-                    value={subTopic.score}
+                    value={subTopic.score || 0}
                     onChange={(e) =>
                       handleScoreChange(
                         domainIndex,
@@ -171,18 +160,13 @@ const EditEvaluation = ({
           </div>
         ))}
         <div
-          className=" sticky bottom-0 z-10 flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500"
+          className="sticky bottom-0 z-10 flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500"
           onClick={handleSave}
         >
           <Button className="bg-maincolor" type="submit">
             Edit evaluation
-            {/* {isEditCohortLoading ? (
-                  <CgSpinner size={18} className="m-auto animate-spin" />
-                ) : (
-                )} */}
           </Button>
         </div>
-        {/* <button>Save</button> */}
       </div>
     </div>
   );
