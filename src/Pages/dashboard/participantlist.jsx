@@ -329,7 +329,7 @@ export const Participantlist = () => {
                    <CiEdit />
                  </Typography>
                </td>
-               <td className={classes}>
+               {/* <td className={classes}>
                  <Typography
                    as="a"
                    href="#"
@@ -339,7 +339,7 @@ export const Participantlist = () => {
                  >
                    <MdOutlineDeleteOutline />
                  </Typography>
-               </td>
+               </td> */}
              </tr>
            );
          })}

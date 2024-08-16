@@ -730,7 +730,7 @@ export const ParticipantReport = () => {
             navigate("/auth/sign-in");
           }, 3000);
         } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
+          // toast.error(err.response.data.message, toastConfig);
         } else {
           toast.error("An unexpected error occurred.", toastConfig);
         }
@@ -748,7 +748,7 @@ export const ParticipantReport = () => {
       .then((res) => {
         console.log(res);
         setResultlist(res.data.data);
-        setEntireEvaluation(res.data.participantEvaluations);
+        setEntireEvaluation(res.data.evaluations);
       })
       .catch((err) => {
         if (err.response && err.response.data && err.response.data.jwtExpired) {
@@ -757,7 +757,7 @@ export const ParticipantReport = () => {
             navigate("/auth/sign-in");
           }, 3000);
         } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
+          // toast.error(err.response.data.message, toastConfig);
         } else {
           toast.error("An unexpected error occurred.", toastConfig);
         }
@@ -796,7 +796,7 @@ export const ParticipantReport = () => {
             navigate("/auth/sign-in");
           }, 3000);
         } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
+          // toast.error(err.response.data.message, toastConfig);
         } else {
           toast.error("An unexpected error occurred.", toastConfig);
         }

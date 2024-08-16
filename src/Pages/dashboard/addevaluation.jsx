@@ -124,9 +124,6 @@ export const AddEvaluation = () => {
     );
   }, [domainCategory, participant]);
 
-  console.log(domainCategory);
-  console.log(selectDomainByType);
-  console.log(domainList);
   const handleScoreChange = (domainIndex, questionIndex, newScore) => {
     const updatedDomains = [...selectDomainByType];
     updatedDomains[domainIndex].subTopics[questionIndex].score = newScore;
