@@ -26,6 +26,8 @@ const EditEvaluation = ({
   // Reset state whenever the modal opens or the evaluation changes
   useEffect(() => {
     if (isOpen && evaluation) {
+      console.log("moi call holu");
+      
       // Reset state variables when the modal opens
       setDomains(evaluation.domain || []);
       setFinalObject(evaluation);
@@ -49,7 +51,7 @@ const EditEvaluation = ({
               navigate("/auth/sign-in");
             }, 3000);
           } else if (err.response && err.response.data) {
-            toast.error(err.response.data.message, toastConfig);
+            // toast.error(err.response.data.message, toastConfig);
           } else {
             toast.error("An unexpected error occurred.", toastConfig);
           }
@@ -114,7 +116,6 @@ const EditEvaluation = ({
   };
 
   const handleCloseModal = () => {
-    setDomains([]);
     onClose();
   };
 
@@ -145,7 +146,7 @@ const EditEvaluation = ({
                     label="Add score"
                     type="number"
                     className="noscroll"
-                    value={subTopic.score || 0}
+                    value={subTopic.score || ""}
                     onChange={(e) =>
                       handleScoreChange(
                         domainIndex,

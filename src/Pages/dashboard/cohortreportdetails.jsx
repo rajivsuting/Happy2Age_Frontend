@@ -67,7 +67,7 @@ export const Cohortreportdetails = () => {
           navigate("/auth/sign-in");
         }, 3000);
       } else if (err.response && err.response.data) {
-        toast.error(err.response.data.message, toastConfig);
+        // toast.error(err.response.data.message, toastConfig);
       } else {
         toast.error("An unexpected error occurred.", toastConfig);
       }
