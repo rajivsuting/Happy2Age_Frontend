@@ -12,7 +12,6 @@ import { getLocalData } from "../../Utils/localStorage";
 import { useNavigate } from "react-router-dom";
 import usePreventScrollOnNumberInput from "../../Componants/CustomHook";
 
-
 const initialState = {
   name: "",
   email: "",
@@ -119,6 +118,8 @@ export const AddParticipant = () => {
         }
       })
       .catch((err) => {
+        console.log(err);
+        
         setIsAddParticipantsLoading(false);
         if (err.response && err.response.data && err.response.data.jwtExpired) {
           toast.error(err.response.data.message, toastConfig);
