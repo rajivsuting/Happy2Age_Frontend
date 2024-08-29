@@ -814,8 +814,7 @@ export const ParticipantReport = () => {
 
     return {
       participant: item.participant.name,
-      participantType: item.participant.participantType,
-      activity: item.activity.name,
+      
       session: item.session.name,
       sessionDate: convertDateFormat(item.session.date.split("T")[0]),
       sessionTime: item.session.numberOfMins,
@@ -830,8 +829,7 @@ export const ParticipantReport = () => {
     data.forEach((item) => {
       const {
         participant,
-        participantType,
-        activity,
+        
         session,
         sessionDate,
         sessionTime,
@@ -845,8 +843,7 @@ export const ParticipantReport = () => {
           if (domainHeader) {
             result.push([
               participant,
-              participantType,
-              activity,
+             
               session,
               sessionDate,
               sessionTime,
@@ -859,8 +856,7 @@ export const ParticipantReport = () => {
             domainHeader = false;
           } else {
             result.push([
-              "",
-              "",
+             
               "",
               "",
               "",
@@ -899,8 +895,7 @@ export const ParticipantReport = () => {
     const mainWorksheet = XLSX.utils.aoa_to_sheet([
       [
         "Participant Name",
-        "Participant Type",
-        "Activity Name",
+      
         "Session Name",
         "Session Date",
         "Session Time",

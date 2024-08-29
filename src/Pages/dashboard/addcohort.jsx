@@ -61,7 +61,6 @@ export const AddCohort = () => {
 
   const handleSubmitCohort = (e) => {
     e.preventDefault();
-    console.log(cohortData);
     setIsAddCohortLoading(true);
     axios
       .post(`${serverUrl}/cohort/create`, cohortData, {
@@ -69,7 +68,7 @@ export const AddCohort = () => {
       })
       .then((res) => {
         if (res.status == 201) {
-          toast.success("Cohort added successfully", toastConfig);
+          toast.success("Centre added successfully", toastConfig);
           setCohortData(initialState);
           setIsAddCohortLoading(false);
           dispatch(getAllCohorts("",""));

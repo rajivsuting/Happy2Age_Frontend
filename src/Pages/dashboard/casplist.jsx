@@ -173,7 +173,7 @@ const [singleCohort, setSingleCohort] = useState({});
           onChange={(e) => setSelectedCohort(e.target.value)}
           required
         >
-          <option value="">Search by cohort</option>
+          <option value="">Search by centre</option>
           {cohortList?.map((el, index) => (
             <option key={index} value={el._id}>
               {el.name}

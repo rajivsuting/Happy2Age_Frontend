@@ -680,7 +680,7 @@ export const Cohortreport = () => {
       .then((res) => {
         console.log(res);
         setResultlist(res.data.message);
-        setEntireEvaluation(res.data.evaluations);
+        setEntireEvaluation(res.data.message.evaluations);
       })
       .catch((err) => {
         console.log(err);
@@ -731,8 +731,7 @@ export const Cohortreport = () => {
 
     return {
       participant: item.participant.name,
-      participantType: item.participant.participantType,
-      activity: item.activity.name,
+    
       session: item.session.name,
       sessionDate: convertDateFormat(item.session.date.split("T")[0]),
       sessionTime: item.session.numberOfMins,
@@ -746,10 +745,10 @@ export const Cohortreport = () => {
     data.forEach((item) => {
       const {
         participant,
-        participantType,
+        
         sessionDate,
         sessionTime,
-        activity,
+      
         session,
         domains,
         grandAverage,
@@ -761,8 +760,6 @@ export const Cohortreport = () => {
           if (domainHeader) {
             result.push([
               participant,
-              participantType,
-              activity,
               session,
               sessionDate,
               sessionTime,
@@ -775,8 +772,6 @@ export const Cohortreport = () => {
             domainHeader = false;
           } else {
             result.push([
-              "",
-              "",
               "",
               "",
               "",
@@ -825,8 +820,7 @@ export const Cohortreport = () => {
     const mainWorksheet = XLSX.utils.aoa_to_sheet([
       [
         "Participant Name",
-        "Participant Type",
-        "Activity Name",
+       
         "Session Name",
         "Session Date",
         "Session Time",
