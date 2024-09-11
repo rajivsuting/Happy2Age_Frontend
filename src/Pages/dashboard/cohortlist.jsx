@@ -226,7 +226,7 @@ const navigate = useNavigate();
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.name || "-"}
+                    {el.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -238,7 +238,7 @@ const navigate = useNavigate();
                     {el.participants?.map((el) => {
                       return el.name.substring(0, 5).length < el.name.length
                         ? el.name.substring(0, 5) + "... ,"
-                        : el.name || "-";
+                        : el.name || "NA";
                     })}
                   </Typography>
                 </td>

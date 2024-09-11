@@ -74,7 +74,7 @@ const SeeDeatailsSessionAttendence = ({ isOpen, onClose, singleSession }) => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.name || "-"}
+                    {el.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -83,7 +83,7 @@ const SeeDeatailsSessionAttendence = ({ isOpen, onClose, singleSession }) => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.present ? "Present" : "Absent" || "-"}
+                    {el.present ? "Present" : "Absent" || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -92,7 +92,7 @@ const SeeDeatailsSessionAttendence = ({ isOpen, onClose, singleSession }) => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {convertDateFormat(el.date.split("T")[0]) || "-"}
+                    {convertDateFormat(el.date.split("T")[0]) || "NA"}
                   </Typography>
                 </td>
               </tr>

@@ -243,7 +243,7 @@ export const CaspQuestions = () => {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {index + 1}. {el.question || "-"}
+                        {index + 1}. {el.question || "NA"}
                       </Typography>
                     </td>
                     <td className={`p-2 text-center`}>

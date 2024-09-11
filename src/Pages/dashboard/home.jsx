@@ -326,7 +326,7 @@ export function Home() {
                             >
                               {name.slice(5).length > 0
                                 ? name.slice(0, 5) + "..."
-                                : name || "-"}
+                                : name || "NA"}
                             </Typography>
                           ))}
                         </div>

@@ -175,7 +175,7 @@ export const Participantlist = () => {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {el.name || "-"}
+                      {el.name || "NA"}
                     </Typography>
                   </td>
                   <td className={classes}>
@@ -184,7 +184,7 @@ export const Participantlist = () => {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {el.email || "-"}
+                      {el.email || "NA"}
                     </Typography>
                   </td>
                   <td className={classes}>
@@ -193,7 +193,7 @@ export const Participantlist = () => {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {el.participantType || "-"}
+                      {el.participantType || "NA"}
                     </Typography>
                   </td>
                   <td className={classes}>
@@ -202,7 +202,7 @@ export const Participantlist = () => {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {el.gender || "-"}
+                      {el.gender || "NA"}
                     </Typography>
                   </td>
                   <td className={classes}>

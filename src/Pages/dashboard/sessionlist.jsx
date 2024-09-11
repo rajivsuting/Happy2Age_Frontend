@@ -268,7 +268,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el?.name}
+                    {el?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -277,7 +277,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.cohort?.name || "-"}
+                    {el.cohort?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -292,7 +292,10 @@ export const Sessionlist = () => {
                           {index + 1}. {bl.name}
                         </div>
                       );
-                    }) || "-"}
+                    }) || "NA"}
+                    {
+                      el.activity.length ? null : "NA"
+                    }
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -301,7 +304,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {convertDateFormat(el?.date.split("T")[0]) || "-"}
+                    {convertDateFormat(el?.date.split("T")[0]) || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -310,7 +313,7 @@ export const Sessionlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el?.numberOfMins || "-"}
+                    {el?.numberOfMins || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>

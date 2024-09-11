@@ -155,12 +155,12 @@ export const Domainlist = () => {
                   </td>
                   <td className={classes}>
                     <Typography variant="small" color="blue-gray" className="font-normal">
-                      {category || "-"}
+                      {category || "NA"}
                     </Typography>
                   </td>
                   <td className={classes}>
                     <Typography variant="small" color="blue-gray" className="font-normal">
-                      {subTopics.length || "-"}
+                      {subTopics.length || "NA"}
                     </Typography>
                   </td>
                   <td className={classes}>

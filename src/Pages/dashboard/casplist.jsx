@@ -274,7 +274,7 @@ const [singleCohort, setSingleCohort] = useState({});
                   >
                     {allParticipants?.filter(
                       (pl) => pl._id == el.participant
-                    )[0]?.name || "-"}
+                    )[0]?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -295,7 +295,7 @@ const [singleCohort, setSingleCohort] = useState({});
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {convertDateFormat(el?.date?.split("T")[0]) || "-"}
+                    {convertDateFormat(el?.date?.split("T")[0]) || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
