@@ -273,7 +273,7 @@ export const ActivityList = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.name || "-"}
+                    {el.name || "NA"}
                   </Typography>
                 </td>
                 <td className={`${classes} w-[400px]`}>
@@ -285,7 +285,7 @@ export const ActivityList = () => {
                     {el.description.substring(0, 20).length <
                     el.description.length
                       ? el.description.substring(0, 20) + "..."
-                      : el.description || "-"}
+                      : el.description || "NA"}
                   </Typography>
                 </td>
                 <td className={`${classes} w-[400px]`}>
@@ -297,7 +297,7 @@ export const ActivityList = () => {
                     {el.references.substring(0, 20).length <
                     el.references.length
                       ? el.references.substring(0, 20) + "..."
-                      : el.references || "-"}
+                      : el.references || "NA"}
                   </Typography>
                 </td>
 

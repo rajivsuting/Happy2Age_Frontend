@@ -280,7 +280,7 @@ export const Oxfordlist = () => {
                   >
                     {allParticipants?.filter(
                       (pl) => pl._id == el.participant
-                    )[0]?.name || "-"}
+                    )[0]?.name || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -289,7 +289,7 @@ export const Oxfordlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.happinessScore.toFixed(2) || "-"}
+                    {el.happinessScore.toFixed(2) || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -298,7 +298,7 @@ export const Oxfordlist = () => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {convertDateFormat(el?.date?.split("T")[0]) || "-"}
+                    {convertDateFormat(el?.date?.split("T")[0]) || "NA"}
                   </Typography>
                 </td>
                 <td className={classes}>

@@ -20,7 +20,7 @@ const SeeDeatailesEvalution = ({ isOpen, onClose, singleCohort }) => {
             <tbody>
               <tr>
                 <td className="py-2 font-semibold">Centre name</td>
-                <td>{singleCohort?.name || "-"}</td>
+                <td>{singleCohort?.name || "NA"}</td>
               </tr>
               
               <tr>

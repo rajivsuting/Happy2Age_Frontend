@@ -20,7 +20,7 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
             <tbody>
               <tr>
                 <td className="py-2 font-semibold">Member name</td>
-                <td>{singleEvalustion?.participant?.name || "-"}</td>
+                <td>{singleEvalustion?.participant?.name || "NA"}</td>
               </tr>
               <tr>
                 <td className="py-2 font-semibold">Centre</td>
@@ -46,7 +46,7 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
                         <tbody>
                           <tr>
                             <td className="py-2 font-semibold">Domain name</td>
-                            <td>{el.name || "-"}</td>
+                            <td>{el.name || "NA"}</td>
                           </tr>
                           {el.subTopics?.map((el, index2) => {
                             return (
@@ -54,19 +54,19 @@ const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
                                 <td className="py-2 font-semibold">
                                   Question: {index2 + 1}
                                 </td>
-                                <td>{el.content || "-"}</td>
+                                <td>{el.content || "NA"}</td>
                                 <td className="py-2 font-semibold">Score</td>
-                                <td>{el.score || "-"}</td>
+                                <td>{el.score || "NA"}</td>
                               </tr>
                             );
                           })}
                           <tr>
                             <td className="py-2 font-semibold">Average</td>
-                            <td>{el?.average || "-"}</td>
+                            <td>{el?.average || "NA"}</td>
                           </tr>
                           <tr>
                             <td className="py-2 font-semibold">Observation</td>
-                            <td>{el?.observation || "-"}</td>
+                            <td>{el?.observation || "NA"}</td>
                           </tr>
                         </tbody>
                       </table>

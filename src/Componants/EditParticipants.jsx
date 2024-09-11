@@ -1,4 +1,10 @@
-import { Button, Input, Select, Option, Textarea } from "@material-tailwind/react";
+import {
+  Button,
+  Input,
+  Select,
+  Option,
+  Textarea,
+} from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import { serverUrl } from "../api";
 import axios from "axios";
@@ -8,16 +14,20 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { CgSpinner } from "react-icons/cg";
 import { AiOutlineClose } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCohorts, getAllParticipants } from "../Redux/AllListReducer/action";
+import {
+  getAllCohorts,
+  getAllParticipants,
+} from "../Redux/AllListReducer/action";
 import { getLocalData } from "../Utils/localStorage";
 import usePreventScrollOnNumberInput from "./CustomHook";
 
-const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
-  usePreventScrollOnNumberInput()
+const EditParticipants = ({ isOpen, onClose, singleParticipant, name }) => {
+  usePreventScrollOnNumberInput();
   const [participantData, setParticipantData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [isEditParticipantLoading, setIsEditParticipantLoading] = useState(false);
+  const [isEditParticipantLoading, setIsEditParticipantLoading] =
+    useState(false);
   const { cohortList } = useSelector((state) => {
     return {
       cohortList: state.AllListReducer.cohortList,
@@ -91,10 +101,18 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
     setIsEditParticipantLoading(true);
     console.log(participantData._id);
     axios
-      .patch(`${serverUrl}/participant/edit/${participantData._id}`, participantData)
+      .patch(
+        `${serverUrl}/participant/edit/${participantData._id}`,
+        participantData
+      )
       .then((res) => {
         if (res.status === 200) {
-          dispatch(getAllParticipants(searchParams.get("page"), searchParams.get("limit"))).then(() => {
+          dispatch(
+            getAllParticipants(
+              searchParams.get("page"),
+              searchParams.get("limit")
+            )
+          ).then(() => {
             dispatch(getAllCohorts("", "")).then(() => {
               toast.success("Participant edited successfully", toastConfig);
               onClose();
@@ -126,7 +144,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
       <div className="relative m-4 w-2/5 min-w-[60%] max-w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-8">
         <div className="flex items-center justify-between p-4 font-sans text-2xl font-semibold text-blue-gray-900">
-          Edit member
+          {name == "read" ? "View member details" : "Edit member"}
           <AiOutlineClose
             className="cursor-pointer"
             size={24}
@@ -134,7 +152,10 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
           />
         </div>
         <div className="px-4">
-          <form className="m-auto rounded-xl" onSubmit={handleSubmitParticipant}>
+          <form
+            className="m-auto rounded-xl"
+            onSubmit={handleSubmitParticipant}
+          >
             {/* Basic details */}
             <div className="w-[100%] m-auto mb-5 flex justify-center items-center">
               <div className="w-[15%]">Basic details</div>{" "}
@@ -146,6 +167,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 name="name"
                 value={participantData?.name}
                 onChange={handleChangeInput}
+                disabled={name == "read"}
               />
               <Input
                 label="Email"
@@ -153,6 +175,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 value={participantData?.email}
                 type="email"
                 onChange={handleChangeInput}
+                disabled={name == "read"}
               />
               <Input
                 label="Date of Birth"
@@ -160,6 +183,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 value={participantData?.dob?.split("T")[0]}
                 type="date"
                 onChange={handleChangeInput}
+                disabled={name == "read"}
               />
             </div>
             <div className="w-[100%] flex justify-between items-center m-auto gap-10 mt-5">
@@ -167,7 +191,10 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 label="Gender"
                 name="gender"
                 value={participantData?.gender}
-                onChange={(value) => handleChangeGenderAndParticipants("gender", value)}
+                onChange={(value) =>
+                  handleChangeGenderAndParticipants("gender", value)
+                }
+                disabled={name == "read"}
               >
                 <Option value="Male">Male</Option>
                 <Option value="Female">Female</Option>
@@ -177,7 +204,10 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 label="Member Type"
                 name="participantType"
                 value={participantData?.participantType}
-                onChange={(value) => handleChangeGenderAndParticipants("participantType", value)}
+                onChange={(value) =>
+                  handleChangeGenderAndParticipants("participantType", value)
+                }
+                disabled={name == "read"}
               >
                 <Option value="General">General</Option>
                 <Option value="Special Need">Special Need</Option>
@@ -186,7 +216,10 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 label="Select centre"
                 name="cohort"
                 value={participantData.cohort}
-                onChange={(value) => handleChangeGenderAndParticipants("cohort", value)}
+                onChange={(value) =>
+                  handleChangeGenderAndParticipants("cohort", value)
+                }
+                disabled={name == "read"}
               >
                 {cohortList?.map((el) => (
                   <Option key={el._id} value={el._id}>
@@ -207,12 +240,14 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 name="addressLine"
                 value={participantData?.address?.addressLine}
                 onChange={handleChangeAddress}
+                disabled={name == "read"}
               />
               <Input
                 label="Phone"
                 name="phone"
                 value={participantData?.phone}
                 onChange={handleChangeInput}
+                disabled={name == "read"}
               />
               <Input
                 label="Pincode"
@@ -221,6 +256,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 className="noscroll"
                 value={participantData?.address?.pincode}
                 onChange={handleChangeAddress}
+                disabled={name == "read"}
               />
             </div>
             <div className="w-[100%] flex justify-between items-center m-auto gap-10 mt-5">
@@ -229,12 +265,14 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 name="state"
                 value={participantData?.address?.state}
                 onChange={handleChangeStateAndCity}
+                disabled={name == "read"}
               />
               <Input
                 label="City"
                 name="city"
                 value={participantData?.address?.city}
                 onChange={handleChangeStateAndCity}
+                disabled={name == "read"}
               />
             </div>
 
@@ -249,6 +287,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 name="name"
                 value={participantData?.emergencyContact?.name}
                 onChange={handleChangeEmergencyContact}
+                disabled={name == "read"}
               />
               <Input
                 maxLength={10}
@@ -257,12 +296,14 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 name="phone"
                 value={participantData?.emergencyContact?.phone}
                 onChange={handleChangeEmergencyContact}
+                disabled={name == "read"}
               />
               <Input
                 label="Relationship"
                 name="relationship"
                 value={participantData?.emergencyContact?.relationship}
                 onChange={handleChangeEmergencyContact}
+                disabled={name == "read"}
               />
             </div>
 
@@ -272,19 +313,25 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant }) => {
                 name="briefBackground"
                 required
                 value={participantData.briefBackground}
+                disabled={name == "read"}
                 onChange={handleChangeInput}
               />
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500">
-              
-              <Button className="bg-maincolor" type="submit" disabled={isEditParticipantLoading}>
-                {isEditParticipantLoading ? (
-                  <CgSpinner size={18} className="m-auto animate-spin" />
-                ) : (
-                  "Edit member"
-                )}
-              </Button>
+              {name == "read" ? (
+                null
+              ) : <Button
+              className="bg-maincolor"
+              type="submit"
+              disabled={isEditParticipantLoading}
+            >
+              {isEditParticipantLoading ? (
+                <CgSpinner size={18} className="m-auto animate-spin" />
+              ) : (
+                "Edit member"
+              )}
+            </Button>}
             </div>
           </form>
         </div>
