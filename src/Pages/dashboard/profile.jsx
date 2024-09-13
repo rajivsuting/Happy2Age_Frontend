@@ -63,7 +63,7 @@ export function Profile() {
                     Message
                   </Tab>
                   <Tab value="settings">
-                    <Cog6ToothIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
+                    {/* <Cog6ToothIcon className="-mt-1 mr-2 inline-block h-5 w-5" /> */}
                     Settings
                   </Tab>
                 </TabsHeader>

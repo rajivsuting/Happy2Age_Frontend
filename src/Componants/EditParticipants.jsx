@@ -114,7 +114,7 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant, name }) => {
             )
           ).then(() => {
             dispatch(getAllCohorts("", "")).then(() => {
-              toast.success("Participant edited successfully", toastConfig);
+              toast.success("Member edited successfully", toastConfig);
               onClose();
             });
           });

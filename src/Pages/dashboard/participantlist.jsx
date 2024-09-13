@@ -14,9 +14,11 @@ import {
 } from "../../Redux/AllListReducer/action";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
 import { convertDateFormat } from "../../Utils/localStorage";
+import SeeDeatailesParticipant from "../../Componants/SeeDeatailesParticipant";
 
 export const Participantlist = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenRead, setIsModalOpenRead] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [singleParticipant, setSinglePartcipant] = useState({});
   const [currentPage, setCurrentPage] = useState(searchParams.get("page") || 1);
@@ -33,7 +35,7 @@ export const Participantlist = () => {
 
   const toggleModalRead = (el) => {
     setName("read");
-    setIsModalOpen(!isModalOpen);
+    setIsModalOpenRead(!isModalOpenRead);
     setSinglePartcipant(el);
   };
 
@@ -245,7 +247,6 @@ export const Participantlist = () => {
                       <CiEdit />
                     </Typography>
                   </td>
-                  
                 </tr>
               );
             })}
@@ -260,10 +261,10 @@ export const Participantlist = () => {
         singleParticipant={singleParticipant}
       />
 
-      <EditParticipants
+      <SeeDeatailesParticipant
         name={name}
-        isOpen={isModalOpen}
-        onClose={toggleModal}
+        isOpen={isModalOpenRead}
+        onClose={toggleModalRead}
         singleParticipant={singleParticipant}
       />
     </Card>

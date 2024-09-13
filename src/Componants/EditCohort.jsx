@@ -69,7 +69,7 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
         if (res.status === 200) {
           getAllCohorts().then(() => {
             setIsEditCohortLoading(false);
-            toast.success("Cohort edited successfully", toastConfig);
+            toast.success("Centre edited successfully", toastConfig);
             onClose();
           });
         } else {
@@ -106,7 +106,7 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
           <form className="m-auto rounded-xl" onSubmit={handleSubmitCohort}>
             <div className="flex justify-between items-center m-auto mt-5">
               <Input
-                label="Name of Cohort"
+                label="Name of Centre"
                 name="name"
                 value={name}
                 onChange={handleChangeInput}

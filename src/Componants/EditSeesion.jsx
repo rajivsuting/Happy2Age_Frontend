@@ -43,7 +43,16 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
 
   useEffect(()=>{
     setSelectedCohort(singleSession?.cohort?._id)
+   
   },[singleSession])
+
+  useEffect(()=>{
+    // setSelectedCohort(singleSession?.cohort?._id)
+    setSessionData((prevData) => ({
+      ...prevData,
+      cohort: selectedCohort,
+    }));
+  },[selectedCohort])
 
   useEffect(() => {
     dispatch(getAllCohorts("", ""));
@@ -58,11 +67,23 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
     }));
   };
 
+  console.log(singleSession);
   const handleAddActivity = () => {
     if (selectedActivity !== "") {
+      
+      if (sessionData?.activity?.includes(selectedActivity)) {
+        toast.error("This activity is already added", toastConfig);
+        return; // Do not add the activity again
+      }
+      
+      if (sessionData?.activity?.find((el)=>(el._id == selectedActivity))){
+        toast.error("This activity is already added", toastConfig);
+        return; // Do not add the activity again
+      }
+
       setSessionData({
         ...sessionData,
-        activity: [...sessionData.activity, selectedActivity],
+        activity: [...sessionData?.activity, selectedActivity],
       });
       setSelectedActivity(""); // Reset selected activity
     }
@@ -150,8 +171,8 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
-      <div className="relative m-4  min-w-[60%] max-w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl p-8">
-      <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
+      <div className="relative m-4 w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
+        <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
      
           Edit Session
           <AiOutlineClose
@@ -195,7 +216,8 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
                   label="Cohort"
                   name="cohort"
                   value={selectedCohort}
-                  onChange={(e) => {setSelectedCohort(e.target.value)}}
+                  onChange={(e) => {setSelectedCohort(e.target.value);setCheckedParticipants([])
+                  }}
                   className="border border-gray-400 w-[100%] px-2 py-2 rounded-md"
                 >
                   <option value="">Select centre</option>
@@ -230,8 +252,7 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
               </div>
             </div>
             <div className="w-[100%] flex justify-between m-auto gap-10 mt-5 px-8">
-              {cohort && (
-                <div className="w-[50%]">
+            <div className="w-[50%]">
                   <h3>Select members:</h3>
                   <div className="max-h-[30vh] overflow-y-auto">
                     <List>
@@ -260,9 +281,7 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
                     </List>
                   </div>
                 </div>
-              )}
-              {activity?.length ? (
-                <div className="w-[50%] ml-3 mt-5">
+              <div className="w-[50%] ml-3 mt-5">
                   <h3>Activities:</h3>
                   <List>
                     {activity?.map((activity, index) => (
@@ -278,9 +297,8 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
                     ))}
                   </List>
                 </div>
-              ) : null}
             </div>
-            <div className="w-[90%] text-center mt-5 m-auto">
+            <div className="w-[90%] text-center mt-5 mb-5 m-auto">
               <Button
                 className="bg-maincolor"
                 type="submit"

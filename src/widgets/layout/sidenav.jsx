@@ -110,22 +110,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
   };
 
   const handleSignOut = () => {
-    axios.post(`${serverUrl}/auth/logout`)
-    .then((res)=>{
-      // saveLocalData("token",res.data.token)
-      if (res.status==200){
-        toast.success("Logout successfully", toastConfig);
-
-        navigate("/auth/sign-in")
-      } else {
-
-        toast.error("Something went wrong", toastConfig);
-      }
-    }).catch((err)=>{
-      console.log(err)
-      toast.error(err.response, toastConfig);
-    })
-    // <Navigate to={`/auth/sign-in`} />;
+    toast.success("Logout successfully", toastConfig);
+    localStorage.clear();
+    navigate("/auth/sign-in");
   };
   return (
     <aside
@@ -964,7 +951,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                       Add CASP-19
+                        Add CASP-19
                       </Typography>
                     </Button>
                   )}
