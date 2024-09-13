@@ -3,7 +3,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
-import { MdOutlineDeleteOutline } from "react-icons/md";
+import { MdOutlineDeleteOutline, MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDetailsCohort from "../../Componants/SeeDetailsCohort";
 import EditCohort from "../../Componants/EditCohort";
@@ -52,7 +52,7 @@ const navigate = useNavigate();
 
   const toggleModalEdit = (el) => {
     setsearchParams({ id: el._id });
-    setIsModalOpenEdit(!isModalOpenEdit);
+    setIsModalOpenEdit(true);
     setSingleCohort(el);
   };
 
@@ -68,7 +68,7 @@ const navigate = useNavigate();
       })
       .then((res) => {
         if (res.status == 200) {
-          toast.success("Cohort delete suucessfully", toastConfig);
+          toast.success("Centre delete suucessfully", toastConfig);
           dispatch(getAllCohorts("","")).then((res) => {});
         } else {
           toast.error("Something went wrong", toastConfig);
@@ -249,9 +249,9 @@ const navigate = useNavigate();
                     variant="small"
                     color="blue-gray"
                     onClick={() => toggleModal(el)}
-                    className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
-                  >
-                    See details
+                    className="text-maincolor2 text-[20px]"
+                    >
+                      <MdOutlineRemoveRedEye />
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -260,8 +260,8 @@ const navigate = useNavigate();
                     href="#"
                     variant="small"
                     color="blue-gray"
-                    className="text-maincolor2 text-[20px]"
                     onClick={() => toggleModalEdit(el)}
+                    className="text-maincolor2 text-[20px]"
                   >
                     <CiEdit />
                   </Typography>
@@ -293,7 +293,7 @@ const navigate = useNavigate();
       />
       <EditCohort
         isOpen={isModalOpenEdit}
-        onClose={toggleModalEdit}
+        onClose={()=>setIsModalOpenEdit(false)}
         singleCohort={singleCohort}
         getAllCohorts={() => dispatch(getAllCohorts("","")).then((res) => {})}
       />

@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { serverUrl } from "../api";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../App";
 import usePreventScrollOnNumberInput from "./CustomHook";
@@ -23,62 +23,72 @@ const EditEvaluation = ({
   const [finalObject, setFinalObject] = useState({});
   const navigate = useNavigate();
 
-  // Reset state whenever the modal opens or the evaluation changes
+  // Fetch domain list based on participantType
   useEffect(() => {
-    if (isOpen && evaluation) {
-      console.log("moi call holu");
-      
-      // Reset state variables when the modal opens
-      setDomains(evaluation.domain || []);
-      setFinalObject(evaluation);
-      setFinalArray([]);
-    }
-  }, [isOpen, evaluation]);
-
-  useEffect(() => {
-    if (evaluation?.participant?.participantType) {
-      axios
-        .get(
-          `${serverUrl}/domain/all/?category=${evaluation.participant.participantType}`
-        )
-        .then((res) => {
+    const fetchDomainList = async () => {
+      if (evaluation?.participant?.participantType) {
+        try {
+          const res = await axios.get(
+            `${serverUrl}/domain/all/?category=${evaluation.participant.participantType}`
+          );
           setDomainList(res.data.message);
-        })
-        .catch((err) => {
+        } catch (err) {
           if (err.response && err.response.data && err.response.data.jwtExpired) {
             toast.error(err.response.data.message, toastConfig);
             setTimeout(() => {
               navigate("/auth/sign-in");
             }, 3000);
-          } else if (err.response && err.response.data) {
-            // toast.error(err.response.data.message, toastConfig);
           } else {
             toast.error("An unexpected error occurred.", toastConfig);
           }
-        });
-    }
-  }, [evaluation?.participant?.participantType]);
-
-  useEffect(() => {
-    const combinedArray = domainList?.map((item) => {
-      const match = domains?.find((el) => el._id === item._id);
-      if (match) {
-        item.subTopics = item.subTopics.map((subTopic) => {
-          const matchSubTopic = match.subTopics.find(
-            (el) => el._id === subTopic._id
-          );
-          if (matchSubTopic) {
-            subTopic.score = matchSubTopic.score;
-          }
-          return subTopic;
-        });
+        }
       }
-      return item;
-    });
+    };
 
-    setFinalArray(combinedArray);
-  }, [domainList, domains]);
+    fetchDomainList();
+  }, [evaluation?.participant?.participantType, navigate]);
 
+  // Rebuild finalArray and reset state when modal opens for a new evaluation
+  useEffect(() => {
+    if (isOpen && evaluation) {
+      // Ensure state is reset when opening modal
+      setFinalArray([]);
+      setDomains([]);
+      setFinalObject({});
+
+      // Populate domains and finalObject based on the new evaluation
+      setDomains(evaluation.domain || []);
+      setFinalObject(evaluation);
+
+      // Clear finalArray and then recompute it based on the new evaluation
+      const combinedArray = domainList.map((item) => {
+        const match = evaluation.domain?.find((el) => el._id === item._id);
+        if (match) {
+          item.subTopics = item.subTopics.map((subTopic) => {
+            const matchSubTopic = match.subTopics.find(
+              (el) => el._id === subTopic._id
+            );
+            if (matchSubTopic) {
+              subTopic.score = matchSubTopic.score;
+            } else {
+              subTopic.score = ""; // Reset missing scores to empty
+            }
+            return subTopic;
+          });
+        }
+        return item;
+      });
+
+      setFinalArray(combinedArray); // Set the new finalArray after recomputation
+    } else {
+      // Clear the arrays when modal is closed
+      setDomains([]);
+      setFinalArray([]);
+      setFinalObject({});
+    }
+  }, [isOpen, evaluation, domainList]);
+
+  // Handle score change in input fields
   const handleScoreChange = (domainIndex, subTopicIndex, newScore) => {
     const updatedDomains = [...finalArray];
     updatedDomains[domainIndex].subTopics[subTopicIndex].score = newScore;
@@ -89,6 +99,7 @@ const EditEvaluation = ({
     }));
   };
 
+  // Handle save button click to save the evaluation
   const handleSave = () => {
     axios
       .patch(`${serverUrl}/evaluation/${evaluation?._id}`, finalObject)
@@ -115,6 +126,7 @@ const EditEvaluation = ({
       });
   };
 
+  // Handle modal close action
   const handleCloseModal = () => {
     onClose();
   };
@@ -122,7 +134,7 @@ const EditEvaluation = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
+    <div key={evaluation?._id} className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
       <div className="relative m-4 w-[40%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
         <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
           Edit evaluation
@@ -146,7 +158,7 @@ const EditEvaluation = ({
                     label="Add score"
                     type="number"
                     className="noscroll"
-                    value={subTopic.score || ""}
+                    value={subTopic.score !== undefined ? subTopic.score : ""} // Handle missing scores properly
                     onChange={(e) =>
                       handleScoreChange(
                         domainIndex,

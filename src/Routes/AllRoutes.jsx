@@ -22,10 +22,10 @@ const AllRoutes = () => {
 
       {/* template---------------------- */}
       <Route path="/auth/*" element={<Auth />} />
-      <Route path="/mainpage/*" element={<Dashboard />} />
       <Route path="*" element={<Navigate to="/auth/sign-in" replace />} />
-      {/* <Route element={<PrivateRoute />}>
-      </Route> */}
+      <Route element={<PrivateRoute />}>
+        <Route path="/mainpage/*" element={<Dashboard />} />
+      </Route>
     </Routes>
   );
 };

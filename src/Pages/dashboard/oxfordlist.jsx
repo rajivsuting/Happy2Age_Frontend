@@ -7,7 +7,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { Button, Card, Typography } from "@material-tailwind/react";
-import { MdOutlineDeleteOutline } from "react-icons/md";
+import { MdOutlineDeleteOutline, MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import EditOxford from "../../Componants/EditOxford";
 import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
@@ -308,9 +308,9 @@ export const Oxfordlist = () => {
                     variant="small"
                     color="blue-gray"
                     onClick={() => {toggleModal(el);setEditorView("View")}}
-                    className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
-                  >
-                    See details
+                    className="text-maincolor2 text-[20px]"
+                    >
+                      <MdOutlineRemoveRedEye />
                   </Typography>
                 </td>
                 <td className={classes}>

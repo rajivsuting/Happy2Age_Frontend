@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { Button, Card, Typography } from "@material-tailwind/react";
 import { CiEdit } from "react-icons/ci";
-import { MdOutlineDeleteOutline } from "react-icons/md";
+import { MdOutlineDeleteOutline, MdOutlineRemoveRedEye } from "react-icons/md";
 import EditCASP from "../../Componants/EditCASP";
 import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -305,9 +305,9 @@ const [singleCohort, setSingleCohort] = useState({});
                     variant="small"
                     color="blue-gray"
                     onClick={() => {toggleModal(el);setEditorView("View")}}
-                    className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
-                  >
-                    See details
+                    className="text-maincolor2 text-[20px]"
+                    >
+                      <MdOutlineRemoveRedEye />
                   </Typography>
                 </td>
                 <td className={classes}>

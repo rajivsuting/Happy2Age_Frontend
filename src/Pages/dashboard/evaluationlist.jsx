@@ -3,7 +3,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
-import { MdOutlineDeleteOutline } from "react-icons/md";
+import { MdOutlineDeleteOutline, MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import SeeDeatailesEvalution from "../../Componants/SeeDeatailesEvalution";
 import { getLocalData } from "../../Utils/localStorage";
@@ -95,11 +95,13 @@ const [isEditModal, setisEditModal] = useState(false);
     console.log('Updated Evaluation List:', updatedList);
   };
 
-  const openEditModal = (el)=>{
-    setSelectedEvaluation(el)
-setisEditModal(true);
-  }
-
+  const openEditModal = (el) => {
+    setSelectedEvaluation(null); // Reset to clear old data
+    setTimeout(() => {
+      setSelectedEvaluation(el); // Set new evaluation after resetting
+      setisEditModal(true);
+    }, 0); // Ensure there's a small delay to reset state properly
+  };
   const closeEditModal = ()=>{
     setisEditModal(false);
   }
@@ -272,23 +274,23 @@ setisEditModal(true);
                     variant="small"
                     color="blue-gray"
                     onClick={()=>toggleModal(el)}
-                    className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
+                     className="text-maincolor2 text-[20px]"
                   >
-                    See details
+                  <MdOutlineRemoveRedEye />
                   </Typography>
                 </td>
                 <td className={classes}>
-                  <Typography
-                    as="a"
-                    href="#"
-                    variant="small"
-                    color="blue-gray"
-                    className="text-maincolor2 text-[20px]"
-                    onClick={() =>openEditModal(el)}
-                  >
-                    <CiEdit />
-                  </Typography>
-                </td> 
+                <Typography
+                  as="a"
+                  href="#"
+                  variant="small"
+                  color="blue-gray"
+                  className="text-maincolor2 text-[20px]"
+                  onClick={() => openEditModal(el)}
+                >
+                  <CiEdit />
+                </Typography>
+              </td>
                 <td className={classes}>
                   <Typography
                     as="a"

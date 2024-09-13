@@ -47,15 +47,22 @@ export const AddSession = () => {
     }));
   };
 
-  const handleAddActivity = () => {
-    if (selectedActivity !== "") {
-      setSessionData({
-        ...sessionData,
-        activity: [...activity, selectedActivity],
-      });
-      setSelectedActivity(""); // Reset selected activity
+const handleAddActivity = () => {
+  if (selectedActivity !== "") {
+    // Check if the activity is already in the list
+    if (activity.includes(selectedActivity)) {
+      toast.error("This activity is already added", toastConfig);
+      return; // Do not add the activity again
     }
-  };
+
+    setSessionData({
+      ...sessionData,
+      activity: [...activity, selectedActivity],
+    });
+    setSelectedActivity(""); // Reset selected activity
+  }
+};
+
 
   const handleRemoveActivity = (activityToRemove) => {
     const updatedActivity = activity.filter((activity) => activity !== activityToRemove);

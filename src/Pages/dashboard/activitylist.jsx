@@ -39,9 +39,7 @@ export const ActivityList = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`${serverUrl}/activity/delete/${searchParams.get("id")}`, {
-        
-      })
+      .delete(`${serverUrl}/activity/delete/${searchParams.get("id")}`)
       .then((res) => {
         if (res.status == 200) {
           toast.success("Activity delete suucessfully", toastConfig);
@@ -66,7 +64,7 @@ export const ActivityList = () => {
 
   const toggleModal = (el) => {
     setsearchParams({ id: el._id });
-    setIsModalOpen(!isModalOpen);
+    setIsModalOpen(true);
     setSingleActivity(el);
   };
 
@@ -335,7 +333,7 @@ export const ActivityList = () => {
           }
       <EditActivity
         isOpen={isModalOpen}
-        onClose={toggleModal}
+        onClose={()=>setIsModalOpen(false)}
         singleActivity={singleActivity}
         getAllData={getAllData}
       />

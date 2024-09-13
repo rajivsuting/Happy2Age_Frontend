@@ -3,7 +3,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 import { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
-import { MdOutlineDeleteOutline } from "react-icons/md";
+import { MdOutlineDeleteOutline, MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import SeeDetailesSession from "../../Componants/SeeDetailesSession";
@@ -266,7 +266,7 @@ export const SessionAttendence = () => {
                 color="blue-gray"
                 className="font-normal leading-none opacity-70"
               >
-                Total attendence
+                
               </Typography>
             </th>
           </tr>
@@ -322,9 +322,9 @@ export const SessionAttendence = () => {
                     variant="small"
                     color="blue-gray"
                     onClick={() => handleSessionDetails(el)}
-                    className="font-medium border w-[100px] text-center p-1 rounded-lg bg-maincolor text-white"
-                  >
-                    See details
+                    className="text-maincolor2 text-[20px]"
+                    >
+                      <MdOutlineRemoveRedEye />
                   </Typography>
                 </td>
                 {/* <td className={classes}>

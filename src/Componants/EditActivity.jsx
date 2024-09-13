@@ -44,11 +44,10 @@ const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
       )
       .then((res) => {
         if (res.status === 200) {
-          getAllData().then((res) => {
-            toast.success("Activity edited successfully", toastConfig);
+          getAllData();
+          toast.success("Activity edited successfully", toastConfig);
             setIsEditActivityLoading(false);
             onClose();
-          });
         } else {
           setIsEditActivityLoading(false);
           toast.error("Something went wrong", toastConfig);
@@ -62,8 +61,6 @@ const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
           }, 3000);
         } else if (err.response && err.response.data) {
           toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
         }
       });
   };
