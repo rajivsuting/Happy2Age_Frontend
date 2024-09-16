@@ -66,7 +66,9 @@ export const SessionAttendence = () => {
       .get(
         `${serverUrl}/session/attendance/?page=${currentPage}&limit=${limit}`,
         {
-          
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
         }
       )
       .then((res) => {
@@ -96,7 +98,9 @@ export const SessionAttendence = () => {
     .get(
       `${serverUrl}/session/attendencecohort/${searchResult}`,
       {
-        
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
       }
     )
     .then((res) => {
@@ -155,9 +159,9 @@ export const SessionAttendence = () => {
                  .get(
                    `${serverUrl}/session/attendance/?page=${currentPage}&limit=${limit}`,
                    {
-                    //  headers: {
-                    //    Authorization: `${getLocalData("token")}`,
-                    //  },
+                     headers: {
+                       Authorization: `${getLocalData("token")}`,
+                     },
                    }
                  )
                  .then((res) => {

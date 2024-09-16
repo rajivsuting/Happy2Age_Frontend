@@ -123,7 +123,12 @@ const handleAddActivity = () => {
     e.preventDefault();
     // console.log(sessionData);
     setIsSessionLoading(true);
-    axios.post(`${serverUrl}/session/create`, sessionData)
+    axios.post(`${serverUrl}/session/create`, sessionData,
+      {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         if (res.status === 201) {
           setIsSessionLoading(false);

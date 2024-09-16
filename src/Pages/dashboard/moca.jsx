@@ -220,7 +220,12 @@ export const Moca = () => {
 
   useEffect(() => {
     axios
-      .get(`${serverUrl}/participant/all`, {})
+      .get(`${serverUrl}/participant/all`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setAllParticipants(res.data.message);
       })
@@ -260,7 +265,12 @@ export const Moca = () => {
     }
 
     axios
-      .post(`${serverUrl}/moca/create`, state)
+      .post(`${serverUrl}/moca/create`, state,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         toast.success(res.data.message, toastConfig);
         setTimeout(() => {

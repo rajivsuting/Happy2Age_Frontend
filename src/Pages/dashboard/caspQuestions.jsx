@@ -56,9 +56,9 @@ export const CaspQuestions = () => {
   useEffect(() => {
     axios
       .get(`${serverUrl}/participant/all`, {
-        // headers: {
-        //   Authorization: `${getLocalData("token")}`,
-        // },
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
       })
       .then((res) => {
         setAllParticipants(res.data.message);
@@ -120,9 +120,9 @@ export const CaspQuestions = () => {
 
     axios
       .post(`${serverUrl}/casp/add`, finalData, {
-        // headers: {
-        //   Authorization: `${getLocalData("token")}`,
-        // },
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
       })
       .then((res) => {
         toast.success(res.data.message, toastConfig);

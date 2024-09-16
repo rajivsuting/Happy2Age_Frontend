@@ -48,7 +48,12 @@ export function Home() {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`${serverUrl}/participant/all/`, {})
+      .get(`${serverUrl}/participant/all/`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setPartcipantList(res.data.message);
       })
@@ -67,7 +72,12 @@ export function Home() {
       });
 
     axios
-      .get(`${serverUrl}/cohort/all/`, {})
+      .get(`${serverUrl}/cohort/all/`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setCohortList(res.data.data);
       })
@@ -86,7 +96,12 @@ export function Home() {
       });
 
     axios
-      .get(`${serverUrl}/activity/all/`, {})
+      .get(`${serverUrl}/activity/all/`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setActivityList(res.data.data);
       })
@@ -105,7 +120,12 @@ export function Home() {
       });
 
       axios
-      .get(`${serverUrl}/session/all/`, {})
+      .get(`${serverUrl}/session/all/`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setSessionlist(res.data.message);
       })

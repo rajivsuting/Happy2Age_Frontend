@@ -54,9 +54,9 @@ export const Cohortreportdetails = () => {
 
   useEffect(() => {
     axios.get(`${serverUrl}/report/${participantid}/`,{
-      // headers: {
-      //   Authorization: `${getLocalData("token")}`,
-      // },
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
     }).then((res) => {
       // console.log(res.data.message);
       setPartcipantReportdata(res.data.message);

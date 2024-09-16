@@ -37,9 +37,12 @@ export const Mocalist = () => {
 
   const getAllMoca = ()=>{
     axios
-    .get(`${serverUrl}/moca/all/`, {
-      
-    })
+    .get(`${serverUrl}/moca/all/`,
+      {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
     .then((res) => {
       setallResult(res.data.message);
     })
@@ -67,9 +70,12 @@ export const Mocalist = () => {
       return true;
     });
     axios
-      .get(`${serverUrl}/participant/all`, {
-        
-      })
+      .get(`${serverUrl}/participant/all`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setAllParticipants(res.data.message);
       })
@@ -90,9 +96,12 @@ export const Mocalist = () => {
   const handleSubmitOxfordResult = (e) => {
     e.preventDefault();
     axios
-      .get(`${serverUrl}/moca/participant/${selectParticipant}`, {
-        
-      })
+      .get(`${serverUrl}/moca/participant/${selectParticipant}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         console.log(res);
         setallResult(res.data.message);
@@ -131,7 +140,12 @@ export const Mocalist = () => {
 
   const handleSubmitMOCADelete = () => {
     axios
-      .delete(`${serverUrl}/moca/delete/${searchParams.get("id")}`)
+      .delete(`${serverUrl}/moca/delete/${searchParams.get("id")}`,
+      {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         console.log(res)
         toast.success(res.data.message, toastConfig);

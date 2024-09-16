@@ -10,9 +10,6 @@ import { getLocalData } from "../Utils/localStorage";
 
 const EditDomain = ({ isOpen, onClose, singleCohort, getAlldata }) => {
   const [cohortData, setCohortData] = useState(null);
-  const [allParticipants, setAllParticipants] = useState([]);
-  const [isEditCohortLoading, setIsEditCohortLoading] = useState(false);
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   if (!isOpen || !cohortData) return null;
@@ -66,9 +63,12 @@ const EditDomain = ({ isOpen, onClose, singleCohort, getAlldata }) => {
     e.preventDefault();
     setIsaddDomainLoading(true);
     axios
-      .post(`${serverUrl}/domain/create/`, domainData,{
-        
-      })
+      .post(`${serverUrl}/domain/create/`, domainData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         if (res.status == 201) {
           toast.success("Domain added suucessfully", toastConfig);

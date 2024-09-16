@@ -35,7 +35,12 @@ const EditOxford = ({
     e.preventDefault();
     setIsLoading(true);
     axios
-      .put(`${serverUrl}/oxford/edit/${singleOxford._id}`, questionData)
+      .put(`${serverUrl}/oxford/edit/${singleOxford._id}`, questionData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         toast.success("Oxford Happiness edited successfully", toastConfig);
         getAllOxfords(); // Refresh the list

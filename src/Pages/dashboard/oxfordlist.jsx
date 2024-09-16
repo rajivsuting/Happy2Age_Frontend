@@ -37,9 +37,12 @@ export const Oxfordlist = () => {
 
   const getAllOxfords = ()=>{
     axios
-      .get(`${serverUrl}/oxford/all/`, {
-        
-      })
+      .get(`${serverUrl}/oxford/all/`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setallResult(res.data.message);
       })
@@ -68,9 +71,12 @@ export const Oxfordlist = () => {
         return true;
       });
     axios
-      .get(`${serverUrl}/participant/all`, {
-        
-      })
+      .get(`${serverUrl}/participant/all`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setAllParticipants(res.data.message);
       })
@@ -94,9 +100,12 @@ export const Oxfordlist = () => {
   const handleSubmitOxfordResult = (e) => {
     e.preventDefault();
     axios
-      .get(`${serverUrl}/oxford/participant/${selectParticipant}`, {
-        
-      })
+      .get(`${serverUrl}/oxford/participant/${selectParticipant}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         console.log(res);
         setallResult(res.data.message);
@@ -135,7 +144,12 @@ export const Oxfordlist = () => {
 
   const handleSubmitOxfordDelete = () => {
     axios
-      .delete(`${serverUrl}/oxford/delete/${searchParams.get("id")}`)
+      .delete(`${serverUrl}/oxford/delete/${searchParams.get("id")}`,
+      {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         console.log(res)
         toast.success(res.data.message, toastConfig);

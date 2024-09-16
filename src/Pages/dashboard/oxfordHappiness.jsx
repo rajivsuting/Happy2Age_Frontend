@@ -146,9 +146,12 @@ export const OxfordHappiness = () => {
 
   useEffect(() => {
     axios
-      .get(`${serverUrl}/participant/all`,{
-        
-      })
+      .get(`${serverUrl}/participant/all`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setAllParticipants(res.data.message);
       })
@@ -195,7 +198,12 @@ export const OxfordHappiness = () => {
     setIsAddQuestionLoading(true);
   
     axios
-      .post(`${serverUrl}/oxford/add`, questionData, {})
+      .post(`${serverUrl}/oxford/add`, questionData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         toast.success(res.data.message, toastConfig);
         setTimeout(() => {
@@ -222,9 +230,12 @@ export const OxfordHappiness = () => {
   const handleSubmitOxfordResult = (e) => {
     e.preventDefault();
     axios
-      .get(`${serverUrl}/oxford/${selectParticipant}`,{
-        
-      })
+      .get(`${serverUrl}/oxford/${selectParticipant}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         console.log(res);
         setParticipantResult(res.data.message[res.data.message.length - 1]);

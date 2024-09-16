@@ -80,7 +80,12 @@
 //     const handleSubmitLogin = (e) => {
 //       e.preventDefault();
 //       setIsAddAdminLoading(true); 
-//       axios.post(`${serverUrl}/auth/register`,{ email, password, firstName, lastName })
+//       axios.post(`${serverUrl}/auth/register`,{ email, password, firstName, lastName },
+        // {
+        //   headers: {
+        //     Authorization: `${getLocalData("token")}`,
+        //   },
+        // })
 //       .then((res)=>{
 //         if (res.status==200){
 //           dispatchSecond(getAllAdmins).then((res)=>{

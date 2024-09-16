@@ -42,9 +42,12 @@ export const AddActivity = () => {
     e.preventDefault();
     setIsAddActivityLoading(true);
     axios
-      .post(`${serverUrl}/activity/create`, activityData, {
-        
-      })
+      .post(`${serverUrl}/activity/create`, activityData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         if (res.status == 201) {
           toast.success("Activity added suucessfully", toastConfig);

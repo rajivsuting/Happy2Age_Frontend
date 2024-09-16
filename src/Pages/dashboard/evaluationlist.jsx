@@ -36,9 +36,9 @@ const [isEditModal, setisEditModal] = useState(false);
 
    const getAllData = ()=>{
     return axios.get(`${serverUrl}/evaluation/all`,{
-      // headers: {
-      //   Authorization: `${getLocalData("token")}`,
-      // },
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
     }).then((res) => {
       setEvalutionlist(res.data.message);
     }).catch((err) => {
@@ -62,8 +62,11 @@ const [isEditModal, setisEditModal] = useState(false);
 
   const handleDelete = () => {
     axios
-      .delete(`${serverUrl}/evaluation/${searchParams.get("id")}`, {
-        
+      .delete(`${serverUrl}/evaluation/${searchParams.get("id")}`,
+      {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
       })
       .then((res) => {
         if (res.status == 200) {

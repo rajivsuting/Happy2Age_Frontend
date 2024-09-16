@@ -61,9 +61,9 @@ const EditCohort = ({ isOpen, onClose, singleCohort, getAllCohorts }) => {
     // console.log(updatedCohortData)
     axios
       .patch(`${serverUrl}/cohort/edit/${searchParams.get("id")}`, updatedCohortData,{
-        // headers: {
-        //   Authorization: `${getLocalData("token")}`,
-        // },
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
       })
       .then((res) => {
         if (res.status === 200) {

@@ -39,7 +39,12 @@ export const ActivityList = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`${serverUrl}/activity/delete/${searchParams.get("id")}`)
+      .delete(`${serverUrl}/activity/delete/${searchParams.get("id")}`,
+      {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         if (res.status == 200) {
           toast.success("Activity delete suucessfully", toastConfig);

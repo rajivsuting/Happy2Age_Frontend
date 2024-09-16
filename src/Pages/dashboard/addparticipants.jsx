@@ -103,9 +103,12 @@ export const AddParticipant = () => {
     const handleSubmitParticipant = (e) => {
       e.preventDefault();
       setIsAddParticipantsLoading(true);
-      axios.post(`${serverUrl}/participant/create`,participantData,{
-        
-      })
+      axios.post(`${serverUrl}/participant/create`,participantData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res)=>{
         if (res.status==201){
           dispatch(getAllCohorts("","")).then((res)=>{

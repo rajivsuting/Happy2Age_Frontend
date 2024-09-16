@@ -23,9 +23,9 @@ export const Domainlist = () => {
 
   const getAllDomain = ()=>{
    return axios.get(`${serverUrl}/domain/all/?category=${categoryFilter}`,{
-      // headers: {
-      //   Authorization: `${getLocalData("token")}`,
-      // },
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
     }).then((res) => {
       setDomainList(res.data.message);
     }).catch((err) => {
@@ -54,7 +54,12 @@ export const Domainlist = () => {
   };
 
   const handleDelete = () => {
-    axios.delete(`${serverUrl}/domain/domains/${searchParams.get("id")}`)
+    axios.delete(`${serverUrl}/domain/domains/${searchParams.get("id")}`,
+    {
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
+    })
     .then((res)=>{
       if (res.status==200){
         toast.success("Domain deleted suucessfully", toastConfig);

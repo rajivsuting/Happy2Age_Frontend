@@ -103,7 +103,12 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant, name }) => {
     axios
       .patch(
         `${serverUrl}/participant/edit/${participantData._id}`,
-        participantData
+        participantData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        }
       )
       .then((res) => {
         if (res.status === 200) {

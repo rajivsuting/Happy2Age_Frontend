@@ -46,7 +46,12 @@ const [singleCohort, setSingleCohort] = useState({});
 
   const getAllCASP = ()=>{
     axios
-      .get(`${serverUrl}/casp/all/`)
+      .get(`${serverUrl}/casp/all/`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setallResult(res.data.message);
       })
@@ -74,9 +79,12 @@ const [singleCohort, setSingleCohort] = useState({});
       return true;
     });
     axios
-      .get(`${serverUrl}/participant/all`, {
-        
-      })
+      .get(`${serverUrl}/participant/all`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setAllParticipants(res.data.message);
       })
@@ -97,9 +105,12 @@ const [singleCohort, setSingleCohort] = useState({});
   const handleSubmitOxfordResult = (e) => {
     e.preventDefault();
     axios
-      .get(`${serverUrl}/casp/participant/${selectParticipant}`, {
-        
-      })
+      .get(`${serverUrl}/casp/participant/${selectParticipant}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         console.log(res);
         setallResult(res.data.message);
@@ -129,7 +140,12 @@ const [singleCohort, setSingleCohort] = useState({});
  
    const handleSubmitCASPDelete = () => {
      axios
-       .delete(`${serverUrl}/casp/delete/${searchParams.get("id")}`)
+       .delete(`${serverUrl}/casp/delete/${searchParams.get("id")}`,
+       {
+         headers: {
+           Authorization: `${getLocalData("token")}`,
+         },
+       })
        .then((res) => {
          console.log(res)
          toast.success(res.data.message, toastConfig);
