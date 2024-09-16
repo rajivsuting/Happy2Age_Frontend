@@ -59,11 +59,12 @@ export const Editdomain = () => {
   };
 
   useEffect(() => {
-    axios.get(`${serverUrl}/domain/${domainid}`,{
-      // headers: {
-      // //   Authorization: `${getLocalData("token")}`,
-      // // },
-    }).then((res) => {
+    axios.get(`${serverUrl}/domain/${domainid}`,
+      {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      }).then((res) => {
       setdomainData(res.data.message);
     });
   }, [domainid]);
@@ -71,9 +72,12 @@ export const Editdomain = () => {
   const handleSubmitCohort = (e) => {
     e.preventDefault();
     axios
-      .patch(`${serverUrl}/domain/edit/${domainid}`, domainData,{
-        
-      })
+      .patch(`${serverUrl}/domain/edit/${domainid}`, domainData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         console.log(res);
         if (res.status == 200) {

@@ -63,8 +63,11 @@ const navigate = useNavigate();
 
   const handleDelete = () => {
     axios
-      .delete(`${serverUrl}/cohort/delete/${searchParams.get("id")}`,{
-        
+      .delete(`${serverUrl}/cohort/delete/${searchParams.get("id")}`,
+      {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
       })
       .then((res) => {
         if (res.status == 200) {

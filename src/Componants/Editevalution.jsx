@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../App";
 import usePreventScrollOnNumberInput from "./CustomHook";
+import { getLocalData } from "../Utils/localStorage";
 
 const EditEvaluation = ({
   evaluation,
@@ -29,7 +30,12 @@ const EditEvaluation = ({
       if (evaluation?.participant?.participantType) {
         try {
           const res = await axios.get(
-            `${serverUrl}/domain/all/?category=${evaluation.participant.participantType}`
+            `${serverUrl}/domain/all/?category=${evaluation.participant.participantType}`,
+            {
+              headers: {
+                Authorization: `${getLocalData("token")}`,
+              },
+            }
           );
           setDomainList(res.data.message);
         } catch (err) {
@@ -102,7 +108,12 @@ const EditEvaluation = ({
   // Handle save button click to save the evaluation
   const handleSave = () => {
     axios
-      .patch(`${serverUrl}/evaluation/${evaluation?._id}`, finalObject)
+      .patch(`${serverUrl}/evaluation/${evaluation?._id}`, finalObject,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         if (res.status === 200) {
           toast.success("Evaluation edited successfully", toastConfig);

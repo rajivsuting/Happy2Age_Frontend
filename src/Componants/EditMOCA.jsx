@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { AiOutlineClose } from "react-icons/ai";
 import { CgSpinner } from "react-icons/cg";
 import usePreventScrollOnNumberInput from "./CustomHook";
+import { getLocalData } from "../Utils/localStorage";
 
 const EditMoCA = ({ isOpen, onClose, singleMOCA, getAllMoca, editOrView }) => {
   usePreventScrollOnNumberInput();
@@ -46,7 +47,12 @@ const EditMoCA = ({ isOpen, onClose, singleMOCA, getAllMoca, editOrView }) => {
     const updatedData = { ...questionData, questions: updatedQuestions, totalScore };
     
     axios
-      .patch(`${serverUrl}/moca/edit/${singleMOCA._id}`, updatedData)
+      .patch(`${serverUrl}/moca/edit/${singleMOCA._id}`, updatedData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         toast.success("MOCA edited successfully", toastConfig);
         getAllMoca(); // Refresh the list

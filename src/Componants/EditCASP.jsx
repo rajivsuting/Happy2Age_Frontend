@@ -6,6 +6,7 @@ import { toastConfig } from "../App";
 import { toast } from "react-toastify";
 import { AiOutlineClose } from "react-icons/ai";
 import { CgSpinner } from "react-icons/cg";
+import { getLocalData } from "../Utils/localStorage";
 
 const EditCASP = ({ isOpen, onClose, singleCASP, getAllCASP, editOrView }) => {
   const [questionData, setQuestionData] = useState({});
@@ -65,7 +66,12 @@ const EditCASP = ({ isOpen, onClose, singleCASP, getAllCASP, editOrView }) => {
     };
 
     axios
-      .patch(`${serverUrl}/casp/edit/${singleCASP._id}`, updatedData)
+      .patch(`${serverUrl}/casp/edit/${singleCASP._id}`, updatedData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         toast.success(res.data.message, toastConfig);
         getAllCASP(); // Refresh the list

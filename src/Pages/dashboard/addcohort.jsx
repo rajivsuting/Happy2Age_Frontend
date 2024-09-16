@@ -63,9 +63,12 @@ export const AddCohort = () => {
     e.preventDefault();
     setIsAddCohortLoading(true);
     axios
-      .post(`${serverUrl}/cohort/create`, cohortData, {
-        
-      })
+      .post(`${serverUrl}/cohort/create`, cohortData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         if (res.status == 201) {
           toast.success("Centre added successfully", toastConfig);

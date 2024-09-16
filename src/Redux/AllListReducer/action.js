@@ -11,9 +11,12 @@ export const getAllParticipants =
   (dispatch) => {
     dispatch({ type: types.GET_PARTICIPANTS_REQUEST });
     return axios
-      .get(`${serverUrl}/participant/all/?page=${page}&limit=${limit}`, {
-        
-      })
+      .get(`${serverUrl}/participant/all/?page=${page}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         return dispatch({
           type: types.GET_PARTICIPANTS_SUCCESS,
@@ -31,11 +34,12 @@ export const getAllParticipants =
 export const getAllAdmins = (dispatch) => {
   dispatch({ type: types.GET_ADMIN_REQUEST });
   return axios
-    .get(`${serverUrl}/auth/alluser`, {
-      // headers: {
-      //   Authorization: `${getLocalData("token")}`,
-      // },
-    })
+    .get(`${serverUrl}/auth/alluser`,
+      {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
     .then((res) => {
       // console.log(res);
       return dispatch({
@@ -55,9 +59,9 @@ export const getParticipantsByName = (name) => (dispatch) => {
   dispatch({ type: types.GET_PARTICIPANTS_REQUEST });
   return axios
     .get(`${serverUrl}/participant/name/?name=${name}`, {
-      // headers: {
-      //   Authorization: `${getLocalData("token")}`,
-      // },
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
     })
     .then((res) => {
       return dispatch({
@@ -78,9 +82,12 @@ export const getAllCohorts =
   (dispatch) => {
     dispatch({ type: types.GET_COHORTS_REQUEST });
     return axios
-      .get(`${serverUrl}/cohort/all/?page=${page}&limit=${limit}`, {
-        
-      })
+      .get(`${serverUrl}/cohort/all/?page=${page}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         console.log("cohort", res);
         return dispatch({
@@ -99,9 +106,12 @@ export const getAllCohorts =
   export const getCohortsByName = (name) => (dispatch) => {
     dispatch({ type: types.GET_COHORTS_REQUEST });
     return axios
-      .get(`${serverUrl}/cohort/name/?name=${name}`, {
-        
-      })
+      .get(`${serverUrl}/cohort/name/?name=${name}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         return dispatch({
           type: types.GET_COHORTS_SUCCESS,
@@ -121,9 +131,12 @@ export const getAllActivities =
   (dispatch) => {
     dispatch({ type: types.GET_ACTIVITIES_REQUEST });
     return axios
-      .get(`${serverUrl}/activity/all?page=${page}&limit=${limit}`, {
-        
-      })
+      .get(`${serverUrl}/activity/all?page=${page}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         return dispatch({
           type: types.GET_ACTIVITIES_SUCCESS,
@@ -143,9 +156,12 @@ export const getAllActivities =
   (dispatch) => {
     dispatch({ type: types.GET_ACTIVITIES_REQUEST });
     return axios
-      .get(`${serverUrl}/activity/activities/search/?name=${name}`, {
-        
-      })
+      .get(`${serverUrl}/activity/activities/search/?name=${name}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         return dispatch({
           type: types.GET_ACTIVITIES_SUCCESS,
@@ -166,9 +182,12 @@ export const getAllDomains =
   (dispatch) => {
     dispatch({ type: types.GET_DOMAINS_REQUEST });
     return axios
-      .get(`${serverUrl}/domain/all/?category=${category}`, {
-        
-      })
+      .get(`${serverUrl}/domain/all/?category=${category}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         console.log(res);
         return dispatch({
@@ -189,9 +208,12 @@ export const getAllSessions =
   (dispatch) => {
     dispatch({ type: types.GET_SESSIONS_REQUEST });
     return axios
-      .get(`${serverUrl}/session/all/?page=${page}&limit=${limit}`, {
-        
-      })
+      .get(`${serverUrl}/session/all/?page=${page}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         return dispatch({
           type: types.GET_SESSIONS_SUCCESS,
@@ -211,9 +233,12 @@ export const getAllSessions =
   (dispatch) => {
     dispatch({ type: types.GET_SESSIONS_REQUEST });
     return axios
-      .get(`${serverUrl}/session/name/?name=${name}`, {
-        
-      })
+      .get(`${serverUrl}/session/name/?name=${name}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         return dispatch({
           type: types.GET_SESSIONS_SUCCESS,
@@ -232,9 +257,12 @@ export const getAllSessions =
   (dispatch) => {
     dispatch({ type: types.GET_SESSIONS_REQUEST });
     return axios
-      .get(`${serverUrl}/session/sessions/search/?startDate=${startDate}&endDate=${endDate}`, {
-        
-      })
+      .get(`${serverUrl}/session/sessions/search/?startDate=${startDate}&endDate=${endDate}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         return dispatch({
           type: types.GET_SESSIONS_SUCCESS,
@@ -253,9 +281,9 @@ export const getAllEvaluations = (dispatch) => {
   dispatch({ type: types.GET_EVALUATIONS_REQUEST });
   return axios
     .get(`${serverUrl}/evaluation/all`, {
-      // headers: {
-      //   Authorization: `${getLocalData("token")}`,
-      // },
+      headers: {
+        Authorization: `${getLocalData("token")}`,
+      },
     })
     .then((res) => {
       return dispatch({

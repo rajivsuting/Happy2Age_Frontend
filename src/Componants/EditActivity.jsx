@@ -36,11 +36,11 @@ const EditActivity = ({ isOpen, onClose, singleActivity, getAllData }) => {
       .patch(
         `${serverUrl}/activity/edit/${searchParams.get("id")}`,
         activityData,
-        // {
-        //   headers: {
-        //     Authorization: `${getLocalData("token")}`,
-        //   },
-        // }
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        }
       )
       .then((res) => {
         if (res.status === 200) {

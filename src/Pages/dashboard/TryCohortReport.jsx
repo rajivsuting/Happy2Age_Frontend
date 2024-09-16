@@ -731,7 +731,12 @@ export const Cohortreport = () => {
     e.preventDefault();
     axios
       .get(
-        `${serverUrl}/report/get/?cohort=${cohortSelect}&start=${startDate}&end=${endDate}`
+        `${serverUrl}/report/get/?cohort=${cohortSelect}&start=${startDate}&end=${endDate}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        }
       )
       .then((res) => {
         console.log(res);

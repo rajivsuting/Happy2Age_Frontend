@@ -151,7 +151,12 @@ export const AddEvaluation = () => {
     e.preventDefault();
     setIsAddEvaluationLoading(true);
     axios
-      .post(`${serverUrl}/evaluation/create`, evaluationData, {})
+      .post(`${serverUrl}/evaluation/create`, evaluationData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         if (res.status == 201) {
           toast.success("Evaluation added suucessfully", toastConfig);

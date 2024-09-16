@@ -719,7 +719,12 @@ export const ParticipantReport = () => {
   useEffect(() => {
     dispatch(getAllParticipants("", ""));
     axios
-      .get(`${serverUrl}/evaluation/all`, {})
+      .get(`${serverUrl}/evaluation/all`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setEvalutionlist(res.data.message);
       })
@@ -743,7 +748,11 @@ export const ParticipantReport = () => {
     axios
       .get(
         `${serverUrl}/report/${singleParticipant}/?start=${startDate}&end=${endDate}`,
-        {}
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        }
       )
       .then((res) => {
         console.log(res);
@@ -785,7 +794,12 @@ export const ParticipantReport = () => {
 
   useEffect(() => {
     axios
-      .get(`${serverUrl}/participant/all`, {})
+      .get(`${serverUrl}/participant/all`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         setAllParticipants(res.data.message);
       })

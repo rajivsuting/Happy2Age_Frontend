@@ -66,9 +66,12 @@ export const Adddomain = () => {
     e.preventDefault();
     setIsaddDomainLoading(true);
     axios
-      .post(`${serverUrl}/domain/create/`, domainData, {
-        
-      })
+      .post(`${serverUrl}/domain/create/`, domainData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         
         if (res.status == 201) {

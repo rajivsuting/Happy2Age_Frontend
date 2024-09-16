@@ -15,6 +15,7 @@ import {
   getAllSessions,
 } from "../Redux/AllListReducer/action";
 import usePreventScrollOnNumberInput from "./CustomHook";
+import { getLocalData } from "../Utils/localStorage";
 
 const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
   usePreventScrollOnNumberInput();
@@ -130,7 +131,12 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
     setIsEditSessionLoading(true);
     console.log(sessionData);
     axios
-      .patch(`${serverUrl}/session/edit/${sessionData._id}`, sessionData)
+      .patch(`${serverUrl}/session/edit/${sessionData._id}`, sessionData,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
       .then((res) => {
         if (res.status === 200) {
           setIsEditSessionLoading(false);
