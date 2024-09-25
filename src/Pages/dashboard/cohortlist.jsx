@@ -12,7 +12,10 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCohorts, getCohortsByName } from "../../Redux/AllListReducer/action";
+import {
+  getAllCohorts,
+  getCohortsByName,
+} from "../../Redux/AllListReducer/action";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
 import { getLocalData } from "../../Utils/localStorage";
 
@@ -26,13 +29,12 @@ export const Cohortlist = () => {
   const [searchResult, setSearchResult] = useState("");
   const [singleCohort, setSingleCohort] = useState({});
   const dispatch = useDispatch();
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const { cohortList } = useSelector((state) => {
     return {
       cohortList: state.AllListReducer.cohortList,
     };
   });
-
 
   useEffect(() => {
     // setSearchParams({ page: currentPage, limit: limit });
@@ -63,8 +65,7 @@ const navigate = useNavigate();
 
   const handleDelete = () => {
     axios
-      .delete(`${serverUrl}/cohort/delete/${searchParams.get("id")}`,
-      {
+      .delete(`${serverUrl}/cohort/delete/${searchParams.get("id")}`, {
         headers: {
           Authorization: `${getLocalData("token")}`,
         },
@@ -72,7 +73,7 @@ const navigate = useNavigate();
       .then((res) => {
         if (res.status == 200) {
           toast.success("Centre delete suucessfully", toastConfig);
-          dispatch(getAllCohorts("","")).then((res) => {});
+          dispatch(getAllCohorts("", "")).then((res) => {});
         } else {
           toast.error("Something went wrong", toastConfig);
         }
@@ -93,11 +94,13 @@ const navigate = useNavigate();
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    dispatch(getCohortsByName(searchResult)).then((res)=>{
-      console.log(res)
-    }).catch((err)=>{
-      console.log(err)
-    })
+    dispatch(getCohortsByName(searchResult))
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -124,10 +127,12 @@ const navigate = useNavigate();
             <Button
               type="button"
               onClick={() => {
-                  setSearchResult("")
-                 return  dispatch(getAllCohorts(currentPage, limit)).then((res) => {
+                setSearchResult("");
+                return dispatch(getAllCohorts(currentPage, limit)).then(
+                  (res) => {
                     return true;
-                  });
+                  }
+                );
               }}
               variant=""
               disabled={!searchResult}
@@ -238,13 +243,18 @@ const navigate = useNavigate();
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {el.participants?.map((el) => {
-                      return el.name.substring(0, 5).length < el.name.length
-                        ? el.name.substring(0, 5) + "... ,"
-                        : el.name || "NA";
-                    })}
+                    {el.participants?.slice(0, 2).map((participant, index) => (
+                      <span key={index}>
+                        {participant.name}
+                        {index < 1 && el.participants.length > 2 ? ", " : ""}
+                      </span>
+                    ))}
+                    {el.participants.length > 2 && (
+                      <span> and {el.participants.length - 2} more</span>
+                    )}
                   </Typography>
                 </td>
+                
                 <td className={classes}>
                   <Typography
                     as="a"
@@ -253,8 +263,8 @@ const navigate = useNavigate();
                     color="blue-gray"
                     onClick={() => toggleModal(el)}
                     className="text-maincolor2 text-[20px]"
-                    >
-                      <MdOutlineRemoveRedEye />
+                  >
+                    <MdOutlineRemoveRedEye />
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -286,9 +296,9 @@ const navigate = useNavigate();
           })}
         </tbody>
       </table>
-      {
-            cohortList?.length == 0 ? <div className="text-center m-5">No result found!!</div> : null
-          }
+      {cohortList?.length == 0 ? (
+        <div className="text-center m-5">No result found!!</div>
+      ) : null}
       <SeeDetailsCohort
         isOpen={isModalOpen}
         onClose={toggleModal}
@@ -296,9 +306,9 @@ const navigate = useNavigate();
       />
       <EditCohort
         isOpen={isModalOpenEdit}
-        onClose={()=>setIsModalOpenEdit(false)}
+        onClose={() => setIsModalOpenEdit(false)}
         singleCohort={singleCohort}
-        getAllCohorts={() => dispatch(getAllCohorts("","")).then((res) => {})}
+        getAllCohorts={() => dispatch(getAllCohorts("", "")).then((res) => {})}
       />
       <ConfirmDeleteModal
         isOpen={isModalOpenDelete}

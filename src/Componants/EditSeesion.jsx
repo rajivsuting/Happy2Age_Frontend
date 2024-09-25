@@ -1,4 +1,5 @@
 import { Button, Input, List, ListItem } from "@material-tailwind/react";
+import Select from "react-select";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { serverUrl } from "../api";
@@ -173,7 +174,10 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
   const { name, cohort, activity, date, numberOfMins, numberOfHours } =
     sessionData;
 
-  // console.log(singleSession);
+    const options = activityList.map((activity) => ({
+      value: activity._id,
+      label: activity.name,
+    }));
 
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
@@ -218,7 +222,28 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
             </div>
             <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
               <div className="w-[50%] flex justify-between items-center gap-5">
-                <select
+              <Select
+    label="Cohort"
+    name="cohort"
+    value={cohortList.find((option) => option._id === selectedCohort) 
+      ? { value: selectedCohort, label: cohortList.find((option) => option._id === selectedCohort).name } 
+      : null} // Ensure the value is an object with `value` and `label`
+    options={cohortList.map((cohort) => ({
+      value: cohort._id,
+      label: cohort.name,
+    }))} // Map the cohort list to match react-select's format
+    isSearchable={true}
+    isClearable={true} // Allow clearing the cohort selection
+    placeholder="Select centre"
+    onChange={(selectedOption) =>
+      {setSelectedCohort(selectedOption ? selectedOption.value : "");setCheckedParticipants([])}
+    }
+    className="w-[80%] px-2 py-2 rounded-md"
+  />
+
+
+
+                {/* <select
                   label="Cohort"
                   name="cohort"
                   value={selectedCohort}
@@ -232,10 +257,10 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
                       {el.name}
                     </option>
                   ))}
-                </select>
+                </select> */}
               </div>
               <div className="w-[50%] flex justify-between items-center gap-5">
-                <select
+                {/* <select
                   label="Activity"
                   name="activity"
                   value={selectedActivity}
@@ -248,7 +273,23 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
                       {el.name}
                     </option>
                   ))}
-                </select>
+                </select> */}
+                <Select
+              label="Activity"
+              name="activity"
+              value={options.find(
+                (option) => option.value === selectedActivity
+              )} // Find the option that matches the selected value
+              options={options}
+              isSearchable={true}
+              isClearable={true} // Add this line to make the select clearable
+              placeholder="Select activity"
+              onChange={(selectedOption) =>
+                setSelectedActivity(selectedOption ? selectedOption.value : "")
+              } // Update the selected activity or clear it if null
+              className="w-[80%] px-2 py-2 rounded-md"
+            />
+
                 <Button
                   className="w-[100px] bg-maincolor"
                   onClick={handleAddActivity}
@@ -260,7 +301,7 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
             <div className="w-[100%] flex justify-between m-auto gap-10 mt-5 px-8">
             <div className="w-[50%]">
                   <h3>Select members:</h3>
-                  <div className="max-h-[30vh] overflow-y-auto">
+                  <div className="max-h-[30vh] overflow-y-scroll">
                     <List>
                       {cohortList
                         ?.find((el) => el._id === selectedCohort)
@@ -287,8 +328,9 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
                     </List>
                   </div>
                 </div>
-              <div className="w-[50%] ml-3 mt-5">
+              <div className="w-[50%] ml-3">
                   <h3>Activities:</h3>
+                  <div className="max-h-[30vh] overflow-y-scroll">
                   <List>
                     {activity?.map((activity, index) => (
                       <ListItem
@@ -302,6 +344,7 @@ const EditSession = ({ isOpen, onClose, singleSession, getAllData }) => {
                       </ListItem>
                     ))}
                   </List>
+                  </div>
                 </div>
             </div>
             <div className="w-[90%] text-center mt-5 mb-5 m-auto">
