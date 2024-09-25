@@ -232,7 +232,7 @@ export function Home() {
         ))}
       </div> */}
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
+        {/* <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
           <CardHeader
             floated={false}
             shadow={false}
@@ -243,32 +243,10 @@ export function Home() {
               <Typography variant="h6" color="blue-gray" className="mb-1">
                 Centres
               </Typography>
-              {/* <Typography
-                variant="small"
-                className="flex items-center gap-1 font-normal text-blue-gray-600"
-              >
-                <CheckCircleIcon
-                  strokeWidth={3}
-                  className="h-4 w-4 text-blue-gray-200"
-                />
-                <strong>30 done</strong> this month
-              </Typography> */}
+              
             </div>
             <Menu placement="left-start">
-              {/* <MenuHandler>
-                <IconButton size="sm" variant="text" color="blue-gray">
-                  <EllipsisVerticalIcon
-                    strokeWidth={3}
-                    fill="currenColor"
-                    className="h-6 w-6"
-                  />
-                </IconButton>
-              </MenuHandler>
-              <MenuList>
-                <MenuItem>Action</MenuItem>
-                <MenuItem>Another Action</MenuItem>
-                <MenuItem>Something else here</MenuItem>
-              </MenuList> */}
+              
             </Menu>
           </CardHeader>
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
@@ -302,7 +280,7 @@ export function Home() {
                     <tr key={name}>
                       <td className={className}>
                         <div className="flex items-center gap-4">
-                          {/* <Avatar src={img} alt={name} size="sm" /> */}
+                          
                           <Typography
                             variant="small"
                             color="blue-gray"
@@ -322,19 +300,7 @@ export function Home() {
                             {participants.length}
                           </Typography>
                         }
-                        {/* {members.map(({ img, name }, key) => (
-                            <Tooltip key={name} content={name}>
-                              <Avatar
-                                src={img}
-                                alt={name}
-                                size="xs"
-                                variant="circular"
-                                className={`cursor-pointer border-2 border-white ${
-                                  key === 0 ? "" : "-ml-2.5"
-                                }`}
-                              />
-                            </Tooltip>
-                          ))} */}
+                       
                       </td>
                       <td className={className}>
                         <div className="flex gap-1">
@@ -352,38 +318,14 @@ export function Home() {
                         </div>
                       </td>
 
-                      {/* <td className={className}>
-                          <Typography
-                            variant="small"
-                            className="text-xs font-medium text-blue-gray-600"
-                          >
-                            {budget}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <div className="w-10/12">
-                            <Typography
-                              variant="small"
-                              className="mb-1 block text-xs font-medium text-blue-gray-600"
-                            >
-                              {completion}%
-                            </Typography>
-                            <Progress
-                              value={completion}
-                              variant="gradient"
-                              color={completion === 100 ? "green" : "blue"}
-                              className="h-1"
-                            />
-                          </div>
-                        </td> */}
                     </tr>
                   );
                 })}
               </tbody>
             </table>
           </CardBody>
-        </Card>
-        <Card className="border border-blue-gray-100 shadow-sm">
+        </Card> */}
+        {/* <Card className="border border-blue-gray-100 shadow-sm">
           <CardHeader
             floated={false}
             shadow={false}
@@ -393,16 +335,7 @@ export function Home() {
             <Typography variant="h6" color="blue-gray" className="mb-2">
               Member list
             </Typography>
-            {/* <Typography
-              variant="small"
-              className="flex items-center gap-1 font-normal text-blue-gray-600"
-            >
-              <ArrowUpIcon
-                strokeWidth={3}
-                className="h-3.5 w-3.5 text-green-500"
-              />
-              <strong>24%</strong> this month
-            </Typography> */}
+          
           </CardHeader>
           <CardBody className="pt-0">
             {partcipantsList?.map(({ name, participantType, email }, key) => (
@@ -435,7 +368,7 @@ export function Home() {
               </div>
             ))}
           </CardBody>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );

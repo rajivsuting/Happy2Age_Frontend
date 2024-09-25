@@ -1,11 +1,12 @@
 import {
   Button,
   Input,
-  Select,
   Option,
   List,
   ListItem,
 } from "@material-tailwind/react";
+import Select from "react-select";
+
 import React, { useEffect, useState } from "react";
 import { serverUrl } from "../../api";
 import axios from "axios";
@@ -15,7 +16,12 @@ import { toast } from "react-toastify";
 import { toastConfig } from "../../App";
 import { CgSpinner } from "react-icons/cg";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllActivities, getAllCohorts, getAllParticipants, getAllSessions } from "../../Redux/AllListReducer/action";
+import {
+  getAllActivities,
+  getAllCohorts,
+  getAllParticipants,
+  getAllSessions,
+} from "../../Redux/AllListReducer/action";
 import { useNavigate } from "react-router-dom";
 import { getLocalData } from "../../Utils/localStorage";
 import usePreventScrollOnNumberInput from "../../Componants/CustomHook";
@@ -26,7 +32,7 @@ const initialState = {
   activity: [],
   date: "",
   participants: [],
-  numberOfMins:""
+  numberOfMins: "",
 };
 
 export const AddSession = () => {
@@ -35,7 +41,8 @@ export const AddSession = () => {
   const [selectedActivity, setSelectedActivity] = useState("");
   const [isAddSessionLoading, setIsSessionLoading] = useState(false);
   const [checkedParticipants, setCheckedParticipants] = useState([]);
-  const { name, cohort, activity, date, participants,numberOfMins } = sessionData;
+  const { name, cohort, activity, date, participants, numberOfMins } =
+    sessionData;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -47,25 +54,26 @@ export const AddSession = () => {
     }));
   };
 
-const handleAddActivity = () => {
-  if (selectedActivity !== "") {
-    // Check if the activity is already in the list
-    if (activity.includes(selectedActivity)) {
-      toast.error("This activity is already added", toastConfig);
-      return; // Do not add the activity again
+  const handleAddActivity = () => {
+    if (selectedActivity !== "") {
+      // Check if the activity is already in the list
+      if (activity.includes(selectedActivity)) {
+        toast.error("This activity is already added", toastConfig);
+        return; // Do not add the activity again
+      }
+
+      setSessionData({
+        ...sessionData,
+        activity: [...activity, selectedActivity],
+      });
+      setSelectedActivity(""); // Reset selected activity
     }
-
-    setSessionData({
-      ...sessionData,
-      activity: [...activity, selectedActivity],
-    });
-    setSelectedActivity(""); // Reset selected activity
-  }
-};
-
+  };
 
   const handleRemoveActivity = (activityToRemove) => {
-    const updatedActivity = activity.filter((activity) => activity !== activityToRemove);
+    const updatedActivity = activity.filter(
+      (activity) => activity !== activityToRemove
+    );
     setSessionData({
       ...sessionData,
       activity: updatedActivity,
@@ -79,24 +87,25 @@ const handleAddActivity = () => {
     };
   });
 
-  useEffect(()=>{
-    dispatch(getAllCohorts("",""));
-    dispatch(getAllActivities("",""))
-  },[])
+  useEffect(() => {
+    dispatch(getAllCohorts("", ""));
+    dispatch(getAllActivities("", ""));
+  }, []);
 
   useEffect(() => {
-    
     if (cohort) {
       const selectedCohort = cohortList.find((el) => el._id === cohort);
       if (selectedCohort) {
-        const initialCheckedState = selectedCohort.participants.map(participant => ({
-          participantId: participant._id,
-          cohortId: cohort
-        }));
+        const initialCheckedState = selectedCohort.participants.map(
+          (participant) => ({
+            participantId: participant._id,
+            cohortId: cohort,
+          })
+        );
         setCheckedParticipants(initialCheckedState);
         setSessionData((prevData) => ({
           ...prevData,
-          participants: initialCheckedState
+          participants: initialCheckedState,
         }));
       }
     }
@@ -104,10 +113,19 @@ const handleAddActivity = () => {
 
   const handleCheckboxChange = (participantId) => {
     setCheckedParticipants((prevCheckedParticipants) => {
-      if (prevCheckedParticipants.some(participant => participant.participantId === participantId)) {
-        return prevCheckedParticipants.filter((participant) => participant.participantId !== participantId);
+      if (
+        prevCheckedParticipants.some(
+          (participant) => participant.participantId === participantId
+        )
+      ) {
+        return prevCheckedParticipants.filter(
+          (participant) => participant.participantId !== participantId
+        );
       } else {
-        return [...prevCheckedParticipants, { participantId, cohortId: cohort }];
+        return [
+          ...prevCheckedParticipants,
+          { participantId, cohortId: cohort },
+        ];
       }
     });
   };
@@ -115,7 +133,7 @@ const handleAddActivity = () => {
   useEffect(() => {
     setSessionData((prevData) => ({
       ...prevData,
-      participants: checkedParticipants
+      participants: checkedParticipants,
     }));
   }, [checkedParticipants]);
 
@@ -123,8 +141,8 @@ const handleAddActivity = () => {
     e.preventDefault();
     // console.log(sessionData);
     setIsSessionLoading(true);
-    axios.post(`${serverUrl}/session/create`, sessionData,
-      {
+    axios
+      .post(`${serverUrl}/session/create`, sessionData, {
         headers: {
           Authorization: `${getLocalData("token")}`,
         },
@@ -133,12 +151,12 @@ const handleAddActivity = () => {
         if (res.status === 201) {
           setIsSessionLoading(false);
           toast.success("Session added successfully", toastConfig);
-          dispatch(getAllSessions("","")).then((res) => {
-            dispatch(getAllParticipants("", "")).then((re)=>{
+          dispatch(getAllSessions("", "")).then((res) => {
+            dispatch(getAllParticipants("", "")).then((re) => {
               setCheckedParticipants([]);
               setSessionData(initialState);
               return true;
-            })
+            });
           });
         } else {
           setIsSessionLoading(false);
@@ -160,6 +178,10 @@ const handleAddActivity = () => {
       });
   };
 
+  const options = activityList.map((activity) => ({
+    value: activity._id,
+    label: activity.name,
+  }));
 
   return (
     <div className="flex justify-center items-center gap-10 mb-24">
@@ -196,33 +218,49 @@ const handleAddActivity = () => {
           />
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
+        <div className="w-[50%] flex justify-between items-center gap-5">
+  <Select
+    label="Cohort"
+    name="cohort"
+    value={cohortList.find((option) => option._id === cohort) 
+      ? { value: cohort, label: cohortList.find((option) => option._id === cohort).name } 
+      : null} // Ensure the value is an object with `value` and `label`
+    options={cohortList.map((cohort) => ({
+      value: cohort._id,
+      label: cohort.name,
+    }))} // Map the cohort list to match react-select's format
+    isSearchable={true}
+    isClearable={true} // Allow clearing the cohort selection
+    placeholder="Select centre"
+    onChange={(selectedOption) =>
+      handleChangeInput({
+        target: {
+          name: "cohort",
+          value: selectedOption ? selectedOption.value : "",
+        },
+      })
+    } // Handle change or clear the cohort selection
+    className="w-[80%] px-2 py-2 rounded-md"
+  />
+</div>
+
+
           <div className="w-[50%] flex justify-between items-center gap-5">
-            <select
-              label="Cohort"
-              name="cohort"
-              value={cohort}
-              onChange={handleChangeInput}
-              className="border border-gray-400 w-[100%] px-2 py-2 rounded-md"
-            >
-              <option value="">Select centre</option>
-              {cohortList?.map((el) => {
-                return <option key={el._id} value={el._id}>{el.name}</option>;
-              })}
-            </select>
-          </div>
-          <div className="w-[50%] flex justify-between items-center gap-5">
-            <select
+            <Select
               label="Activity"
               name="activity"
-              value={selectedActivity}
-              onChange={(e) => setSelectedActivity(e.target.value)}
-              className="border border-gray-400 w-[80%] px-2 py-2 rounded-md"
-            >
-              <option value="">Select an activity</option>
-              {activityList?.map((el) => {
-                return <option key={el._id} value={el._id}>{el.name}</option>;
-              })}
-            </select>
+              value={options.find(
+                (option) => option.value === selectedActivity
+              )} // Find the option that matches the selected value
+              options={options}
+              isSearchable={true}
+              isClearable={true} // Add this line to make the select clearable
+              placeholder="Select activity"
+              onChange={(selectedOption) =>
+                setSelectedActivity(selectedOption ? selectedOption.value : "")
+              } // Update the selected activity or clear it if null
+              className="w-[80%] px-2 py-2 rounded-md"
+            />
             <Button
               className="w-[100px] bg-maincolor"
               onClick={handleAddActivity}
@@ -235,7 +273,7 @@ const handleAddActivity = () => {
           {cohort && (
             <div className="w-[50%]">
               <h3>Select members:</h3>
-              <div className="max-h-[30vh] overflow-y-auto">
+              <div className="max-h-[30vh] overflow-y-scroll">
                 <List>
                   {cohortList
                     ?.find((el) => el._id === cohort)
@@ -247,8 +285,12 @@ const handleAddActivity = () => {
                         <label className="flex items-center">
                           <input
                             type="checkbox"
-                            checked={checkedParticipants.some(p => p.participantId === participant._id)}
-                            onChange={() => handleCheckboxChange(participant._id)}
+                            checked={checkedParticipants.some(
+                              (p) => p.participantId === participant._id
+                            )}
+                            onChange={() =>
+                              handleCheckboxChange(participant._id)
+                            }
                             className="mr-2 cursor-pointer"
                           />
                           {participant.name}
@@ -260,8 +302,9 @@ const handleAddActivity = () => {
             </div>
           )}
           {activity?.length ? (
-            <div className="w-[50%] ml-3 mt-5">
+            <div className="w-[50%] ml-3">
               <h3>Activities:</h3>
+              <div className="max-h-[30vh] overflow-y-scroll">
               <List>
                 {activity?.map((activity, index) => (
                   <ListItem
@@ -275,6 +318,7 @@ const handleAddActivity = () => {
                   </ListItem>
                 ))}
               </List>
+              </div>
             </div>
           ) : null}
         </div>

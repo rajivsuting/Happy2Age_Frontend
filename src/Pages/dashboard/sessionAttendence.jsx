@@ -92,6 +92,7 @@ export const SessionAttendence = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     axios
