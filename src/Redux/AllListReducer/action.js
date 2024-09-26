@@ -312,7 +312,7 @@ export const getAllEvalutionsByname =
       .then((res) => {
         return dispatch({
           type: types.GET_EVALUATIONS_SUCCESS,
-          payload: res.data.message,
+          payload: res.data.data,
         });
       })
       .catch((err) => {
