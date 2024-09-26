@@ -296,3 +296,27 @@ export const getAllEvaluations = (currentPage="",limit="")=>(dispatch) => {
       return dispatch({ type: types.GET_EVALUATIONS_FAILURE });
     });
 };
+
+
+export const getAllEvalutionsByname =
+  (name="") =>
+  (dispatch) => {
+    dispatch({ type: types.GET_EVALUATIONS_REQUEST });
+    return axios
+      .get(`${serverUrl}/evaluation/search/?name=${name}`,
+        {
+          headers: {
+            Authorization: `${getLocalData("token")}`,
+          },
+        })
+      .then((res) => {
+        return dispatch({
+          type: types.GET_EVALUATIONS_SUCCESS,
+          payload: res.data.message,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return dispatch({ type: types.GET_EVALUATIONS_FAILURE });
+      });
+  };
