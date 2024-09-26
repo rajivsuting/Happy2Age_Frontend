@@ -116,7 +116,7 @@ const App = () => {
           toast.error("An unexpected error occurred.", toastConfig);
         }
       });
-    dispatch(getAllEvaluations)
+    dispatch(getAllEvaluations("",""))
       .then((res) => {
         return true;
       })

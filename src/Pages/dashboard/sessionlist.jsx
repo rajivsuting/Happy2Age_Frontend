@@ -16,7 +16,10 @@ import {
   getAllSessionsByname,
 } from "../../Redux/AllListReducer/action";
 import EditSeesion from "../../Componants/EditSeesion";
-import { convertDateFormat } from "../../Utils/localStorage";
+import { convertDateFormat, getLocalData } from "../../Utils/localStorage";
+import ConfirmDeleteModal from "../../Componants/ConfirmDeleteModal";
+import { toast } from "react-toastify";
+import { toastConfig } from "../../App";
 
 export const Sessionlist = () => {
   const dispatch = useDispatch();
@@ -24,6 +27,7 @@ export const Sessionlist = () => {
   const [singleSession, setSingleSession] = useState({});
   const [searchParams, setsearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(searchParams.get("page") || 1);
+  const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [limit, setLimit] = useState(searchParams.get("limit") || 10); // default limit
   const [startDate, setStartDate] = useState("");
   const [isEditModalOPen, setIsEditModalOpen] = useState(false);
@@ -33,6 +37,11 @@ export const Sessionlist = () => {
   const toggleModal = (el) => {
     setIsModalOpen(!isModalOpen);
     setSingleSession(el);
+  };
+
+  const toggleModalDelete = (id) => {
+    setsearchParams({ id });
+    setIsModalOpenDelete(!isModalOpenDelete);
   };
 
   const { sessionlist } = useSelector((state) => {
@@ -78,6 +87,39 @@ export const Sessionlist = () => {
     e.preventDefault();
     dispatch(getAllSessionsByname(searchname));
   };
+
+  const handleDelete = () => {
+    axios
+      .delete(`${serverUrl}/session/delete/?sessionId=${searchParams.get("id")}`,
+      {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
+      .then((res) => {
+        if (res.status == 200) {
+          toast.success("Session delete suucessfully", toastConfig);
+          dispatch(getAllSessions(currentPage, limit)).then((res) => {
+            return true;
+          });
+        } else {
+          toast.error("Something went wrong", toastConfig);
+        }
+      })
+      .catch((err) => {
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
+  };
+
 
   return (
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
@@ -243,7 +285,7 @@ export const Sessionlist = () => {
                 className="font-normal leading-none opacity-70"
               ></Typography>
             </th>
-            {/* <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+            <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
               <Typography
                 variant="small"
                 color="blue-gray"
@@ -251,7 +293,7 @@ export const Sessionlist = () => {
               >
                 
               </Typography>
-            </th> */}
+            </th>
           </tr>
         </thead>
           
@@ -353,17 +395,18 @@ export const Sessionlist = () => {
                     <CiEdit />
                   </Typography>
                 </td>
-                {/* <td className={classes}>
+                <td className={classes}>
                   <Typography
                     as="a"
                     href="#"
                     variant="small"
                     color="blue-gray"
                     className="text-red-500 text-[20px]"
+                    onClick={() => toggleModalDelete(el._id)}
                   >
                     <MdOutlineDeleteOutline />
                   </Typography>
-                </td> */}
+                </td>
               </tr>
             );
           })}
@@ -384,6 +427,11 @@ export const Sessionlist = () => {
         isOpen={isModalOpen}
         onClose={toggleModal}
         singleSession={singleSession}
+      />
+       <ConfirmDeleteModal
+        isOpen={isModalOpenDelete}
+        onClose={() => toggleModalDelete()}
+        handleDelete={handleDelete}
       />
     </Card>
   );
