@@ -277,10 +277,10 @@ export const getAllSessions =
 
 // evaluation----------------------
 
-export const getAllEvaluations = (dispatch) => {
+export const getAllEvaluations = (currentPage="",limit="")=>(dispatch) => {
   dispatch({ type: types.GET_EVALUATIONS_REQUEST });
   return axios
-    .get(`${serverUrl}/evaluation/all`, {
+    .get(`${serverUrl}/evaluation/all/?page=${currentPage}&limit=${limit}`, {
       headers: {
         Authorization: `${getLocalData("token")}`,
       },
