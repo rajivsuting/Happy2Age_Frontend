@@ -1,4 +1,4 @@
-import { Button, Card, Typography } from "@material-tailwind/react";
+import { Button, Card, Input, Typography } from "@material-tailwind/react";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 import { useEffect, useState } from "react";
@@ -149,9 +149,21 @@ export const Evaluationlist = () => {
     e.preventDefault();
     dispatch(getAllEvalutionsByname(searchname))
       .then((res) => {
-        return;
+        setEvalutionlist(res.payload);
       })
-      .catch((err) => toast.error(err.response.data.message));
+      .catch((err) => {
+        console.log(err);
+        if (err.response && err.response.data && err.response.data.jwtExpired) {
+          toast.error(err.response.data.message, toastConfig);
+          setTimeout(() => {
+            navigate("/auth/sign-in");
+          }, 3000);
+        } else if (err.response && err.response.data) {
+          toast.error(err.response.data.message, toastConfig);
+        } else {
+          toast.error("An unexpected error occurred.", toastConfig);
+        }
+      });
   };
 
   useEffect(() => {
@@ -163,54 +175,32 @@ export const Evaluationlist = () => {
     <Card className="h-full w-full overflow-scroll mt-5 mb-24">
       <div className="flex justify-between items-center gap-5 mt-4 mr-3 ml-3">
         <form
-          className="w-[60%] flex justify-start items-center gap-4"
+          className="w-[40%] flex justify-start items-center gap-4"
           onSubmit={handleSearchSubmitname}
         >
-           <select
-              className="border w-[50%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
-              value={selectedCohort}
-              onChange={(e) => setSelectedCohort(e.target.value)}
-              required
-            >
-              <option value="">Search by centre</option>
-              {cohortList?.map((el, index) => (
-                <option key={index} value={el._id}>
-                  {el.name}
-                </option>
-              ))}
-            </select>
-            <select
-              className="border w-[50%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
-              value={searchname}
-              onChange={(e) => setsearchname(e.target.value)}
-              required
-            >
-              <option value="">Search by member</option>
-              {singleCohort?.participants?.map((el, index) => (
-                <option key={index} value={el._id}>
-                  {el.name}
-                </option>
-              ))}
-            </select>
+          <Input
+            label="Search a member"
+            required
+            value={searchname}
+            onChange={(e) => setsearchname(e.target.value)}
+          />
           <Button type="submit" variant="">
             Search
           </Button>
           <Button
-              type="button"
-              onClick={() => {
-                setSelectedCohort("")
-                setsearchname("");
-                return  getAllData(currentPage, limit).then(
-                  (res) => {
-                    return true;
-                  }
-                );
-              }}
-              variant=""
-              disabled={!searchname}
-            >
-              Clear
-            </Button>
+            type="button"
+            onClick={() => {
+              setSelectedCohort("");
+              setsearchname("");
+              return getAllData(currentPage, limit).then((res) => {
+                return true;
+              });
+            }}
+            variant=""
+            disabled={!searchname}
+          >
+            Clear
+          </Button>
         </form>
         <div className="flex justify-center items-center">
           <div className="flex justify-center items-center">
