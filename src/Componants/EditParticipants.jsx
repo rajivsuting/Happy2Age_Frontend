@@ -324,19 +324,19 @@ const EditParticipants = ({ isOpen, onClose, singleParticipant, name }) => {
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-5 p-4 mt-5 text-blue-gray-500">
-              {name == "read" ? (
-                null
-              ) : <Button
-              className="bg-maincolor"
-              type="submit"
-              disabled={isEditParticipantLoading}
-            >
-              {isEditParticipantLoading ? (
-                <CgSpinner size={18} className="m-auto animate-spin" />
-              ) : (
-                "Edit member"
+              {name == "read" ? null : (
+                <Button
+                  className="bg-maincolor"
+                  type="submit"
+                  disabled={isEditParticipantLoading}
+                >
+                  {isEditParticipantLoading ? (
+                    <CgSpinner size={18} className="m-auto animate-spin" />
+                  ) : (
+                    "Edit member"
+                  )}
+                </Button>
               )}
-            </Button>}
             </div>
           </form>
         </div>

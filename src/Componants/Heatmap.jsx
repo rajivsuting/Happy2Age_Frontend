@@ -28,14 +28,14 @@ const Heatmap = ({ arr }) => {
       enabled: true,
       formatter: function(val, opts) {
         if (val === null) {
-          return 'No score';
+          return 'NA';
         }
         return val;
       },
       style: {
-        fontSize: '14px', // Adjust font size here
-        fontWeight: 'bold', // Set font weight to bold
-        colors: ['#000'] // Set font color to black
+        fontSize: '12px',
+        fontWeight: 'bold',
+        colors: ['#000'],
       }
     },
     tooltip: {
@@ -50,25 +50,25 @@ const Heatmap = ({ arr }) => {
     },
     plotOptions: {
       heatmap: {
-        shadeIntensity: 0, // Disable shading intensity
+        shadeIntensity: 0,
         colorScale: {
           ranges: [
             {
               from: 0,
               to: 3,
-              color: '#FF0000', // Solid red for scores 0-3
+              color: '#FF0000',
               name: '0-3'
             },
             {
               from: 3.01,
               to: 5,
-              color: '#FFFF00', // Solid yellow for scores 3.01-5
+              color: '#FFFF00',
               name: '4-5'
             },
             {
               from: 5.01,
               to: 7,
-              color: '#008000', // Solid green for scores 5.01-7
+              color: '#0f965b',
               name: '6-7'
             }
           ]
@@ -80,31 +80,35 @@ const Heatmap = ({ arr }) => {
       categories: participants,
       labels: {
         style: {
-          fontSize: '18px', // Adjust font size for participants here
-          fontWeight: 'bold' // Set font weight to bold for participants
-        }
-      }
+          fontSize: '14px',
+          fontWeight: 'bold'
+        },
+        rotate: -45, // Rotate the labels for better readability
+        maxHeight: 110 // Adjust maximum height of the label container
+      },
     },
     yaxis: {
       type: 'category',
       categories: domains,
       labels: {
         style: {
-          fontSize: '18px', // Adjust font size for domains here
-          fontWeight: 'bold' // Set font weight to bold for domains
+          fontSize: '14px',
+          fontWeight: 'bold'
         }
       }
     },
     grid: {
       padding: {
-        right: 20
+        right: 20,
+        bottom: 50 // Add padding to the bottom to ensure full visibility
       }
     }
   };
+  
 
   return (
     <div className='w-[100%] flex justify-center items-center m-auto mt-[30px]'>
-      <ReactApexChart options={options} series={heatmapData} type="heatmap" width={700} height={400} />
+      <ReactApexChart options={options} series={heatmapData} type="heatmap" width={900} height={500} />
     </div>
   );
 };
