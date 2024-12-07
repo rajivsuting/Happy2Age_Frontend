@@ -1291,7 +1291,7 @@ export const ParticipantReport = () => {
           </PDFDownloadLink>
         </div>
       </div>
-      <PDFViewer width={600} height={800}>
+      {/* <PDFViewer width={600} height={800}>
         <MyDocument
           chartImage={chartImage}
           des1={des1}
@@ -1306,7 +1306,7 @@ export const ParticipantReport = () => {
           mobile={mobile}
           jointPlan={jointPlan}
         />
-      </PDFViewer>
+      </PDFViewer> */}
     </div>
   );
 };
