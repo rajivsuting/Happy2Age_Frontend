@@ -736,11 +736,11 @@ export const Cohortreport = () => {
     }));
 
     return {
-      participant: item.participant.name,
+      participant: item.participant?.name,
     
-      session: item.session.name,
-      sessionDate: convertDateFormat(item.session.date.split("T")[0]),
-      sessionTime: item.session.numberOfMins,
+      session: item.session?.name,
+      sessionDate: convertDateFormat(item.session?.date.split("T")[0]),
+      sessionTime: item.session?.numberOfMins,
       domains: domains,
       grandAverage: item.grandAverage,
     };
