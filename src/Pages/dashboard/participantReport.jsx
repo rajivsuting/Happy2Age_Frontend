@@ -118,20 +118,20 @@ const CustomLabel = ({ x, width, value, chartHeight }) => {
 const BarChartComponent = ({ data, onRendered }) => {
   return (
     <div id="chart-container">
-        <ResponsiveContainer width={900} height={550}> {/* Increase height */}
+        <ResponsiveContainer width={1000} height={550}> {/* Increase height */}
         <ComposedChart data={data} margin={{ top: 20, right: 30, bottom: 90, left: 20 }}> 
           <CartesianGrid strokeDasharray="3 3" padding={{bottom:50}}/>
           <XAxis
             minTickGap={1}
             dataKey="domainName"
-            tick={{ fontSize: 15, fontWeight: "bold" }}
+            tick={{ fontSize: 13, fontWeight: "bold",fill: "black" }}
           >
             <Label
               value="Domain name"
               offset={0}
               position="insideBottom"
               dy={50}
-              style={{ fontWeight: "bold",fontSize:"20px",fill: "black" }} 
+              style={{ fontWeight: "bold",fontSize:"18px",fill: "black" }} 
             />
           </XAxis>
           <YAxis tick={{ fontSize: 15, fontWeight: "bold" }} domain={[0, 7]}>
@@ -139,7 +139,7 @@ const BarChartComponent = ({ data, onRendered }) => {
               value="Average"
               angle={-90}
               position="insideLeft"
-              style={{ textAnchor: "middle", fontWeight: "bold" ,fontSize:"20px",fill: "black"}}
+              style={{ textAnchor: "middle", fontWeight: "bold" ,fontSize:"18px",fill: "black"}}
             />
           </YAxis>
           <Tooltip content={<CustomTooltip />} />
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   },
   section: {
     width: "100%",
-    marginBottom: 10,
+    marginBottom: 20,
     marginTop: 20,
   },
   image: {
@@ -346,8 +346,9 @@ const styles = StyleSheet.create({
     margin: "auto",
     border: "1px solid black",
     borderRadius: "10px",
-    padding: "20px",
-    marginTop: "20px",
+    padding: "10px",
+    paddingBottom: "0px",
+    marginTop: "15px",
     fontSize: "12px",
    
   },
@@ -356,15 +357,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "12px",
+    textAlign:"start"
   },
 
   nameInput: {
     width: "150px",
-    marginLeft: "20px",
+    // marginLeft: "20px",
+    
+  },
+  addressInput:{
+    width: "250px",
   },
   dateInput: {
     width: "180px",
-    marginLeft: "20px",
+    // marginLeft: "20px",
+    
   },
 });
 
@@ -489,9 +496,9 @@ const MyDocument = ({
             </Text>
           </View>
           <View style={styles.row}>
-            <Text>
+            <Text style={[styles.addressInput]}>
               Address :{" "}
-              <Text style={[styles.input, styles.nameInput]}>
+              <Text>
                 {`${resultnlist?.participant?.address?.addressLine || ""}, ${
                   resultnlist?.participant?.address?.city || ""
                 }, ${resultnlist?.participant?.address?.state || ""}, ${
@@ -827,11 +834,11 @@ export const ParticipantReport = () => {
     }));
 
     return {
-      participant: item.participant.name,
+      participant: item.participant?.name,
       
-      session: item.session.name,
-      sessionDate: convertDateFormat(item.session.date.split("T")[0]),
-      sessionTime: item.session.numberOfMins,
+      session: item.session?.name,
+      sessionDate: convertDateFormat(item.session?.date.split("T")[0]),
+      sessionTime: item.session?.numberOfMins,
       domains: domains,
       grandAverage: item.grandAverage,
     };
@@ -1284,7 +1291,7 @@ export const ParticipantReport = () => {
           </PDFDownloadLink>
         </div>
       </div>
-      {/* <PDFViewer>
+      <PDFViewer width={600} height={800}>
         <MyDocument
           chartImage={chartImage}
           des1={des1}
@@ -1299,7 +1306,7 @@ export const ParticipantReport = () => {
           mobile={mobile}
           jointPlan={jointPlan}
         />
-      </PDFViewer> */}
+      </PDFViewer>
     </div>
   );
 };

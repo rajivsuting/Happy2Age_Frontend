@@ -218,32 +218,37 @@ export const AddSession = () => {
           />
         </div>
         <div className="w-[90%] flex justify-between items-center m-auto gap-10 mt-5">
-        <div className="w-[50%] flex justify-between items-center gap-5">
-  <Select
-    label="Cohort"
-    name="cohort"
-    value={cohortList.find((option) => option._id === cohort) 
-      ? { value: cohort, label: cohortList.find((option) => option._id === cohort).name } 
-      : null} // Ensure the value is an object with `value` and `label`
-    options={cohortList.map((cohort) => ({
-      value: cohort._id,
-      label: cohort.name,
-    }))} // Map the cohort list to match react-select's format
-    isSearchable={true}
-    isClearable={true} // Allow clearing the cohort selection
-    placeholder="Select centre"
-    onChange={(selectedOption) =>
-      handleChangeInput({
-        target: {
-          name: "cohort",
-          value: selectedOption ? selectedOption.value : "",
-        },
-      })
-    } // Handle change or clear the cohort selection
-    className="w-[80%] px-2 py-2 rounded-md"
-  />
-</div>
-
+          <div className="w-[50%] flex justify-between items-center gap-5">
+            <Select
+              label="Cohort"
+              name="cohort"
+              value={
+                cohortList.find((option) => option._id === cohort)
+                  ? {
+                      value: cohort,
+                      label: cohortList.find((option) => option._id === cohort)
+                        .name,
+                    }
+                  : null
+              } // Ensure the value is an object with `value` and `label`
+              options={cohortList.map((cohort) => ({
+                value: cohort._id,
+                label: cohort.name,
+              }))} // Map the cohort list to match react-select's format
+              isSearchable={true}
+              isClearable={true} // Allow clearing the cohort selection
+              placeholder="Select centre"
+              onChange={(selectedOption) =>
+                handleChangeInput({
+                  target: {
+                    name: "cohort",
+                    value: selectedOption ? selectedOption.value : "",
+                  },
+                })
+              } // Handle change or clear the cohort selection
+              className="w-[80%] px-2 py-2 rounded-md"
+            />
+          </div>
 
           <div className="w-[50%] flex justify-between items-center gap-5">
             <Select
@@ -305,19 +310,19 @@ export const AddSession = () => {
             <div className="w-[50%] ml-3">
               <h3>Activities:</h3>
               <div className="max-h-[30vh] overflow-y-scroll">
-              <List>
-                {activity?.map((activity, index) => (
-                  <ListItem
-                    className="w-[97%] flex justify-between items-center"
-                    key={index}
-                  >
-                    {activityList?.find((el) => el._id === activity)?.name}
-                    <AiFillDelete
-                      onClick={() => handleRemoveActivity(activity)}
-                    />
-                  </ListItem>
-                ))}
-              </List>
+                <List>
+                  {activity?.map((activity, index) => (
+                    <ListItem
+                      className="w-[97%] flex justify-between items-center"
+                      key={index}
+                    >
+                      {activityList?.find((el) => el._id === activity)?.name}
+                      <AiFillDelete
+                        onClick={() => handleRemoveActivity(activity)}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
               </div>
             </div>
           ) : null}

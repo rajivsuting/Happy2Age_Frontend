@@ -112,19 +112,19 @@ const BarChartComponent = ({ data, onRendered }) => {
   return (
     <div id="chart-container">
       <BarChart
-        width={900}
-        height={500}
+        width={1000}
+        height={600}
         data={data}
         margin={{ top: 20, right: 30, left: 20, bottom: 30 }} // Adjust the bottom margin here
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="domainName" tick={{ fontSize: 15, fontWeight: "bold",fill: "black" }}>
+        <CartesianGrid strokeDasharray="3 3" padding={{bottom:50}}/>
+        <XAxis dataKey="domainName" tick={{ fontSize: 13, fontWeight: "bold",fill: "black" }}>
           <Label
             value="Domain name"
             offset={0}
             position="insideBottom"
             dy={25}
-            style={{ fontWeight: "bold",fontSize:"20px" ,fill: "black"}} 
+            style={{ fontWeight: "bold",fontSize:"18px" ,fill: "black"}} 
           />
         </XAxis>
         <YAxis tick={{ fontSize: 15, fontWeight: "bold",fill: "black" }} domain={[0, 7]}>
@@ -132,7 +132,7 @@ const BarChartComponent = ({ data, onRendered }) => {
             value="Average"
             angle={-90}
             position="insideLeft"
-            style={{ textAnchor: "middle" ,fontWeight: "bold",fontSize:"20px",fill: "black"}}
+            style={{ textAnchor: "middle" ,fontWeight: "bold",fontSize:"18px",fill: "black"}}
           />
         </YAxis>
         <Tooltip content={<CustomTooltip />} />
@@ -150,7 +150,8 @@ const BarChartComponent = ({ data, onRendered }) => {
         >
           <LabelList
             dataKey="numberOfSessions"
-            content={<CustomLabel chartHeight={460} />}
+            tick={{ fontSize: 10 }}
+            content={<CustomLabel chartHeight={555} />}
           />
         </Bar>
       </BarChart>
@@ -238,8 +239,8 @@ const styles = StyleSheet.create({
   },
   section: {
     width: "100%",
-    marginBottom: 10,
-    marginTop: 20,
+    marginBottom: 30,
+    marginTop: 30,
   },
   image: {
     width: "100%",
@@ -335,9 +336,9 @@ const styles = StyleSheet.create({
     margin: "auto",
     border: "1px solid black",
     borderRadius: "10px",
-    padding: "30px",
+    padding: "20px",
     marginTop: "20px",
-    fontSize: "14px",
+    fontSize: "12px",
   },
   row: {
     flexDirection: "row",
@@ -735,11 +736,11 @@ export const Cohortreport = () => {
     }));
 
     return {
-      participant: item.participant.name,
+      participant: item.participant?.name,
     
-      session: item.session.name,
-      sessionDate: convertDateFormat(item.session.date.split("T")[0]),
-      sessionTime: item.session.numberOfMins,
+      session: item.session?.name,
+      sessionDate: convertDateFormat(item.session?.date.split("T")[0]),
+      sessionTime: item.session?.numberOfMins,
       domains: domains,
       grandAverage: item.grandAverage,
     };
@@ -1094,11 +1095,13 @@ export const Cohortreport = () => {
             Centre average : <b>{resultnlist?.averageForCohort}</b>
           </div>
         </div>
+{/* <div className="border"> */}
 
         <CaptureHeatmap
           arr={resultnlist?.participantDomainScores}
           onCapture={handleHeatmapCapture}
         />
+{/* </div> */}
 
         <div className="mt-5">
           <i>Overall Observations: {observation}</i>
@@ -1195,7 +1198,7 @@ export const Cohortreport = () => {
             }
           </PDFDownloadLink>
         </div>
-        {/* <PDFViewer width={600} height={800}>
+        <PDFViewer width={600} height={800}>
           <MyDocument
             cohortList={cohortList}
             cohortSelect={cohortSelect}
@@ -1213,7 +1216,7 @@ export const Cohortreport = () => {
             des1={des1}
             des2={des2}
           />
-        </PDFViewer> */}
+        </PDFViewer>
       </div>
     </div>
   );
