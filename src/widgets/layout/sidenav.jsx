@@ -783,7 +783,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </>
               ) : null}
               <li>
-                <NavLink to={`/mainpage/cross-centre-report`}>
+                <NavLink to={`/mainpage/all-centre-report`}>
                   {({ isActive }) => (
                     <Button
                       variant={isActive ? "yellow" : "text"}
@@ -811,7 +811,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         color="inherit"
                         className="font-medium capitalize"
                       >
-                       Cross centre report
+                       All centre report
                       </Typography>
                     </Button>
                   )}

@@ -408,9 +408,8 @@ const MyDocument = ({
               fontWeight: "bold",
             }}
           >
-            Centre Report{" "}
-            {cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
-              "Unknown"}
+           All Centre Report{" "}
+           
           </Text>
           <Text
             style={{
@@ -427,7 +426,7 @@ const MyDocument = ({
               width: "100%",
               margin: "auto",
               marginTop: "5px",
-              fontSize: "14px",
+              fontSize: "12px",
               lineHeight: "1.5px",
             }}
           >
@@ -469,22 +468,7 @@ const MyDocument = ({
 
         {/* Centre Information */}
         <View style={styles.container}>
-          <View style={styles.row}>
-            <Text>
-              Name of the Centre :{" "}
-              <Text style={[styles.input, styles.nameInput]}>
-                {cohortList?.filter((el) => el._id == cohortSelect)[0]?.name ||
-                  "Unknown"}
-              </Text>
-            </Text>
-            <Text>
-              Total Participants :{" "}
-              <Text style={[styles.input, styles.nameInput]}>
-                {cohortList?.filter((el) => el._id == cohortSelect)[0]
-                  ?.participants?.length || "0"}
-              </Text>
-            </Text>
-          </View>
+        
           <Text>
             Date From :{" "}
             <Text style={[styles.input, styles.dateInput]}>
@@ -497,66 +481,13 @@ const MyDocument = ({
           </Text>
         </View>
 
-        {/* Overall Remark */}
-        <View style={{ marginBottom: "5px", marginTop: "20px" }}>
-          <Text style={{ fontSize: "12px" }}>
-            Graph of Score : (Individual Score against the Group aggregate Score
-            for each Domain)
-          </Text>
-        </View>
-
-        {/* Images */}
-        {chartImage && (
-          <View style={styles.section}>
-            <Image src={chartImage} style={styles.image} />
-          </View>
-        )}
-
-        {/* Table */}
-        <View style={styles.table}>
-          {/* Table Header */}
-          <View style={styles.tableRow}>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCellHeader}>Domain</Text>
-            </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCellHeader}>Center Average</Text>
-            </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCellHeader}>Number Of Sessions</Text>
-            </View>
-          </View>
-
-          {/* Table Body */}
-          {resultnlist?.graphDetails?.map((item, index) => (
-            <View style={styles.tableRow} key={index}>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{item.domainName}</Text>
-              </View>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{item.centerAverage}</Text>
-              </View>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{item.numberOfSessions}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-
         <View style={styles.flexContainer}>
           <View>
             <Text style={styles.boldText}>
-              Graph of Score : (overall score for each member across Domains)
+              Graph of Score : (overall score for each centre across Domains)
             </Text>
           </View>
-          <View>
-            <Text style={styles.text}>
-              Centre average :{" "}
-              <Text style={styles.boldText}>
-                {resultnlist?.averageForCohort}
-              </Text>
-            </Text>
-          </View>
+         
         </View>
 
         {heatImage && (
@@ -625,7 +556,7 @@ const MyDocument = ({
   </Document>
 );
 
-export const CrossCentreReport = () => {
+export const AllCentreReport = () => {
   const [resultnlist, setResultlist] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cohortSelect, setCohortSelect] = useState("");
@@ -814,7 +745,7 @@ export const CrossCentreReport = () => {
     // Export the workbook to an Excel file
     XLSX.writeFile(
       workbook,
-      `Cross Centre Report ${startDate}-${endDate}.xlsx`
+      `All Centre Report ${startDate}-${endDate}.xlsx`
     );
     toast.success("Excel file downloaded successfully", toastConfig);
   };
@@ -883,7 +814,7 @@ export const CrossCentreReport = () => {
         </div>
         <div className="text-center">
           <div className="font-bold mb-5 mt-5 text-[20px]">
-            Cross Centre Report{" "}
+            All Centre Report{" "}
             
           </div>
           <div className="font-bold mb-5 mt-5 text-[20px]">
@@ -935,7 +866,7 @@ export const CrossCentreReport = () => {
         <div className=" flex justify-between items-center  mb-[80px] mt-[80px]">
           <div>
             <b className="text-[18px]">Graph of Score </b> (overall score for
-            each member across Domains)
+            each centre across Domains)
           </div>
         
         </div>
@@ -1031,7 +962,7 @@ export const CrossCentreReport = () => {
                 des2={des2}
               />
             }
-            fileName={`Cross Centre Report-${startDate}-${endDate}.pdf`}
+            fileName={`All Centre Report-${startDate}-${endDate}.pdf`}
           >
             {({ blob, url, loading, error }) =>
               loading ? (
@@ -1042,7 +973,7 @@ export const CrossCentreReport = () => {
             }
           </PDFDownloadLink>
         </div>
-        {/* <PDFViewer width={600} height={800}>
+        <PDFViewer width={600} height={800}>
           <MyDocument
             cohortList={cohortList}
             cohortSelect={cohortSelect}
@@ -1060,11 +991,11 @@ export const CrossCentreReport = () => {
             des1={des1}
             des2={des2}
           />
-        </PDFViewer> */}
+        </PDFViewer>
       </div>
     </div>
   );
 };
 
-export default CrossCentreReport;
+export default AllCentreReport;
 
