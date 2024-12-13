@@ -26,4 +26,6 @@ export * from "../../Pages/dashboard/sessionAttendence";
 export * from "../../Pages/dashboard/oxfordlist";
 export * from "../../Pages/dashboard/mocalist";
 export * from "../../Pages/dashboard/casplist";
+export * from "../../Pages/dashboard/allCentreReport";
+// export * from "../../Pages/dashboard/crossCentreReport";
 

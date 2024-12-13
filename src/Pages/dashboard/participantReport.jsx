@@ -195,6 +195,7 @@ function calculateAge(birthdateStr) {
 }
 
 import html2canvas from "html2canvas";
+import SelectParticipant from "../../Componants/SelectParticipant";
 
 const CaptureChart = ({ data, onCapture }) => {
   const chartRef = useRef();
@@ -960,7 +961,12 @@ export const ParticipantReport = () => {
           onSubmit={handleSubmit}
           className="flex justify-center items-center gap-3"
         >
-          <select
+          <div className="w-[500px]">
+
+          <SelectParticipant selectedParticipant={singleParticipant} setSelectedParticipant={setSingleParticipant}/>
+          </div>
+
+          {/* <select
             className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
             value={singleParticipant}
             onChange={(e) => setSingleParticipant(e.target.value)}
@@ -972,7 +978,7 @@ export const ParticipantReport = () => {
                 {el.name}
               </option>
             ))}
-          </select>
+          </select> */}
           <div className="ml-10">From</div>
           <input
             name=""

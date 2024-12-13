@@ -783,6 +783,41 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </>
               ) : null}
               <li>
+                <NavLink to={`/mainpage/all-centre-report`}>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "yellow" : "text"}
+                      color={
+                        isActive
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 capitalize ${
+                        isActive ? "bg-maincolor" : "bg-white"
+                      }`}
+                      fullWidth
+                    >
+                      <span
+                        className={`ml-[-8px] ${
+                          isActive ? "text-white" : "text-maincolor2"
+                        }`}
+                      >
+                        <TbReportAnalytics {...icon} />
+                      </span>
+
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                      >
+                       All centre report
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+              </li>
+              <li>
                 <NavLink to={`/mainpage/centre-report`}>
                   {({ isActive }) => (
                     <Button
