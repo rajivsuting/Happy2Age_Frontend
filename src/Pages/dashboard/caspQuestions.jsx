@@ -14,25 +14,74 @@ const initialState = {
   participant: "",
   date: "",
   questions: [
-    { question: "My age prevents me from doing the things I would like to do.", code: "C1", score: "" },
-    { question: "I feel that what happens to me is out of my control.", code: "C2", score: "" },
+    {
+      question: "My age prevents me from doing the things I would like to do.",
+      code: "C1",
+      score: "",
+    },
+    {
+      question: "I feel that what happens to me is out of my control.",
+      code: "C2",
+      score: "",
+    },
     { question: "I feel free to plan for the future.", code: "C3", score: "" },
     { question: "I feel left out of things.", code: "C4", score: "" },
     { question: "I can do the things I want to do.", code: "A1", score: "" },
-    { question: "Family responsibilities prevent me from doing the things I want to do", code: "A2", score: "" },
-    { question: "I feel that I can please myself what I do", code: "A3", score: "" },
-    { question: "My health stops me from doing the things I want to do.", code: "A4", score: "" },
-    { question: "Shortage of money stops me from doing things I want to do.", code: "A5", score: "" },
+    {
+      question:
+        "Family responsibilities prevent me from doing the things I want to do",
+      code: "A2",
+      score: "",
+    },
+    {
+      question: "I feel that I can please myself what I do",
+      code: "A3",
+      score: "",
+    },
+    {
+      question: "My health stops me from doing the things I want to do.",
+      code: "A4",
+      score: "",
+    },
+    {
+      question: "Shortage of money stops me from doing things I want to do.",
+      code: "A5",
+      score: "",
+    },
     { question: "I look forward to each day.", code: "P1", score: "" },
     { question: "I feel that my life has meaning.", code: "P2", score: "" },
     { question: "I enjoy the things that I do.", code: "P3", score: "" },
-    { question: "I enjoy being in the company of others.", code: "P4", score: "" },
-    { question: "On balance, I look back on my life with a sense of happiness.", code: "P5", score: "" },
+    {
+      question: "I enjoy being in the company of others.",
+      code: "P4",
+      score: "",
+    },
+    {
+      question: "On balance, I look back on my life with a sense of happiness.",
+      code: "P5",
+      score: "",
+    },
     { question: "I feel full of energy these days.", code: "SR1", score: "" },
-    { question: "I choose to do things that I have never done before.", code: "SR2", score: "" },
-    { question: "I feel satisfied with the way my life has turned out.", code: "SR3", score: "" },
-    { question: "I feel that life is full of opportunities.", code: "SR4", score: "" },
-    { question: "I feel that the future looks good for me.", code: "SR5", score: "" },
+    {
+      question: "I choose to do things that I have never done before.",
+      code: "SR2",
+      score: "",
+    },
+    {
+      question: "I feel satisfied with the way my life has turned out.",
+      code: "SR3",
+      score: "",
+    },
+    {
+      question: "I feel that life is full of opportunities.",
+      code: "SR4",
+      score: "",
+    },
+    {
+      question: "I feel that the future looks good for me.",
+      code: "SR5",
+      score: "",
+    },
   ],
 };
 
@@ -99,7 +148,10 @@ export const CaspQuestions = () => {
 
     const total = questions.reduce((acc, question) => {
       const scoreValue = scoreMapping[question.score] || 0;
-      return acc + (negativeItems.includes(question.code) ? 3 - scoreValue : scoreValue);
+      return (
+        acc +
+        (negativeItems.includes(question.code) ? 3 - scoreValue : scoreValue)
+      );
     }, 0);
 
     setTotalScore(total);
@@ -109,10 +161,13 @@ export const CaspQuestions = () => {
     e.preventDefault();
 
     // Check if all questions have been answered
-    const allAnswered = questions.every(q => q.score !== "");
+    const allAnswered = questions.every((q) => q.score !== "");
 
     if (!allAnswered) {
-      toast.error("Please answer all questions before submitting.", toastConfig);
+      toast.error(
+        "Please answer all questions before submitting.",
+        toastConfig
+      );
       return;
     }
 
@@ -153,6 +208,10 @@ export const CaspQuestions = () => {
           <hr className="w-[75%] border" />
         </div>
         <div className="flex justify-start items-center m-auto gap-10 mt-5">
+          {/* <div className="w-[500px]">
+
+<SelectParticipant selectedParticipant={participant} setSelectedParticipant={setPa}/>
+</div> */}
           <select
             className="border w-[30%] px-2 py-2 rounded-md text-gray-600 border border-gray-600"
             value={participant}

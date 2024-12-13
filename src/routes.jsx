@@ -33,6 +33,7 @@ import {
   Oxfordlist,
   Mocalist,
   Domainlist,
+  CrossCentreReport,
 } from "./Pages/dashboard";
 import { SignIn, SignUp } from "./Pages/auth";
 import { MdGroups, MdOutlineSportsKabaddi } from "react-icons/md";
@@ -186,6 +187,12 @@ export const routes = [
             element_u: <Evaluationlist />,
           },
         ],
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "cross-centre report",
+        path: "/cross-centre-report",
+        element: <CrossCentreReport/>,
       },
       {
         icon: <HomeIcon {...icon} />,
