@@ -49,6 +49,7 @@ import {
   PDFDownloadLink,
   PDFViewer,
 } from "@react-pdf/renderer";
+import { PieChart, Pie, Cell } from "recharts";
 
 const darkColors = [
   "#17a589",
@@ -117,22 +118,33 @@ const BarChartComponent = ({ data, onRendered }) => {
         data={data}
         margin={{ top: 20, right: 30, left: 20, bottom: 30 }} // Adjust the bottom margin here
       >
-        <CartesianGrid strokeDasharray="3 3" padding={{bottom:50}}/>
-        <XAxis dataKey="domainName" tick={{ fontSize: 13, fontWeight: "bold",fill: "black" }}>
+        <CartesianGrid strokeDasharray="3 3" padding={{ bottom: 50 }} />
+        <XAxis
+          dataKey="domainName"
+          tick={{ fontSize: 13, fontWeight: "bold", fill: "black" }}
+        >
           <Label
             value="Domain name"
             offset={0}
             position="insideBottom"
             dy={25}
-            style={{ fontWeight: "bold",fontSize:"18px" ,fill: "black"}} 
+            style={{ fontWeight: "bold", fontSize: "18px", fill: "black" }}
           />
         </XAxis>
-        <YAxis tick={{ fontSize: 15, fontWeight: "bold",fill: "black" }} domain={[0, 7]}>
+        <YAxis
+          tick={{ fontSize: 15, fontWeight: "bold", fill: "black" }}
+          domain={[0, 7]}
+        >
           <Label
             value="Average"
             angle={-90}
             position="insideLeft"
-            style={{ textAnchor: "middle" ,fontWeight: "bold",fontSize:"18px",fill: "black"}}
+            style={{
+              textAnchor: "middle",
+              fontWeight: "bold",
+              fontSize: "18px",
+              fill: "black",
+            }}
           />
         </YAxis>
         <Tooltip content={<CustomTooltip />} />
@@ -159,6 +171,61 @@ const BarChartComponent = ({ data, onRendered }) => {
   );
 };
 
+const DynamicPieChart = ({ data, colors, title, dataKey, nameKey }) => {
+  if (!data || data.length === 0) {
+    return <div className="w-80 p-4">No Data Available</div>;
+  }
+
+  return (
+    <div className="w-[45%] p-4">
+      <p className="text-[18px] font-bold text-center mb-2">{title}</p>
+      <PieChart width={350} height={350}>
+        <Pie
+          data={data}
+          cx="50%"
+          cy="50%"
+          labelLine={false}
+          outerRadius={100}
+          dataKey={dataKey} // Dynamic dataKey for value
+          label={({
+            name,
+            value,
+            cx,
+            cy,
+            midAngle,
+            innerRadius,
+            outerRadius,
+          }) => {
+            const RADIAN = Math.PI / 180;
+            const radius = outerRadius - 20;
+            const x = cx + radius * Math.cos(-midAngle * RADIAN);
+            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+            return (
+              <text
+                x={x}
+                y={y}
+                fill="white"
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize={12}
+                fontWeight="bold"
+              >
+                {value} {/* Show the count (value) inside the chart */}
+              </text>
+            );
+          }} // Label inside the chart
+        >
+          {data?.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+          ))}
+        </Pie>
+        <Tooltip />
+        <Legend verticalAlign="bottom" height={36} />
+      </PieChart>
+    </div>
+  );
+};
 import html2canvas from "html2canvas";
 import Heatmap2 from "../../Componants/Heatmap2";
 
@@ -408,8 +475,7 @@ const MyDocument = ({
               fontWeight: "bold",
             }}
           >
-           All Centre Report{" "}
-           
+            All Centre Report{" "}
           </Text>
           <Text
             style={{
@@ -468,7 +534,6 @@ const MyDocument = ({
 
         {/* Centre Information */}
         <View style={styles.container}>
-        
           <Text>
             Date From :{" "}
             <Text style={[styles.input, styles.dateInput]}>
@@ -487,7 +552,6 @@ const MyDocument = ({
               Graph of Score : (overall score for each centre across Domains)
             </Text>
           </View>
-         
         </View>
 
         {heatImage && (
@@ -578,6 +642,13 @@ export const AllCentreReport = () => {
   const [mobile, setMobile] = useState();
   const [des1, setDes1] = useState();
   const [des2, setDes2] = useState();
+  const [genderData, setGenderData] = useState();
+
+  const [participantData, setParticipantData] = useState();
+
+  const COLORS_GENDER = ["#22d172", "#fe2880", "#efbb29"];
+
+  const COLORS_PARTICIPANT = ["#22d172", "#efbb29"];
 
   const handleCapture = (imgData) => {
     setChartImage(imgData);
@@ -616,12 +687,26 @@ export const AllCentreReport = () => {
         }
       )
       .then((res) => {
-        console.log(res);
-        setResultlist(res.data.message);
+        console.log(res.data.message.genderData);
+        setResultlist(res.data.message.graphDetails);
         setEntireEvaluation(res.data.message.evaluations);
+
+        const genderChartData = res.data.message.genderData.map((item) => ({
+          name: item.gender,
+          value: item.count,
+        }));
+
+        const participantChartData = res.data.message.participantTypeData.map(
+          (item) => ({
+            name: item.participantType,
+            value: item.count,
+          })
+        );
+
+        setGenderData(genderChartData);
+        setParticipantData(participantChartData);
       })
       .catch((err) => {
-        console.log(err);
         if (err.response && err.response.data && err.response.data.jwtExpired) {
           toast.error(err.response.data.message, toastConfig);
           setTimeout(() => {
@@ -654,7 +739,7 @@ export const AllCentreReport = () => {
 
     return {
       participant: item.participant?.name,
-    
+
       session: item.session?.name,
       sessionDate: convertDateFormat(item.session?.date.split("T")[0]),
       sessionTime: item.session?.numberOfMins,
@@ -668,10 +753,10 @@ export const AllCentreReport = () => {
     data.forEach((item) => {
       const {
         participant,
-        
+
         sessionDate,
         sessionTime,
-      
+
         session,
         domains,
         grandAverage,
@@ -721,11 +806,8 @@ export const AllCentreReport = () => {
     ]);
   };
 
-
   const handleExportToExcel = () => {
-    const transformedGraphDetails = transformGraphDetails(
-      resultnlist
-    );
+    const transformedGraphDetails = transformGraphDetails(resultnlist);
 
     const graphDetailsWorksheet = XLSX.utils.aoa_to_sheet([
       ["Domain Name", "Centre", "Average"],
@@ -740,13 +822,9 @@ export const AllCentreReport = () => {
       graphDetailsWorksheet,
       "Graph Details"
     );
-   
 
     // Export the workbook to an Excel file
-    XLSX.writeFile(
-      workbook,
-      `All Centre Report ${startDate}-${endDate}.xlsx`
-    );
+    XLSX.writeFile(workbook, `All Centre Report ${startDate}-${endDate}.xlsx`);
     toast.success("Excel file downloaded successfully", toastConfig);
   };
 
@@ -757,7 +835,6 @@ export const AllCentreReport = () => {
           onSubmit={handleSubmit}
           className="flex justify-center items-center gap-3"
         >
-          
           {/* <select
             name=""
             id=""
@@ -815,7 +892,6 @@ export const AllCentreReport = () => {
         <div className="text-center">
           <div className="font-bold mb-5 mt-5 text-[20px]">
             All Centre Report{" "}
-            
           </div>
           <div className="font-bold mb-5 mt-5 text-[20px]">
             Journey Together
@@ -839,7 +915,6 @@ export const AllCentreReport = () => {
           </div>
         </div>
         <div className="w-[100%] m-auto border rounded-xl p-8 mt-5">
-         
           <div className="mb-3">
             Date From :
             <input
@@ -860,24 +935,34 @@ export const AllCentreReport = () => {
           <b className="text-[18px]">Graph of Score </b> (Individual Score
           against the Group aggregate Score for each Domain)
         </div> */}
-        
-        
 
         <div className=" flex justify-between items-center  mb-[80px] mt-[80px]">
           <div>
             <b className="text-[18px]">Graph of Score </b> (overall score for
             each centre across Domains)
           </div>
-        
         </div>
-{/* <div className="border"> */}
+        {/* <div className="border"> */}
 
-        <CaptureHeatmap
-          arr={resultnlist}
-          onCapture={handleHeatmapCapture}
-        />
-{/* </div> */}
+        <CaptureHeatmap arr={resultnlist} onCapture={handleHeatmapCapture} />
+        {/* </div> */}
+        <div className="flex flex-col justify-between lg:flex-row  items-center gap-6 p-6 px-10 ">
+          <DynamicPieChart
+            data={genderData}
+            colors={COLORS_GENDER}
+            title="Gender Distribution"
+            dataKey="value"
+            nameKey="gender"
+          />
 
+          <DynamicPieChart
+            data={participantData}
+            colors={COLORS_PARTICIPANT}
+            title="Participant Type Distribution"
+            dataKey="value"
+            nameKey="participantType"
+          />
+        </div>
         <div className="mt-5">
           <i>Overall Observations: {observation}</i>
         </div>
@@ -998,4 +1083,3 @@ export const AllCentreReport = () => {
 };
 
 export default AllCentreReport;
-

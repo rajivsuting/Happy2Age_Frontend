@@ -117,22 +117,33 @@ const BarChartComponent = ({ data, onRendered }) => {
         data={data}
         margin={{ top: 20, right: 30, left: 20, bottom: 30 }} // Adjust the bottom margin here
       >
-        <CartesianGrid strokeDasharray="3 3" padding={{bottom:50}}/>
-        <XAxis dataKey="domainName" tick={{ fontSize: 13, fontWeight: "bold",fill: "black" }}>
+        <CartesianGrid strokeDasharray="3 3" padding={{ bottom: 50 }} />
+        <XAxis
+          dataKey="domainName"
+          tick={{ fontSize: 13, fontWeight: "bold", fill: "black" }}
+        >
           <Label
             value="Domain name"
             offset={0}
             position="insideBottom"
             dy={25}
-            style={{ fontWeight: "bold",fontSize:"18px" ,fill: "black"}} 
+            style={{ fontWeight: "bold", fontSize: "18px", fill: "black" }}
           />
         </XAxis>
-        <YAxis tick={{ fontSize: 15, fontWeight: "bold",fill: "black" }} domain={[0, 7]}>
+        <YAxis
+          tick={{ fontSize: 15, fontWeight: "bold", fill: "black" }}
+          domain={[0, 7]}
+        >
           <Label
             value="Average"
             angle={-90}
             position="insideLeft"
-            style={{ textAnchor: "middle" ,fontWeight: "bold",fontSize:"18px",fill: "black"}}
+            style={{
+              textAnchor: "middle",
+              fontWeight: "bold",
+              fontSize: "18px",
+              fill: "black",
+            }}
           />
         </YAxis>
         <Tooltip content={<CustomTooltip />} />
@@ -646,6 +657,7 @@ export const Cohortreport = () => {
   const [mobile, setMobile] = useState();
   const [des1, setDes1] = useState();
   const [des2, setDes2] = useState();
+  const [type, setType] = useState("All");
 
   const handleCapture = (imgData) => {
     setChartImage(imgData);
@@ -676,7 +688,7 @@ export const Cohortreport = () => {
     e.preventDefault();
     axios
       .get(
-        `${serverUrl}/report/get/?cohort=${cohortSelect}&start=${startDate}&end=${endDate}`,
+        `${serverUrl}/report/get/?cohort=${cohortSelect}&start=${startDate}&end=${endDate}&type=${type}`,
         {
           headers: {
             Authorization: `${getLocalData("token")}`,
@@ -737,7 +749,7 @@ export const Cohortreport = () => {
 
     return {
       participant: item.participant?.name,
-    
+
       session: item.session?.name,
       sessionDate: convertDateFormat(item.session?.date.split("T")[0]),
       sessionTime: item.session?.numberOfMins,
@@ -751,10 +763,10 @@ export const Cohortreport = () => {
     data.forEach((item) => {
       const {
         participant,
-        
+
         sessionDate,
         sessionTime,
-      
+
         session,
         domains,
         grandAverage,
@@ -826,7 +838,7 @@ export const Cohortreport = () => {
     const mainWorksheet = XLSX.utils.aoa_to_sheet([
       [
         "Participant Name",
-       
+
         "Session Name",
         "Session Date",
         "Session Time",
@@ -880,7 +892,6 @@ export const Cohortreport = () => {
           onSubmit={handleSubmit}
           className="flex justify-center items-center gap-3"
         >
-          
           <select
             name=""
             id=""
@@ -914,6 +925,19 @@ export const Cohortreport = () => {
             onChange={(e) => setEnddate(e.target.value)}
             required
           />
+
+          <select
+            name=""
+            id=""
+            value={type}
+            className="border px-2 py-3 rounded-md mt-3 mb-3"
+            onChange={(e) => setType(e.target.value)}
+          >
+            <option value="All">User Type (All) </option>
+            <option value="General">General</option>
+            <option value="Special Need">Special Need</option>
+          </select>
+
           <Button type="submit">Search</Button>
         </form>
       </div>
@@ -1096,13 +1120,13 @@ export const Cohortreport = () => {
             Centre average : <b>{resultnlist?.averageForCohort}</b>
           </div>
         </div>
-{/* <div className="border"> */}
+        {/* <div className="border"> */}
 
         <CaptureHeatmap
           arr={resultnlist?.participantDomainScores}
           onCapture={handleHeatmapCapture}
         />
-{/* </div> */}
+        {/* </div> */}
 
         <div className="mt-5">
           <i>Overall Observations: {observation}</i>
