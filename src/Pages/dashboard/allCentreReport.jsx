@@ -1114,7 +1114,7 @@ export const AllCentreReport = () => {
             }
           </PDFDownloadLink>
         </div>
-        <PDFViewer width={600} height={800}>
+        {/* <PDFViewer width={600} height={800}>
           <MyDocument
             cohortList={cohortList}
             cohortSelect={cohortSelect}
@@ -1134,7 +1134,7 @@ export const AllCentreReport = () => {
             des1={des1}
             des2={des2}
           />
-        </PDFViewer>
+        </PDFViewer> */}
       </div>
     </div>
   );
