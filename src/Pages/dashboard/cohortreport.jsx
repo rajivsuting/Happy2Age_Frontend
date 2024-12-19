@@ -171,6 +171,8 @@ const BarChartComponent = ({ data, onRendered }) => {
 };
 
 import html2canvas from "html2canvas";
+import DynamicPieChart1 from "../../Componants/DynamicPieChart1";
+import DynamicPieChart2 from "../../Componants/DynamicPieChart2";
 
 const CaptureChart = ({ data, onCapture }) => {
   const chartRef = useRef();
@@ -214,6 +216,64 @@ const CaptureHeatmap = ({ arr, onCapture }) => {
   return (
     <div ref={chartheatRef}>
       <Heatmap arr={arr} />
+    </div>
+  );
+};
+
+const CapturePie1 = ({ data, colors, title, dataKey, nameKey, onCapture }) => {
+  const chartheatRef = useRef();
+
+  useEffect(() => {
+    setTimeout(() => {
+      const captureChartAsImage = async () => {
+        if (chartheatRef.current) {
+          const canvas = await html2canvas(chartheatRef.current);
+          const imgData = canvas.toDataURL("image/png");
+          onCapture(imgData);
+        }
+      };
+      captureChartAsImage();
+    }, 2000);
+  }, [data]);
+
+  return (
+    <div ref={chartheatRef}>
+      <DynamicPieChart1
+        data={data}
+        colors={colors}
+        title={title}
+        dataKey={dataKey}
+        nameKey={nameKey}
+      />
+    </div>
+  );
+};
+
+const CapturePie2 = ({ data, colors, title, dataKey, nameKey, onCapture }) => {
+  const chartheatRef = useRef();
+
+  useEffect(() => {
+    setTimeout(() => {
+      const captureChartAsImage = async () => {
+        if (chartheatRef.current) {
+          const canvas = await html2canvas(chartheatRef.current);
+          const imgData = canvas.toDataURL("image/png");
+          onCapture(imgData);
+        }
+      };
+      captureChartAsImage();
+    }, 2000);
+  }, [data]);
+
+  return (
+    <div ref={chartheatRef}>
+      <DynamicPieChart2
+        data={data}
+        colors={colors}
+        title={title}
+        dataKey={dataKey}
+        nameKey={nameKey}
+      />
     </div>
   );
 };
@@ -264,6 +324,7 @@ const styles = StyleSheet.create({
     width: "100%",
     // height: "300px",
     borderRadius: "10px",
+    marginTop:"30px"
     //  border: "1px solid black",
   },
   table: {
@@ -366,6 +427,15 @@ const styles = StyleSheet.create({
     width: "180px",
     marginLeft: "20px",
   },
+  pieChartbox: {
+    marginTop: "110px",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  pieImage: {
+    width: "200px",
+  },
 });
 
 const MyDocument = ({
@@ -378,6 +448,8 @@ const MyDocument = ({
   resultnlist,
   chartImage,
   heatImage,
+  pieImage1,
+  pieImage2,
   date,
   name,
   signature,
@@ -575,6 +647,26 @@ const MyDocument = ({
           </View>
         )}
 
+<View style={styles.pieChartbox}>
+          <View style={styles.marginTop5}>
+            <Text>Gender Distribution </Text>
+            {pieImage1 && (
+              <View>
+                <Image src={pieImage1} style={styles.pieImage} />
+              </View>
+            )}
+          </View>
+
+          <View style={styles.marginTop5}>
+            <Text>Participant Type Distribution</Text>
+            {pieImage2 && (
+              <View>
+                <Image src={pieImage2} style={styles.pieImage} />
+              </View>
+            )}
+          </View>
+        </View>
+
         <View>
           <View style={styles.marginTop5}>
             <Text>Overall Remark : {remarks}</Text>
@@ -651,6 +743,8 @@ export const Cohortreport = () => {
   const dispatch = useDispatch();
   const [chartImage, setChartImage] = useState(null);
   const [heatImage, setHeatImage] = useState(null);
+    const [pieImage1, setPieImage1] = useState(null);
+    const [pieImage2, setPieImage2] = useState(null);
   const [date, setDate] = useState();
   const [name, setName] = useState();
   const [signature, setSignature] = useState();
@@ -658,6 +752,22 @@ export const Cohortreport = () => {
   const [des1, setDes1] = useState();
   const [des2, setDes2] = useState();
   const [type, setType] = useState("All");
+
+    const [genderData, setGenderData] = useState();
+  
+    const [participantData, setParticipantData] = useState();
+
+    const COLORS_GENDER = ["#22d172", "#fe2880", "#efbb29"];
+
+    const COLORS_PARTICIPANT = ["#22d172", "#efbb29"];
+
+    const handlePichart1Capture = (imgData) => {
+      setPieImage1(imgData);
+    };
+
+    const handlePichart2Capture = (imgData) => {
+      setPieImage2(imgData);
+    };
 
   const handleCapture = (imgData) => {
     setChartImage(imgData);
@@ -699,6 +809,21 @@ export const Cohortreport = () => {
         console.log(res);
         setResultlist(res.data.message);
         setEntireEvaluation(res.data.message.evaluations);
+
+        const genderChartData = res.data.message.genderData.map((item) => ({
+          name: item.gender,
+          value: item.count,
+        }));
+
+        const participantChartData = res.data.message.participantTypeData.map(
+          (item) => ({
+            name: item.participantType,
+            value: item.count,
+          })
+        );
+
+        setGenderData(genderChartData);
+        setParticipantData(participantChartData);
       })
       .catch((err) => {
         console.log(err);
@@ -1126,7 +1251,32 @@ export const Cohortreport = () => {
           arr={resultnlist?.participantDomainScores}
           onCapture={handleHeatmapCapture}
         />
-        {/* </div> */}
+        <div className="flex flex-col justify-between lg:flex-row  items-center">
+          <div className="text-center font-bold w-[50%]">
+            Gender Distribution
+          </div>
+          <div className="text-center font-bold w-[50%]">
+            Participant Type Distribution
+          </div>
+        </div>
+        <div className="flex flex-col justify-between lg:flex-row  items-center p-2 ">
+          <CapturePie1
+            data={genderData}
+            colors={COLORS_GENDER}
+            // title="Gender Distribution"
+            dataKey="value"
+            nameKey="gender"
+            onCapture={handlePichart1Capture}
+          />
+          <CapturePie2
+            data={participantData}
+            colors={COLORS_PARTICIPANT}
+            // title="Participant Type Distribution"
+            dataKey="value"
+            nameKey="participantType"
+            onCapture={handlePichart2Capture}
+          />
+        </div>
 
         <div className="mt-5">
           <i>Overall Observations: {observation}</i>
@@ -1204,6 +1354,8 @@ export const Cohortreport = () => {
                 resultnlist={resultnlist}
                 chartImage={chartImage}
                 heatImage={heatImage}
+                pieImage1={pieImage1}
+                pieImage2={pieImage2}
                 date={date}
                 name={name}
                 signature={signature}
@@ -1223,7 +1375,7 @@ export const Cohortreport = () => {
             }
           </PDFDownloadLink>
         </div>
-        {/* <PDFViewer width={600} height={800}>
+        <PDFViewer width={600} height={800}>
           <MyDocument
             cohortList={cohortList}
             cohortSelect={cohortSelect}
@@ -1234,6 +1386,8 @@ export const Cohortreport = () => {
             resultnlist={resultnlist}
             chartImage={chartImage}
             heatImage={heatImage}
+            pieImage1={pieImage1}
+            pieImage2={pieImage2}
             date={date}
             name={name}
             signature={signature}
@@ -1241,7 +1395,7 @@ export const Cohortreport = () => {
             des1={des1}
             des2={des2}
           />
-        </PDFViewer> */}
+        </PDFViewer>
       </div>
     </div>
   );
