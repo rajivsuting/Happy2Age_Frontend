@@ -173,6 +173,7 @@ const BarChartComponent = ({ data, onRendered }) => {
 import html2canvas from "html2canvas";
 import DynamicPieChart1 from "../../Componants/DynamicPieChart1";
 import DynamicPieChart2 from "../../Componants/DynamicPieChart2";
+import DynamicPieChart3 from "../../Componants/DynamicPieChart3";
 
 const CaptureChart = ({ data, onCapture }) => {
   const chartRef = useRef();
@@ -278,6 +279,35 @@ const CapturePie2 = ({ data, colors, title, dataKey, nameKey, onCapture }) => {
   );
 };
 
+const CapturePie3 = ({ data, colors, title, dataKey, nameKey, onCapture }) => {
+  const chartheatRef = useRef();
+
+  useEffect(() => {
+    setTimeout(() => {
+      const captureChartAsImage = async () => {
+        if (chartheatRef.current) {
+          const canvas = await html2canvas(chartheatRef.current);
+          const imgData = canvas.toDataURL("image/png");
+          onCapture(imgData);
+        }
+      };
+      captureChartAsImage();
+    }, 2000);
+  }, [data]);
+
+  return (
+    <div ref={chartheatRef}>
+      <DynamicPieChart3
+        data={data}
+        colors={colors}
+        title={title}
+        dataKey={dataKey}
+        nameKey={nameKey}
+      />
+    </div>
+  );
+};
+
 const styles = StyleSheet.create({
   document: {},
   page: {
@@ -324,7 +354,7 @@ const styles = StyleSheet.create({
     width: "100%",
     // height: "300px",
     borderRadius: "10px",
-    marginTop:"30px"
+    marginTop: "30px",
     //  border: "1px solid black",
   },
   table: {
@@ -434,7 +464,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   pieImage: {
-    width: "200px",
+    width: "150px",
   },
 });
 
@@ -450,12 +480,14 @@ const MyDocument = ({
   heatImage,
   pieImage1,
   pieImage2,
+  pieImage3,
   date,
   name,
   signature,
   mobile,
   des1,
   des2,
+  type,
 }) => (
   <Document style={styles.document}>
     <Page size="A4" style={styles.page}>
@@ -560,23 +592,31 @@ const MyDocument = ({
               </Text>
             </Text>
             <Text>
-              Total Participants :{" "}
+              Total Members :{" "}
               <Text style={[styles.input, styles.nameInput]}>
                 {cohortList?.filter((el) => el._id == cohortSelect)[0]
                   ?.participants?.length || "0"}
               </Text>
             </Text>
           </View>
-          <Text>
-            Date From :{" "}
-            <Text style={[styles.input, styles.dateInput]}>
-              {convertDateFormat(startDate) || ""}
-            </Text>{" "}
-            To :{" "}
-            <Text style={[styles.input, styles.dateInput]}>
-              {convertDateFormat(endDate) || ""}
+          <View style={styles.row}>
+            <Text>
+              Date From :{" "}
+              <Text style={[styles.input, styles.dateInput]}>
+                {convertDateFormat(startDate) || ""}
+              </Text>{" "}
+              To :{" "}
+              <Text style={[styles.input, styles.dateInput]}>
+                {convertDateFormat(endDate) || ""}
+              </Text>
             </Text>
-          </Text>
+            <Text>
+              Member type :{" "}
+              <Text style={[styles.input, styles.nameInput]}>
+                {type}
+              </Text>
+            </Text>
+          </View>
         </View>
 
         {/* Overall Remark */}
@@ -647,7 +687,7 @@ const MyDocument = ({
           </View>
         )}
 
-<View style={styles.pieChartbox}>
+        <View style={styles.pieChartbox}>
           <View style={styles.marginTop5}>
             <Text>Gender Distribution </Text>
             {pieImage1 && (
@@ -662,6 +702,15 @@ const MyDocument = ({
             {pieImage2 && (
               <View>
                 <Image src={pieImage2} style={styles.pieImage} />
+              </View>
+            )}
+          </View>
+
+          <View style={styles.marginTop5}>
+            <Text style={{ marginLeft: "30px" }}>Age Distribution</Text>
+            {pieImage3 && (
+              <View>
+                <Image src={pieImage3} style={styles.pieImage} />
               </View>
             )}
           </View>
@@ -743,8 +792,10 @@ export const Cohortreport = () => {
   const dispatch = useDispatch();
   const [chartImage, setChartImage] = useState(null);
   const [heatImage, setHeatImage] = useState(null);
-    const [pieImage1, setPieImage1] = useState(null);
-    const [pieImage2, setPieImage2] = useState(null);
+  const [pieImage1, setPieImage1] = useState(null);
+  const [pieImage2, setPieImage2] = useState(null);
+  const [pieImage3, setPieImage3] = useState(null);
+  const [ageData, setAgeData] = useState();
   const [date, setDate] = useState();
   const [name, setName] = useState();
   const [signature, setSignature] = useState();
@@ -753,21 +804,25 @@ export const Cohortreport = () => {
   const [des2, setDes2] = useState();
   const [type, setType] = useState("All");
 
-    const [genderData, setGenderData] = useState();
-  
-    const [participantData, setParticipantData] = useState();
+  const [genderData, setGenderData] = useState();
 
-    const COLORS_GENDER = ["#22d172", "#fe2880", "#efbb29"];
+  const [participantData, setParticipantData] = useState();
 
-    const COLORS_PARTICIPANT = ["#22d172", "#efbb29"];
+  const COLORS_GENDER = ["#22d172", "#fe2880", "#efbb29"];
 
-    const handlePichart1Capture = (imgData) => {
-      setPieImage1(imgData);
-    };
+  const COLORS_PARTICIPANT = ["#22d172", "#efbb29"];
 
-    const handlePichart2Capture = (imgData) => {
-      setPieImage2(imgData);
-    };
+  const handlePichart1Capture = (imgData) => {
+    setPieImage1(imgData);
+  };
+
+  const handlePichart2Capture = (imgData) => {
+    setPieImage2(imgData);
+  };
+
+  const handlePichart3Capture = (imgData) => {
+    setPieImage3(imgData);
+  };
 
   const handleCapture = (imgData) => {
     setChartImage(imgData);
@@ -821,6 +876,13 @@ export const Cohortreport = () => {
             value: item.count,
           })
         );
+
+        const ageChartData = res.data.message.ageData.map((item) => ({
+          name: item.ageRange,
+          value: item.count,
+        }));
+
+        setAgeData(ageChartData);
 
         setGenderData(genderChartData);
         setParticipantData(participantChartData);
@@ -1124,7 +1186,7 @@ export const Cohortreport = () => {
               />
             </div>
             <div>
-              Total Participants:
+              Total Members:
               <input
                 value={
                   cohortList?.filter((el) => el._id == cohortSelect)[0]
@@ -1135,17 +1197,25 @@ export const Cohortreport = () => {
             </div>
           </div>
 
-          <div className="mb-3">
-            Date From :
-            <input
-              value={convertDateFormat(startDate) || ""}
-              className="border-b w-[180px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
-            />
-            To :
-            <input
-              value={convertDateFormat(endDate) || ""}
-              className="border-b w-[180px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
-            />
+          <div className="flex justify-between items-center mb-3">
+            <div>
+              Date From :
+              <input
+                value={convertDateFormat(startDate) || ""}
+                className="border-b w-[180px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              />
+              To :
+              <input
+                value={convertDateFormat(endDate) || ""}
+                className="border-b w-[180px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none"
+              />
+            </div>
+            <div className="flex justify-between items-center mr-[5px]">
+              Member Type:{" "}
+              <div className="border-b w-[150px] ml-5 border-b-2 border-opacity-50 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 focus:outline-none">
+                {type}
+              </div>
+            </div>
           </div>
         </div>
         <div className="mb-5 mt-5 ">
@@ -1258,6 +1328,7 @@ export const Cohortreport = () => {
           <div className="text-center font-bold w-[50%]">
             Participant Type Distribution
           </div>
+          <div className="text-center font-bold w-[50%]">Age Distribution</div>
         </div>
         <div className="flex flex-col justify-between lg:flex-row  items-center p-2 ">
           <CapturePie1
@@ -1275,6 +1346,14 @@ export const Cohortreport = () => {
             dataKey="value"
             nameKey="participantType"
             onCapture={handlePichart2Capture}
+          />
+          <CapturePie3
+            data={ageData}
+            colors={COLORS_GENDER}
+            // title="Participant Type Distribution"
+            dataKey="value"
+            nameKey="ageRange"
+            onCapture={handlePichart3Capture}
           />
         </div>
 
@@ -1356,12 +1435,14 @@ export const Cohortreport = () => {
                 heatImage={heatImage}
                 pieImage1={pieImage1}
                 pieImage2={pieImage2}
+                pieImage3={pieImage3}
                 date={date}
                 name={name}
                 signature={signature}
                 mobile={mobile}
                 des1={des1}
                 des2={des2}
+                type={type}
               />
             }
             fileName={`${cohortNameforExcel}-${startDate}-${endDate}.pdf`}
@@ -1375,7 +1456,7 @@ export const Cohortreport = () => {
             }
           </PDFDownloadLink>
         </div>
-        <PDFViewer width={600} height={800}>
+        {/* <PDFViewer width={600} height={800}>
           <MyDocument
             cohortList={cohortList}
             cohortSelect={cohortSelect}
@@ -1388,6 +1469,7 @@ export const Cohortreport = () => {
             heatImage={heatImage}
             pieImage1={pieImage1}
             pieImage2={pieImage2}
+            pieImage3={pieImage3}
             date={date}
             name={name}
             signature={signature}
@@ -1395,7 +1477,7 @@ export const Cohortreport = () => {
             des1={des1}
             des2={des2}
           />
-        </PDFViewer>
+        </PDFViewer> */}
       </div>
     </div>
   );
