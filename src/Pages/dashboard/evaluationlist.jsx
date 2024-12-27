@@ -35,6 +35,8 @@ export const Evaluationlist = () => {
   const [limit, setLimit] = useState(searchParams.get("limit") || 10); // default limit
   const [selectedCohort, setSelectedCohort] = useState("");
   const [singleCohort, setSingleCohort] = useState({});
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const { cohortList } = useSelector((state) => {
     return {
@@ -147,7 +149,7 @@ export const Evaluationlist = () => {
 
   const handleSearchSubmitname = (e) => {
     e.preventDefault();
-    dispatch(getAllEvalutionsByname(searchname))
+    dispatch(getAllEvalutionsByname(searchname, startDate, endDate))
       .then((res) => {
         setEvalutionlist(res.payload);
       })
@@ -180,15 +182,33 @@ export const Evaluationlist = () => {
         >
           <Input
             label="Search a member"
-            required
             value={searchname}
+            required
             onChange={(e) => setsearchname(e.target.value)}
           />
-          <Button type="submit" variant="">
+          {/* <div className="w-[30%]"> */}
+          <Input
+            label="Select start date"
+            type="date"
+            // required
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+          {/* </div>
+            <div className="w-[30%]"> */}
+          <Input
+            label="Select end date"
+            value={endDate}
+            // required
+            type="date"
+            // type={showPassword ? "text" : "password"}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+          
+          <button className="bg-[black] text-white cursor-pointer border px-3 py-2 rounded-md">
             Search
-          </Button>
-          <Button
-            type="button"
+          </button>
+          <button  className="cursor-pointer border px-3 py-2 rounded-md"
             onClick={() => {
               setSelectedCohort("");
               setsearchname("");
@@ -200,7 +220,7 @@ export const Evaluationlist = () => {
             disabled={!searchname}
           >
             Clear
-          </Button>
+            </button>
         </form>
         <div className="flex justify-center items-center">
           <div className="flex justify-center items-center">

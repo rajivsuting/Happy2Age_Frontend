@@ -299,11 +299,11 @@ export const getAllEvaluations = (currentPage="",limit="")=>(dispatch) => {
 
 
 export const getAllEvalutionsByname =
-  (name="") =>
+  (name="",startDate="",endDate="") =>
   (dispatch) => {
     dispatch({ type: types.GET_EVALUATIONS_REQUEST });
     return axios
-      .get(`${serverUrl}/evaluation/search/?name=${name}`,
+      .get(`${serverUrl}/evaluation/search/?name=${name}&startDate=${startDate}&endDate=${endDate}`,
         {
           headers: {
             Authorization: `${getLocalData("token")}`,

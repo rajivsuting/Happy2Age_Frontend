@@ -2,7 +2,7 @@ import React from 'react'
 import { PieChart, Pie, Cell,Tooltip,Legend } from "recharts";
 
 
-const DynamicPieChart2 = ({ data, colors, title, dataKey, nameKey }) => {
+const DynamicPieChart3 = ({ data, colors, title, dataKey, nameKey }) => {
     if (!data || data.length === 0) {
       return <div className="w-80 p-4">No Data Available</div>;
     }
@@ -59,5 +59,5 @@ const DynamicPieChart2 = ({ data, colors, title, dataKey, nameKey }) => {
   };
 
 
-export default DynamicPieChart2
+export default DynamicPieChart3
 

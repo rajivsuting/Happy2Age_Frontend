@@ -174,6 +174,7 @@ import html2canvas from "html2canvas";
 import Heatmap2 from "../../Componants/Heatmap2";
 import DynamicPieChart1 from "../../Componants/DynamicPieChart1";
 import DynamicPieChart2 from "../../Componants/DynamicPieChart2";
+import DynamicPieChart3 from "../../Componants/DynamicPieChart3";
 
 const CaptureChart = ({ data, onCapture }) => {
   const chartRef = useRef();
@@ -269,6 +270,35 @@ const CapturePie2 = ({ data, colors, title, dataKey, nameKey, onCapture }) => {
   return (
     <div ref={chartheatRef}>
       <DynamicPieChart2
+        data={data}
+        colors={colors}
+        title={title}
+        dataKey={dataKey}
+        nameKey={nameKey}
+      />
+    </div>
+  );
+};
+
+const CapturePie3 = ({ data, colors, title, dataKey, nameKey, onCapture }) => {
+  const chartheatRef = useRef();
+
+  useEffect(() => {
+    setTimeout(() => {
+      const captureChartAsImage = async () => {
+        if (chartheatRef.current) {
+          const canvas = await html2canvas(chartheatRef.current);
+          const imgData = canvas.toDataURL("image/png");
+          onCapture(imgData);
+        }
+      };
+      captureChartAsImage();
+    }, 2000);
+  }, [data]);
+
+  return (
+    <div ref={chartheatRef}>
+      <DynamicPieChart3
         data={data}
         colors={colors}
         title={title}
@@ -434,7 +464,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   pieImage: {
-    width: "200px",
+    width: "150px",
   },
 });
 
@@ -450,6 +480,7 @@ const MyDocument = ({
   heatImage,
   pieImage1,
   pieImage2,
+  pieImage3,
   date,
   name,
   signature,
@@ -593,6 +624,15 @@ const MyDocument = ({
               </View>
             )}
           </View>
+
+          <View style={styles.marginTop5}>
+            <Text style={{ marginLeft: "30px" }}>Age Distribution</Text>
+            {pieImage3 && (
+              <View>
+                <Image src={pieImage3} style={styles.pieImage} />
+              </View>
+            )}
+          </View>
         </View>
 
         <View>
@@ -673,6 +713,7 @@ export const AllCentreReport = () => {
   const [heatImage, setHeatImage] = useState(null);
   const [pieImage1, setPieImage1] = useState(null);
   const [pieImage2, setPieImage2] = useState(null);
+  const [pieImage3, setPieImage3] = useState(null);
   const [date, setDate] = useState();
   const [name, setName] = useState();
   const [signature, setSignature] = useState();
@@ -680,7 +721,7 @@ export const AllCentreReport = () => {
   const [des1, setDes1] = useState();
   const [des2, setDes2] = useState();
   const [genderData, setGenderData] = useState();
-
+  const [ageData, setAgeData] = useState();
   const [participantData, setParticipantData] = useState();
 
   const COLORS_GENDER = ["#22d172", "#fe2880", "#efbb29"];
@@ -701,6 +742,10 @@ export const AllCentreReport = () => {
 
   const handlePichart2Capture = (imgData) => {
     setPieImage2(imgData);
+  };
+
+  const handlePichart3Capture = (imgData) => {
+    setPieImage3(imgData);
   };
 
   const [singleEvalustion, setSingleEvaluation] = useState({});
@@ -732,7 +777,7 @@ export const AllCentreReport = () => {
         }
       )
       .then((res) => {
-        console.log(res.data.message.genderData);
+        console.log(res.data.message);
         setResultlist(res.data.message.graphDetails);
         setEntireEvaluation(res.data.message.evaluations);
 
@@ -748,6 +793,12 @@ export const AllCentreReport = () => {
           })
         );
 
+        const ageChartData = res.data.message.ageData.map((item) => ({
+          name: item.ageRange,
+          value: item.count,
+        }));
+
+        setAgeData(ageChartData);
         setGenderData(genderChartData);
         setParticipantData(participantChartData);
       })
@@ -998,6 +1049,7 @@ export const AllCentreReport = () => {
           <div className="text-center font-bold w-[50%]">
             Participant Type Distribution
           </div>
+          <div className="text-center font-bold w-[50%]">Age Distribution</div>
         </div>
         <div className="flex flex-col justify-between lg:flex-row  items-center p-2 ">
           <CapturePie1
@@ -1015,6 +1067,14 @@ export const AllCentreReport = () => {
             dataKey="value"
             nameKey="participantType"
             onCapture={handlePichart2Capture}
+          />
+          <CapturePie3
+            data={ageData}
+            colors={COLORS_GENDER}
+            // title="Participant Type Distribution"
+            dataKey="value"
+            nameKey="ageRange"
+            onCapture={handlePichart3Capture}
           />
         </div>
         <div className="mt-5">
@@ -1095,6 +1155,7 @@ export const AllCentreReport = () => {
                 heatImage={heatImage}
                 pieImage1={pieImage1}
                 pieImage2={pieImage2}
+                pieImage3={pieImage3}
                 date={date}
                 name={name}
                 signature={signature}
@@ -1127,6 +1188,7 @@ export const AllCentreReport = () => {
             heatImage={heatImage}
             pieImage1={pieImage1}
             pieImage2={pieImage2}
+            pieImage3={pieImage3}
             date={date}
             name={name}
             signature={signature}
