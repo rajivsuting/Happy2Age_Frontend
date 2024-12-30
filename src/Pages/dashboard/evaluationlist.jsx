@@ -183,7 +183,6 @@ export const Evaluationlist = () => {
           <Input
             label="Search a member"
             value={searchname}
-            required
             onChange={(e) => setsearchname(e.target.value)}
           />
           {/* <div className="w-[30%]"> */}
@@ -204,11 +203,12 @@ export const Evaluationlist = () => {
             // type={showPassword ? "text" : "password"}
             onChange={(e) => setEndDate(e.target.value)}
           />
-          
+
           <button className="bg-[black] text-white cursor-pointer border px-3 py-2 rounded-md">
             Search
           </button>
-          <button  className="cursor-pointer border px-3 py-2 rounded-md"
+          <button
+            className="cursor-pointer border px-3 py-2 rounded-md"
             onClick={() => {
               setSelectedCohort("");
               setsearchname("");
@@ -220,7 +220,7 @@ export const Evaluationlist = () => {
             disabled={!searchname}
           >
             Clear
-            </button>
+          </button>
         </form>
         <div className="flex justify-center items-center">
           <div className="flex justify-center items-center">
