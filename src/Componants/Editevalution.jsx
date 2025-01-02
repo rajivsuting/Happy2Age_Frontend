@@ -1,4 +1,4 @@
-import { Button, Input } from "@material-tailwind/react";
+import { Button, Input, Textarea } from "@material-tailwind/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
@@ -24,7 +24,6 @@ const EditEvaluation = ({
   const [finalObject, setFinalObject] = useState({});
   const navigate = useNavigate();
 
-  // Fetch domain list based on participantType
   useEffect(() => {
     const fetchDomainList = async () => {
       if (evaluation?.participant?.participantType) {
@@ -39,7 +38,11 @@ const EditEvaluation = ({
           );
           setDomainList(res.data.message);
         } catch (err) {
-          if (err.response && err.response.data && err.response.data.jwtExpired) {
+          if (
+            err.response &&
+            err.response.data &&
+            err.response.data.jwtExpired
+          ) {
             toast.error(err.response.data.message, toastConfig);
             setTimeout(() => {
               navigate("/auth/sign-in");
@@ -69,6 +72,7 @@ const EditEvaluation = ({
       // Clear finalArray and then recompute it based on the new evaluation
       const combinedArray = domainList.map((item) => {
         const match = evaluation.domain?.find((el) => el._id === item._id);
+        item.observation = match?.observation || ""; // Set observation to the existing value or empty
         if (match) {
           item.subTopics = item.subTopics.map((subTopic) => {
             const matchSubTopic = match.subTopics.find(
@@ -105,15 +109,25 @@ const EditEvaluation = ({
     }));
   };
 
+  const handleObservationChange = (domainIndex, newObs) => {
+    const updatedDomains = [...finalArray];
+    updatedDomains[domainIndex].observation = newObs;
+    setFinalArray(updatedDomains);
+    setFinalObject((prevObj) => ({
+      ...prevObj,
+      domain: updatedDomains,
+    }));
+  };
+
   // Handle save button click to save the evaluation
   const handleSave = () => {
+    console.log(finalObject)
     axios
-      .patch(`${serverUrl}/evaluation/${evaluation?._id}`, finalObject,
-        {
-          headers: {
-            Authorization: `${getLocalData("token")}`,
-          },
-        })
+      .patch(`${serverUrl}/evaluation/${evaluation?._id}`, finalObject, {
+        headers: {
+          Authorization: `${getLocalData("token")}`,
+        },
+      })
       .then((res) => {
         if (res.status === 200) {
           toast.success("Evaluation edited successfully", toastConfig);
@@ -124,6 +138,7 @@ const EditEvaluation = ({
         }
       })
       .catch((err) => {
+        console.log(err)
         if (err.response && err.response.data && err.response.data.jwtExpired) {
           toast.error(err.response.data.message, toastConfig);
           setTimeout(() => {
@@ -142,10 +157,16 @@ const EditEvaluation = ({
     onClose();
   };
 
+  console.log(evaluation);
+  console.log(finalArray);
+
   if (!isOpen) return null;
 
   return (
-    <div key={evaluation?._id} className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
+    <div
+      key={evaluation?._id}
+      className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300"
+    >
       <div className="relative m-4 w-[40%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
         <div className="sticky top-0 z-10 flex items-center justify-between p-4 py-8 font-sans text-2xl font-semibold text-blue-gray-900 bg-white">
           Edit evaluation
@@ -157,14 +178,14 @@ const EditEvaluation = ({
         </div>
         {finalArray?.map((domain, domainIndex) => (
           <div key={domain._id}>
-            <h3 className="mt-3 mb-3 text-[20px]">{domain.name}</h3>
+            <h3 className="mt-3 mb-3 text-[20px] font-bold">{domain.name}</h3>
             {domain.subTopics.map((subTopic, subTopicIndex) => (
               <div
-                className="flex justify-between items-center mt-2"
+                className="flex justify-between items-center mt-2 gap-5"
                 key={subTopic._id}
               >
                 <div className="">{subTopic.content}:</div>
-                <div className="w-[40%]">
+                <div className="w-[200px]">
                   <Input
                     label="Add score"
                     type="number"
@@ -181,6 +202,20 @@ const EditEvaluation = ({
                 </div>
               </div>
             ))}
+            {/* <h5 className="mt-3 mb-3 text-[16px]">Observation</h5> */}
+            <div className="mt-3 mb-3">
+              <Textarea
+                label="Observation"
+                type="text"
+                className="min-h-[50px] h-auto"
+                value={
+                  domain.observation !== undefined ? domain.observation : ""
+                } // Handle missing scores properly
+                onChange={(e) =>
+                  handleObservationChange(domainIndex, e.target.value)
+                }
+              />
+            </div>
           </div>
         ))}
         <div

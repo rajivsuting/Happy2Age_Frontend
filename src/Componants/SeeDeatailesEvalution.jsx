@@ -3,7 +3,7 @@ import { AiOutlineClose } from "react-icons/ai";
 
 const SeeDetailsCohort = ({ isOpen, onClose, singleEvalustion }) => {
   if (!isOpen) return null;
-
+console.log(singleEvalustion)
   return (
     <div className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
         <div className="relative m-4 w-[60%] max-h-[90vh] overflow-y-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 shadow-2xl px-4">
