@@ -168,6 +168,8 @@ export const Evaluationlist = () => {
       });
   };
 
+  // console.log(evalutionlist)
+
   useEffect(() => {
     let el = cohortList?.find((el) => el._id == selectedCohort);
     setSingleCohort(el);
