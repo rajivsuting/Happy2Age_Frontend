@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
     marginLeft: "20px",
   },
   pieChartbox: {
-    marginTop: "70px",
+    marginTop: "20px",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -1042,7 +1042,7 @@ export const AllCentreReport = () => {
 
         <CaptureHeatmap arr={resultnlist} onCapture={handleHeatmapCapture} />
         {/* </div> */}
-        <div className="flex flex-col justify-between lg:flex-row  items-center">
+        {/* <div className="flex flex-col justify-between lg:flex-row  items-center">
           <div className="text-center font-bold w-[50%]">
             Gender Distribution
           </div>
@@ -1050,12 +1050,12 @@ export const AllCentreReport = () => {
             Participant Type Distribution
           </div>
           <div className="text-center font-bold w-[50%]">Age Distribution</div>
-        </div>
+        </div> */}
         <div className="flex flex-col justify-between lg:flex-row  items-center p-2 ">
           <CapturePie1
             data={genderData}
             colors={COLORS_GENDER}
-            // title="Gender Distribution"
+            title="Gender Distribution"
             dataKey="value"
             nameKey="gender"
             onCapture={handlePichart1Capture}
@@ -1063,7 +1063,7 @@ export const AllCentreReport = () => {
           <CapturePie2
             data={participantData}
             colors={COLORS_PARTICIPANT}
-            // title="Participant Type Distribution"
+            title="Participant Type Distribution"
             dataKey="value"
             nameKey="participantType"
             onCapture={handlePichart2Capture}
@@ -1071,7 +1071,7 @@ export const AllCentreReport = () => {
           <CapturePie3
             data={ageData}
             colors={COLORS_GENDER}
-            // title="Participant Type Distribution"
+            title="Age Distribution"
             dataKey="value"
             nameKey="ageRange"
             onCapture={handlePichart3Capture}
@@ -1175,7 +1175,7 @@ export const AllCentreReport = () => {
             }
           </PDFDownloadLink>
         </div>
-        <PDFViewer width={600} height={800}>
+        {/* <PDFViewer width={600} height={800}>
           <MyDocument
             cohortList={cohortList}
             cohortSelect={cohortSelect}
@@ -1196,7 +1196,7 @@ export const AllCentreReport = () => {
             des1={des1}
             des2={des2}
           />
-        </PDFViewer>
+        </PDFViewer> */}
       </div>
     </div>
   );
