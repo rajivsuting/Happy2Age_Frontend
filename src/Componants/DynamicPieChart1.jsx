@@ -8,8 +8,8 @@ const DynamicPieChart1 = ({ data, colors, title, dataKey, nameKey }) => {
     }
   
     return (
-      <div className="w-[30%] p-4">
-        <p className="text-[18px] font-bold text-center mb-2">{title}</p>
+      <div className="w-[100%]">
+        <p className=" font-bold text-center mb-5">{title}</p>
         <PieChart width={250} height={250}>
           <Pie
             data={data}
