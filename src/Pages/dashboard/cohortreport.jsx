@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
     marginLeft: "20px",
   },
   pieChartbox: {
-    marginTop: "120px",
+    marginTop: "0px",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -612,9 +612,7 @@ const MyDocument = ({
             </Text>
             <Text>
               Member type :{" "}
-              <Text style={[styles.input, styles.nameInput]}>
-                {type}
-              </Text>
+              <Text style={[styles.input, styles.nameInput]}>{type}</Text>
             </Text>
           </View>
         </View>
@@ -689,7 +687,7 @@ const MyDocument = ({
 
         <View style={styles.pieChartbox}>
           <View style={styles.marginTop5}>
-            <Text>Gender Distribution </Text>
+            {/* <Text>Gender Distribution </Text> */}
             {pieImage1 && (
               <View>
                 <Image src={pieImage1} style={styles.pieImage} />
@@ -698,7 +696,7 @@ const MyDocument = ({
           </View>
 
           <View style={styles.marginTop5}>
-            <Text>Participant Type Distribution</Text>
+            {/* <Text>Participant Type Distribution</Text> */}
             {pieImage2 && (
               <View>
                 <Image src={pieImage2} style={styles.pieImage} />
@@ -707,7 +705,7 @@ const MyDocument = ({
           </View>
 
           <View style={styles.marginTop5}>
-            <Text style={{ marginLeft: "30px" }}>Age Distribution</Text>
+            {/* <Text style={{ marginLeft: "30px" }}>Age Distribution</Text> */}
             {pieImage3 && (
               <View>
                 <Image src={pieImage3} style={styles.pieImage} />
@@ -1321,7 +1319,7 @@ export const Cohortreport = () => {
           arr={resultnlist?.participantDomainScores}
           onCapture={handleHeatmapCapture}
         />
-        <div className="flex flex-col justify-between lg:flex-row  items-center">
+        {/* <div className="flex flex-col justify-between lg:flex-row  items-center">
           <div className="text-center font-bold w-[50%]">
             Gender Distribution
           </div>
@@ -1329,12 +1327,12 @@ export const Cohortreport = () => {
             Participant Type Distribution
           </div>
           <div className="text-center font-bold w-[50%]">Age Distribution</div>
-        </div>
+        </div> */}
         <div className="flex flex-col justify-between lg:flex-row  items-center p-2 ">
           <CapturePie1
             data={genderData}
             colors={COLORS_GENDER}
-            // title="Gender Distribution"
+            title="Gender Distribution"
             dataKey="value"
             nameKey="gender"
             onCapture={handlePichart1Capture}
@@ -1342,7 +1340,7 @@ export const Cohortreport = () => {
           <CapturePie2
             data={participantData}
             colors={COLORS_PARTICIPANT}
-            // title="Participant Type Distribution"
+            title="Participant Type Distribution"
             dataKey="value"
             nameKey="participantType"
             onCapture={handlePichart2Capture}
@@ -1350,7 +1348,7 @@ export const Cohortreport = () => {
           <CapturePie3
             data={ageData}
             colors={COLORS_GENDER}
-            // title="Participant Type Distribution"
+            title="Age Distribution"
             dataKey="value"
             nameKey="ageRange"
             onCapture={handlePichart3Capture}
