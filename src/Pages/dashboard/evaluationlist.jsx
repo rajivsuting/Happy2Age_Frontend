@@ -183,7 +183,7 @@ export const Evaluationlist = () => {
           onSubmit={handleSearchSubmitname}
         >
           <Input
-            label="Search a member"
+            label="Search by Member or Center"
             value={searchname}
             onChange={(e) => setsearchname(e.target.value)}
           />
