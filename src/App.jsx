@@ -1,152 +1,207 @@
-import React, { useEffect, useState } from "react";
-import AllRoutes from "./Routes/AllRoutes";
-import { ToastContainer, toast } from "react-toastify";
+import React, { Suspense } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import * as Pages from "./pages";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import {
-  getAllAdmins,
-  getAllParticipants,
-} from "./Redux/AllListReducer/action";
-import { getAllCohorts } from "./Redux/AllListReducer/action";
-import { getAllActivities } from "./Redux/AllListReducer/action";
-import { getAllDomains } from "./Redux/AllListReducer/action";
-import { getAllSessions } from "./Redux/AllListReducer/action";
-import { getAllEvaluations } from "./Redux/AllListReducer/action";
-import { useNavigate } from "react-router-dom";
+import ActivityDetails from "./pages/ActivityDetails";
+import EditActivity from "./pages/EditActivity";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "./components/Layout";
+import { AuthProvider } from "./context/AuthContext";
+import LoadingSpinner from "./components/LoadingSpinner";
+import CenterAnalytics from "./pages/CenterAnalytics";
+import ReportHistory from "./pages/reports/ReportHistory";
+import ReportDetails from "./pages/reports/ReportDetails";
+import Calendar from "./pages/calendar/Calendar";
+import NewSession from "./pages/NewSession";
+
+// Set axios defaults
 axios.defaults.withCredentials = true;
 
-export const toastConfig = {
-  position: "top-center",
-  autoClose: 2000,
-  hideProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-  progress: undefined,
-  theme: "dark",
-  // transition: Bounce,
-};
-
-const App = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [chartImage, setChartImage] = useState('');
-
-
-  useEffect(() => {
-    dispatch(getAllParticipants("", ""))
-      .then((res) => {
-        return true;
-      })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
-    dispatch(getAllCohorts("", ""))
-      .then((res) => {
-        return true;
-      })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
-    // dispatch(getAllAdmins);
-    dispatch(getAllActivities("", ""))
-      .then((res) => {
-        return true;
-      })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
-    dispatch(getAllDomains("All"))
-      .then((res) => {
-        return true;
-      })
-     .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
-    dispatch(getAllSessions("", ""))
-      .then((res) => {
-        return true;
-      })
-      .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
-    dispatch(getAllEvaluations("",""))
-      .then((res) => {
-        return true;
-      })
-     .catch((err) => {
-        if (err.response && err.response.data && err.response.data.jwtExpired) {
-          toast.error(err.response.data.message, toastConfig);
-          setTimeout(() => {
-            navigate("/auth/sign-in");
-          }, 3000);
-        } else if (err.response && err.response.data) {
-          toast.error(err.response.data.message, toastConfig);
-        } else {
-          toast.error("An unexpected error occurred.", toastConfig);
-        }
-      });
-  }, []);
-
+function App() {
   return (
-    <div>
-      <AllRoutes />
-      <ToastContainer />
-      {/* <ChartComponent setChartImage={setChartImage} />
-      {chartImage && (
-        <PDFDownloadLink document={<PDFDocument chartImage={chartImage} />} fileName="chart.pdf">
-          {({ loading }) => (loading ? 'Loading document...' : 'Download PDF')}
-        </PDFDownloadLink>
-      )} */}
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <Suspense fallback={<LoadingSpinner />}>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+          <Routes>
+            <Route path="/" element={<Pages.Login />} />
+            <Route
+              path="/*"
+              element={
+                <ProtectedRoute>
+                  <Routes>
+                    <Route element={<Layout />}>
+                      <Route path="dashboard" element={<Pages.Dashboard />} />
+                      <Route path="members" element={<Pages.Members />} />
+                      <Route path="members/new" element={<Pages.NewMember />} />
+                      <Route
+                        path="members/edit/:id"
+                        element={<Pages.EditMember />}
+                      />
+                      <Route
+                        path="members/:id"
+                        element={<Pages.MemberDetails />}
+                      />
+                      <Route path="centers" element={<Pages.Centers />} />
+                      <Route
+                        path="centers/:id"
+                        element={<Pages.CenterDetails />}
+                      />
+                      <Route
+                        path="centers/edit/:id"
+                        element={<Pages.EditCenter />}
+                      />
+                      <Route path="centers/new" element={<Pages.AddCenter />} />
+                      <Route path="activities" element={<Pages.Activities />} />
+                      <Route
+                        path="activities/new"
+                        element={<Pages.NewActivity />}
+                      />
+                      <Route
+                        path="activities/:id"
+                        element={<ActivityDetails />}
+                      />
+                      <Route
+                        path="activities/edit/:id"
+                        element={<EditActivity />}
+                      />
+                      <Route
+                        path="evaluation-master"
+                        element={<Pages.EvaluationMasterList />}
+                      />
+                      <Route
+                        path="evaluation-master/new"
+                        element={<Pages.NewDomain />}
+                      />
+                      <Route
+                        path="evaluation-master/:id"
+                        element={<Pages.DomainDetails />}
+                      />
+                      <Route
+                        path="evaluation-master/edit/:id"
+                        element={<Pages.EditDomain />}
+                      />
+                      <Route path="sessions">
+                        <Route path="list" element={<Pages.SessionList />} />
+                        <Route
+                          path="attendance"
+                          element={<Pages.Attendance />}
+                        />
+                        <Route path=":id" element={<Pages.SessionDetails />} />
+                        <Route
+                          path="edit/:id"
+                          element={<Pages.EditSession />}
+                        />
+                      </Route>
+                      <Route
+                        path="evaluations"
+                        element={<Pages.Evaluations />}
+                      />
+                      <Route
+                        path="evaluations/new"
+                        element={<Pages.NewEvaluation />}
+                      />
+                      <Route
+                        path="evaluations/:id"
+                        element={<Pages.EvaluationDetails />}
+                      />
+                      <Route
+                        path="evaluations/edit/:id"
+                        element={<Pages.EditEvaluation />}
+                      />
+                      <Route path="reports">
+                        <Route
+                          path="all-center"
+                          element={<Pages.AllCenterReport />}
+                        />
+                        <Route path="center" element={<Pages.CenterReport />} />
+                        <Route path="member" element={<Pages.MemberReport />} />
+                        <Route path="history" element={<ReportHistory />} />
+                        <Route path="history/:id" element={<ReportDetails />} />
+                      </Route>
+                      <Route
+                        path="/analytics/performance"
+                        element={<Pages.PerformanceTrends />}
+                      />
+                      <Route
+                        path="oxford-happiness"
+                        element={<Pages.OxfordHappiness />}
+                      />
+                      <Route path="casp-19" element={<Pages.Casp19 />} />
+                      <Route path="moca" element={<Pages.Moca />} />
+                      <Route
+                        path="attendance/:id"
+                        element={<Pages.AttendanceDetails />}
+                      />
+                      <Route
+                        path="analytics/centers"
+                        element={<CenterAnalytics />}
+                      />
+                      <Route path="/calendar" element={<Calendar />} />
+                      <Route path="/session/new" element={<NewSession />} />
+                      <Route
+                        path="upcoming-features"
+                        element={<Pages.UpcomingFeatures />}
+                      />
+                      <Route
+                        path="caregiver-dashboard-preview"
+                        element={<Pages.CaregiverDashboardPreview />}
+                      />
+                      <Route
+                        path="family-portal-preview"
+                        element={<Pages.FamilyPortalPreview />}
+                      />
+                      <Route
+                        path="cross-community-insights"
+                        element={<Pages.CrossCommunityInsights />}
+                      />
+                      <Route
+                        path="member-domain-progress"
+                        element={<Pages.MemberDomainProgress />}
+                      />
+                      <Route
+                        path="tech-enabled-activities"
+                        element={<Pages.TechEnabledActivities />}
+                      />
+                      <Route
+                        path="tech-communication-sessions"
+                        element={<Pages.TechCommunicationAndSessions />}
+                      />
+                      <Route
+                        path="session-activity-overview"
+                        element={<Pages.SessionActivityOverview />}
+                      />
+                      <Route
+                        path="expansion-module"
+                        element={<Pages.ExpansionModule />}
+                      />
+                      <Route
+                        path="automated-data-analysis"
+                        element={<Pages.AutomatedDataAnalysis />}
+                      />
+                    </Route>
+                  </Routes>
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </AuthProvider>
   );
-};
-
+}
 
 export default App;
