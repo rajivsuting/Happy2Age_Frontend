@@ -32,8 +32,18 @@ export const AllCenterReport = React.lazy(() =>
 export const CenterReport = React.lazy(() => import("./reports/CenterReport"));
 export const MemberReport = React.lazy(() => import("./reports/MemberReport"));
 export const OxfordHappiness = React.lazy(() => import("./OxfordHappiness"));
+export const AddOxfordHappiness = React.lazy(() =>
+  import("./AddOxfordHappiness")
+);
+export const EditOxfordHappiness = React.lazy(() =>
+  import("./EditOxfordHappiness")
+);
 export const Casp19 = React.lazy(() => import("./Casp19"));
+export const AddCasp19 = React.lazy(() => import("./AddCasp19"));
+export const EditCasp19 = React.lazy(() => import("./EditCasp19"));
 export const Moca = React.lazy(() => import("./Moca"));
+export const AddMoca = React.lazy(() => import("./AddMoca"));
+export const EditMoca = React.lazy(() => import("./EditMoca"));
 export const DomainDetails = React.lazy(() => import("./DomainDetails"));
 export const SessionDetails = React.lazy(() => import("./SessionDetails"));
 export const EditSession = React.lazy(() => import("./EditSession"));

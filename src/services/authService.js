@@ -1,19 +1,9 @@
 import axiosInstance from "../utils/axios";
-import { session } from "../utils/session";
 
 class AuthService {
   constructor() {
     this.authenticated = false;
     this.user = null;
-    this.initializeFromSession();
-  }
-
-  initializeFromSession() {
-    const savedSession = session.get();
-    if (savedSession && session.isValid()) {
-      this.authenticated = true;
-      this.user = savedSession.user;
-    }
   }
 
   isAuthenticated() {
@@ -30,13 +20,6 @@ class AuthService {
       if (response.data.success) {
         this.authenticated = true;
         this.user = response.data.user;
-
-        // Save session
-        session.set({
-          user: response.data.user,
-          expiresAt: new Date().getTime() + 24 * 60 * 60 * 1000, // 24 hours
-        });
-
         return response.data;
       }
       return response.data;
@@ -59,55 +42,40 @@ class AuthService {
   clearAuth() {
     this.authenticated = false;
     this.user = null;
-    session.clear();
   }
 
   async checkAuth() {
-    // First check if we have a valid session
-    if (session.isValid()) {
-      const savedSession = session.get();
-      this.authenticated = true;
-      this.user = savedSession.user;
-      return { success: true, user: savedSession.user };
-    }
-
     try {
+      console.log("AuthService: Verifying token with server...");
       // Verify token with server
       const response = await axiosInstance.get("/auth/verify");
+      console.log("AuthService: Verify response:", response.data);
 
       if (response.data.success) {
         this.authenticated = true;
         this.user = response.data.user;
-
-        // Update session
-        session.set({
-          user: response.data.user,
-          expiresAt: new Date().getTime() + 24 * 60 * 60 * 1000,
-        });
-
+        console.log("AuthService: Authentication successful");
         return { success: true, user: response.data.user };
       }
 
+      console.log("AuthService: Verify failed, trying refresh...");
       // If verify fails, try to refresh
       try {
         const refreshResponse = await axiosInstance.post("/auth/refresh");
+        console.log("AuthService: Refresh response:", refreshResponse.data);
         if (refreshResponse.data.success) {
           this.authenticated = true;
           this.user = refreshResponse.data.user;
-
-          // Update session
-          session.set({
-            user: refreshResponse.data.user,
-            expiresAt: new Date().getTime() + 24 * 60 * 60 * 1000,
-          });
-
+          console.log("AuthService: Refresh successful");
           return { success: true, user: refreshResponse.data.user };
         }
       } catch (refreshError) {
+        console.log("AuthService: Token refresh failed:", refreshError);
         this.clearAuth();
         return { success: false };
       }
     } catch (error) {
+      console.log("AuthService: Auth verification failed:", error);
       this.clearAuth();
       return { success: false };
     }

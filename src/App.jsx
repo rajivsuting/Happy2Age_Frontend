@@ -140,8 +140,26 @@ function App() {
                         path="oxford-happiness"
                         element={<Pages.OxfordHappiness />}
                       />
+                      <Route
+                        path="oxford-happiness/add"
+                        element={<Pages.AddOxfordHappiness />}
+                      />
+                      <Route
+                        path="oxford-happiness/edit/:id"
+                        element={<Pages.EditOxfordHappiness />}
+                      />
                       <Route path="casp-19" element={<Pages.Casp19 />} />
+                      <Route path="casp-19/add" element={<Pages.AddCasp19 />} />
+                      <Route
+                        path="casp-19/edit/:id"
+                        element={<Pages.EditCasp19 />}
+                      />
                       <Route path="moca" element={<Pages.Moca />} />
+                      <Route path="moca/add" element={<Pages.AddMoca />} />
+                      <Route
+                        path="moca/edit/:id"
+                        element={<Pages.EditMoca />}
+                      />
                       <Route
                         path="attendance/:id"
                         element={<Pages.AttendanceDetails />}

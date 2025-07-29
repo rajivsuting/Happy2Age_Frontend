@@ -172,9 +172,11 @@ const DomainDetails = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Activity</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    Happiness Parameters
+                  </p>
                   <p className="mt-1 text-sm text-gray-900">
-                    {domain.activity?.name || "No activity assigned"}
+                    {domain.happinessParameter?.join(", ") || "None"}
                   </p>
                 </div>
               </div>

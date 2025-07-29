@@ -230,7 +230,7 @@ const EvaluationMasterList = () => {
                     scope="col"
                     className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Activity
+                    Happiness Parameters
                   </th>
                   <th
                     scope="col"
@@ -304,7 +304,7 @@ const EvaluationMasterList = () => {
                       </td>
                       <td className="px-4 py-2">
                         <div className="text-sm text-gray-500">
-                          {domain.activity?.name || "No activity"}
+                          {domain.happinessParameter?.join(", ") || "None"}
                         </div>
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap text-right text-sm font-medium">

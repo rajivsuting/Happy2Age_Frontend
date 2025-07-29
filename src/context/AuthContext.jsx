@@ -6,8 +6,8 @@ import React, {
   useCallback,
 } from "react";
 import authService from "../services/authService";
-import { session } from "../utils/session";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { toast } from "react-toastify";
 
 const AuthContext = createContext();
 
@@ -23,21 +23,44 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
     setUser(null);
     setError(null);
-    session.clear();
   }, []);
 
   const checkAuth = useCallback(async () => {
     try {
+      console.log("Checking authentication...");
       const response = await authService.checkAuth();
+      console.log("Auth check response:", response);
       if (response.success) {
         setIsAuthenticated(true);
         setUser(response.user);
         setError(null);
+        console.log("Authentication successful");
       } else {
+        console.log("Authentication failed - no success");
         clearAuth();
       }
     } catch (error) {
       console.error("Auth check error:", error);
+      console.log("Error response:", error.response);
+      // For 401 errors, try to logout properly to clear cookies
+      if (error.response?.status === 401) {
+        try {
+          await authService.logout();
+        } catch (logoutError) {
+          console.error("Logout error:", logoutError);
+        }
+        // Only show toast if we're not on the login page (to avoid showing on refresh)
+        if (window.location.pathname !== "/") {
+          toast.error("Your session has expired. Please log in again.", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+        }
+      }
       clearAuth();
     } finally {
       setIsLoading(false);
@@ -49,20 +72,10 @@ export const AuthProvider = ({ children }) => {
 
     const initializeAuth = async () => {
       try {
-        // Check if we have a valid session first
-        const savedSession = session.get();
-        if (savedSession && session.isValid()) {
-          if (isMounted) {
-            setIsAuthenticated(true);
-            setUser(savedSession.user);
-            setIsLoading(false);
-          }
-        } else {
-          // If no valid session, check with server
-          await checkAuth();
-        }
+        // Always check with server since we're using cookies
+        await checkAuth();
       } catch (error) {
-        console.error("Session initialization error:", error);
+        console.error("Auth initialization error:", error);
         if (isMounted) {
           clearAuth();
           setIsLoading(false);

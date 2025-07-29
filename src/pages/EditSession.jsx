@@ -7,6 +7,7 @@ const EditSession = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
+  const [activitiesLoading, setActivitiesLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [cohorts, setCohorts] = useState([]);
@@ -39,10 +40,37 @@ const EditSession = () => {
     formData.activities.includes(activity._id)
   );
 
+  // Debug: Log the state to understand what's happening
   useEffect(() => {
-    fetchSession();
-    fetchCohorts();
-    fetchActivities(); // Fetch activities on component load
+    console.log("Debug - allActivities length:", allActivities.length);
+    console.log("Debug - formData.activities:", formData.activities);
+    console.log(
+      "Debug - selectedActivities length:",
+      selectedActivities.length
+    );
+    if (allActivities.length > 0 && formData.activities.length > 0) {
+      console.log(
+        "Debug - Sample activity from allActivities:",
+        allActivities[0]
+      );
+      console.log(
+        "Debug - Sample activity ID from formData:",
+        formData.activities[0]
+      );
+      console.log(
+        "Debug - Are they matching?",
+        allActivities.some((a) => a._id === formData.activities[0])
+      );
+    }
+  }, [allActivities, formData.activities, selectedActivities]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      await fetchActivities(); // Fetch activities first
+      await fetchCohorts();
+      await fetchSession(); // Then fetch session data
+    };
+    loadData();
   }, [id]);
 
   // Fetch participants for the selected cohort when cohort changes
@@ -86,6 +114,9 @@ const EditSession = () => {
         // Extract activities and participants
         // const activities = session.activity || [];
         // const participants = session.participants?.map((p) => p.participantId) || [];
+        console.log("Debug - Session data:", session);
+        console.log("Debug - Session activities:", session.activity);
+
         setFormData({
           name: session.name || "",
           date: session.date
@@ -259,19 +290,26 @@ const EditSession = () => {
       if (response.data.success) {
         setCohorts(response.data.data || []);
       }
+      return response.data.success;
     } catch (error) {
       console.error("Error fetching cohorts:", error);
+      return false;
     }
   };
 
   const fetchActivities = async () => {
     try {
-      const response = await axiosInstance.get(`/activity/all`);
+      setActivitiesLoading(true);
+      const response = await axiosInstance.get(`/activity/export`);
       if (response.data.success) {
         setAllActivities(response.data.data || []);
       }
+      return response.data.success;
     } catch (error) {
       console.error("Error fetching activities:", error);
+      return false;
+    } finally {
+      setActivitiesLoading(false);
     }
   };
 
@@ -548,6 +586,24 @@ const EditSession = () => {
                       ))}
                     </div>
                   )}
+                  {/* Show loading state or activity IDs if activities haven't been loaded yet */}
+                  {activitiesLoading && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <span className="text-sm text-gray-500">
+                        Loading activities...
+                      </span>
+                    </div>
+                  )}
+                  {!activitiesLoading &&
+                    formData.activities.length > 0 &&
+                    selectedActivities.length === 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <span className="text-sm text-gray-500">
+                          Loading activity details... (
+                          {formData.activities.length} selected)
+                        </span>
+                      </div>
+                    )}
                 </div>
                 <div className="flex-1">
                   {/* Duration */}

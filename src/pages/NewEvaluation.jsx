@@ -368,16 +368,11 @@ const NewEvaluation = () => {
                         }`}
                       >
                         <option value="">Select an activity</option>
-                        {activityList.map((activity) => {
-                          if (activityFromSession.includes(activity._id)) {
-                            return (
-                              <option key={activity._id} value={activity._id}>
-                                {activity.name}
-                              </option>
-                            );
-                          }
-                          return null;
-                        })}
+                        {activityFromSession.map((activity) => (
+                          <option key={activity._id} value={activity._id}>
+                            {activity.name}
+                          </option>
+                        ))}
                       </select>
                       {errors.activity && (
                         <p className="mt-2 text-sm text-red-600">

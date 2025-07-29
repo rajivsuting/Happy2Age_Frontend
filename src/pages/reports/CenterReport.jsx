@@ -106,34 +106,28 @@ const PDFPieChart = ({ data, title }) => {
     <div
       className="pie-chart"
       style={{
-        width: "200px",
-        height: "260px", // Increased height to prevent clipping
-        backgroundColor: "#ffffff",
-        padding: "15px",
-        borderRadius: "4px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        width: "220px",
+        height: "300px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        padding: "10px",
       }}
     >
       <h4
         style={{
-          fontSize: "12px",
-          fontWeight: "500",
+          fontSize: "14px",
+          fontWeight: "600",
           color: "#000000",
-          marginBottom: "10px", // Reduced margin to ensure chart fits
+          marginBottom: "10px",
           textAlign: "center",
-          width: "100%",
         }}
       >
         {title}
       </h4>
-      <div style={{ width: "170px", height: "190px" }}>
-        {" "}
-        {/* Increased chart container height */}
+      <div style={{ width: "200px", height: "200px" }}>
         <ResponsiveContainer width="100%" height="100%">
-          <PieChart margin={{ top: 10, right: 0, bottom: 10, left: 0 }}>
+          <PieChart>
             <Pie
               data={data}
               dataKey="count"
@@ -146,7 +140,7 @@ const PDFPieChart = ({ data, title }) => {
               }
               cx="50%"
               cy="50%"
-              outerRadius={80}
+              outerRadius={85}
               label={renderCustomLabel}
               labelLine={false}
             >
@@ -193,7 +187,7 @@ const ParticipantHeatmap = ({ data }) => {
   const options = {
     chart: {
       type: "heatmap",
-      height: 400,
+      height: 500,
       backgroundColor: "#ffffff",
     },
     title: {
@@ -203,28 +197,33 @@ const ParticipantHeatmap = ({ data }) => {
       categories: domains,
       title: {
         text: "Domains",
-        style: { color: "#000000", fontSize: "12px" },
+        style: { color: "#000000", fontSize: "14px" },
       },
-      labels: { style: { color: "#000000", fontSize: "10px" } },
+      labels: { style: { color: "#000000", fontSize: "12px" } },
     },
     yAxis: {
       categories: participants,
       title: {
         text: "Participants",
-        style: { color: "#000000", fontSize: "12px" },
+        style: { color: "#000000", fontSize: "14px" },
       },
-      labels: { style: { color: "#000000", fontSize: "10px" } },
+      labels: { style: { color: "#000000", fontSize: "12px" } },
     },
     colorAxis: {
       min: 0,
-      max: 6,
+      max: 7,
       stops: [
-        [0, "#FF8042"],
-        [0.5, "#FFBB28"],
-        [0.833, "#239d62"],
-        [1, "#239d62"],
+        [0, "#FF8042"], // Orange
+        [0.285, "#FF8042"], // Orange (0-2: 2/7 = 0.285)
+        [0.286, "#f3ba00"], // Yellow
+        [0.571, "#f3ba00"], // Yellow (2.1-4: 1.9/7 = 0.571)
+        [0.572, "#239d62"], // Green
+        [1, "#239d62"], // Green (4.1-7: 2.9/7 = 0.572-1)
       ],
-      labels: { style: { color: "#000000", fontSize: "10px" } },
+      labels: { enabled: false },
+      title: { enabled: false },
+      legend: { enabled: false },
+      visible: false,
     },
     series: [
       {
@@ -236,7 +235,7 @@ const ParticipantHeatmap = ({ data }) => {
           enabled: true,
           color: "#000000",
           format: "{point.value:.1f}",
-          style: { fontSize: "10px" },
+          style: { fontSize: "12px" },
         },
       },
     ],
@@ -264,22 +263,87 @@ const ParticipantHeatmap = ({ data }) => {
   return (
     <div className="heatmap-chart">
       <HighchartsReact highcharts={Highcharts} options={options} />
-      <div className="mt-4 flex items-center justify-center gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-[#239d62]"></div>
-          <span className="text-sm text-gray-600">Score ≥ 5</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-[#FFBB28]"></div>
-          <span className="text-sm text-gray-600">Score 3.1-4.9</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-[#FF8042]"></div>
-          <span className="text-sm text-gray-600">Score 0-3</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-white border border-gray-300"></div>
-          <span className="text-sm text-gray-600">NA</span>
+      <div
+        style={{
+          marginTop: "24px",
+          padding: "16px",
+          backgroundColor: "#f9fafb",
+          borderRadius: "8px",
+          border: "1px solid #e5e7eb",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "24px",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div
+              style={{
+                width: "24px",
+                height: "24px",
+                backgroundColor: "#239d62",
+                borderRadius: "4px",
+                border: "1px solid #d1d5db",
+              }}
+            ></div>
+            <span
+              style={{ fontSize: "14px", fontWeight: "500", color: "#374151" }}
+            >
+              Green (4.1-7)
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div
+              style={{
+                width: "24px",
+                height: "24px",
+                backgroundColor: "#f3ba00",
+                borderRadius: "4px",
+                border: "1px solid #d1d5db",
+              }}
+            ></div>
+            <span
+              style={{ fontSize: "14px", fontWeight: "500", color: "#374151" }}
+            >
+              Yellow (2.1-4)
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div
+              style={{
+                width: "24px",
+                height: "24px",
+                backgroundColor: "#FF8042",
+                borderRadius: "4px",
+                border: "1px solid #d1d5db",
+              }}
+            ></div>
+            <span
+              style={{ fontSize: "14px", fontWeight: "500", color: "#374151" }}
+            >
+              Orange (0-2)
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div
+              style={{
+                width: "24px",
+                height: "24px",
+                backgroundColor: "#ffffff",
+                borderRadius: "4px",
+                border: "1px solid #d1d5db",
+              }}
+            ></div>
+            <span
+              style={{ fontSize: "14px", fontWeight: "500", color: "#374151" }}
+            >
+              White (NA)
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -374,11 +438,11 @@ const CenterReport = () => {
   );
 
   const getScoreColor = (score) => {
-    if (!score || score === "NA") return "#ffffff";
+    if (!score || score === "NA") return "#ffffff"; // White for NA
     const numScore = parseFloat(score);
-    if (numScore >= 5) return "#239d62";
-    if (numScore >= 3.1) return "#FFBB28";
-    return "#FF8042";
+    if (numScore >= 4.1) return "#239d62"; // Green for scores 4.1-7
+    if (numScore >= 2.1) return "#f3ba00"; // Yellow for scores 2.1-4
+    return "#FF8042"; // Orange for scores 0-2
   };
 
   const waitForElement = (selector, timeout = 5000) => {
@@ -513,7 +577,11 @@ const CenterReport = () => {
       pdf.setFont("helvetica", "normal");
       pdf.setTextColor(0, 0, 0);
       pdf.text(
-        reportData.message.participantDomainScores?.length?.toString() || "N/A",
+        new Set(
+          reportData.message.participantDomainScores?.map(
+            (score) => score.participant
+          ) || []
+        ).size.toString() || "N/A",
         leftColumnX + labelWidth,
         currentY
       );
@@ -565,20 +633,18 @@ const CenterReport = () => {
       pdf.setFillColor(249, 250, 251);
       pdf.rect(margin + 5, yPos, contentWidth - 10, 20, "F");
       pdf.text(
-        `Total Attendance: ${reportData.message.attendance || "N/A"}`,
+        `Attendance: ${reportData.message.attendance || "N/A"}`,
         margin + 10,
         yPos + 7
       );
       pdf.text(
         `Total Sessions: ${reportData.message.totalNumberOfSessions || "N/A"}`,
-        margin + 10 + (contentWidth - 20) / 2,
+        margin - 5 + (contentWidth - 20) / 2,
         yPos + 7
       );
       pdf.text(
-        `Total Possible Attendance: ${
-          reportData.message.totalAttendance || "N/A"
-        }`,
-        margin + 10 + (contentWidth - 20) - 60,
+        `Total Attendance: ${reportData.message.totalAttendance || "N/A"}`,
+        margin + 20 + (contentWidth - 20) - 60,
         yPos + 7
       );
       yPos += 30;
@@ -969,7 +1035,7 @@ const CenterReport = () => {
 
         console.log("Capturing Participant Domain Scores heatmap...");
         const heatmapElement = await waitForElement(
-          ".heatmap-chart .highcharts-container",
+          ".heatmap-chart",
           5000
         ).catch((err) => {
           console.warn(err.message);
@@ -1051,9 +1117,16 @@ const CenterReport = () => {
 
       const root = ReactDOM.createRoot(tempContainer);
       root.render(
-        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "20px",
+            justifyContent: "center",
+          }}
+        >
           {pieChartData.map((chart, index) => (
-            <div key={index} style={{ width: "200px", height: "260px" }}>
+            <div key={index} style={{ width: "220px", height: "300px" }}>
               <PDFPieChart data={chart.data} title={chart.title} />
             </div>
           ))}
@@ -1064,7 +1137,7 @@ const CenterReport = () => {
       const pieCharts = tempContainer.querySelectorAll(".pie-chart");
       if (pieCharts.length >= 3) {
         const chartWidth = (contentWidth - 20) / 3;
-        const chartHeight = chartWidth; // Ensure square aspect ratio
+        const chartHeight = chartWidth * 1.35; // Increase height by 35%
         const spacing = 10;
         for (let i = 0; i < 3; i++) {
           if (yPos + chartHeight > pageHeight - margin - 10) {
@@ -1081,12 +1154,12 @@ const CenterReport = () => {
             useCORS: true,
             backgroundColor: "#ffffff",
             logging: true,
-            width: 200,
-            height: 260, // Match updated container height
+            width: 220,
+            height: 300, // Match updated container height
           });
           console.log(`Pie chart ${i + 1} captured successfully`);
           const imgData = canvas.toDataURL("image/png");
-          const xPos = margin + 5 + (chartWidth + spacing) * i;
+          const xPos = margin + 1 + (chartWidth + spacing) * i;
           pdf.addImage(imgData, "PNG", xPos, yPos + 5, chartWidth, chartHeight);
         }
         yPos += chartHeight + 10;
@@ -1435,7 +1508,13 @@ const CenterReport = () => {
                             Total Members
                           </p>
                           <p className="text-sm text-gray-900">
-                            {reportData.message.participantDomainScores.length}
+                            {
+                              new Set(
+                                reportData.message.participantDomainScores.map(
+                                  (score) => score.participant
+                                )
+                              ).size
+                            }
                           </p>
                         </div>
                         <div>
@@ -1645,9 +1724,6 @@ const CenterReport = () => {
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="bg-white p-4 rounded-lg border border-gray-200">
-                          <h3 className="text-base font-semibold text-gray-900 mb-4">
-                            Gender Distribution
-                          </h3>
                           <div
                             style={{
                               width: "200px",
@@ -1662,9 +1738,6 @@ const CenterReport = () => {
                           </div>
                         </div>
                         <div className="bg-white p-4 rounded-lg border border-gray-200">
-                          <h3 className="text-base font-semibold text-gray-900 mb-4">
-                            Participant Type Distribution
-                          </h3>
                           <div
                             style={{
                               width: "200px",
@@ -1679,9 +1752,6 @@ const CenterReport = () => {
                           </div>
                         </div>
                         <div className="bg-white p-4 rounded-lg border border-gray-200">
-                          <h3 className="text-base font-semibold text-gray-900 mb-4">
-                            Age Distribution
-                          </h3>
                           <div
                             style={{
                               width: "200px",

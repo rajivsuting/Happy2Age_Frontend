@@ -74,8 +74,8 @@ const Login = () => {
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#ff2680]/10 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
 
         <div className="max-w-md mx-auto relative z-10">
-          <div className="w-24 h-24 mx-auto bg-white/5 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg mb-8 border border-white/10">
-            <h1 className="text-4xl font-bold text-white">H2A</h1>
+          <div className="mx-auto py-5 bg-white/5 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg mb-8 border border-white/10">
+            <h1 className="text-4xl font-bold text-white">Happy2Age</h1>
           </div>
           {/* <h2 className="text-3xl font-bold mb-6 text-center">
             Happy2Age Admin Portal

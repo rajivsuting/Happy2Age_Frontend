@@ -43,14 +43,7 @@ const Calendar = () => {
 
   const fetchActivities = async () => {
     try {
-      const response = await axiosInstance.get("/activity/all", {
-        params: {
-          page: 1,
-          limit: 100,
-          sortBy: "name",
-          order: "asc",
-        },
-      });
+      const response = await axiosInstance.get("/activity/export");
       if (response.data.success) {
         setActivities(response.data.data || []);
       }
