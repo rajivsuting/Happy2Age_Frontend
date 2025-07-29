@@ -25,7 +25,8 @@ const EditActivity = () => {
 
   const fetchDomains = async () => {
     try {
-      const response = await axiosInstance.get("/domain/all");
+      // Fetch only General domains by default
+      const response = await axiosInstance.get("/domain/all?category=General");
       if (response.data.success) {
         setDomains(response.data.data || []);
       }

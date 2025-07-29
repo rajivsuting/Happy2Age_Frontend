@@ -38,7 +38,9 @@ const NewMember = () => {
 
   const fetchCohorts = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/cohort/all");
+      const response = await axios.get(
+        "https://happy2age-backend-gn8ln.ondigitalocean.app/cohort/all"
+      );
       if (response.data.success) {
         setCohorts(response.data.data || []);
       }
@@ -137,7 +139,7 @@ const NewMember = () => {
       setLoading(true);
       setError(null);
       const response = await axios.post(
-        "http://localhost:8000/participant/create",
+        "https://happy2age-backend-gn8ln.ondigitalocean.app/participant/create",
         formData
       );
       if (response.data.success) {

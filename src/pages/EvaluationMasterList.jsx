@@ -9,7 +9,7 @@ const EvaluationMasterList = () => {
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     name: "",
-    category: "All",
+    category: "General", // Changed default from "All" to "General"
   });
   const [debouncedName, setDebouncedName] = useState("");
   const [pagination, setPagination] = useState({
@@ -49,7 +49,7 @@ const EvaluationMasterList = () => {
         page: pagination.currentPage,
         limit: pagination.pageSize,
         ...(debouncedName && { name: debouncedName }),
-        ...(filters.category !== "All" && { category: filters.category }),
+        ...(filters.category && { category: filters.category }), // Always send category filter
       });
 
       const response = await axiosInstance.get(`/domain/all?${queryParams}`);
@@ -178,7 +178,6 @@ const EvaluationMasterList = () => {
                   onChange={handleFilterChange}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#239d62] focus:border-[#239d62] sm:text-sm"
                 >
-                  <option value="All">All Categories</option>
                   <option value="General">General</option>
                   <option value="Special Need">Special Need</option>
                 </select>
@@ -190,7 +189,7 @@ const EvaluationMasterList = () => {
                 onClick={() => {
                   setFilters({
                     name: "",
-                    category: "All",
+                    category: "General", // Reset to General instead of "All"
                   });
                   setPagination((prev) => ({ ...prev, currentPage: 1 }));
                 }}

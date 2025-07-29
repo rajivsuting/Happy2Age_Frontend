@@ -2,7 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: "https://happy2age-backend-gn8ln.ondigitalocean.app",
   withCredentials: true, // This is important for cookies
 });
 
