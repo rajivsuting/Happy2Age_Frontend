@@ -6,6 +6,9 @@ import {
   eachDayOfInterval,
   isSameMonth,
   isToday,
+  startOfWeek,
+  endOfWeek,
+  addDays,
 } from "date-fns";
 import axiosInstance from "../../utils/axios";
 import { FiPlus, FiX, FiCalendar, FiEdit2 } from "react-icons/fi";
@@ -21,18 +24,20 @@ const Calendar = () => {
   const [isAddingActivity, setIsAddingActivity] = useState(false);
   const [editingActivity, setEditingActivity] = useState(null);
   const [editFormData, setEditFormData] = useState({
-    activityId: "",
+    activityIds: [],
     cohortId: "",
     notes: "",
+    activityFacilitator: "",
     status: "scheduled",
     date: "",
   });
 
   // Form state
   const [formData, setFormData] = useState({
-    activityId: "",
+    activityIds: [],
     cohortId: "",
     notes: "",
+    activityFacilitator: "",
   });
 
   useEffect(() => {
@@ -44,6 +49,7 @@ const Calendar = () => {
   const fetchActivities = async () => {
     try {
       const response = await axiosInstance.get("/activity/export");
+      console.log(response.data.data);
       if (response.data.success) {
         setActivities(response.data.data || []);
       }
@@ -97,7 +103,12 @@ const Calendar = () => {
   const handleAddActivity = (date) => {
     setSelectedDate(date);
     setIsAddingActivity(true);
-    setFormData({ activityId: "", cohortId: "", notes: "" });
+    setFormData({
+      activityIds: [],
+      cohortId: "",
+      notes: "",
+      activityFacilitator: "",
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -110,7 +121,7 @@ const Calendar = () => {
       });
       if (response.data.success) {
         setIsAddingActivity(false);
-        setFormData({ activityId: "", cohortId: "", notes: "" });
+        setFormData({ activityIds: [], cohortId: "", notes: "" });
         fetchScheduledActivities();
       }
     } catch (error) {
@@ -124,9 +135,12 @@ const Calendar = () => {
   const handleEditClick = (activity) => {
     setEditingActivity(activity);
     setEditFormData({
-      activityId: activity.activity._id,
+      activityIds: activity.activities
+        ? activity.activities.map((a) => a._id)
+        : [],
       cohortId: activity.cohort._id,
       notes: activity.notes || "",
+      activityFacilitator: activity.activityFacilitator || "",
       status: activity.status || "scheduled",
       date: activity.date
         ? new Date(activity.date).toISOString().slice(0, 10)
@@ -141,7 +155,7 @@ const Calendar = () => {
       const response = await axiosInstance.put(
         `/scheduled-activity/${editingActivity._id}`,
         {
-          activityId: editFormData.activityId,
+          activityIds: editFormData.activityIds,
           cohortId: editFormData.cohortId,
           notes: editFormData.notes,
           status: editFormData.status,
@@ -154,6 +168,7 @@ const Calendar = () => {
           activityId: "",
           cohortId: "",
           notes: "",
+          activityFacilitator: "",
           status: "scheduled",
           date: "",
         });
@@ -167,8 +182,8 @@ const Calendar = () => {
   };
 
   const days = eachDayOfInterval({
-    start: startOfMonth(currentDate),
-    end: endOfMonth(currentDate),
+    start: startOfWeek(startOfMonth(currentDate)),
+    end: endOfWeek(endOfMonth(currentDate)),
   });
 
   const getActivitiesForDate = (date) => {
@@ -280,25 +295,73 @@ const Calendar = () => {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Activity
+                        Activities
                       </label>
+                      {/* Show selected activities as tags/chips */}
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {formData.activityIds.map((activityId, idx) => {
+                          const activity = activities.find(
+                            (a) => a._id === activityId
+                          );
+                          return activity ? (
+                            <span
+                              key={activityId}
+                              className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#239d62]/10 text-[#239d62]"
+                            >
+                              {activity.name}
+                              <button
+                                type="button"
+                                className="ml-2 text-[#239d62] hover:text-[#239d62]/80 focus:outline-none"
+                                onClick={() => {
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    activityIds: prev.activityIds.filter(
+                                      (id) => id !== activityId
+                                    ),
+                                  }));
+                                }}
+                              >
+                                <svg
+                                  className="h-4 w-4"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </button>
+                            </span>
+                          ) : null;
+                        })}
+                      </div>
                       <select
-                        value={formData.activityId}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            activityId: e.target.value,
-                          })
-                        }
+                        value=""
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value && !formData.activityIds.includes(value)) {
+                            setFormData((prev) => ({
+                              ...prev,
+                              activityIds: [...prev.activityIds, value],
+                            }));
+                          }
+                        }}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#239d62]"
-                        required
                       >
                         <option value="">Select an activity</option>
-                        {activities.map((activity) => (
-                          <option key={activity._id} value={activity._id}>
-                            {activity.name}
-                          </option>
-                        ))}
+                        {activities
+                          .filter(
+                            (activity) =>
+                              !formData.activityIds.includes(activity._id)
+                          )
+                          .map((activity) => (
+                            <option key={activity._id} value={activity._id}>
+                              {activity.name}
+                            </option>
+                          ))}
                       </select>
                     </div>
 
@@ -321,6 +384,24 @@ const Calendar = () => {
                           </option>
                         ))}
                       </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Activity Facilitator
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.activityFacilitator}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            activityFacilitator: e.target.value,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#239d62]"
+                        placeholder="Enter facilitator name..."
+                      />
                     </div>
 
                     <div>
@@ -386,25 +467,87 @@ const Calendar = () => {
                             >
                               <div>
                                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                                  Activity
+                                  Activities
                                 </label>
+                                {/* Show selected activities as tags/chips */}
+                                <div className="flex flex-wrap gap-2 mb-2">
+                                  {editFormData.activityIds.map(
+                                    (activityId, idx) => {
+                                      const activity = activities.find(
+                                        (a) => a._id === activityId
+                                      );
+                                      return activity ? (
+                                        <span
+                                          key={activityId}
+                                          className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#239d62]/10 text-[#239d62]"
+                                        >
+                                          {activity.name}
+                                          <button
+                                            type="button"
+                                            className="ml-1 text-[#239d62] hover:text-[#239d62]/80 focus:outline-none"
+                                            onClick={() => {
+                                              setEditFormData((prev) => ({
+                                                ...prev,
+                                                activityIds:
+                                                  prev.activityIds.filter(
+                                                    (id) => id !== activityId
+                                                  ),
+                                              }));
+                                            }}
+                                          >
+                                            <svg
+                                              className="h-3 w-3"
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              viewBox="0 0 20 20"
+                                              fill="currentColor"
+                                            >
+                                              <path
+                                                fillRule="evenodd"
+                                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                clipRule="evenodd"
+                                              />
+                                            </svg>
+                                          </button>
+                                        </span>
+                                      ) : null;
+                                    }
+                                  )}
+                                </div>
                                 <select
-                                  value={editFormData.activityId}
-                                  onChange={(e) =>
-                                    setEditFormData({
-                                      ...editFormData,
-                                      activityId: e.target.value,
-                                    })
-                                  }
+                                  value=""
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (
+                                      value &&
+                                      !editFormData.activityIds.includes(value)
+                                    ) {
+                                      setEditFormData((prev) => ({
+                                        ...prev,
+                                        activityIds: [
+                                          ...prev.activityIds,
+                                          value,
+                                        ],
+                                      }));
+                                    }
+                                  }}
                                   className="w-full px-2 py-1 border border-gray-300 rounded-md"
-                                  required
                                 >
                                   <option value="">Select an activity</option>
-                                  {activities.map((a) => (
-                                    <option key={a._id} value={a._id}>
-                                      {a.name}
-                                    </option>
-                                  ))}
+                                  {activities
+                                    .filter(
+                                      (activity) =>
+                                        !editFormData.activityIds.includes(
+                                          activity._id
+                                        )
+                                    )
+                                    .map((activity) => (
+                                      <option
+                                        key={activity._id}
+                                        value={activity._id}
+                                      >
+                                        {activity.name}
+                                      </option>
+                                    ))}
                                 </select>
                               </div>
                               <div>
@@ -445,6 +588,23 @@ const Calendar = () => {
                                   }
                                   className="w-full px-2 py-1 border border-gray-300 rounded-md"
                                   required
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">
+                                  Activity Facilitator
+                                </label>
+                                <input
+                                  type="text"
+                                  value={editFormData.activityFacilitator}
+                                  onChange={(e) =>
+                                    setEditFormData({
+                                      ...editFormData,
+                                      activityFacilitator: e.target.value,
+                                    })
+                                  }
+                                  className="w-full px-2 py-1 border border-gray-300 rounded-md"
+                                  placeholder="Enter facilitator name..."
                                 />
                               </div>
                               <div>
@@ -504,11 +664,21 @@ const Calendar = () => {
                             <div className="flex justify-between items-start">
                               <div>
                                 <h3 className="font-medium text-gray-900">
-                                  {activity.activity.name}
+                                  {activity.activities &&
+                                  activity.activities.length > 0
+                                    ? activity.activities
+                                        .map((a) => a.name)
+                                        .join(", ")
+                                    : "No activities"}
                                 </h3>
                                 <p className="text-sm text-gray-600">
                                   Cohort: {activity.cohort.name}
                                 </p>
+                                {activity.activityFacilitator && (
+                                  <p className="text-sm text-gray-600 mt-1">
+                                    Facilitator: {activity.activityFacilitator}
+                                  </p>
+                                )}
                                 {activity.notes && (
                                   <p className="text-sm text-gray-600 mt-1">
                                     {activity.notes}

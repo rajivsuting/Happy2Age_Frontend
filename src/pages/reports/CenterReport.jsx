@@ -367,6 +367,7 @@ const CenterReport = () => {
   const [hoursPerWeek, setHoursPerWeek] = useState("");
   const [overallObservation, setOverallObservation] = useState("");
   const [jointPlan, setJointPlan] = useState("");
+  const [editableSummary, setEditableSummary] = useState("");
   const [signatureDate, setSignatureDate] = useState("");
   const [signatureName, setSignatureName] = useState("");
   const [signatureMobile, setSignatureMobile] = useState("");
@@ -422,6 +423,7 @@ const CenterReport = () => {
       if (response.data.success) {
         console.log("Fetched reportData:", response.data);
         setReportData(response.data);
+        setEditableSummary(response.data.message?.aiSummary || "");
       } else {
         setError(response.data.message || "Failed to fetch report");
       }
@@ -632,20 +634,25 @@ const CenterReport = () => {
       }
       pdf.setFillColor(249, 250, 251);
       pdf.rect(margin + 5, yPos, contentWidth - 10, 20, "F");
-      pdf.text(
-        `Attendance: ${reportData.message.attendance || "N/A"}`,
-        margin + 10,
-        yPos + 7
-      );
+
+      // Calculate attendance percentage
+      const totalSessions = reportData.message.totalNumberOfSessions;
+      const attendance = reportData.message.attendance;
+      const attendancePercentage =
+        totalSessions > 0 ? Math.round((attendance / totalSessions) * 100) : 0;
+
+      console.log("PDF Debug attendance calculation:", {
+        totalSessions,
+        attendance,
+        attendancePercentage,
+        calculation: `${attendance} / ${totalSessions} * 100 = ${attendancePercentage}%`,
+      });
+
+      pdf.text(`Attendance: ${attendancePercentage}%`, margin + 10, yPos + 10);
       pdf.text(
         `Total Sessions: ${reportData.message.totalNumberOfSessions || "N/A"}`,
-        margin - 5 + (contentWidth - 20) / 2,
-        yPos + 7
-      );
-      pdf.text(
-        `Total Attendance: ${reportData.message.totalAttendance || "N/A"}`,
-        margin + 20 + (contentWidth - 20) - 60,
-        yPos + 7
+        margin + 40 + (contentWidth - 20) / 2,
+        yPos + 10
       );
       yPos += 30;
       if (yPos < margin + 10) yPos = margin + 10;
@@ -665,7 +672,9 @@ const CenterReport = () => {
       pdf.setFontSize(11);
       pdf.setFont("helvetica", "normal");
       let pdfSummaryText =
-        reportData.message.aiSummary || "No summary available.";
+        editableSummary ||
+        reportData.message.aiSummary ||
+        "No summary available.";
       pdfSummaryText = pdfSummaryText
         .split("\n")
         .filter(
@@ -1557,6 +1566,57 @@ const CenterReport = () => {
                         </div>
                       </div>
                     </div>
+                    <div className="mb-8">
+                      <h3 className="text-base font-semibold text-gray-900 mb-4">
+                        Summary
+                      </h3>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <textarea
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#239d62] focus:border-[#239d62] text-sm"
+                          value={editableSummary}
+                          onChange={(e) => setEditableSummary(e.target.value)}
+                          placeholder="No summary available."
+                          rows={5}
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-8 bg-gray-50 p-6 rounded-lg border border-[#239d62]">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div>
+                          <p className="text-sm font-bold text-[#239d62]">
+                            Attendance
+                          </p>
+                          <p className="text-sm text-gray-900">
+                            {(() => {
+                              const totalSessions =
+                                reportData.message.totalNumberOfSessions;
+                              const attendance = reportData.message.attendance;
+                              const percentage =
+                                totalSessions > 0
+                                  ? Math.round(
+                                      (attendance / totalSessions) * 100
+                                    )
+                                  : 0;
+                              console.log("Debug attendance calculation:", {
+                                totalSessions,
+                                attendance,
+                                percentage,
+                                calculation: `${attendance} / ${totalSessions} * 100 = ${percentage}%`,
+                              });
+                              return `${percentage}%`;
+                            })()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-[#239d62]">
+                            Total Sessions
+                          </p>
+                          <p className="text-sm text-gray-900">
+                            {reportData.message.totalNumberOfSessions || "N/A"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                     {reportData?.message?.happinessParameterAverages &&
                       reportData.message.happinessParameterAverages.length >
                         0 && (
@@ -1767,6 +1827,7 @@ const CenterReport = () => {
                         </div>
                       </div>
                     </div>
+
                     <div className="mb-8">
                       <h3 className="text-base font-semibold text-gray-900 mb-4">
                         Overall Observation

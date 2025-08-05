@@ -192,6 +192,28 @@ const MemberReport = () => {
       setIsGeneratingPDF(true);
       setError(null);
 
+      // Add CSS override to prevent oklch color issues
+      const style = document.createElement("style");
+      style.setAttribute("data-pdf-override", "true");
+      style.textContent = `
+        * {
+          color: inherit !important;
+        }
+        .bg-green-100 { background-color: #dcfce7 !important; }
+        .text-green-600 { color: #059669 !important; }
+        .bg-red-100 { background-color: #fee2e2 !important; }
+        .text-red-600 { color: #dc2626 !important; }
+        .bg-blue-100 { background-color: #dbeafe !important; }
+        .text-blue-600 { color: #2563eb !important; }
+        .bg-gray-50 { background-color: #f9fafb !important; }
+        .text-gray-900 { color: #111827 !important; }
+        .text-gray-500 { color: #6b7280 !important; }
+        .text-gray-600 { color: #4b5563 !important; }
+        .border-gray-200 { border-color: #e5e7eb !important; }
+        .border-gray-300 { border-color: #d1d5db !important; }
+      `;
+      document.head.appendChild(style);
+
       const pdf = new jsPDF("p", "mm", "a4");
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
@@ -419,6 +441,86 @@ const MemberReport = () => {
           );
           yPos += imgHeight + 18;
         }
+
+        // Add Happiness Parameter Table for single quarter data
+        if (reportData.quarterlyHappinessParameterAverages.length === 1) {
+          if (yPos > pageHeight - 100) {
+            pdf.addPage();
+            yPos = margin;
+          }
+          pdf.setFontSize(14);
+          pdf.setFont("helvetica", "bold");
+          pdf.text("Happiness Parameter Details", margin, yPos);
+          yPos += 8;
+
+          const tableData =
+            reportData.quarterlyHappinessParameterAverages[0].happinessParameterAverages.map(
+              (param) => [
+                param.happinessParameter || "N/A",
+                param.average != null ? param.average.toString() : "N/A",
+                param.centerAverage != null
+                  ? param.centerAverage.toString()
+                  : "N/A",
+              ]
+            );
+
+          if (tableData.length === 0) {
+            pdf.setTextColor(255, 0, 0);
+            pdf.text(
+              "No data available for Happiness Parameter Details",
+              margin + 5,
+              yPos + 5
+            );
+            yPos += 20;
+          } else {
+            try {
+              autoTable(pdf, {
+                startY: yPos,
+                head: [
+                  ["Happiness Parameter", "Participant Avg", "Center Avg"],
+                ],
+                body: tableData,
+                theme: "grid",
+                headStyles: {
+                  fillColor: [35, 157, 98],
+                  textColor: [255, 255, 255],
+                  fontStyle: "bold",
+                  halign: "center",
+                  fontSize: 10,
+                  font: "helvetica",
+                },
+                styles: {
+                  fontSize: 10,
+                  cellPadding: 3,
+                  halign: "center",
+                  overflow: "linebreak",
+                  font: "helvetica",
+                  minCellWidth: 20,
+                },
+                columnStyles: {
+                  0: { cellWidth: contentWidth * 0.4, halign: "left" },
+                  1: { cellWidth: contentWidth * 0.3 },
+                  2: { cellWidth: contentWidth * 0.3 },
+                },
+                margin: { left: margin, right: margin },
+              });
+              yPos = pdf.lastAutoTable?.finalY || yPos + 20;
+            } catch (tableError) {
+              console.error(
+                "Error rendering happiness parameter table:",
+                tableError
+              );
+              pdf.setTextColor(255, 0, 0);
+              pdf.text(
+                "Failed to render Happiness Parameter Details table",
+                margin + 5,
+                yPos + 5
+              );
+              yPos += 20;
+            }
+          }
+          yPos += 10;
+        }
       }
 
       // 8. Domain Performance (Bar + Line Chart)
@@ -444,83 +546,11 @@ const MemberReport = () => {
         const imgWidth = contentWidth - 10;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         const imgData = canvas.toDataURL("image/png");
-        // Calculate available height for two graphs on the page
-        // If this is the first of two graphs, calculate spacing
-        // We'll assume the next chart is the trends chart
-        let nextChartHeight = 0;
-        const trendCharts = document.querySelectorAll(".trend-chart");
-        if (trendCharts.length === 2) {
-          // If there are exactly 2 trend charts, calculate their heights
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          const trendCanvas0 = await html2canvas(trendCharts[0], {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: "#ffffff",
-          });
-          const trendCanvas1 = await html2canvas(trendCharts[1], {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: "#ffffff",
-          });
-          const trendImgHeight0 =
-            (trendCanvas0.height * imgWidth) / trendCanvas0.width;
-          const trendImgHeight1 =
-            (trendCanvas1.height * imgWidth) / trendCanvas1.width;
-          // Calculate available space after the first chart
-          const availableHeight = pageHeight - margin * 2 - 8 - imgHeight;
-          // Distribute the two trend charts evenly in the available space
-          const totalTrendHeight = trendImgHeight0 + trendImgHeight1;
-          const spacing = (availableHeight - totalTrendHeight) / 3;
-          // Draw the first chart (domain performance)
-          pdf.addImage(
-            imgData,
-            "PNG",
-            margin + 5,
-            yPos + 8,
-            imgWidth,
-            imgHeight
-          );
-          let trendY = yPos + 8 + imgHeight + spacing;
-          // Draw the two trend charts
-          const trendImgData0 = trendCanvas0.toDataURL("image/png");
-          pdf.addImage(
-            trendImgData0,
-            "PNG",
-            margin + 5,
-            trendY,
-            imgWidth,
-            trendImgHeight0
-          );
-          trendY += trendImgHeight0 + spacing;
-          const trendImgData1 = trendCanvas1.toDataURL("image/png");
-          pdf.addImage(
-            trendImgData1,
-            "PNG",
-            margin + 5,
-            trendY,
-            imgWidth,
-            trendImgHeight1
-          );
-          yPos = trendY + trendImgHeight1 + spacing;
-        } else {
-          // Default behavior for a single chart
-          pdf.addImage(
-            imgData,
-            "PNG",
-            margin + 5,
-            yPos + 8,
-            imgWidth,
-            imgHeight
-          );
-          yPos += imgHeight + 18;
-        }
+        pdf.addImage(imgData, "PNG", margin + 5, yPos + 8, imgWidth, imgHeight);
+        yPos += imgHeight + 18;
       }
 
-      // 9. Domain Performance Details Table
-      if (yPos > pageHeight - 100) {
-        pdf.addPage();
-        yPos = margin;
-      }
+      // 9. Domain Performance Details Table (Moved to follow Domain Performance chart)
       pdf.setFontSize(14);
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(0, 0, 0);
@@ -946,6 +976,11 @@ const MemberReport = () => {
       if (tempContainer) {
         document.body.removeChild(tempContainer);
       }
+      // Remove the CSS override style
+      const styleElement = document.querySelector("style[data-pdf-override]");
+      if (styleElement) {
+        document.head.removeChild(styleElement);
+      }
     }
   };
 
@@ -1282,6 +1317,43 @@ const MemberReport = () => {
                                   .happinessParameterAverages
                               }
                             />
+                          </div>
+                          <div className="mt-4 overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                              <thead>
+                                <tr className="bg-[#239d62]">
+                                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                    Happiness Parameter
+                                  </th>
+                                  <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                                    Participant Average
+                                  </th>
+                                  <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                                    Center Average
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className="bg-white divide-y divide-gray-200">
+                                {reportData.quarterlyHappinessParameterAverages[0].happinessParameterAverages.map(
+                                  (param) => (
+                                    <tr
+                                      key={param.happinessParameter}
+                                      className="hover:bg-gray-50"
+                                    >
+                                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {param.happinessParameter}
+                                      </td>
+                                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
+                                        {param.average}
+                                      </td>
+                                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
+                                        {param.centerAverage}
+                                      </td>
+                                    </tr>
+                                  )
+                                )}
+                              </tbody>
+                            </table>
                           </div>
                         </div>
                       )}

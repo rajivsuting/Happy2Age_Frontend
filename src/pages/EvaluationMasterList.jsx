@@ -303,7 +303,18 @@ const EvaluationMasterList = () => {
                       </td>
                       <td className="px-4 py-2">
                         <div className="text-sm text-gray-500">
-                          {domain.happinessParameter?.join(", ") || "None"}
+                          {domain.happinessParameter &&
+                          domain.happinessParameter.length > 0 ? (
+                            <ul className="list-disc list-inside space-y-1">
+                              {domain.happinessParameter.map((param, index) => (
+                                <li key={index} className="text-xs">
+                                  {param}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <span className="text-gray-400">None</span>
+                          )}
                         </div>
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap text-right text-sm font-medium">

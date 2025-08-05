@@ -231,323 +231,292 @@ const Dashboard = () => {
           ))}
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Top Performers */}
-          <div className="bg-white shadow-sm rounded-lg border border-gray-200">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Top Performing Members
-              </h3>
-            </div>
-            <div className="border-t border-gray-200">
-              <ul className="divide-y divide-gray-200">
-                {dashboardData.topPerformers?.map((member) => (
-                  <li key={member.id} className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-[#239d62]/10 flex items-center justify-center">
-                            <span className="text-[#239d62] font-medium">
-                              {member.averageScore}
-                            </span>
+        {/* Happiness Parameters Section */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Happiness Parameters
+          </h2>
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Top 3 Centers on Happiness Parameters */}
+            <div className="bg-white shadow-sm rounded-lg border border-gray-200">
+              <div className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Top 3 Centers (Happiness Parameters)
+                </h3>
+              </div>
+              <div className="border-t border-gray-200">
+                <ul className="divide-y divide-gray-200">
+                  {dashboardData.topCentersHappiness?.map((center, idx) => (
+                    <li key={idx} className="px-4 py-4 sm:px-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0">
+                            <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                              <span className="text-green-600 font-medium">
+                                {center.average?.toFixed?.(2) ?? "N/A"}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {member.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {member.center}
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {center.name}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
 
-          {/* Top 3 Centers on Happiness Parameters */}
-          <div className="bg-white shadow-sm rounded-lg border border-gray-200">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Top 3 Centers (Happiness Parameters)
-              </h3>
-            </div>
-            <div className="border-t border-gray-200">
-              <ul className="divide-y divide-gray-200">
-                {dashboardData.topCentersHappiness?.map((center, idx) => (
-                  <li key={idx} className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                            <span className="text-green-600 font-medium">
-                              {center.average?.toFixed?.(2) ?? "N/A"}
-                            </span>
+            {/* Top 3 Members on Happiness Parameters */}
+            <div className="bg-white shadow-sm rounded-lg border border-gray-200">
+              <div className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Top 3 Members (Happiness Parameters)
+                </h3>
+              </div>
+              <div className="border-t border-gray-200">
+                <ul className="divide-y divide-gray-200">
+                  {dashboardData.topMembersHappiness?.map((member, idx) => (
+                    <li key={idx} className="px-4 py-4 sm:px-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0">
+                            <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                              <span className="text-green-600 font-medium">
+                                {member.average?.toFixed?.(2) ?? "N/A"}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {center.name}
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {member.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {member.center}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
 
-          {/* Top 3 Members on Happiness Parameters */}
-          <div className="bg-white shadow-sm rounded-lg border border-gray-200">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Top 3 Members (Happiness Parameters)
-              </h3>
-            </div>
-            <div className="border-t border-gray-200">
-              <ul className="divide-y divide-gray-200">
-                {dashboardData.topMembersHappiness?.map((member, idx) => (
-                  <li key={idx} className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                            <span className="text-green-600 font-medium">
-                              {member.average?.toFixed?.(2) ?? "N/A"}
-                            </span>
+            {/* Bottom 3 Centers on Happiness Parameters */}
+            <div className="bg-white shadow-sm rounded-lg border border-gray-200">
+              <div className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Bottom 3 Centers (Happiness Parameters)
+                </h3>
+              </div>
+              <div className="border-t border-gray-200">
+                <ul className="divide-y divide-gray-200">
+                  {dashboardData.bottomCentersHappiness?.map((center, idx) => (
+                    <li key={idx} className="px-4 py-4 sm:px-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0">
+                            <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
+                              <span className="text-red-600 font-medium">
+                                {center.average?.toFixed?.(2) ?? "N/A"}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {member.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {member.center}
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {center.name}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Second Row: Domains and Bottoms */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 mt-6">
-          {/* Top 3 Centers on Domains */}
-          <div className="bg-white shadow-sm rounded-lg border border-gray-200">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Top 3 Centers (Domains)
-              </h3>
-            </div>
-            <div className="border-t border-gray-200">
-              <ul className="divide-y divide-gray-200">
-                {dashboardData.topCentersDomains?.map((center, idx) => (
-                  <li key={idx} className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                            <span className="text-blue-600 font-medium">
-                              {center.average?.toFixed?.(2) ?? "N/A"}
-                            </span>
+            {/* Bottom 3 Members on Happiness Parameters */}
+            <div className="bg-white shadow-sm rounded-lg border border-gray-200">
+              <div className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Bottom 3 Members (Happiness Parameters)
+                </h3>
+              </div>
+              <div className="border-t border-gray-200">
+                <ul className="divide-y divide-gray-200">
+                  {dashboardData.bottomMembersHappiness?.map((member, idx) => (
+                    <li key={idx} className="px-4 py-4 sm:px-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0">
+                            <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
+                              <span className="text-red-600 font-medium">
+                                {member.average?.toFixed?.(2) ?? "N/A"}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {center.name}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Top 3 Members on Domains */}
-          <div className="bg-white shadow-sm rounded-lg border border-gray-200">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Top 3 Members (Domains)
-              </h3>
-            </div>
-            <div className="border-t border-gray-200">
-              <ul className="divide-y divide-gray-200">
-                {dashboardData.topMembersDomains?.map((member, idx) => (
-                  <li key={idx} className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                            <span className="text-blue-600 font-medium">
-                              {member.average?.toFixed?.(2) ?? "N/A"}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {member.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {member.center}
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {member.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {member.center}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom 3 Centers on Happiness Parameters */}
-          <div className="bg-white shadow-sm rounded-lg border border-gray-200">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Bottom 3 Centers (Happiness Parameters)
-              </h3>
-            </div>
-            <div className="border-t border-gray-200">
-              <ul className="divide-y divide-gray-200">
-                {dashboardData.bottomCentersHappiness?.map((center, idx) => (
-                  <li key={idx} className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
-                            <span className="text-red-600 font-medium">
-                              {center.average?.toFixed?.(2) ?? "N/A"}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {center.name}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Third Row: Bottoms */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 mt-6">
-          {/* Bottom 3 Centers on Domains */}
-          <div className="bg-white shadow-sm rounded-lg border border-gray-200">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Bottom 3 Centers (Domains)
-              </h3>
-            </div>
-            <div className="border-t border-gray-200">
-              <ul className="divide-y divide-gray-200">
-                {dashboardData.bottomCentersDomains?.map((center, idx) => (
-                  <li key={idx} className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
-                            <span className="text-red-600 font-medium">
-                              {center.average?.toFixed?.(2) ?? "N/A"}
-                            </span>
+        {/* Domains Section */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Domains</h2>
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Top 3 Centers on Domains */}
+            <div className="bg-white shadow-sm rounded-lg border border-gray-200">
+              <div className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Top 3 Centers (Domains)
+                </h3>
+              </div>
+              <div className="border-t border-gray-200">
+                <ul className="divide-y divide-gray-200">
+                  {dashboardData.topCentersDomains?.map((center, idx) => (
+                    <li key={idx} className="px-4 py-4 sm:px-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0">
+                            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                              <span className="text-blue-600 font-medium">
+                                {center.average?.toFixed?.(2) ?? "N/A"}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {center.name}
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {center.name}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
 
-          {/* Bottom 3 Members on Happiness Parameters */}
-          <div className="bg-white shadow-sm rounded-lg border border-gray-200">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Bottom 3 Members (Happiness Parameters)
-              </h3>
-            </div>
-            <div className="border-t border-gray-200">
-              <ul className="divide-y divide-gray-200">
-                {dashboardData.bottomMembersHappiness?.map((member, idx) => (
-                  <li key={idx} className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
-                            <span className="text-red-600 font-medium">
-                              {member.average?.toFixed?.(2) ?? "N/A"}
-                            </span>
+            {/* Top 3 Members on Domains */}
+            <div className="bg-white shadow-sm rounded-lg border border-gray-200">
+              <div className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Top 3 Members (Domains)
+                </h3>
+              </div>
+              <div className="border-t border-gray-200">
+                <ul className="divide-y divide-gray-200">
+                  {dashboardData.topMembersDomains?.map((member, idx) => (
+                    <li key={idx} className="px-4 py-4 sm:px-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0">
+                            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                              <span className="text-blue-600 font-medium">
+                                {member.average?.toFixed?.(2) ?? "N/A"}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {member.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {member.center}
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {member.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {member.center}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
 
-          {/* Bottom 3 Members on Domains */}
-          <div className="bg-white shadow-sm rounded-lg border border-gray-200">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Bottom 3 Members (Domains)
-              </h3>
-            </div>
-            <div className="border-t border-gray-200">
-              <ul className="divide-y divide-gray-200">
-                {dashboardData.bottomMembersDomains?.map((member, idx) => (
-                  <li key={idx} className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
-                            <span className="text-red-600 font-medium">
-                              {member.average?.toFixed?.(2) ?? "N/A"}
-                            </span>
+            {/* Bottom 3 Centers on Domains */}
+            <div className="bg-white shadow-sm rounded-lg border border-gray-200">
+              <div className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Bottom 3 Centers (Domains)
+                </h3>
+              </div>
+              <div className="border-t border-gray-200">
+                <ul className="divide-y divide-gray-200">
+                  {dashboardData.bottomCentersDomains?.map((center, idx) => (
+                    <li key={idx} className="px-4 py-4 sm:px-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0">
+                            <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
+                              <span className="text-red-600 font-medium">
+                                {center.average?.toFixed?.(2) ?? "N/A"}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {member.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {member.center}
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {center.name}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Bottom 3 Members on Domains */}
+            <div className="bg-white shadow-sm rounded-lg border border-gray-200">
+              <div className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Bottom 3 Members (Domains)
+                </h3>
+              </div>
+              <div className="border-t border-gray-200">
+                <ul className="divide-y divide-gray-200">
+                  {dashboardData.bottomMembersDomains?.map((member, idx) => (
+                    <li key={idx} className="px-4 py-4 sm:px-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0">
+                            <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
+                              <span className="text-red-600 font-medium">
+                                {member.average?.toFixed?.(2) ?? "N/A"}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {member.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {member.center}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>

@@ -175,9 +175,20 @@ const DomainDetails = () => {
                   <p className="text-sm font-medium text-gray-500">
                     Happiness Parameters
                   </p>
-                  <p className="mt-1 text-sm text-gray-900">
-                    {domain.happinessParameter?.join(", ") || "None"}
-                  </p>
+                  <div className="mt-1">
+                    {domain.happinessParameter &&
+                    domain.happinessParameter.length > 0 ? (
+                      <ul className="list-disc list-inside space-y-1">
+                        {domain.happinessParameter.map((param, index) => (
+                          <li key={index} className="text-sm text-gray-900">
+                            {param}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <span className="text-sm text-gray-400">None</span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
