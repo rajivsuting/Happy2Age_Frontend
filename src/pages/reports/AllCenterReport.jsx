@@ -467,10 +467,6 @@ const AllCenterReport = () => {
       pdf.setFont("helvetica", "normal");
       const description = [
         "This document is based on our basic observations about all centers' performance",
-        "and engagements made in our sessions which is held",
-        `${helpType || "Number of days"} in a week for ${
-          hoursPerWeek || "Hours"
-        } hours`,
         "It is limited to the progress made by members in various domains that we",
         "have chosen while designing activities.",
       ];
@@ -1275,25 +1271,6 @@ const AllCenterReport = () => {
                         This document is based on our basic observations about
                         all centers' performance
                       </p>
-                      <p>and engagements made in our sessions which is held</p>
-                      <div className="flex justify-center items-center gap-2 mb-2">
-                        <input
-                          type="text"
-                          value={helpType}
-                          onChange={(e) => setHelpType(e.target.value)}
-                          placeholder="Number of days"
-                          className="w-48 px-2 py-1 border border-gray-300 rounded text-center text-sm"
-                        />
-                        <span>in a week for</span>
-                        <input
-                          type="number"
-                          value={hoursPerWeek}
-                          onChange={(e) => setHoursPerWeek(e.target.value)}
-                          placeholder="Hours"
-                          className="w-20 px-2 py-1 border border-gray-300 rounded text-center text-sm"
-                        />
-                        <span>hours</span>
-                      </div>
                       <p>
                         It is limited to the progress made by members in various
                         domains that we
