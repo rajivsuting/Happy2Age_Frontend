@@ -466,7 +466,7 @@ const AllCenterReport = () => {
       pdf.setFontSize(11);
       pdf.setFont("helvetica", "normal");
       const description = [
-        "This document is based on our basic observations about all centers' performance",
+        "This document is based on our basic observations about all centers' performance.",
         "It is limited to the progress made by members in various domains that we",
         "have chosen while designing activities.",
       ];
@@ -805,31 +805,16 @@ const AllCenterReport = () => {
                 typeof domain.domainName === "string"
                   ? domain.domainName
                   : String(domain.domainName || `Domain ${index + 1}`);
-              let centerAverage;
-              if (
-                domain.centerAverage === null ||
-                domain.centerAverage === undefined
-              ) {
-                centerAverage = "N/A";
+              let average;
+              if (domain.average === null || domain.average === undefined) {
+                average = "N/A";
               } else {
-                const numValue = Number(domain.centerAverage);
-                centerAverage = isNaN(numValue)
+                const numValue = Number(domain.average);
+                average = isNaN(numValue)
                   ? "N/A"
                   : numValue.toFixed(2).toString();
               }
-              let numberOfSessions;
-              if (
-                domain.numberOfSessions === null ||
-                domain.numberOfSessions === undefined
-              ) {
-                numberOfSessions = "N/A";
-              } else {
-                const numValue = Number(domain.numberOfSessions);
-                numberOfSessions = isNaN(numValue)
-                  ? "N/A"
-                  : numValue.toString();
-              }
-              return [domainName, centerAverage, numberOfSessions];
+              return [domainName, average];
             })
           : [];
 
@@ -845,7 +830,7 @@ const AllCenterReport = () => {
           try {
             autoTable(pdf, {
               startY: yPos,
-              head: [["Domain", "Center Average", "Number of Sessions"]],
+              head: [["Domain", "Average Score"]],
               body: domainData,
               theme: "grid",
               headStyles: {
@@ -865,9 +850,8 @@ const AllCenterReport = () => {
                 lineWidth: 0,
               },
               columnStyles: {
-                0: { cellWidth: (contentWidth - 20) * 0.5, halign: "left" },
-                1: { cellWidth: (contentWidth - 20) * 0.25 },
-                2: { cellWidth: (contentWidth - 20) * 0.25 },
+                0: { cellWidth: (contentWidth - 20) * 0.6, halign: "left" },
+                1: { cellWidth: (contentWidth - 20) * 0.4 },
               },
               margin: { left: margin + 10, right: margin + 10 },
             });
@@ -1444,9 +1428,6 @@ const AllCenterReport = () => {
                                   <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                                     Domain
                                   </th>
-                                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                                    Center
-                                  </th>
                                   <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
                                     Average Score
                                   </th>
@@ -1461,9 +1442,6 @@ const AllCenterReport = () => {
                                     >
                                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         {item.domainName}
-                                      </td>
-                                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {item.cohort}
                                       </td>
                                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                         {parseFloat(item.average).toFixed(2)}
