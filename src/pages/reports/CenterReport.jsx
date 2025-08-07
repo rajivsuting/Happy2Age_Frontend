@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FiSearch, FiDownload } from "react-icons/fi";
+import { FiSearch, FiDownload, FiFileText } from "react-icons/fi";
 import axiosInstance from "../../utils/axios";
+import * as XLSX from "xlsx";
 import {
   BarChart,
   Bar,
@@ -422,7 +423,15 @@ const CenterReport = () => {
       );
       if (response.data.success) {
         console.log("Fetched reportData:", response.data);
-        setReportData(response.data);
+        // Combine the message data and evaluations into a single object
+        const combinedData = {
+          ...response.data,
+          message: {
+            ...response.data.message,
+            evaluations: response.data.message?.evaluations || [],
+          },
+        };
+        setReportData(combinedData);
         setEditableSummary(response.data.message?.aiSummary || "");
       } else {
         setError(response.data.message || "Failed to fetch report");
@@ -1319,6 +1328,132 @@ const CenterReport = () => {
     }
   };
 
+  const exportToExcel = () => {
+    if (!reportData || !reportData.message?.evaluations) {
+      setError("No evaluation data available for export");
+      return;
+    }
+
+    try {
+      // Group evaluations by participant
+      const participantMap = new Map();
+      const allDomains = new Set();
+
+      // First pass: collect all participants and domains
+      reportData.message.evaluations.forEach((evaluation) => {
+        const participantName = evaluation.participant?.name || "N/A";
+        const participantGender = evaluation.participant?.gender || "N/A";
+        const participantType =
+          evaluation.participant?.participantType || "N/A";
+
+        if (!participantMap.has(participantName)) {
+          participantMap.set(participantName, {
+            name: participantName,
+            gender: participantGender,
+            type: participantType,
+            domains: new Map(),
+            totalEvaluations: 0,
+            grandAverageSum: 0,
+          });
+        }
+
+        const participant = participantMap.get(participantName);
+        participant.totalEvaluations += 1;
+        participant.grandAverageSum += parseFloat(evaluation.grandAverage) || 0;
+
+        // Collect domain scores for this participant
+        evaluation.domain?.forEach((domain) => {
+          const domainName = domain.name || "N/A";
+          allDomains.add(domainName);
+
+          if (!participant.domains.has(domainName)) {
+            participant.domains.set(domainName, {
+              scores: [],
+              totalScore: 0,
+              count: 0,
+            });
+          }
+
+          const domainData = participant.domains.get(domainName);
+          const score = parseFloat(domain.average) || 0;
+          domainData.scores.push(score);
+          domainData.totalScore += score;
+          domainData.count += 1;
+        });
+      });
+
+      // Convert to Excel format - one row per participant
+      const excelData = [];
+      const sortedDomains = Array.from(allDomains).sort();
+
+      Array.from(participantMap.values()).forEach((participant) => {
+        const row = {
+          "Participant Name": participant.name,
+          Gender: participant.gender,
+          "Participant Type": participant.type,
+          "Total Evaluations": participant.totalEvaluations,
+          "Average Grand Score":
+            participant.totalEvaluations > 0
+              ? (
+                  participant.grandAverageSum / participant.totalEvaluations
+                ).toFixed(2)
+              : "N/A",
+        };
+
+        // Add domain averages
+        sortedDomains.forEach((domainName) => {
+          const domainData = participant.domains.get(domainName);
+          if (domainData && domainData.count > 0) {
+            row[`${domainName} Average`] = (
+              domainData.totalScore / domainData.count
+            ).toFixed(2);
+            row[`${domainName} Sessions`] = domainData.count;
+          } else {
+            row[`${domainName} Average`] = "N/A";
+            row[`${domainName} Sessions`] = 0;
+          }
+        });
+
+        excelData.push(row);
+      });
+
+      // Create workbook and worksheet
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(excelData);
+
+      // Set column widths
+      const colWidths = [
+        { wch: 20 }, // Participant Name
+        { wch: 10 }, // Gender
+        { wch: 15 }, // Participant Type
+        { wch: 15 }, // Total Evaluations
+        { wch: 18 }, // Average Grand Score
+      ];
+
+      // Add widths for domain columns (2 columns per domain: Average and Sessions)
+      sortedDomains.forEach(() => {
+        colWidths.push({ wch: 15 }); // Domain Average
+        colWidths.push({ wch: 12 }); // Domain Sessions
+      });
+
+      ws["!cols"] = colWidths;
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(wb, ws, "Participant Evaluations");
+
+      // Generate filename
+      const fileName = `center-participant-evaluations-${
+        reportData.message?.cohort || "unknown"
+      }-${new Date().toISOString().split("T")[0]}.xlsx`;
+
+      // Save file
+      XLSX.writeFile(wb, fileName);
+    } catch (error) {
+      console.error("Error exporting to Excel:", error);
+      setError("Failed to export data to Excel. Please try again.");
+    }
+  };
+
   return (
     <div className="min-h-full">
       <h1 className="text-2xl font-semibold text-gray-800 mb-6">
@@ -1437,6 +1572,13 @@ const CenterReport = () => {
                     <span className="text-sm text-gray-500">
                       Generated on: {new Date().toLocaleDateString()}
                     </span>
+                    <button
+                      onClick={exportToExcel}
+                      className="flex items-center px-3 py-1 text-sm text-[#239d62] hover:text-[#239d62]/90 focus:outline-none"
+                    >
+                      <FiFileText className="mr-1" />
+                      Export Excel
+                    </button>
                     <button
                       onClick={downloadPDF}
                       disabled={isGeneratingPDF}

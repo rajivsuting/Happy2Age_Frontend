@@ -249,7 +249,6 @@ const ParticipantHeatmap = ({ data }) => {
 };
 
 const PDFPieChart = ({ data, title }) => {
-  console.log("PDFPieChart data:", data, "title:", title);
   const renderCustomLabel = ({
     cx,
     cy,
@@ -278,83 +277,74 @@ const PDFPieChart = ({ data, title }) => {
     );
   };
 
-  if (!data || data.length === 0) {
-    return (
-      <div style={{ width: "220px", height: "300px" }}>
-        <div style={{ textAlign: "center", marginBottom: "10px" }}>
-          <h4
-            style={{
-              fontSize: "14px",
-              fontWeight: "bold",
-              color: "#333",
-              margin: 0,
-            }}
-          >
-            {title}
-          </h4>
-        </div>
-        <div style={{ textAlign: "center", color: "#666", marginTop: "50px" }}>
-          No data available
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div style={{ width: "220px", height: "300px" }}>
-      <div style={{ textAlign: "center", marginBottom: "10px" }}>
-        <h4
-          style={{
-            fontSize: "14px",
-            fontWeight: "bold",
-            color: "#333",
-            margin: 0,
-          }}
-        >
-          {title}
-        </h4>
-      </div>
-      <PieChart>
-        <Pie
-          data={data}
-          cx="110"
-          cy="100"
-          outerRadius={80}
-          dataKey="count"
-          label={renderCustomLabel}
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-      </PieChart>
-      <div style={{ marginTop: "10px", textAlign: "center" }}>
-        {data.map((entry, index) => (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: "5px",
-              fontSize: "12px",
-            }}
-          >
-            <div
-              style={{
-                width: "12px",
-                height: "12px",
-                backgroundColor: COLORS[index % COLORS.length],
-                marginRight: "5px",
-                borderRadius: "2px",
+    <div
+      className="pie-chart"
+      style={{
+        width: "220px",
+        height: "300px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "10px",
+      }}
+    >
+      <h4
+        style={{
+          fontSize: "14px",
+          fontWeight: "600",
+          color: "#000000",
+          marginBottom: "10px",
+          textAlign: "center",
+        }}
+      >
+        {title}
+      </h4>
+      <div style={{ width: "200px", height: "200px" }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="count"
+              nameKey={
+                title.toLowerCase().includes("gender")
+                  ? "gender"
+                  : title.toLowerCase().includes("type")
+                  ? "participantType"
+                  : "ageRange"
+              }
+              cx="50%"
+              cy="50%"
+              outerRadius={85}
+              label={renderCustomLabel}
+              labelLine={false}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#ffffff",
+                border: "1px solid #e5e7eb",
+                color: "#000000",
               }}
             />
-            <span style={{ color: "#666" }}>
-              {entry.gender || entry.participantType || entry.ageRange}:{" "}
-              {entry.count}
-            </span>
-          </div>
-        ))}
+            <Legend
+              wrapperStyle={{
+                fontSize: "10px",
+                paddingTop: "10px",
+                textAlign: "center",
+              }}
+              layout="horizontal"
+              align="center"
+              verticalAlign="bottom"
+            />
+          </PieChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
@@ -377,6 +367,25 @@ const AllCenterReport = () => {
   const [signatureName, setSignatureName] = useState("");
   const [signatureMobile, setSignatureMobile] = useState("");
   const reportRef = useRef(null);
+
+  const waitForElement = (selector, timeout = 5000) => {
+    return new Promise((resolve, reject) => {
+      const start = Date.now();
+      const check = () => {
+        const element = document.querySelector(selector);
+        if (element) {
+          resolve(element);
+        } else if (Date.now() - start > timeout) {
+          reject(
+            new Error(`Element ${selector} not found within ${timeout}ms`)
+          );
+        } else {
+          setTimeout(check, 100);
+        }
+      };
+      check();
+    });
+  };
 
   const fetchReport = async () => {
     if (!dateRange.start || !dateRange.end) {
@@ -411,43 +420,87 @@ const AllCenterReport = () => {
 
     try {
       setIsGeneratingPDF(true);
-
-      const pdf = new jsPDF("p", "mm", "a4");
+      setError(null);
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
-      const margin = 20;
+      const margin = 10;
       const contentWidth = pageWidth - 2 * margin;
+      let yPos = margin;
 
-      // Header
+      // Add page border
       pdf.setDrawColor(35, 157, 98);
       pdf.setLineWidth(0.5);
       pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
-      let yPos = margin + 10;
 
-      pdf.setFontSize(20);
+      // 1. Logo
+      const logoWidth = 70;
+      const logoHeight = 25;
+      pdf.addImage(
+        "/logo.png",
+        "PNG",
+        (pageWidth - logoWidth) / 2,
+        yPos,
+        logoWidth,
+        logoHeight
+      );
+      yPos += logoHeight + 10;
+
+      // 2. Title and Subtitle
       pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(20);
+      pdf.setTextColor(0, 0, 0);
       pdf.text("All Centers Report", pageWidth / 2, yPos, { align: "center" });
-      yPos += 15;
-
-      pdf.setFontSize(14);
-      pdf.setFont("helvetica", "normal");
+      yPos += 10;
+      pdf.setFontSize(18);
       pdf.text("Our Journey Together", pageWidth / 2, yPos, {
         align: "center",
       });
-      yPos += 20;
+      yPos += 10;
 
-      // Report Information
-      const boxHeight = 40;
-      pdf.setFillColor(248, 250, 252);
-      pdf.setDrawColor(35, 157, 98);
-      pdf.setLineWidth(0.2);
-      pdf.rect(margin + 5, yPos, contentWidth - 10, boxHeight, "FD");
+      // 3. Description
+      pdf.setFontSize(11);
+      pdf.setFont("helvetica", "normal");
+      const description = [
+        "This document is based on our basic observations about all centers' performance",
+        "and engagements made in our sessions which is held",
+        `${helpType || "Number of days"} in a week for ${
+          hoursPerWeek || "Hours"
+        } hours`,
+        "It is limited to the progress made by members in various domains that we",
+        "have chosen while designing activities.",
+      ];
+      description.forEach((line) => {
+        const lines = pdf.splitTextToSize(line, contentWidth - 10);
+        lines.forEach((splitLine) => {
+          pdf.text(splitLine, pageWidth / 2, yPos, { align: "center" });
+          yPos += 5;
+        });
+      });
+      yPos += 10;
+
+      // 4. Report Info
+      const boxHeight = 3 * 7 + 16;
+      if (yPos + boxHeight > pageHeight - margin - 10) {
+        pdf.addPage();
+        pdf.setDrawColor(35, 157, 98);
+        pdf.setLineWidth(0.5);
+        pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
+        yPos = margin + 10;
+      }
+      pdf.setFillColor(249, 250, 251);
+      pdf.rect(margin + 5, yPos, contentWidth - 10, boxHeight, "F");
 
       const leftColumnX = margin + 10;
       const rightColumnX = margin + 10 + (contentWidth - 20) / 2;
-      const labelWidth = 40;
+      const labelWidth = 32;
       const lineHeight = 7;
-      let currentY = yPos + 8;
+      const padding = 8;
+      let currentY = yPos + padding;
 
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(35, 157, 98);
@@ -470,109 +523,638 @@ const AllCenterReport = () => {
           (sum, item) => sum + item.count,
           0
         ) || 0;
-      const totalDomains = reportData.message.graphDetails?.length || 0;
+      const totalCenters =
+        reportData.message.graphDetails?.reduce(
+          (sum, item) => {
+            if (!sum.centers.has(item.cohort)) {
+              sum.centers.add(item.cohort);
+              sum.count++;
+            }
+            return sum;
+          },
+          { centers: new Set(), count: 0 }
+        ).count || 0;
 
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(35, 157, 98);
-      pdf.text("Total Participants:", leftColumnX, currentY);
+      pdf.text("Total Centers:", leftColumnX, currentY);
+      pdf.setFont("helvetica", "normal");
+      pdf.setTextColor(0, 0, 0);
+      pdf.text(totalCenters.toString(), leftColumnX + labelWidth, currentY);
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setTextColor(35, 157, 98);
+      pdf.text("Total Members:", rightColumnX, currentY);
       pdf.setFont("helvetica", "normal");
       pdf.setTextColor(0, 0, 0);
       pdf.text(
         totalParticipants.toString(),
-        leftColumnX + labelWidth,
+        rightColumnX + labelWidth,
         currentY
       );
+      yPos = yPos + boxHeight + 10;
+      if (yPos < margin + 10) yPos = margin + 10;
 
-      pdf.setFont("helvetica", "bold");
-      pdf.setTextColor(35, 157, 98);
-      pdf.text("Total Domains:", rightColumnX, currentY);
-      pdf.setFont("helvetica", "normal");
-      pdf.setTextColor(0, 0, 0);
-      pdf.text(totalDomains.toString(), rightColumnX + labelWidth, currentY);
-
-      // Domain Performance Table
-      if (reportData.message.graphDetails?.length > 0) {
-        pdf.addPage();
-        pdf.setDrawColor(35, 157, 98);
-        pdf.setLineWidth(0.5);
-        pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
-        yPos = margin + 10;
-
-        pdf.setFontSize(14);
-        pdf.setFont("helvetica", "bold");
-        pdf.text("Domain Performance Across All Centers", margin + 10, yPos);
-        yPos += 15;
-
-        const domainTableData = reportData.message.graphDetails.map((item) => [
-          item.domainName,
-          item.cohort,
-          parseFloat(item.average).toFixed(2),
-        ]);
-
-        autoTable(pdf, {
-          startY: yPos,
-          head: [["Domain", "Center", "Average Score"]],
-          body: domainTableData,
-          theme: "grid",
-          headStyles: {
-            fillColor: [35, 157, 98],
-            textColor: [255, 255, 255],
-            fontStyle: "bold",
-            halign: "center",
-            fontSize: 10,
-            font: "helvetica",
-          },
-          styles: {
-            fontSize: 10,
-            cellPadding: 3,
-            halign: "center",
-            font: "helvetica",
-          },
-          margin: { left: margin + 10, right: margin + 10 },
-        });
-      }
-
-      // Happiness Parameter Averages Table
+      // Happiness Parameter Averages (First Page)
       if (reportData.message.happinessParameterAverages?.length > 0) {
-        pdf.addPage();
-        pdf.setDrawColor(35, 157, 98);
-        pdf.setLineWidth(0.5);
-        pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
-        yPos = margin + 10;
-
+        if (yPos + 20 > pageHeight - margin - 10) {
+          pdf.addPage();
+          pdf.setDrawColor(35, 157, 98);
+          pdf.setLineWidth(0.5);
+          pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
+          yPos = margin + 10;
+        }
         pdf.setFontSize(14);
         pdf.setFont("helvetica", "bold");
         pdf.text("Happiness Parameter Averages", margin + 10, yPos);
-        yPos += 15;
+        yPos += 8;
 
-        const happinessTableData =
-          reportData.message.happinessParameterAverages.map((item) => [
-            item.happinessParameter,
-            parseFloat(item.centerAverage).toFixed(2),
-          ]);
-
-        autoTable(pdf, {
-          startY: yPos,
-          head: [["Happiness Parameter", "Center Average"]],
-          body: happinessTableData,
-          theme: "grid",
-          headStyles: {
-            fillColor: [35, 157, 98],
-            textColor: [255, 255, 255],
-            fontStyle: "bold",
-            halign: "center",
-            fontSize: 10,
-            font: "helvetica",
-          },
-          styles: {
-            fontSize: 10,
-            cellPadding: 3,
-            halign: "center",
-            font: "helvetica",
-          },
-          margin: { left: margin + 10, right: margin + 10 },
+        console.log("Capturing Happiness Parameter Averages chart...");
+        const chartElement = await waitForElement(
+          ".happiness-chart .recharts-wrapper",
+          5000
+        ).catch((err) => {
+          console.warn(err.message);
+          return null;
         });
+        if (chartElement) {
+          const canvas = await html2canvas(chartElement, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: true,
+          });
+          console.log("Happiness chart captured successfully");
+          const imgData = canvas.toDataURL("image/png");
+          const imgWidth = contentWidth - 10;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          const chartBoxHeight = imgHeight + 16;
+          pdf.addImage(
+            imgData,
+            "PNG",
+            margin + 5,
+            yPos + 8,
+            imgWidth,
+            imgHeight
+          );
+          yPos += chartBoxHeight + 10;
+        } else {
+          console.warn("Happiness chart element not found");
+          pdf.setTextColor(255, 0, 0);
+          pdf.text(
+            "Failed to capture Happiness Parameter Averages chart",
+            margin + 5,
+            yPos + 5
+          );
+          yPos += 20;
+        }
+
+        const tableData = Array.isArray(
+          reportData.message.happinessParameterAverages
+        )
+          ? reportData.message.happinessParameterAverages.map(
+              (param, index) => {
+                const happinessParameter =
+                  typeof param.happinessParameter === "string"
+                    ? param.happinessParameter
+                    : String(
+                        param.happinessParameter || `Parameter ${index + 1}`
+                      );
+                let centerAverage;
+                if (
+                  param.centerAverage === null ||
+                  param.centerAverage === undefined
+                ) {
+                  centerAverage = "N/A";
+                } else {
+                  const numValue = Number(param.centerAverage);
+                  centerAverage = isNaN(numValue)
+                    ? "N/A"
+                    : numValue.toFixed(2).toString();
+                }
+                return [happinessParameter, centerAverage];
+              }
+            )
+          : [];
+
+        yPos += 10;
+        if (yPos < margin + 10) yPos = margin + 10;
       }
+
+      // Second Page - Happiness Parameter Table and Domain Performance
+      pdf.addPage();
+      pdf.setDrawColor(35, 157, 98);
+      pdf.setLineWidth(0.5);
+      pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
+      yPos = margin + 10;
+
+      // Happiness Parameter Averages Table
+      if (reportData.message.happinessParameterAverages?.length > 0) {
+        pdf.setFontSize(14);
+        pdf.setFont("helvetica", "bold");
+        pdf.text("Happiness Parameter Averages", margin + 10, yPos);
+        yPos += 8;
+
+        const tableData = Array.isArray(
+          reportData.message.happinessParameterAverages
+        )
+          ? reportData.message.happinessParameterAverages.map(
+              (param, index) => {
+                const happinessParameter =
+                  typeof param.happinessParameter === "string"
+                    ? param.happinessParameter
+                    : String(
+                        param.happinessParameter || `Parameter ${index + 1}`
+                      );
+                let centerAverage;
+                if (
+                  param.centerAverage === null ||
+                  param.centerAverage === undefined
+                ) {
+                  centerAverage = "N/A";
+                } else {
+                  const numValue = Number(param.centerAverage);
+                  centerAverage = isNaN(numValue)
+                    ? "N/A"
+                    : numValue.toFixed(2).toString();
+                }
+                return [happinessParameter, centerAverage];
+              }
+            )
+          : [];
+
+        if (tableData.length === 0) {
+          pdf.setTextColor(255, 0, 0);
+          pdf.text(
+            "No data available for Happiness Parameter Averages",
+            margin + 5,
+            yPos + 5
+          );
+          yPos += 20;
+        } else {
+          try {
+            autoTable(pdf, {
+              startY: yPos,
+              head: [["Happiness Parameter", "Center Average"]],
+              body: tableData,
+              theme: "grid",
+              headStyles: {
+                fillColor: [35, 157, 98],
+                textColor: [255, 255, 255],
+                fontStyle: "bold",
+                halign: "center",
+                fontSize: 10,
+                font: "helvetica",
+              },
+              styles: {
+                fontSize: 10,
+                cellPadding: 3,
+                halign: "center",
+                font: "helvetica",
+                minCellWidth: 20,
+                lineWidth: 0,
+              },
+              columnStyles: {
+                0: { cellWidth: (contentWidth - 20) * 0.6, halign: "left" },
+                1: { cellWidth: (contentWidth - 20) * 0.4 },
+              },
+              margin: { left: margin + 10, right: margin + 10 },
+              tableLineWidth: 0,
+              tableLineColor: [255, 255, 255],
+            });
+            yPos = pdf.lastAutoTable?.finalY || yPos + 20;
+          } catch (error) {
+            console.error(
+              "Error rendering Happiness Parameter Averages table:",
+              error
+            );
+            pdf.setTextColor(255, 0, 0);
+            pdf.text(
+              "Failed to render Happiness Parameter Averages table",
+              margin + 5,
+              yPos + 5
+            );
+            yPos += 20;
+          }
+        }
+        yPos += 20;
+        if (yPos < margin + 10) yPos = margin + 10;
+      }
+
+      // Domain Performance
+      if (reportData.message.graphDetails?.length > 0) {
+        pdf.setFontSize(14);
+        pdf.setFont("helvetica", "bold");
+        pdf.text("Domain Performance", margin + 10, yPos);
+        yPos += 8;
+
+        console.log("Capturing Domain Performance chart...");
+        const domainChartElement = await waitForElement(
+          ".domain-chart .recharts-wrapper",
+          5000
+        ).catch((err) => {
+          console.warn(err.message);
+          return null;
+        });
+        if (domainChartElement) {
+          const canvas = await html2canvas(domainChartElement, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: true,
+          });
+          console.log("Domain chart captured successfully");
+          const imgData = canvas.toDataURL("image/png");
+          const imgWidth = contentWidth - 10;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          const chartBoxHeight = imgHeight + 16;
+          pdf.addImage(
+            imgData,
+            "PNG",
+            margin + 5,
+            yPos + 8,
+            imgWidth,
+            imgHeight
+          );
+          yPos += chartBoxHeight + 10;
+        } else {
+          console.warn("Domain chart element not found");
+          pdf.setTextColor(255, 0, 0);
+          pdf.text(
+            "Failed to capture Domain Performance chart",
+            margin + 5,
+            yPos + 5
+          );
+          yPos += 20;
+        }
+      }
+
+      // Third Page - Domain Performance Table and Demographics
+      pdf.addPage();
+      pdf.setDrawColor(35, 157, 98);
+      pdf.setLineWidth(0.5);
+      pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
+      yPos = margin + 10;
+
+      // Domain Performance Table
+      if (reportData.message.graphDetails?.length > 0) {
+        pdf.setFontSize(14);
+        pdf.setFont("helvetica", "bold");
+        pdf.text("Domain Performance", margin + 10, yPos);
+        yPos += 8;
+
+        const domainData = Array.isArray(reportData.message.graphDetails)
+          ? reportData.message.graphDetails.map((domain, index) => {
+              const domainName =
+                typeof domain.domainName === "string"
+                  ? domain.domainName
+                  : String(domain.domainName || `Domain ${index + 1}`);
+              let centerAverage;
+              if (
+                domain.centerAverage === null ||
+                domain.centerAverage === undefined
+              ) {
+                centerAverage = "N/A";
+              } else {
+                const numValue = Number(domain.centerAverage);
+                centerAverage = isNaN(numValue)
+                  ? "N/A"
+                  : numValue.toFixed(2).toString();
+              }
+              let numberOfSessions;
+              if (
+                domain.numberOfSessions === null ||
+                domain.numberOfSessions === undefined
+              ) {
+                numberOfSessions = "N/A";
+              } else {
+                const numValue = Number(domain.numberOfSessions);
+                numberOfSessions = isNaN(numValue)
+                  ? "N/A"
+                  : numValue.toString();
+              }
+              return [domainName, centerAverage, numberOfSessions];
+            })
+          : [];
+
+        if (domainData.length === 0) {
+          pdf.setTextColor(255, 0, 0);
+          pdf.text(
+            "No data available for Domain Performance",
+            margin + 5,
+            yPos + 5
+          );
+          yPos += 20;
+        } else {
+          try {
+            autoTable(pdf, {
+              startY: yPos,
+              head: [["Domain", "Center Average", "Number of Sessions"]],
+              body: domainData,
+              theme: "grid",
+              headStyles: {
+                fillColor: [35, 157, 98],
+                textColor: [255, 255, 255],
+                fontStyle: "bold",
+                halign: "center",
+                fontSize: 10,
+                font: "helvetica",
+              },
+              styles: {
+                fontSize: 10,
+                cellPadding: 3,
+                halign: "center",
+                font: "helvetica",
+                minCellWidth: 20,
+                lineWidth: 0,
+              },
+              columnStyles: {
+                0: { cellWidth: (contentWidth - 20) * 0.5, halign: "left" },
+                1: { cellWidth: (contentWidth - 20) * 0.25 },
+                2: { cellWidth: (contentWidth - 20) * 0.25 },
+              },
+              margin: { left: margin + 10, right: margin + 10 },
+            });
+            yPos = pdf.lastAutoTable?.finalY || yPos + 20;
+          } catch (error) {
+            console.error("Error rendering Domain Performance table:", error);
+            pdf.setTextColor(255, 0, 0);
+            pdf.text(
+              "Failed to render Domain Performance table",
+              margin + 5,
+              yPos + 5
+            );
+            yPos += 20;
+          }
+        }
+        yPos += 20;
+        if (yPos < margin + 10) yPos = margin + 10;
+      }
+
+      // Demographics
+      pdf.setFontSize(14);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Demographics", margin + 10, yPos);
+      yPos += 8;
+
+      const tempContainer = document.createElement("div");
+      tempContainer.style.position = "absolute";
+      tempContainer.style.left = "-9999px";
+      tempContainer.style.top = "-9999px";
+      tempContainer.style.width = "600px";
+      tempContainer.style.height = "780px"; // Adjusted height for three pie charts
+      document.body.appendChild(tempContainer);
+
+      const pieChartData = [
+        { title: "Gender Distribution", data: reportData.message.genderData },
+        {
+          title: "Participant Type Distribution",
+          data: reportData.message.participantTypeData,
+        },
+        { title: "Age Distribution", data: reportData.message.ageData },
+      ];
+
+      const root = ReactDOM.createRoot(tempContainer);
+      root.render(
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "20px",
+            justifyContent: "center",
+          }}
+        >
+          {pieChartData.map((chart, index) => (
+            <div key={index} style={{ width: "220px", height: "300px" }}>
+              <PDFPieChart data={chart.data} title={chart.title} />
+            </div>
+          ))}
+        </div>
+      );
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const pieCharts = tempContainer.querySelectorAll(".pie-chart");
+      if (pieCharts.length >= 3) {
+        const chartWidth = (contentWidth - 20) / 3;
+        const chartHeight = chartWidth * 1.35; // Increase height by 35%
+        const spacing = 10;
+        for (let i = 0; i < 3; i++) {
+          if (yPos + chartHeight > pageHeight - margin - 10) {
+            pdf.addPage();
+            pdf.setDrawColor(35, 157, 98);
+            pdf.setLineWidth(0.5);
+            pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
+            yPos = margin + 10;
+          }
+          console.log(`Capturing pie chart ${i + 1}...`);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          const canvas = await html2canvas(pieCharts[i], {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: true,
+            width: 220,
+            height: 300, // Match updated container height
+          });
+          console.log(`Pie chart ${i + 1} captured successfully`);
+          const imgData = canvas.toDataURL("image/png");
+          const xPos = margin + 1 + (chartWidth + spacing) * i;
+          pdf.addImage(imgData, "PNG", xPos, yPos + 5, chartWidth, chartHeight);
+        }
+        yPos += chartHeight + 10;
+      } else {
+        console.warn("Pie charts not found or insufficient number");
+        pdf.setTextColor(255, 0, 0);
+        pdf.text(
+          "Failed to capture Demographics pie charts",
+          margin + 5,
+          yPos + 5
+        );
+        yPos += 20;
+      }
+      document.body.removeChild(tempContainer);
+      if (yPos < margin + 10) yPos = margin + 10;
+
+      // Participant Domain Scores (Heatmap)
+      if (reportData?.message?.participantDomainScores) {
+        pdf.addPage();
+        pdf.setDrawColor(35, 157, 98);
+        pdf.setLineWidth(0.5);
+        pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
+        yPos = margin + 10;
+
+        pdf.setFontSize(14);
+        pdf.setFont("helvetica", "bold");
+        pdf.text("Participant Domain Scores", margin + 10, yPos);
+        yPos += 8;
+
+        const tempContainer = document.createElement("div");
+        tempContainer.style.position = "absolute";
+        tempContainer.style.left = "-9999px";
+        tempContainer.style.top = "-9999px";
+        tempContainer.style.width = "600px";
+        tempContainer.style.height = "400px";
+        document.body.appendChild(tempContainer);
+
+        const root = ReactDOM.createRoot(tempContainer);
+        root.render(
+          <ParticipantHeatmap
+            data={reportData.message.participantDomainScores}
+          />
+        );
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        console.log("Capturing Participant Domain Scores heatmap...");
+        const heatmapElement = await waitForElement(
+          ".heatmap-chart",
+          5000
+        ).catch((err) => {
+          console.warn(err.message);
+          return null;
+        });
+
+        if (heatmapElement) {
+          const canvas = await html2canvas(heatmapElement, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: true,
+          });
+          console.log("Heatmap captured successfully");
+          const imgData = canvas.toDataURL("image/png");
+          const imgWidth = contentWidth - 10;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          const chartBoxHeight = imgHeight + 16;
+          pdf.addImage(
+            imgData,
+            "PNG",
+            margin + 5,
+            yPos + 8,
+            imgWidth,
+            imgHeight
+          );
+          yPos += chartBoxHeight + 10;
+        } else {
+          console.warn("Heatmap element not found");
+          pdf.setTextColor(255, 0, 0);
+          pdf.text(
+            "Failed to capture Participant Domain Scores heatmap",
+            margin + 5,
+            yPos + 5
+          );
+          yPos += 20;
+        }
+        document.body.removeChild(tempContainer);
+      }
+
+      // Overall Observation
+      pdf.addPage();
+      pdf.setDrawColor(35, 157, 98);
+      pdf.setLineWidth(0.5);
+      pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
+      yPos = margin + 10;
+
+      pdf.setFontSize(14);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Overall Observation", margin + 10, yPos);
+      yPos += 8;
+      pdf.setFontSize(11);
+      pdf.setFont("helvetica", "normal");
+      const observationText =
+        overallObservation || "Enter overall observation...";
+      const observationLines = pdf.splitTextToSize(
+        observationText,
+        contentWidth - 10
+      );
+      const observationHeight = observationLines.length * 6 + 16;
+      pdf.setFillColor(248, 250, 252);
+      pdf.setDrawColor(35, 157, 98);
+      pdf.setLineWidth(0.2);
+      pdf.rect(margin + 5, yPos, contentWidth - 10, observationHeight, "FD");
+      observationLines.forEach((line, index) => {
+        pdf.text(line, margin + 10, yPos + 10 + index * 6);
+      });
+      yPos += observationHeight + 10;
+
+      // Joint Plan
+      pdf.setFontSize(14);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Joint Plan", margin + 10, yPos);
+      yPos += 8;
+      pdf.setFontSize(11);
+      pdf.setFont("helvetica", "normal");
+      const jointPlanText = jointPlan || "Enter joint plan...";
+      const jointPlanLines = pdf.splitTextToSize(
+        jointPlanText,
+        contentWidth - 10
+      );
+      const jointPlanHeight = jointPlanLines.length * 6 + 16;
+      pdf.setFillColor(248, 250, 252);
+      pdf.setDrawColor(35, 157, 98);
+      pdf.setLineWidth(0.2);
+      pdf.rect(margin + 5, yPos, contentWidth - 10, jointPlanHeight, "FD");
+      jointPlanLines.forEach((line, index) => {
+        pdf.text(line, margin + 10, yPos + 10 + index * 6);
+      });
+      yPos += jointPlanHeight + 10;
+
+      // Signature
+      if (yPos + 20 > pageHeight - margin - 10) {
+        pdf.addPage();
+        pdf.setDrawColor(35, 157, 98);
+        pdf.setLineWidth(0.5);
+        pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
+        yPos = margin + 10;
+      }
+      pdf.setFontSize(14);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Signature", margin + 10, yPos);
+      yPos += 8;
+      pdf.setFontSize(11);
+      pdf.setFont("helvetica", "normal");
+      pdf.setFillColor(248, 250, 252);
+      pdf.setDrawColor(35, 157, 98);
+      pdf.setLineWidth(0.2);
+      pdf.rect(margin + 5, yPos, contentWidth - 10, 30, "FD");
+      pdf.text(
+        `Name: ${signatureName || "Enter name..."}`,
+        margin + 10,
+        yPos + 7
+      );
+      pdf.text(
+        `Date: ${signatureDate || "Enter date..."}`,
+        margin + 10 + (contentWidth - 20) / 2,
+        yPos + 7
+      );
+      pdf.text(
+        `Mobile: ${signatureMobile || "Enter mobile number..."}`,
+        margin + 10,
+        yPos + 14
+      );
+      yPos += 40;
+
+      // Mission Statement
+      if (yPos + 20 > pageHeight - margin - 10) {
+        pdf.addPage();
+        pdf.setDrawColor(35, 157, 98);
+        pdf.setLineWidth(0.5);
+        pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
+        yPos = margin + 10;
+      }
+      pdf.setFontSize(11);
+      pdf.setFont("helvetica", "normal");
+      pdf.setTextColor(100);
+      const missionStatement = [
+        "We are here to engage with you to spread joy and provide meaningful involvement.",
+        "We stand for Trust, Building Positive Relationship & Spreading Joy and Going that Extra Mile.",
+      ];
+      missionStatement.forEach((line) => {
+        const lines = pdf.splitTextToSize(line, contentWidth - 10);
+        lines.forEach((splitLine) => {
+          pdf.text(splitLine, pageWidth / 2, yPos, { align: "center" });
+          yPos += 8;
+        });
+      });
 
       const pageCount = pdf.internal.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
@@ -738,37 +1320,30 @@ const AllCenterReport = () => {
                         </div>
                         <div>
                           <p className="text-sm font-bold text-[#239d62]">
-                            Total Participants
+                            Total Centers
+                          </p>
+                          <p className="text-sm text-gray-900">
+                            {reportData.message.graphDetails?.reduce(
+                              (sum, item) => {
+                                if (!sum.centers.has(item.cohort)) {
+                                  sum.centers.add(item.cohort);
+                                  sum.count++;
+                                }
+                                return sum;
+                              },
+                              { centers: new Set(), count: 0 }
+                            ).count || 0}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-[#239d62]">
+                            Total Members
                           </p>
                           <p className="text-sm text-gray-900">
                             {reportData.message.genderData?.reduce(
                               (sum, item) => sum + item.count,
                               0
                             ) || 0}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-[#239d62]">
-                            Total Domains
-                          </p>
-                          <p className="text-sm text-gray-900">
-                            {reportData.message.graphDetails?.length || 0}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-[#239d62]">
-                            Average Score
-                          </p>
-                          <p className="text-sm text-gray-900">
-                            {reportData.message.graphDetails?.length > 0
-                              ? (
-                                  reportData.message.graphDetails.reduce(
-                                    (sum, item) =>
-                                      sum + parseFloat(item.average),
-                                    0
-                                  ) / reportData.message.graphDetails.length
-                                ).toFixed(2)
-                              : "0.00"}
                           </p>
                         </div>
                       </div>
@@ -989,57 +1564,6 @@ const AllCenterReport = () => {
                                 />
                               </div>
                             </div>
-                          </div>
-                        </div>
-                      )}
-
-                    {/* Happiness Parameter Averages */}
-                    {reportData?.message?.happinessParameterAverages &&
-                      reportData.message.happinessParameterAverages.length >
-                        0 && (
-                        <div className="mb-8">
-                          <h3 className="text-base font-semibold text-gray-900 mb-4">
-                            Happiness Parameter Averages
-                          </h3>
-                          <div className="bg-gray-50 p-4 rounded-lg border border-[#239d62] mb-6">
-                            <CenterHappinessChart
-                              data={
-                                reportData.message.happinessParameterAverages
-                              }
-                            />
-                          </div>
-                          <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                              <thead>
-                                <tr className="bg-[#239d62]">
-                                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                                    Happiness Parameter
-                                  </th>
-                                  <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                                    Center Average
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody className="bg-white divide-y divide-gray-200">
-                                {reportData.message.happinessParameterAverages.map(
-                                  (item, index) => (
-                                    <tr
-                                      key={index}
-                                      className="hover:bg-gray-50"
-                                    >
-                                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        {item.happinessParameter}
-                                      </td>
-                                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                        {parseFloat(item.centerAverage).toFixed(
-                                          2
-                                        )}
-                                      </td>
-                                    </tr>
-                                  )
-                                )}
-                              </tbody>
-                            </table>
                           </div>
                         </div>
                       )}

@@ -12,12 +12,13 @@ import {
   Legend,
   BarChart,
 } from "recharts";
-import { FiSearch, FiDownload } from "react-icons/fi";
+import { FiSearch, FiDownload, FiFileText } from "react-icons/fi";
 import axiosInstance from "../../utils/axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 import ReactDOM from "react-dom/client";
+import * as XLSX from "xlsx";
 
 const MemberReport = () => {
   const [loading, setLoading] = useState(false);
@@ -91,7 +92,12 @@ const MemberReport = () => {
         `/report/${selectedParticipant}/?start=${dateRange.start}&end=${dateRange.end}&generateSummary=true`
       );
       if (response.data.success) {
-        setReportData(response.data.data);
+        // Combine the data and evaluations into a single object
+        const combinedData = {
+          ...response.data.data,
+          evaluations: response.data.evaluations || [],
+        };
+        setReportData(combinedData);
         setEditableSummary(response.data.data.aiSummary || "");
       } else {
         setError(response.data.message || "Failed to fetch report");
@@ -984,6 +990,80 @@ const MemberReport = () => {
     }
   };
 
+  const exportToExcel = () => {
+    if (!reportData || !reportData.evaluations) {
+      setError("No evaluation data available for export");
+      return;
+    }
+
+    try {
+      // Process evaluations data to extract domain names and scores
+      const excelData = [];
+
+      reportData.evaluations.forEach((evaluation, index) => {
+        const sessionName = evaluation.session?.name || `Session ${index + 1}`;
+        const sessionDate = evaluation.session?.date
+          ? new Date(evaluation.session.date).toLocaleDateString()
+          : "N/A";
+        const activityFacilitator =
+          evaluation.session?.activityFacilitator || "N/A";
+        const grandAverage = evaluation.grandAverage || "N/A";
+
+        // Create a row for each domain in this evaluation
+        evaluation.domain?.forEach((domain) => {
+          excelData.push({
+            "Session Name": sessionName,
+            "Session Date": sessionDate,
+            "Activity Facilitator": activityFacilitator,
+            "Domain Name": domain.name || "N/A",
+            "Domain Category": domain.category || "N/A",
+            "Domain Average": domain.average || "N/A",
+            "Grand Average": grandAverage,
+            "Happiness Parameters":
+              domain.happinessParameter?.join(", ") || "N/A",
+            // Add individual subtopic scores
+            "Subtopic Scores":
+              domain.subTopics
+                ?.map((sub) => `${sub.content}: ${sub.score}`)
+                .join("; ") || "N/A",
+          });
+        });
+      });
+
+      // Create workbook and worksheet
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(excelData);
+
+      // Set column widths
+      const colWidths = [
+        { wch: 15 }, // Session Name
+        { wch: 12 }, // Session Date
+        { wch: 18 }, // Activity Facilitator
+        { wch: 20 }, // Domain Name
+        { wch: 15 }, // Domain Category
+        { wch: 15 }, // Domain Average
+        { wch: 15 }, // Grand Average
+        { wch: 30 }, // Happiness Parameters
+        { wch: 40 }, // Subtopic Scores
+      ];
+      ws["!cols"] = colWidths;
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(wb, ws, "Evaluation Data");
+
+      // Generate filename
+      const fileName = `member-evaluation-data-${
+        reportData.participant?.name || "unknown"
+      }-${new Date().toISOString().split("T")[0]}.xlsx`;
+
+      // Save file
+      XLSX.writeFile(wb, fileName);
+    } catch (error) {
+      console.error("Error exporting to Excel:", error);
+      setError("Failed to export data to Excel. Please try again.");
+    }
+  };
+
   const TrendChart = ({ data, domainName }) => {
     const yDomain = domainName === "Initiative" ? [0, 16] : [0, 7];
 
@@ -1147,6 +1227,13 @@ const MemberReport = () => {
                     <span className="text-sm text-gray-500">
                       Generated on: {new Date().toLocaleDateString()}
                     </span>
+                    <button
+                      onClick={exportToExcel}
+                      className="flex items-center px-3 py-1 text-sm text-[#239d62] hover:text-[#239d62]/90 focus:outline-none"
+                    >
+                      <FiFileText className="mr-1" />
+                      Export Excel
+                    </button>
                     <button
                       onClick={downloadPDF}
                       disabled={isGeneratingPDF}
