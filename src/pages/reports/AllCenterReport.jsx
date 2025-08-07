@@ -519,17 +519,7 @@ const AllCenterReport = () => {
           (sum, item) => sum + item.count,
           0
         ) || 0;
-      const totalCenters =
-        reportData.message.graphDetails?.reduce(
-          (sum, item) => {
-            if (!sum.centers.has(item.cohort)) {
-              sum.centers.add(item.cohort);
-              sum.count++;
-            }
-            return sum;
-          },
-          { centers: new Set(), count: 0 }
-        ).count || 0;
+      const totalCenters = reportData.message.totalCenters || 0;
 
       pdf.setFont("helvetica", "bold");
       pdf.setTextColor(35, 157, 98);
@@ -1284,16 +1274,7 @@ const AllCenterReport = () => {
                             Total Centers
                           </p>
                           <p className="text-sm text-gray-900">
-                            {reportData.message.graphDetails?.reduce(
-                              (sum, item) => {
-                                if (!sum.centers.has(item.cohort)) {
-                                  sum.centers.add(item.cohort);
-                                  sum.count++;
-                                }
-                                return sum;
-                              },
-                              { centers: new Set(), count: 0 }
-                            ).count || 0}
+                            {reportData.message.totalCenters || 0}
                           </p>
                         </div>
                         <div>
