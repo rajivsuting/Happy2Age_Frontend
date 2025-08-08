@@ -68,7 +68,7 @@ const NewSession = () => {
 
   const fetchActivities = async () => {
     try {
-      const response = await axiosInstance.get("/activity/all");
+      const response = await axiosInstance.get("/activity/export");
       if (response.data.success) {
         setActivities(response.data.data || []);
       }
