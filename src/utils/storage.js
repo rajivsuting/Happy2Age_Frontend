@@ -138,7 +138,12 @@ class StorageManager {
   getAccessToken() {
     try {
       const { tokens } = this.getAuth();
-      return tokens?.accessToken || null;
+      const token = tokens?.accessToken || null;
+      console.log(
+        "StorageManager: getAccessToken called, token:",
+        token ? token.substring(0, 20) + "..." : "null"
+      );
+      return token;
     } catch (error) {
       console.error("Error getting access token:", error);
       return null;
