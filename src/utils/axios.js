@@ -1,8 +1,18 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
+// Environment-aware backend URL
+const getBackendURL = () => {
+  if (import.meta.env.DEV) {
+    // Development - use local backend
+    return "https://happy2age-backend-gn8ln.ondigitalocean.app";
+  }
+  // Production - use production backend
+  return "https://happy2age-backend-gn8ln.ondigitalocean.app";
+};
+
 const axiosInstance = axios.create({
-  baseURL: "https://happy2age-backend-gn8ln.ondigitalocean.app",
+  baseURL: getBackendURL(),
   withCredentials: true, // This is important for cookies
 });
 

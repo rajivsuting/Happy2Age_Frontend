@@ -18,6 +18,14 @@ const Activities = () => {
     name: "",
     category: "",
   });
+
+  // Validate filters
+  const validateFilters = useCallback((filterData) => {
+    return {
+      name: filterData.name || "",
+      category: filterData.category || "",
+    };
+  }, []);
   const [debouncedName, setDebouncedName] = useState("");
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -25,10 +33,33 @@ const Activities = () => {
     pageSize: 10,
     totalActivities: 0,
   });
+
+  // Validate pagination
+  const validatePagination = useCallback((paginationData) => {
+    return {
+      currentPage: Math.max(paginationData.currentPage || 1, 1),
+      totalPages: Math.max(paginationData.totalPages || 1, 1),
+      pageSize: Math.max(paginationData.pageSize || 10, 1),
+      totalActivities: Math.max(paginationData.totalActivities || 0, 0),
+    };
+  }, []);
   const [sortConfig, setSortConfig] = useState({
     sortBy: "createdAt",
     order: "desc",
   });
+
+  // Validate sort config
+  const validateSortConfig = useCallback((config) => {
+    const allowedSortFields = ["name", "description", "createdAt", "updatedAt"];
+    const allowedOrders = ["asc", "desc"];
+
+    return {
+      sortBy: allowedSortFields.includes(config.sortBy)
+        ? config.sortBy
+        : "createdAt",
+      order: allowedOrders.includes(config.order) ? config.order : "desc",
+    };
+  }, []);
   const navigate = useNavigate();
 
   // Debounce the name search
@@ -40,81 +71,318 @@ const Activities = () => {
     return () => clearTimeout(timer);
   }, [filters.name]);
 
-  // Fetch activities when debounced name changes
+  // Initialize pagination on mount
   useEffect(() => {
-    fetchActivities();
-  }, [debouncedName, filters.category, pagination.currentPage, sortConfig]);
-
-  const handleFilterChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-
-    // Reset to first page when filters change
-    if (name !== "name") {
-      setPagination((prev) => ({ ...prev, currentPage: 1 }));
+    const validPagination = validatePagination(pagination);
+    if (
+      validPagination.currentPage !== pagination.currentPage ||
+      validPagination.pageSize !== pagination.pageSize ||
+      validPagination.totalPages !== pagination.totalPages ||
+      validPagination.totalActivities !== pagination.totalActivities
+    ) {
+      console.log("Initializing pagination state");
+      setPagination(validPagination);
     }
+  }, [validatePagination]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      console.log("Activities component unmounting");
+    };
   }, []);
 
-  const fetchActivities = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  const handleFilterChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setFilters((prev) => validateFilters({ ...prev, [name]: value }));
 
-      const queryParams = new URLSearchParams({
-        page: pagination.currentPage,
-        limit: pagination.pageSize,
-        sortBy: sortConfig.sortBy,
-        order: sortConfig.order,
-        ...(debouncedName && { name: debouncedName }),
-        ...(filters.category && { category: filters.category }),
-      });
-
-      console.log("Fetching with params:", queryParams.toString());
-
-      const response = await axiosInstance.get(`/activity/all?${queryParams}`);
-
-      console.log("API Response:", response.data);
-
-      if (response.data.success) {
-        setActivities(response.data.data || []);
-        setPagination({
-          ...pagination,
-          totalPages: response.data.totalPages || 1,
-          totalActivities:
-            response.data.totalActivities || response.data.data?.length || 0,
-        });
-      } else {
-        setActivities([]);
-        setError(response.data.message || "Failed to fetch activities");
+      // Reset to first page when filters change
+      if (name !== "name") {
+        setPagination((prev) =>
+          validatePagination({ ...prev, currentPage: 1 })
+        );
       }
-    } catch (error) {
-      console.error("Error fetching activities:", error);
-      setError(error.response?.data?.message || "Failed to fetch activities");
-      setActivities([]);
-    } finally {
-      setLoading(false);
+    },
+    [validateFilters, validatePagination]
+  );
+
+  // Initial fetch on mount
+  useEffect(() => {
+    console.log("Activities component mounted - initial fetch");
+
+    // Inline function for initial fetch
+    const initialFetch = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const validSortConfig = validateSortConfig(sortConfig);
+        const validFilters = validateFilters(filters);
+        const validPagination = validatePagination(pagination);
+
+        const queryParams = new URLSearchParams({
+          page: validPagination.currentPage,
+          limit: validPagination.pageSize,
+          sortBy: validSortConfig.sortBy,
+          order: validSortConfig.order,
+        });
+
+        console.log("Initial fetch with params:", queryParams.toString());
+
+        const response = await axiosInstance.get(
+          `/activity/all?${queryParams}`
+        );
+
+        console.log("Initial API Response:", response.data);
+        console.log("Initial Pagination data:", response.data.pagination);
+
+        if (response.data.success) {
+          setActivities(response.data.data || []);
+          const newPagination = validatePagination({
+            ...pagination,
+            totalPages: response.data.pagination?.totalPages || 1,
+            totalActivities: response.data.pagination?.totalActivities || 0,
+          });
+
+          console.log("Setting initial pagination:", newPagination);
+          setPagination(newPagination);
+
+          // Clear any previous errors if successful
+          setError(null);
+        } else {
+          setActivities([]);
+          setError(response.data.message || "Failed to fetch activities");
+        }
+      } catch (error) {
+        console.error("Error in initial fetch:", error);
+
+        // Handle different types of errors
+        let errorMessage = "Failed to fetch activities";
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.response?.status === 404) {
+          errorMessage = "No activities found";
+        } else if (error.response?.status === 500) {
+          errorMessage = "Server error occurred";
+        }
+
+        setError(errorMessage);
+        setActivities([]);
+
+        // Reset pagination to safe values on error
+        setPagination(
+          validatePagination({
+            currentPage: 1,
+            totalPages: 1,
+            pageSize: 10,
+            totalActivities: 0,
+          })
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initialFetch();
+  }, []); // Empty dependency array - only run once on mount
+
+  // Fetch activities when filters or pagination change
+  useEffect(() => {
+    // Skip if this is the initial render
+    if (activities.length === 0) {
+      return;
     }
-  };
+
+    console.log("Fetching activities due to filter/pagination change");
+
+    // Call fetchActivities directly instead of through the callback
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const validSortConfig = validateSortConfig(sortConfig);
+        const validFilters = validateFilters(filters);
+        const validPagination = validatePagination(pagination);
+
+        const queryParams = new URLSearchParams({
+          page: validPagination.currentPage,
+          limit: validPagination.pageSize,
+          sortBy: validSortConfig.sortBy,
+          order: validSortConfig.order,
+          ...(debouncedName &&
+            debouncedName.trim() && { name: debouncedName.trim() }),
+          ...(validFilters.category &&
+            validFilters.category.trim() && {
+              primaryDomain: validFilters.category.trim(),
+            }),
+        });
+
+        console.log("Fetching with params:", queryParams.toString());
+
+        const response = await axiosInstance.get(
+          `/activity/all?${queryParams}`
+        );
+
+        console.log("API Response:", response.data);
+        console.log("Pagination data:", response.data.pagination);
+
+        if (response.data.success) {
+          setActivities(response.data.data || []);
+          const newPagination = validatePagination({
+            ...pagination,
+            totalPages: response.data.pagination?.totalPages || 1,
+            totalActivities: response.data.pagination?.totalActivities || 0,
+          });
+
+          console.log("Setting pagination:", newPagination);
+          setPagination(newPagination);
+
+          // Clear any previous errors if successful
+          setError(null);
+        } else {
+          setActivities([]);
+          setError(response.data.message || "Failed to fetch activities");
+        }
+      } catch (error) {
+        console.error("Error fetching activities:", error);
+
+        // Handle different types of errors
+        let errorMessage = "Failed to fetch activities";
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.response?.status === 404) {
+          errorMessage = "No activities found";
+        } else if (error.response?.status === 500) {
+          errorMessage = "Server error occurred";
+        }
+
+        setError(errorMessage);
+        setActivities([]);
+
+        // Reset pagination to safe values on error
+        setPagination(
+          validatePagination({
+            currentPage: 1,
+            totalPages: 1,
+            pageSize: 10,
+            totalActivities: 0,
+          })
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [
+    debouncedName,
+    filters.category,
+    pagination.currentPage,
+    sortConfig.sortBy,
+    sortConfig.order,
+    validateSortConfig,
+    validateFilters,
+    validatePagination,
+  ]);
 
   const clearFilters = useCallback(() => {
-    setFilters({
-      name: "",
-      category: "",
-    });
-    setPagination((prev) => ({ ...prev, currentPage: 1 }));
-  }, []);
+    setFilters(
+      validateFilters({
+        name: "",
+        category: "",
+      })
+    );
+    setPagination((prev) => validatePagination({ ...prev, currentPage: 1 }));
+  }, [validateFilters, validatePagination]);
 
   const handleDelete = async (id) => {
     try {
       const response = await axiosInstance.delete(`/activity/delete/${id}`);
       if (response.data.success) {
-        fetchActivities();
+        // Reset to first page after deletion to avoid pagination issues
+        setPagination((prev) =>
+          validatePagination({ ...prev, currentPage: 1 })
+        );
+
+        // Refresh activities after deletion
+        const refreshAfterDelete = async () => {
+          try {
+            setLoading(true);
+            setError(null);
+
+            const validSortConfig = validateSortConfig(sortConfig);
+            const validFilters = validateFilters(filters);
+            const validPagination = validatePagination({
+              ...pagination,
+              currentPage: 1,
+            });
+
+            const queryParams = new URLSearchParams({
+              page: 1, // Always fetch first page after deletion
+              limit: validPagination.pageSize,
+              sortBy: validSortConfig.sortBy,
+              order: validSortConfig.order,
+              ...(debouncedName &&
+                debouncedName.trim() && { name: debouncedName.trim() }),
+              ...(validFilters.category &&
+                validFilters.category.trim() && {
+                  primaryDomain: validFilters.category.trim(),
+                }),
+            });
+
+            const response = await axiosInstance.get(
+              `/activity/all?${queryParams}`
+            );
+
+            if (response.data.success) {
+              setActivities(response.data.data || []);
+              const newPagination = validatePagination({
+                ...pagination,
+                currentPage: 1,
+                totalPages: response.data.pagination?.totalPages || 1,
+                totalActivities: response.data.pagination?.totalActivities || 0,
+              });
+
+              setPagination(newPagination);
+              setError(null);
+            } else {
+              setActivities([]);
+              setError(response.data.message || "Failed to fetch activities");
+            }
+          } catch (error) {
+            console.error("Error refreshing after delete:", error);
+            setError("Failed to refresh activities after deletion");
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        refreshAfterDelete();
       } else {
         setError(response.data.message || "Failed to delete activity");
       }
     } catch (error) {
       console.error("Error deleting activity:", error);
-      setError(error.response?.data?.message || "Failed to delete activity");
+
+      // Handle different types of errors
+      let errorMessage = "Failed to delete activity";
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      } else if (error.response?.status === 404) {
+        errorMessage = "Activity not found";
+      } else if (error.response?.status === 500) {
+        errorMessage = "Server error occurred";
+      }
+
+      setError(errorMessage);
     }
   };
 
@@ -171,9 +439,25 @@ const Activities = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+
+      // Clear any previous errors if successful
+      setError(null);
     } catch (error) {
       console.error("Error exporting activities:", error);
-      setError(error.message || "Failed to export activities");
+
+      // Handle different types of errors
+      let errorMessage = "Failed to export activities";
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      } else if (error.response?.status === 404) {
+        errorMessage = "No activities found to export";
+      } else if (error.response?.status === 500) {
+        errorMessage = "Server error occurred";
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -290,7 +574,7 @@ const Activities = () => {
                   value={`${sortConfig.sortBy}-${sortConfig.order}`}
                   onChange={(e) => {
                     const [sortBy, order] = e.target.value.split("-");
-                    setSortConfig({ sortBy, order });
+                    setSortConfig(validateSortConfig({ sortBy, order }));
                   }}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#239d62] focus:border-[#239d62] sm:text-sm"
                 >
@@ -435,26 +719,39 @@ const Activities = () => {
           <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
             <div className="flex-1 flex justify-between sm:hidden">
               <button
-                onClick={() =>
-                  setPagination((prev) => ({
-                    ...prev,
-                    currentPage: prev.currentPage - 1,
-                  }))
+                onClick={() => {
+                  console.log("Mobile: Clicking previous page");
+                  setPagination((prev) =>
+                    validatePagination({
+                      ...prev,
+                      currentPage: prev.currentPage - 1,
+                    })
+                  );
+                }}
+                disabled={
+                  (pagination.currentPage || 1) <= 1 ||
+                  (pagination.totalPages || 1) <= 1
                 }
-                disabled={pagination.currentPage === 1}
                 className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400"
               >
                 Previous
               </button>
               <button
-                onClick={() =>
-                  setPagination((prev) => ({
-                    ...prev,
-                    currentPage: prev.currentPage + 1,
-                  }))
+                onClick={() => {
+                  console.log("Mobile: Clicking next page");
+                  setPagination((prev) =>
+                    validatePagination({
+                      ...prev,
+                      currentPage: prev.currentPage + 1,
+                    })
+                  );
+                }}
+                disabled={
+                  (pagination.currentPage || 1) >=
+                    (pagination.totalPages || 1) ||
+                  (pagination.totalPages || 1) <= 1
                 }
-                disabled={pagination.currentPage === pagination.totalPages}
-                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400"
+                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-400 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400"
               >
                 Next
               </button>
@@ -464,13 +761,15 @@ const Activities = () => {
                 <p className="text-sm text-gray-700">
                   Showing{" "}
                   <span className="font-medium">
-                    {(pagination.currentPage - 1) * pagination.pageSize + 1 ||
-                      0}
+                    {((pagination.currentPage || 1) - 1) *
+                      (pagination.pageSize || 10) +
+                      1 || 0}
                   </span>{" "}
                   to{" "}
                   <span className="font-medium">
                     {Math.min(
-                      pagination.currentPage * pagination.pageSize,
+                      (pagination.currentPage || 1) *
+                        (pagination.pageSize || 10),
                       pagination.totalActivities || 0
                     )}
                   </span>{" "}
@@ -480,6 +779,11 @@ const Activities = () => {
                   </span>{" "}
                   results
                 </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Debug: Page {pagination.currentPage || 1} of{" "}
+                  {pagination.totalPages || 1} (Total:{" "}
+                  {pagination.totalActivities || 0})
+                </p>
               </div>
               <div>
                 <nav
@@ -487,47 +791,63 @@ const Activities = () => {
                   aria-label="Pagination"
                 >
                   <button
-                    onClick={() =>
-                      setPagination((prev) => ({ ...prev, currentPage: 1 }))
+                    onClick={() => {
+                      console.log("Clicking first page");
+                      setPagination((prev) =>
+                        validatePagination({ ...prev, currentPage: 1 })
+                      );
+                    }}
+                    disabled={
+                      (pagination.currentPage || 1) <= 1 ||
+                      (pagination.totalPages || 1) <= 1
                     }
-                    disabled={pagination.currentPage === 1}
                     className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400"
                   >
                     <span className="sr-only">First</span>
                     ««
                   </button>
                   <button
-                    onClick={() =>
-                      setPagination((prev) => ({
-                        ...prev,
-                        currentPage: prev.currentPage - 1,
-                      }))
+                    onClick={() => {
+                      console.log("Clicking previous page");
+                      setPagination((prev) =>
+                        validatePagination({
+                          ...prev,
+                          currentPage: prev.currentPage - 1,
+                        })
+                      );
+                    }}
+                    disabled={
+                      (pagination.currentPage || 1) <= 1 ||
+                      (pagination.totalPages || 1) <= 1
                     }
-                    disabled={pagination.currentPage === 1}
                     className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400"
                   >
                     <span className="sr-only">Previous</span>«
                   </button>
-                  {[...Array(pagination.totalPages)].map((_, index) => {
+                  {[...Array(pagination.totalPages || 1)].map((_, index) => {
                     const page = index + 1;
-                    const isCurrentPage = page === pagination.currentPage;
+                    const isCurrentPage =
+                      page === (pagination.currentPage || 1);
 
                     // Show current page and 2 pages before and after
                     if (
                       page === 1 ||
-                      page === pagination.totalPages ||
-                      (page >= pagination.currentPage - 2 &&
-                        page <= pagination.currentPage + 2)
+                      page === (pagination.totalPages || 1) ||
+                      (page >= (pagination.currentPage || 1) - 2 &&
+                        page <= (pagination.currentPage || 1) + 2)
                     ) {
                       return (
                         <button
                           key={page}
-                          onClick={() =>
-                            setPagination((prev) => ({
-                              ...prev,
-                              currentPage: page,
-                            }))
-                          }
+                          onClick={() => {
+                            console.log("Clicking page:", page);
+                            setPagination((prev) =>
+                              validatePagination({
+                                ...prev,
+                                currentPage: page,
+                              })
+                            );
+                          }}
                           className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                             isCurrentPage
                               ? "z-10 bg-[#239d62] border-[#239d62] text-white"
@@ -541,8 +861,8 @@ const Activities = () => {
 
                     // Show ellipsis
                     if (
-                      page === pagination.currentPage - 3 ||
-                      page === pagination.currentPage + 3
+                      page === (pagination.currentPage || 1) - 3 ||
+                      page === (pagination.currentPage || 1) + 3
                     ) {
                       return (
                         <span
@@ -557,25 +877,40 @@ const Activities = () => {
                     return null;
                   })}
                   <button
-                    onClick={() =>
-                      setPagination((prev) => ({
-                        ...prev,
-                        currentPage: prev.currentPage + 1,
-                      }))
+                    onClick={() => {
+                      console.log("Clicking next page");
+                      setPagination((prev) =>
+                        validatePagination({
+                          ...prev,
+                          currentPage: prev.currentPage + 1,
+                        })
+                      );
+                    }}
+                    disabled={
+                      (pagination.currentPage || 1) >=
+                        (pagination.totalPages || 1) ||
+                      (pagination.totalPages || 1) <= 1
                     }
-                    disabled={pagination.currentPage === pagination.totalPages}
                     className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400"
                   >
                     <span className="sr-only">Next</span>»
                   </button>
                   <button
-                    onClick={() =>
-                      setPagination((prev) => ({
-                        ...prev,
-                        currentPage: pagination.totalPages,
-                      }))
+                    onClick={() => {
+                      const lastPage = pagination.totalPages || 1;
+                      console.log("Clicking last page:", lastPage);
+                      setPagination((prev) =>
+                        validatePagination({
+                          ...prev,
+                          currentPage: lastPage,
+                        })
+                      );
+                    }}
+                    disabled={
+                      (pagination.currentPage || 1) >=
+                        (pagination.totalPages || 1) ||
+                      (pagination.totalPages || 1) <= 1
                     }
-                    disabled={pagination.currentPage === pagination.totalPages}
                     className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400"
                   >
                     <span className="sr-only">Last</span>
