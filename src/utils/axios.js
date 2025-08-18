@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import storageManager from "./storage";
 
 // Environment-aware backend URL
 const getBackendURL = () => {
@@ -27,7 +28,11 @@ setTimeout(() => {
 // Request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Don't add Authorization header - we're using cookies
+    // Try to get access token from localStorage as fallback
+    const accessToken = storageManager.getAccessToken();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
     return config;
   },
   (error) => {
