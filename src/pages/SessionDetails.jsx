@@ -10,6 +10,7 @@ const SessionDetails = () => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
@@ -44,12 +45,18 @@ const SessionDetails = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axiosInstance.delete(`/session/${id}`);
+      const response = await axiosInstance.delete(`/session/delete/${id}`);
 
       if (response.data.success) {
-        navigate("/sessions/list");
+        setSuccessMessage("Session deleted successfully!");
+        setError(null);
+        // Navigate after showing success message
+        setTimeout(() => {
+          navigate("/sessions/list");
+        }, 1500);
       } else {
         setError(response.data.message || "Failed to delete session");
+        setSuccessMessage(null);
       }
     } catch (error) {
       console.error("Error deleting session:", error);
@@ -101,6 +108,37 @@ const SessionDetails = () => {
               </div>
               <div className="ml-3">
                 <p className="text-sm font-medium text-red-800">{error}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (successMessage) {
+    return (
+      <div className="min-h-full bg-gray-50 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-md bg-green-50 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-green-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-green-800">
+                  {successMessage}
+                </p>
               </div>
             </div>
           </div>

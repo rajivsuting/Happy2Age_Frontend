@@ -8,6 +8,7 @@ const SessionList = () => {
   const [cohorts, setCohorts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [filters, setFilters] = useState({
     name: "",
     cohort: "",
@@ -57,6 +58,8 @@ const SessionList = () => {
     if (name !== "name") {
       setPagination((prev) => ({ ...prev, currentPage: 1 }));
     }
+    setSuccessMessage(null);
+    setError(null);
   }, []);
 
   const fetchSessions = async () => {
@@ -100,19 +103,27 @@ const SessionList = () => {
       cohort: "",
     });
     setPagination((prev) => ({ ...prev, currentPage: 1 }));
+    setSuccessMessage(null);
+    setError(null);
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      const response = await axiosInstance.delete(`/session/${id}`);
+      const response = await axiosInstance.delete(`/session/delete/${id}`);
       if (response.data.success) {
+        setSuccessMessage("Session deleted successfully!");
+        setError(null);
         fetchSessions();
+        // Clear success message after 3 seconds
+        setTimeout(() => setSuccessMessage(null), 3000);
       } else {
         setError(response.data.message || "Failed to delete session");
+        setSuccessMessage(null);
       }
     } catch (error) {
       console.error("Error deleting session:", error);
       setError(error.response?.data?.message || "Failed to delete session");
+      setSuccessMessage(null);
     }
   };
 
@@ -145,6 +156,32 @@ const SessionList = () => {
             </div>
           </div>
         </div>
+
+        {/* Success Alert */}
+        {successMessage && (
+          <div className="mb-6 rounded-md bg-green-50 p-4 shadow-sm">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-green-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-green-800">
+                  {successMessage}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Error Alert */}
         {error && (
