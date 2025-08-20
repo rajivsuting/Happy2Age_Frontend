@@ -1315,6 +1315,52 @@ const CenterReport = () => {
         pdf.rect(margin, margin, contentWidth, pageHeight - 2 * margin);
       }
 
+      // Save PDF and upload
+      const pdfBlob = pdf.output("blob");
+      const pdfFile = new File(
+        [pdfBlob],
+        `center-report-${reportData.message.cohort || "unknown"}-${
+          new Date().toISOString().split("T")[0]
+        }.pdf`,
+        { type: "application/pdf" }
+      );
+
+      const formData = new FormData();
+      formData.append("pdf", pdfFile);
+      formData.append("type", "cohort");
+      formData.append(
+        "name",
+        `Center Report - ${reportData.message.cohort || "unknown"}`
+      );
+      formData.append("cohort", selectedCenter);
+      formData.append("startDate", dateRange.start);
+      formData.append("endDate", dateRange.end);
+      formData.append(
+        "metadata",
+        JSON.stringify({
+          helpType,
+          hoursPerWeek,
+          overallObservation,
+          jointPlan,
+          signatureName,
+          signatureDate,
+          signatureMobile,
+          userType,
+          attendance: reportData.message.attendance,
+          totalNumberOfSessions: reportData.message.totalNumberOfSessions,
+          graphDetails: reportData.message.graphDetails,
+          aiSummary: editableSummary,
+        })
+      );
+
+      const response = await axiosInstance.post("/report/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (!response.data.success) {
+        throw new Error("Failed to save report");
+      }
+
       pdf.save(
         `center-report-${reportData.message.cohort || "unknown"}-${
           new Date().toISOString().split("T")[0]
