@@ -203,7 +203,7 @@ const EditEvaluation = () => {
         return;
       }
       const response = await axiosInstance.patch(
-        `/evaluation/edit/${id}`,
+        `/evaluation/${id}`,
         patchObject
       );
       if (response.data.success) {
