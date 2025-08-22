@@ -10,7 +10,7 @@ const UpcomingFeatures = () => {
       </h1>
       <ul className="list-disc text-lg text-gray-700 mb-8">
         <li>
-          <span>Caregiver Dashboard: </span>
+          <span>Family Member/Member Dashboard: </span>
           <button
             className="ml-2 px-3 py-1 bg-[#239d62] text-white rounded hover:bg-[#239d62]/90 text-sm"
             onClick={() => navigate("/caregiver-dashboard-preview")}
@@ -77,6 +77,15 @@ const UpcomingFeatures = () => {
           <button
             className="ml-2 px-3 py-1 bg-[#239d62] text-white rounded hover:bg-[#239d62]/90 text-sm"
             onClick={() => navigate("/expansion-module")}
+          >
+            Preview
+          </button>
+        </li>
+        <li className="mt-4">
+          <span>Click Here Games & Personality Assessment: </span>
+          <button
+            className="ml-2 px-3 py-1 bg-[#239d62] text-white rounded hover:bg-[#239d62]/90 text-sm"
+            onClick={() => navigate("/click-here-games")}
           >
             Preview
           </button>

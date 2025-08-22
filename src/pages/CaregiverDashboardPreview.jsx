@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  BarChart,
+  ComposedChart,
   Bar,
   PieChart,
   Pie,
@@ -37,23 +37,58 @@ const domainNames = [
 ];
 
 const moodData = [
-  { date: "2024-06-01", mood: 5, domain: domainNames[0] },
-  { date: "2024-06-03", mood: 6, domain: domainNames[1] },
-  { date: "2024-06-05", mood: 4, domain: domainNames[2] },
-  { date: "2024-06-07", mood: 7, domain: domainNames[3] },
-  { date: "2024-06-09", mood: 6, domain: domainNames[4] },
-  { date: "2024-06-11", mood: 5, domain: domainNames[5] },
-  { date: "2024-06-12", mood: 6, domain: domainNames[6] },
+  {
+    date: "2024-06-01",
+    memberMood: 5,
+    centerMood: 5.8,
+    domain: domainNames[0],
+  },
+  {
+    date: "2024-06-03",
+    memberMood: 6,
+    centerMood: 6.3,
+    domain: domainNames[1],
+  },
+  {
+    date: "2024-06-05",
+    memberMood: 4,
+    centerMood: 5.5,
+    domain: domainNames[2],
+  },
+  {
+    date: "2024-06-07",
+    memberMood: 7,
+    centerMood: 6.8,
+    domain: domainNames[3],
+  },
+  {
+    date: "2024-06-09",
+    memberMood: 6,
+    centerMood: 6.4,
+    domain: domainNames[4],
+  },
+  {
+    date: "2024-06-11",
+    memberMood: 5,
+    centerMood: 6.1,
+    domain: domainNames[5],
+  },
+  {
+    date: "2024-06-12",
+    memberMood: 6,
+    centerMood: 6.5,
+    domain: domainNames[6],
+  },
 ];
 
 const activityParticipation = [
-  { name: domainNames[0], count: 4 },
-  { name: domainNames[1], count: 3 },
-  { name: domainNames[2], count: 5 },
-  { name: domainNames[3], count: 2 },
-  { name: domainNames[4], count: 3 },
-  { name: domainNames[5], count: 4 },
-  { name: domainNames[6], count: 2 },
+  { name: domainNames[0], count: 4, centerBenchmark: 3.5 },
+  { name: domainNames[1], count: 3, centerBenchmark: 4.2 },
+  { name: domainNames[2], count: 5, centerBenchmark: 4.8 },
+  { name: domainNames[3], count: 2, centerBenchmark: 3.1 },
+  { name: domainNames[4], count: 3, centerBenchmark: 3.7 },
+  { name: domainNames[5], count: 4, centerBenchmark: 4.0 },
+  { name: domainNames[6], count: 2, centerBenchmark: 2.8 },
 ];
 
 const activityTypeDistribution = [
@@ -100,7 +135,7 @@ const CaregiverDashboardPreview = () => (
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold text-[#239d62]">
-            Welcome, Caregiver!
+            Welcome, Family Member/Member!
           </h1>
           <p className="text-gray-600">
             Monitor and support the well-being of your senior citizen.
@@ -110,7 +145,7 @@ const CaregiverDashboardPreview = () => (
           <FiBell className="text-2xl text-gray-400" />
           <img
             src="https://randomuser.me/api/portraits/men/32.jpg"
-            alt="Caregiver Avatar"
+            alt="Family Member/Member Avatar"
             className="w-10 h-10 rounded-full border"
           />
         </div>
@@ -148,14 +183,30 @@ const CaregiverDashboardPreview = () => (
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="date" tick={{ fontSize: 12 }} />
                 <YAxis domain={[0, 7]} tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(value) => [`${value} / 7`, "Mood"]} />
+                <Tooltip
+                  formatter={(value, name) => [
+                    `${value} / 7`,
+                    name === "memberMood" ? "Member Mood" : "Center Mood",
+                  ]}
+                  labelFormatter={(label) => `Date: ${label}`}
+                />
                 <Legend />
                 <Line
                   type="monotone"
-                  dataKey="mood"
+                  dataKey="memberMood"
+                  name="Member Mood"
                   stroke="#239d62"
                   strokeWidth={2}
                   dot={{ r: 4 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="centerMood"
+                  name="Center Mood"
+                  stroke="#94a3b8"
+                  strokeWidth={3}
+                  dot={{ r: 4 }}
+                  strokeDasharray="8 4"
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -168,22 +219,42 @@ const CaregiverDashboardPreview = () => (
           </h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
+              <ComposedChart
                 data={activityParticipation}
                 margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                 <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-                <Tooltip />
+                <Tooltip
+                  formatter={(value, name) => {
+                    if (name === "count") {
+                      return [value, "Member Participation"];
+                    } else if (name === "centerBenchmark") {
+                      return [value, "Center"];
+                    }
+                    return [value, name];
+                  }}
+                  labelFormatter={(label) => `Domain: ${label}`}
+                />
                 <Legend />
                 <Bar
                   dataKey="count"
+                  name="Member Participation"
                   fill="#239d62"
                   barSize={40}
                   radius={[4, 4, 0, 0]}
                 />
-              </BarChart>
+                <Line
+                  type="monotone"
+                  dataKey="centerBenchmark"
+                  name="Center"
+                  stroke="#94a3b8"
+                  strokeWidth={3}
+                  dot={{ r: 4 }}
+                  connectNulls={false}
+                />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
         </div>

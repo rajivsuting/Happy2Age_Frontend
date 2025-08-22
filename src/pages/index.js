@@ -81,3 +81,4 @@ export const ExpansionModule = React.lazy(() => import("./ExpansionModule"));
 export const AutomatedDataAnalysis = React.lazy(() =>
   import("./AutomatedDataAnalysis")
 );
+export const ClickHereGames = React.lazy(() => import("./ClickHereGames"));

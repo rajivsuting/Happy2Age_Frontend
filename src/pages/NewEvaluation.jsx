@@ -36,8 +36,10 @@ const NewEvaluation = () => {
             axiosInstance.get("/cohort/all"),
             axiosInstance.get("/activity/all"),
             axiosInstance.get("/participant/all"),
-            axiosInstance.get("/domain/all"),
+            axiosInstance.get("/domain/all-no-pagination"),
           ]);
+
+        console.log(domainsRes.data.data);
 
         if (cohortsRes.data.success) setCohortList(cohortsRes.data.data || []);
         if (activitiesRes.data.success)
@@ -109,6 +111,7 @@ const NewEvaluation = () => {
         (el) => el.category === domainCategory
       );
       setSelectDomainByType(filteredDomains);
+      console.log(filteredDomains);
     } else {
       setSelectDomainByType([]);
     }

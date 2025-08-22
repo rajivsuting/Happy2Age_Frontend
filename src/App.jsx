@@ -210,6 +210,10 @@ function App() {
                         path="automated-data-analysis"
                         element={<Pages.AutomatedDataAnalysis />}
                       />
+                      <Route
+                        path="click-here-games"
+                        element={<Pages.ClickHereGames />}
+                      />
                     </Route>
                   </Routes>
                 </ProtectedRoute>
