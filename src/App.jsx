@@ -171,6 +171,10 @@ function App() {
                       <Route path="/calendar" element={<Calendar />} />
                       <Route path="/session/new" element={<NewSession />} />
                       <Route
+                        path="manage-admins"
+                        element={<Pages.ManageAdmins />}
+                      />
+                      <Route
                         path="upcoming-features"
                         element={<Pages.UpcomingFeatures />}
                       />

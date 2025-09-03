@@ -8,6 +8,7 @@ import {
   RiCalendarLine,
   RiLineChartLine,
   RiCalendarEventLine,
+  RiAdminLine,
 } from "react-icons/ri";
 import {
   MdOutlineAssignment,
@@ -197,7 +198,7 @@ const Sidebar = () => {
           <p className="text-[11px] uppercase font-semibold text-gray-400 mb-3 px-4 tracking-wider">
             Main Menu
           </p>
-          {menuItems.slice(0, 4).map((item, index) => (
+          {menuItems.slice(0, 5).map((item, index) => (
             <MenuItem key={index} item={item} />
           ))}
         </div>
@@ -206,8 +207,8 @@ const Sidebar = () => {
           <p className="text-[11px] uppercase font-semibold text-gray-400 mb-3 px-4 tracking-wider">
             Evaluations & Sessions
           </p>
-          {menuItems.slice(4, 7).map((item, index) => (
-            <MenuItem key={index + 4} item={item} />
+          {menuItems.slice(5, 8).map((item, index) => (
+            <MenuItem key={index + 5} item={item} />
           ))}
         </div>
 
@@ -215,8 +216,8 @@ const Sidebar = () => {
           <p className="text-[11px] uppercase font-semibold text-gray-400 mb-3 px-4 tracking-wider">
             Analytics & Reports
           </p>
-          {menuItems.slice(7, 9).map((item, index) => (
-            <MenuItem key={index + 7} item={item} />
+          {menuItems.slice(8, 10).map((item, index) => (
+            <MenuItem key={index + 8} item={item} />
           ))}
         </div>
 
@@ -227,6 +228,33 @@ const Sidebar = () => {
           {menuItems.slice(9).map((item, index) => (
             <MenuItem key={index + 9} item={item} />
           ))}
+        </div>
+
+        {/* Manage Admins link */}
+        <div className="mb-1">
+          <div
+            className={`flex items-center px-4 py-2.5 rounded-lg cursor-pointer transition-all duration-300 ease-in-out ${
+              location.pathname === "/manage-admins"
+                ? "bg-gradient-to-r from-[#239d62] to-[#239d62]/80 text-white shadow-lg shadow-[#239d62]/20 scale-[1.02]"
+                : "text-gray-600 hover:bg-gray-50 hover:scale-[1.02] hover:shadow-sm"
+            }`}
+            onClick={() => navigate("/manage-admins")}
+          >
+            <RiAdminLine
+              className={`h-[18px] w-[18px] mr-3 transition-colors ${
+                location.pathname === "/manage-admins"
+                  ? "text-white"
+                  : "text-[#239d62]"
+              }`}
+            />
+            <span
+              className={`flex-1 text-sm ${
+                location.pathname === "/manage-admins" ? "font-medium" : ""
+              }`}
+            >
+              Manage Admins
+            </span>
+          </div>
         </div>
 
         {/* Upcoming Features link */}

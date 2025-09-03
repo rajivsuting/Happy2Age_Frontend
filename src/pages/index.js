@@ -82,3 +82,4 @@ export const AutomatedDataAnalysis = React.lazy(() =>
   import("./AutomatedDataAnalysis")
 );
 export const ClickHereGames = React.lazy(() => import("./ClickHereGames"));
+export const ManageAdmins = React.lazy(() => import("./ManageAdmins"));
