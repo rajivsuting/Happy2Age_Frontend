@@ -24,7 +24,7 @@ import { FiBarChart2 } from "react-icons/fi";
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout, loading: isLoggingOut } = useAuth();
+  const { logout, loading: isLoggingOut, user } = useAuth();
 
   // Initialize state from localStorage or default to false
   const [isSessionsOpen, setIsSessionsOpen] = useState(() => {
@@ -230,32 +230,34 @@ const Sidebar = () => {
           ))}
         </div>
 
-        {/* Manage Admins link */}
-        <div className="mb-1">
-          <div
-            className={`flex items-center px-4 py-2.5 rounded-lg cursor-pointer transition-all duration-300 ease-in-out ${
-              location.pathname === "/manage-admins"
-                ? "bg-gradient-to-r from-[#239d62] to-[#239d62]/80 text-white shadow-lg shadow-[#239d62]/20 scale-[1.02]"
-                : "text-gray-600 hover:bg-gray-50 hover:scale-[1.02] hover:shadow-sm"
-            }`}
-            onClick={() => navigate("/manage-admins")}
-          >
-            <RiAdminLine
-              className={`h-[18px] w-[18px] mr-3 transition-colors ${
+        {/* Manage Admins link - only visible to super admins */}
+        {user?.role === "super_admin" && (
+          <div className="mb-1">
+            <div
+              className={`flex items-center px-4 py-2.5 rounded-lg cursor-pointer transition-all duration-300 ease-in-out ${
                 location.pathname === "/manage-admins"
-                  ? "text-white"
-                  : "text-[#239d62]"
+                  ? "bg-gradient-to-r from-[#239d62] to-[#239d62]/80 text-white shadow-lg shadow-[#239d62]/20 scale-[1.02]"
+                  : "text-gray-600 hover:bg-gray-50 hover:scale-[1.02] hover:shadow-sm"
               }`}
-            />
-            <span
-              className={`flex-1 text-sm ${
-                location.pathname === "/manage-admins" ? "font-medium" : ""
-              }`}
+              onClick={() => navigate("/manage-admins")}
             >
-              Manage Admins
-            </span>
+              <RiAdminLine
+                className={`h-[18px] w-[18px] mr-3 transition-colors ${
+                  location.pathname === "/manage-admins"
+                    ? "text-white"
+                    : "text-[#239d62]"
+                }`}
+              />
+              <span
+                className={`flex-1 text-sm ${
+                  location.pathname === "/manage-admins" ? "font-medium" : ""
+                }`}
+              >
+                Manage Admins
+              </span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Upcoming Features link */}
         <div className="mb-1">

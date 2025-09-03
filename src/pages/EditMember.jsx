@@ -42,7 +42,7 @@ const EditMember = () => {
       setLoading(true);
       setError(null);
       const response = await axios.get(
-        `https://happy2age-backend-gn8ln.ondigitalocean.app/participant/${id}`
+        `http://localhost:8000/participant/${id}`
       );
       console.log("Member data:", response.data.data);
       console.log("Participant type:", response.data.data?.participantType);
@@ -87,9 +87,7 @@ const EditMember = () => {
 
   const fetchCohorts = async () => {
     try {
-      const response = await axios.get(
-        "https://happy2age-backend-gn8ln.ondigitalocean.app/cohort/all"
-      );
+      const response = await axios.get("http://localhost:8000/cohort/all");
       if (response.data.success) {
         setCohorts(response.data.data || []);
       }
@@ -159,7 +157,7 @@ const EditMember = () => {
       setLoading(true);
       setError(null);
       const response = await axios.patch(
-        `https://happy2age-backend-gn8ln.ondigitalocean.app/participant/edit/${id}`,
+        `http://localhost:8000/participant/edit/${id}`,
         formData
       );
 

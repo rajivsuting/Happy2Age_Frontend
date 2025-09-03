@@ -6,10 +6,10 @@ import storageManager from "./storage";
 const getBackendURL = () => {
   if (import.meta.env.DEV) {
     // Development - use local backend
-    return "https://happy2age-backend-gn8ln.ondigitalocean.app";
+    return "http://localhost:8000";
   }
   // Production - use production backend
-  return "https://happy2age-backend-gn8ln.ondigitalocean.app";
+  return "http://localhost:8000";
 };
 
 const axiosInstance = axios.create({

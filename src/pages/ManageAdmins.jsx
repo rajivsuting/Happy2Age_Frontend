@@ -27,6 +27,7 @@ const ManageAdmins = () => {
     lastName: "",
     email: "",
     password: "",
+    role: "admin",
   });
   const [passwordData, setPasswordData] = useState({
     newPassword: "",
@@ -65,7 +66,8 @@ const ManageAdmins = () => {
         !formData.firstName ||
         !formData.lastName ||
         !formData.email ||
-        !formData.password
+        !formData.password ||
+        !formData.role
       ) {
         toast.error("All fields are required");
         return;
@@ -75,7 +77,13 @@ const ManageAdmins = () => {
       if (response.data.success) {
         toast.success("Admin created successfully");
         setShowAddModal(false);
-        setFormData({ firstName: "", lastName: "", email: "", password: "" });
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          role: "admin",
+        });
         setShowPassword(false);
         fetchAdmins();
       } else {
@@ -89,7 +97,12 @@ const ManageAdmins = () => {
 
   const handleEditAdmin = async () => {
     try {
-      if (!formData.firstName || !formData.lastName || !formData.email) {
+      if (
+        !formData.firstName ||
+        !formData.lastName ||
+        !formData.email ||
+        !formData.role
+      ) {
         toast.error("All fields are required");
         return;
       }
@@ -98,13 +111,20 @@ const ManageAdmins = () => {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
+        role: formData.role,
       });
 
       if (response.data.success) {
         toast.success("Admin updated successfully");
         setShowEditModal(false);
         setSelectedAdmin(null);
-        setFormData({ firstName: "", lastName: "", email: "", password: "" });
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          role: "admin",
+        });
         fetchAdmins();
       } else {
         toast.error(response.data.message || "Failed to update admin");
@@ -181,6 +201,7 @@ const ManageAdmins = () => {
       lastName: admin.lastName,
       email: admin.email,
       password: "",
+      role: admin.role,
     });
     setShowEditModal(true);
   };
@@ -241,6 +262,7 @@ const ManageAdmins = () => {
               lastName: "",
               email: "",
               password: "",
+              role: "admin",
             });
             setShowPassword(false);
             setShowAddModal(true);
@@ -272,6 +294,9 @@ const ManageAdmins = () => {
                   Email
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Role
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -280,7 +305,7 @@ const ManageAdmins = () => {
               {filteredAdmins.length === 0 ? (
                 <tr>
                   <td
-                    colSpan="3"
+                    colSpan="4"
                     className="px-6 py-12 text-center text-gray-500"
                   >
                     {search
@@ -298,6 +323,21 @@ const ManageAdmins = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{admin.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            admin.role === "super_admin"
+                              ? "bg-purple-100 text-purple-800"
+                              : "bg-blue-100 text-blue-800"
+                          }`}
+                        >
+                          {admin.role === "super_admin"
+                            ? "Super Admin"
+                            : "Admin"}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-2">
@@ -403,6 +443,21 @@ const ManageAdmins = () => {
                   </button>
                 </div>
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Role
+                </label>
+                <select
+                  value={formData.role}
+                  onChange={(e) =>
+                    setFormData({ ...formData, role: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#239d62] focus:border-transparent"
+                >
+                  <option value="admin">Admin</option>
+                  <option value="super_admin">Super Admin</option>
+                </select>
+              </div>
             </div>
             <div className="flex gap-3 mt-6">
               <button
@@ -419,6 +474,7 @@ const ManageAdmins = () => {
                     lastName: "",
                     email: "",
                     password: "",
+                    role: "admin",
                   });
                   setShowPassword(false);
                 }}
@@ -476,6 +532,47 @@ const ManageAdmins = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#239d62] focus:border-transparent"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#239d62] focus:border-transparent"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    {showPassword ? (
+                      <FiEyeOff className="h-4 w-4 text-gray-400" />
+                    ) : (
+                      <FiEye className="h-4 w-4 text-gray-400" />
+                    )}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Role
+                </label>
+                <select
+                  value={formData.role}
+                  onChange={(e) =>
+                    setFormData({ ...formData, role: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#239d62] focus:border-transparent"
+                >
+                  <option value="admin">Admin</option>
+                  <option value="super_admin">Super Admin</option>
+                </select>
+              </div>
             </div>
             <div className="flex gap-3 mt-6">
               <button
@@ -493,6 +590,7 @@ const ManageAdmins = () => {
                     lastName: "",
                     email: "",
                     password: "",
+                    role: "admin",
                   });
                 }}
                 className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition-colors"

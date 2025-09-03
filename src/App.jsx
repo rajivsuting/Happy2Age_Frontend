@@ -6,7 +6,7 @@ import * as Pages from "./pages";
 import axios from "axios";
 import ActivityDetails from "./pages/ActivityDetails";
 import EditActivity from "./pages/EditActivity";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute, { SuperAdminRoute } from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import { AuthProvider } from "./context/AuthContext";
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -172,7 +172,11 @@ function App() {
                       <Route path="/session/new" element={<NewSession />} />
                       <Route
                         path="manage-admins"
-                        element={<Pages.ManageAdmins />}
+                        element={
+                          <SuperAdminRoute>
+                            <Pages.ManageAdmins />
+                          </SuperAdminRoute>
+                        }
                       />
                       <Route
                         path="upcoming-features"

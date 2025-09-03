@@ -44,4 +44,27 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+const SuperAdminRoute = ({ children }) => {
+  const { isAuthenticated, isLoading, user } = useAuth();
+  const location = useLocation();
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  // If not authenticated, redirect to login
+  if (!isAuthenticated) {
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
+
+  // If not super admin, redirect to dashboard
+  if (user?.role !== "super_admin") {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+};
+
 export default ProtectedRoute;
+export { SuperAdminRoute };
